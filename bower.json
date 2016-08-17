@@ -1,0 +1,22 @@
+{
+  "name": "sdp",
+  "version": "0.0.1",
+  "authors": [
+    "Frederic de Vaulx <fdevaulx@nist.gov>"
+  ],
+  "description": "SDP project",
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~4.0.0-alpha.3"
+  }
+}
