@@ -1,0 +1,28 @@
+.header__inner {
+    /*background-color: white;*/
+    background: #333333;
+    color: white;
+}
+
+.header__logo {
+    display: inline-block;
+    padding: 32px 0px 32px 32px;
+}
+
+.header__logo-link {
+    display: block;
+}
+
+.header__logo a img {
+    width: 289px;
+}
+img {
+    border: 0;
+    max-width: 100%;
+    height: auto;
+}
+
+paper-toolbar.main{
+    background-color: var(--paper-blue-600);
+}
+

@@ -1,0 +1,313 @@
+#footer {
+    /*background: #333333;*/
+    background-color: white;
+    color: #333333;
+    padding: 96px 0px 96px 0px;
+    padding: 6rem 0rem 6rem 0rem;
+    padding-top: 40px;
+    padding-top: 2.5rem;
+    padding-bottom: 40px;
+    padding-bottom: 2.5rem;
+    position: relative;
+}
+
+.footer__inner {
+    padding-left:20px;
+    padding-top:20px;
+    padding-right:20px;
+    padding-bottom:20px;
+
+}
+
+#footer .footer__logo img {
+    width: 286px;
+}
+
+img {
+    border: 0;
+    max-width: 100%;
+    height: auto;
+}
+
+#footer a {
+    color: white;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+footer .footer__contact {
+    font-size: 15px;
+    line-height: 17px;
+    margin: 30px 0;
+}
+
+.menu--footer-main-menu {
+    clear: both;
+    border-top: 1px solid #595959;
+    border-bottom: 1px solid #595959;
+    padding-bottom: 40px;
+    padding-bottom: 2.5rem;
+}
+
+.block {
+    margin-bottom: 20.8px;
+    margin-bottom: 1.3rem;
+}
+
+.menu--footer-main-menu ul.menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+dl, menu, ol, ul {
+    margin: 0px 0px 20px 16px;
+    margin: 0rem 0rem 1.25rem 1rem;
+    padding: 0px 0px 0px 32px;
+    padding: 0rem 0rem 0rem 2rem;
+}
+
+ul, menu, dir {
+    display: block;
+    list-style-type: disc;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+}
+
+.menu--footer-main-menu ul.menu li {
+    padding: 0;
+    margin-bottom: 0;
+    vertical-align: top;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 20px;
+    line-height: 1.25rem;
+}
+
+.menu--footer-main-menu ul.menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#footer .social-links {
+    float: right;
+}
+
+.social-btn--large {
+    height: 40px;
+}
+
+.social-btn {
+    margin-right: 2px;
+    margin-left: 0;
+    padding: 0;
+    height: 34px;
+    color: gray;
+}
+
+ul.list-horiz > li, li.list-horiz {
+    list-style: none;
+    display: inline-block;
+    margin: 0;
+}
+
+.social-btn:hover, .social-btn:visited, .social-btn:active {
+    color: gray;
+}
+
+a:visited {
+    color: #2d9de7;
+}
+
+.social-btn {
+    margin-right: 2px;
+    margin-left: 0;
+    padding: 0;
+    height: 34px;
+    color: gray;
+}
+
+.social-btn--large i:before {
+    font-size: 26px;
+    line-height: 40px;
+    height: 40px;
+    width: 40px;
+}
+
+.social-btn i:before {
+    font-size: 22px;
+    line-height: 34px;
+    height: 34px;
+    width: 34px;
+    text-align: center;
+    display: inline-block;
+}
+
+.social-btn--large {
+    height: 40px;
+}
+
+.fa-twitter:before, .social-share-twitter:before {
+    content: "\f099";
+}
+
+.fa-facebook:before, .social-share-facebook:before {
+    content: "\f09a";
+}
+
+.fa-google-plus:before, .social-share-googleplus:before {
+    content: "\f0d5";
+}
+
+.fa-youtube:before {
+    content: "\f167";
+}
+
+.fa-rss:before {
+    content: "\f09e";
+}
+
+.fa-envelope:before {
+    content: "\f0e0";
+}
+
+.social-btn .ext {
+    display: none;
+}
+
+span.ext {
+    display: inline-block;
+    padding-right: 0;
+    text-indent: -99999px;
+    width: 12px;
+}
+
+span.ext {
+    background: url(https://www2.nist.gov/sites/all/modules/contrib/extlink/extlink_s.png) 2px center no-repeat;
+    width: 10px;
+    height: 10px;
+    padding-right: 12px;
+    text-decoration: none;
+}
+
+.fa, .social-share a {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.element-invisible, .element-focusable, #navigation .block-menu .block__title, #navigation .block-menu-block .block__title {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+#footer .footer__contact {
+    font-size: 15px;
+    line-height: 17px;
+    margin: 30px 0;
+}
+
+.menu--footer-menu.first {
+     padding-top: 1.3rem;
+}
+.menu--footer-menu {
+    clear: both;
+     margin-bottom: 0.6rem;
+}
+
+
+.menu--footer-menu ul.menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+}
+
+
+ul, menu, dir {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+}
+
+.menu--footer-menu ul.menu li {
+    display: inline-block;
+    font-size: 0.9rem;
+    padding: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+.menu--footer-menu ul.menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+ul, menu, dir {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+}
+
+.menu--footer-menu ul.menu li.first:before {
+    content: none;
+}
+.menu--footer-menu ul.menu li:before {
+    content: '|';
+    margin-left: 1.6px;
+    margin-left: 0.1rem;
+    display: inherit;
+    position: static;
+    font: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+#footer a {
+    color:  #333333;
+}
+.menu--footer-menu ul.menu li.first a {
+    margin-left: 0;
+}
+.menu--footer-menu ul.menu li a {
+    font-weight: normal;
+    white-space: nowrap;
+}
+.menu a {
+    text-decoration: none;
+}
+a:visited {
+    color: #2d9de7;
+}
+
+.menu--footer-menu ul.menu li {
+    display: inline-block;
+    padding: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+
