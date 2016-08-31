@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_BASE_HREF } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -8,6 +8,7 @@ import { routes } from './app.routes';
 
 import { AboutModule } from './+about/about.module';
 import { HomeModule } from './+home/home.module';
+import { SearchModule } from './+search/search.module';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -17,7 +18,9 @@ import { SharedModule } from './shared/shared.module';
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
   }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+
 
 })
 

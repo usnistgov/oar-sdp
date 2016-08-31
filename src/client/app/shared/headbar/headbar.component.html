@@ -2,7 +2,37 @@
 <div class="header__logo">
     <a href="/" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
          <!--<img src="./assets/images/nist-logo-2x.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">-->
-        <img srcset="./assets/images/logo_rev.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">
+        <img srcset="./assets/images/nist-logo-2x.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">
     </a>
 </div>
+</div>
+<div id="layout-topbar">
+    <a id="mobile-menu-button">
+        <span class="ButtonLine" id="ButtonLine1"></span>
+        <span class="ButtonLine" id="ButtonLine2"></span>
+        <span class="ButtonLine" id="ButtonLine3"></span>
+    </a>
+    <a [routerLink]="['/']" id="logo">
+    <!--<span class="Fleft">SDP</span>-->
+    <!--<img src="../libs/modela-1.0.2/layout/images/logo.svg" class="Fleft" />-->
+    </a>
+
+    <a id="show-top-menu" class="ShowOnMobile ripplelink"><i class="icon-more_vert" id="active"></i><i class="icon-close DispNone" id="passive"></i> </a>
+
+    <ul id="top-menu">
+        <!--<li>-->
+            <!--<a class="ripplelink"><i class="icon-search"></i> <span class="ShowOnMobile">Search Here</span></a>-->
+            <!--<ul>-->
+                <!--<li>-->
+                    <!--<a href="#"><i class="icon-search"></i><input type="text"/> </a>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</li>-->
+        <li>
+            <a class="ripplelink" [routerLink]="['/data_cart']" ><i class="icon-shopping_cart Fs30"></i> <span class="ShowOnMobile">Data Cart</span></a>
+        </li>
+        <li>
+            <a class="ripplelink" [routerLink]="['/help']"><i class="icon-live_help"></i> <span class="ShowOnMobile">Help</span></a>
+        </li>
+    </ul>
 </div>

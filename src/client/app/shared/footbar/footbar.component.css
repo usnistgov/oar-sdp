@@ -1,7 +1,7 @@
 #footer {
-    /*background: #333333;*/
-    background-color: white;
-    color: #333333;
+    background: #333333;
+    /*background-color: white;*/
+    color: white;
     padding: 96px 0px 96px 0px;
     padding: 6rem 0rem 6rem 0rem;
     padding-top: 40px;
@@ -112,7 +112,7 @@ ul, menu, dir {
     margin-left: 0;
     padding: 0;
     height: 34px;
-    color: gray;
+    color: white;
 }
 
 ul.list-horiz > li, li.list-horiz {
@@ -122,7 +122,7 @@ ul.list-horiz > li, li.list-horiz {
 }
 
 .social-btn:hover, .social-btn:visited, .social-btn:active {
-    color: gray;
+    color: white;
 }
 
 a:visited {
@@ -134,7 +134,7 @@ a:visited {
     margin-left: 0;
     padding: 0;
     height: 34px;
-    color: gray;
+    color: white;
 }
 
 .social-btn--large i:before {
@@ -287,7 +287,7 @@ ul, menu, dir {
 }
 
 #footer a {
-    color:  #333333;
+    color:  white;
 }
 .menu--footer-menu ul.menu li.first a {
     margin-left: 0;

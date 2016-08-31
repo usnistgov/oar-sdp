@@ -1,12 +1,29 @@
-<p>
-  Howdy! Here's a list of awesome computer scientists. Do you know any others? Add to the list yourself.
-</p>
+<div style="background-color:#fff;" class="BlueBody PopupMenu">
+    <div class="Container100 GrayBack sdp-page" id="modena-highlight">
+        <div class="Wid90 OvHidden MarAuto">
+            <div class="Container100">
+                 <span class="DispBlock Fs20 FontRobotoLight White TexAlCenter">Welcome to NIST</span>
+                <div class="EmptyBox20"></div>
+                <h1 class="FontRobotoRegular Fs50 WhiteBlue TexAlCenter">SCIENCE DATA PORTAL</h1>
+                <div class="EmptyBox20"></div>
+                <div class="Wid50 MarAuto ui-fluid Responsive100">
+                    <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-7">
+                                <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..." />
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p-dropdown [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'200px'" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" styleClass="Fleft" ></p-dropdown>
+                            </div>
+                            <div class="ui-grid-col-2"><button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="button" class="CyanButton Wid100"></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="EmptyBox20 ShowOnMobile"></div>
+                <div class="EmptyBox120 ShowOnDesktop"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<form (submit)="addName()">
-  <input [(ngModel)]="newName" name="newName" placeholder="Awesome Computer Scientist">
-  <button type="submit">Add</button>
-</form>
 
-<ul>
-  <li *ngFor="let name of names">{{name}}</li>
-</ul>

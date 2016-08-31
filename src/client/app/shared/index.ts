@@ -3,7 +3,7 @@
  */
 export * from './headbar/index';
 export * from './footbar/index';
-export * from './headbar/index';
+export * from './navbar/index';
 export * from './search-service/index';
 export * from './taxonomy-list/index';
 export * from './config/env.config';

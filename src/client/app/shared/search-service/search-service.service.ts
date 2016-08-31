@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response,URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -22,11 +22,20 @@ export class SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchPhrase(searchValue:string): Observable<string[]> {
+
+      let params: URLSearchParams = new URLSearchParams();
+      params.set('title', searchValue);
+
+
+
 //    return this.http.get('http://oardev3.nist.gov:8080/RestApi/records/search?searchPhrase='+ searchValue)
 //                    .map((res: Response) => res.json())
 //                    .catch(this.handleError);
 
-      return this.http.get('/assets/data.json')
+      return this.http.get("http://oardev3.nist.gov:8080/RMMApi/records/search",
+          {
+              search: params
+          })
           .map((res: Response) => res.json())
           .catch(this.handleError);
 

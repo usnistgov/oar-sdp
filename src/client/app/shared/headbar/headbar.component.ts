@@ -12,4 +12,8 @@ import { Component } from '@angular/core';
     ]
 })
 
-export class HeadbarComponent {}
+export class HeadbarComponent {
+
+
+
+}

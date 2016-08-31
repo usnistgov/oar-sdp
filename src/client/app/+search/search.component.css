@@ -1,0 +1,28 @@
+.filters {
+    background: #f8f9f9;
+    background-color: #f8f9f9;
+    box-shadow: inset -4px 0 16px -9px rgba(0, 0, 0, 0.5);
+}
+
+.ellipsis {
+
+}
+
+.summary-content {
+    text-align: left; max-height: 400px; overflow: auto;
+    background-color: #f2f2f2;
+    border:1px #f2f2f2;
+}
+
+.glimpse-content{
+    width: 250px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    align:left;
+}
+
+#search-page{
+    padding-bottom:100px;
+}

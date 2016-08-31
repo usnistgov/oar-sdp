@@ -7,6 +7,9 @@ import { TaxonomyListService } from './taxonomy-list/index';
 import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
 import { HeadbarComponent } from './headbar/index';
+import { NavbarComponent } from './navbar/index';
+
+import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,DialogModule,AutoCompleteModule,MultiSelectModule,PaginatorModule} from 'primeng/primeng';
 
 
 /**
@@ -14,16 +17,16 @@ import { HeadbarComponent } from './headbar/index';
  */
 
 @NgModule({
-  imports: [CommonModule, RouterModule],
-  declarations: [HeadbarComponent, FootbarComponent],
-  exports: [HeadbarComponent, FootbarComponent,
-    CommonModule, FormsModule, RouterModule]
+  imports: [CommonModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,DialogModule],
+  declarations: [HeadbarComponent, FootbarComponent, NavbarComponent],
+  exports: [HeadbarComponent, FootbarComponent,NavbarComponent,
+    CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,DialogModule]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [TaxonomyListService]
+      providers: [TaxonomyListService,SearchService]
     };
   }
 }

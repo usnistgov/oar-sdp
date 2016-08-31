@@ -1,7 +1,7 @@
 .header__inner {
     /*background-color: white;*/
-    background: #333333;
-    color: white;
+    background: white;
+    color: black;
 }
 
 .header__logo {
@@ -20,9 +20,5 @@ img {
     border: 0;
     max-width: 100%;
     height: auto;
-}
-
-paper-toolbar.main{
-    background-color: var(--paper-blue-600);
 }
 

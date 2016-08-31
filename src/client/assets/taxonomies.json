@@ -1,206 +1,136 @@
 [
-  {
-    "key": "Advanced Communications",
-    "children": [
-      {
-        "key": "Optical Communications"
-      },
-      {
-        "key": "Quantum communications"
-      },
-      {
-        "key": "Wireless (RF)"
-      }
-    ]
-  },
-  {
-    "key": "Bioscience",
-    "children": [
-      {
-        "key": "Biomaterials"
-      },
-      {
-        "key": "Bioprocessing"
-      },
-      {
-        "key": "Cell biology"
-      },
-      {
-        "key": "Engineering/synthetic biology"
-      },
-      {
-        "key": "Genomic measurements"
-      },
-      {
-        "key": "Glycomics"
-      },
-      {
-        "key": "Lipidomics"
-      },
-      {
-        "key": "Microbial measurements"
-      },
-      {
-        "key": "Proteomics"
-      }
-    ]
-  },
-  {
-    "key": "Buildings and Construction",
-    "children": [
-      {
-        "key": "Building codes & standards"
-      },
-      {
-        "key": "Building control systems"
-      },
-      {
-        "key": "Building damage & repair"
-      },
-      {
-        "key": "Building economics"
-      },
-      {
-        "key": "Building materials"
-      },
-      {
-        "key": "Heating & cooling equipment"
-      },
-      {
-        "key": "Indoor air quality"
-      },
-      {
-        "key": "Structural engineering"
-      }
-    ]
-  },
-  {
-    "key": "Chemistry",
-    "children": [
-      {
-        "key": "Analytical chemistry"
-      },
-      {
-        "key": "Chemical engineering & processing"
-      },
-      {
-        "key": "Chemical thermodynamics & chemical properties"
-      },
-      {
-        "key": "Molecular characterization"
-      },
-      {
-        "key": "Theoretical chemistry & modeling"
-      },
-      {
-        "key": "Thermochemical properties"
-      }
-    ]
-  },
-  {
-    "key": "Disaster Resilience",
-    "children": [
-      {
-        "key": "Disaster & failure studies"
-      },
-      {
-        "key": "Disaster preparation, response, recovery"
-      },
-      {
-        "key": "Earthquake risk reduction"
-      },
-      {
-        "key": "Human behaviors in disaster"
-      },
-      {
-        "key": "Search & rescue"
-      },
-      {
-        "key": "Windstorm risk reduction"
-      }
-    ]
-  },
-  {
-    "key": "Electronics",
-    "children": [
-      {
-        "key": "Electromagnetics"
-      },
-      {
-        "key": "Magnetoelectronics"
-      },
-      {
-        "key": "Optoelectronics"
-      },
-      {
-        "key": "Organic Electronics"
-      },
-      {
-        "key": "Semiconductors"
-      },
-      {
-        "key": "Sensors"
-      },
-      {
-        "key": "Superconducting electronics"
-      },
-      {
-        "key": "Thin-film electronics"
-      }
-    ]
-  },
-  {
-    "key": "Energy",
-    "children": [
-      {
-        "key": "Alternative energy"
-      },
-      {
-        "key": "Conventional energy"
-      },
-      {
-        "key": "Electric power / smart grid"
-      },
-      {
-        "key": "Energy efficiency"
-      },
-      {
-        "key": "Fuels"
-      }
-    ]
-  },
-  {
-    "key": "Environment",
-    "children": [
-      {
-        "key": "Air, water, & soil quality"
-      },
-      {
-        "key": "Environmental health"
-      },
-      {
-        "key": "Greenhouse gases"
-      },
-      {
-        "key": "Marine science"
-      }
-    ]
-  },
-  {
-    "key": "Fire detection",
-    "children": [
-      {
-        "key": "Fire fighting"
-      },
-      {
-        "key": "Fire modeling"
-      },
-      {
-        "key": "Fire risk reduction"
-      },
-      {
-        "key": "Materials flammability"
-      }
-    ]
-  }
+
+    {
+        "researchCategory": "Advanced Communications",
+        "subCategories": [
+            {
+                "researchCategory": "Optical Communications"
+            },
+            {
+                "researchCategory": "Quantum communications"
+            }
+        ],
+        "keyIdentifier": "Advanced_Communications"
+    },
+    {
+        "researchCategory": "Bioscience",
+        "subCategories": [
+            {
+                "researchCategory": "Biomaterials"
+            },
+            {
+                "researchCategory": "Bioprocessing"
+            },
+            {
+                "researchCategory": "Cell biology"
+            }
+        ],
+        "keyIdentifier": "Bioscience"
+    },
+    {
+        "researchCategory": "Buildings and Construction",
+        "subCategories": [
+            {
+                "researchCategory": "Building codes & standards"
+            },
+            {
+                "researchCategory": "Building control systems"
+            },
+            {
+                "researchCategory": "Building damage & repair"
+            }
+        ],
+        "keyIdentifier": "Buildings_Construction"
+    },
+    {
+        "researchCategory": "Chemistry",
+        "subCategories": [
+            {
+                "researchCategory": "Analytical chemistry"
+            },
+            {
+                "researchCategory": "Chemical engineering & processing"
+            },
+            {
+                "researchCategory": "Chemical thermodynamics & chemical properties"
+            }
+        ],
+        "keyIdentifier": "Chemistry"
+    },
+    {
+        "researchCategory": "Disaster Resilience",
+        "subCategories": [
+            {
+                "researchCategory": "Disaster & failure studies"
+            },
+            {
+                "researchCategory": "Earthquake risk reduction"
+            },
+            {
+                "researchCategory": "Human behaviors in disaster"
+            }
+        ],
+        "keyIdentifier": "Disaster_Resilience"
+    },
+    {
+        "researchCategory": "Electronics",
+        "subCategories": [
+            {
+                "researchCategory": "Electromagnetics"
+            },
+            {
+                "researchCategory": "Magnetoelectronics"
+            },
+            {
+                "researchCategory": "Optoelectronics"
+            }
+        ],
+        "keyIdentifier": "Electronics"
+    },
+    {
+        "researchCategory": "Energy",
+        "subCategories": [
+            {
+                "researchCategory": "Alternative energy"
+            },
+            {
+                "researchCategory": "Conventional energy"
+            },
+            {
+                "researchCategory": "Electric power / smart grid"
+            }
+        ],
+        "keyIdentifier": "Energy"
+    },
+    {
+        "researchCategory": "Environment",
+        "subCategories": [
+            {
+                "researchCategory": "Air, water, & soil quality"
+            },
+            {
+                "researchCategory": "Environmental health"
+            },
+            {
+                "researchCategory": "Greenhouse gases"
+            }
+        ],
+        "keyIdentifier": "Environment"
+    },
+    {
+        "researchCategory": "Fire",
+        "subCategories": [
+            {
+                "researchCategory": "Fire detection"
+            },
+            {
+                "researchCategory": "Fire fighting"
+            },
+            {
+                "researchCategory": "Fire modeling"
+            }
+        ],
+        "keyIdentifier": "Fire"
+    }
+
 ]
