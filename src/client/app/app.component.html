@@ -1,3 +1,12 @@
-<sd-toolbar></sd-toolbar>
-<sd-navbar></sd-navbar>
-<router-outlet></router-outlet>
+<sdp-headbar></sdp-headbar>
+<div id="wrapper">
+    <div id="wrapperIndent">
+        <sdp-navbar></sdp-navbar>
+        <div id="layout-portlets-cover" style="padding:0px; min-height: 500px">
+            <div class="Container100 Fnone MarAuto">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>
+<sdp-footbar></sdp-footbar>

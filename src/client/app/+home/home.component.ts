@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NameListService } from '../shared/index';
+import {SelectItem} from 'primeng/primeng';
+import { TaxonomyListService } from '../shared/taxonomy-list/index';
+import { SearchService } from '../shared/search-service/index';
+import {provideRouter, ROUTER_DIRECTIVES, Router,ActivatedRoute,NavigationExtras} from '@angular/router';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -8,50 +11,58 @@ import { NameListService } from '../shared/index';
   moduleId: module.id,
   selector: 'sd-home',
   templateUrl: 'home.component.html',
-  styleUrls: ['home.component.css'],
-})
+  styleUrls: ['home.component.css']
+ })
 
 export class HomeComponent implements OnInit {
 
-  newName: string = '';
-  errorMessage: string;
-  names: any[] = [];
+    errorMessage: string;
+    searchValue:string;
+    taxonomies: SelectItem[];
+    searchTaxonomyKey: string;
 
-  /**
-   * Creates an instance of the HomeComponent with the injected
-   * NameListService.
-   *
-   * @param {NameListService} nameListService - The injected NameListService.
-   */
-  constructor(public nameListService: NameListService) {}
+    /**
+     *
+     */
+  constructor(public taxonomyListService: TaxonomyListService, public searchService:SearchService, private router:Router) {
+             this.taxonomies = [];
+    }
 
-  /**
-   * Get the names OnInit
-   */
+    /**
+     *
+     */
   ngOnInit() {
-    this.getNames();
+        this.getTaxonomies();
   }
 
-  /**
-   * Handle the nameListService observable
-   */
-  getNames() {
-    this.nameListService.get()
-                     .subscribe(
-                       names => this.names = names,
-                       error =>  this.errorMessage = <any>error
-                       );
-  }
+    /**
+     * Handle the nameListService observable
+     */
+    getTaxonomies() {
+        this.taxonomyListService.get()
+            .subscribe(
+            taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
+            error =>  this.errorMessage = <any>error
+        );
+    }
 
-  /**
-   * Pushes a new name onto the names array
-   * @return {boolean} false to prevent default form submit behavior to refresh the page.
-   */
-  addName(): boolean {
-    // TODO: implement nameListService.post
-    this.names.push(this.newName);
-    this.newName = '';
-    return false;
-  }
+    toTaxonomiesItems(taxonomies:any[]){
+        let items :SelectItem[] = [];
+        items.push({label:'All', value:''});
+        for (let taxonomy of taxonomies) {
+            items.push({label:taxonomy.researchCategory, value:taxonomy.keyIdentifier});
+        }
+        return items;
+    }
+
+    search(){
+        if(this.searchValue !== '' && this.searchValue !== undefined) {
+            let params:NavigationExtras = {
+                queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:''}
+            };
+            this.router.navigate(["/search"], params);
+        }
+    }
+
 
 }
