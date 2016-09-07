@@ -147,7 +147,7 @@
                                         <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Author</span>
                                         </div>
                                         <div class="ui-grid-col-8">
-                                            <p-autoComplete [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors" (completeMethod)="filterAuthors($event)" [size]="30"
+                                            <p-autoComplete [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors" (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                             placeholder="Search author..." [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
                                             (onSelect)="filterResults($event)"
                                             (onUnselect)="filterResults($event)"

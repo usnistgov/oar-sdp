@@ -21,6 +21,7 @@ import {Footer} from 'primeng/primeng';
      ]
 })
 
+
 export class SearchPanel implements OnInit {
 
     private _routeParamsSubscription: Subscription;
@@ -170,6 +171,7 @@ export class SearchPanel implements OnInit {
     filterThemes(event:any){
         let theme = event.query;
         this.suggestedThemes = [];
+        console.log("themes");
         for(let i = 0; i < this.themes.length; i++) {
             let them = this.themes[i];
             if(them.toLowerCase().indexOf(theme.toLowerCase()) == 0) {
@@ -186,7 +188,7 @@ export class SearchPanel implements OnInit {
         this.suggestedAuthors = [];
         for(let i = 0; i < this.authors.length; i++) {
             let autho = this.authors[i];
-            if(autho.toLowerCase().indexOf(author) == 0) {
+            if(autho.toLowerCase().indexOf(author.toLowerCase()) == 0) {
                 this.suggestedAuthors.push(autho);
             }
         }
@@ -247,8 +249,6 @@ export class SearchPanel implements OnInit {
      }
 
     filterByAuthor(searchResults:any[], selectedAuthor:string){
-        console.log("called filterByAuthor: " + selectedAuthor);
-
         if(selectedAuthor != null  && selectedAuthor !== this.ALL  && selectedAuthor !== "") {
             var filteredResults = [];
             if (searchResults && searchResults.length > 0) {
