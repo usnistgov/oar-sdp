@@ -45,12 +45,12 @@ export class SearchPanel implements OnInit {
     suggestedKeywords:string[] = [];
     suggestedThemes:string[] = [];
     suggestedAuthors:string[] = [];
-    const ALL:string='All';
+    ALL:string='All';
     filteredKeywords:string[] = [];
     filteredThemes:string[] = [];
     filteredAuthors:string[] = [];
     summaryPageOpen : boolean = false;
-    summaryCandidate = null;
+    summaryCandidate: any[];
 
     /**
      * Creates an instance of the SearchPanel
@@ -233,7 +233,7 @@ export class SearchPanel implements OnInit {
 
     filterByTheme(searchResults:any[], selectedTheme:string){
         if(selectedTheme != null && selectedTheme !== this.ALL && selectedTheme !== "") {
-            var filteredResults = [];
+            var filteredResults: any[] = [];
             if (searchResults && searchResults.length > 0 ) {
                 for (let resultItem of searchResults)
                 {
@@ -250,7 +250,7 @@ export class SearchPanel implements OnInit {
 
     filterByAuthor(searchResults:any[], selectedAuthor:string){
         if(selectedAuthor != null  && selectedAuthor !== this.ALL  && selectedAuthor !== "") {
-            var filteredResults = [];
+            var filteredResults : any[] = [];
             if (searchResults && searchResults.length > 0) {
                 for (let resultItem of searchResults)
                 {
@@ -311,8 +311,8 @@ export class SearchPanel implements OnInit {
     }
 
 
-    filterByKeyword(searchResults, selectedKeywords){
-        var filteredResults = [];
+    filterByKeyword(searchResults:any[], selectedKeywords:any[]){
+        var filteredResults : any[] = [];
         if(selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
             if (searchResults != null && searchResults.length > 0) {
                 for (let resultItem of searchResults)

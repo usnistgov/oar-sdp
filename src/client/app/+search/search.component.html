@@ -249,17 +249,17 @@
                         </template>
                     </p-column>
                     <p-column field="title"
-                    [sortable]="true" header="Title"></p-column>
+                    [sortable]="true" [filter]="true" header="Title"></p-column>
                     <p-column field="contactPoint.fn"
-                    [sortable]="true" header="Author"></p-column>
-                    <p-column field="description" header="Description">
+                    [sortable]="true" [filter]="true" header="Author"></p-column>
+                    <p-column field="description" [filter]="true" header="Description">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
                         <span class="glimpse-content">{{resultItem[col.field]}}</span>
                     </template>
                     </p-column>
-                    <p-column field="keyword" header="Keywords" [styleClass]="glimpse-content" ></p-column>
+                    <p-column field="keyword" [filter]="true" header="Keywords" [styleClass]="glimpse-content" ></p-column>
                     <p-column field="modified"
-                    [sortable]="true" header="Date Modified"></p-column>
+                    [sortable]="true" [filter]="true" header="Date Modified"></p-column>
 
                     </p-dataTable>
 

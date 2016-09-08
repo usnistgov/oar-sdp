@@ -9,7 +9,7 @@ import { FootbarComponent } from './footbar/index';
 import { HeadbarComponent } from './headbar/index';
 import { NavbarComponent } from './navbar/index';
 
-import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,DialogModule,AutoCompleteModule,MultiSelectModule,PaginatorModule} from 'primeng/primeng';
+import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,DialogModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,CalendarModule} from 'primeng/primeng';
 
 
 /**
@@ -17,10 +17,10 @@ import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarMod
  */
 
 @NgModule({
-  imports: [CommonModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,DialogModule],
+  imports: [CommonModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,DialogModule,CalendarModule],
   declarations: [HeadbarComponent, FootbarComponent, NavbarComponent],
   exports: [HeadbarComponent, FootbarComponent,NavbarComponent,
-    CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,DialogModule]
+    CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,MultiSelectModule,PaginatorModule,DialogModule,CalendarModule]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
