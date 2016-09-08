@@ -21,6 +21,7 @@ import {Footer} from 'primeng/primeng';
      ]
 })
 
+
 export class SearchPanel implements OnInit {
 
     private _routeParamsSubscription: Subscription;
@@ -44,12 +45,12 @@ export class SearchPanel implements OnInit {
     suggestedKeywords:string[] = [];
     suggestedThemes:string[] = [];
     suggestedAuthors:string[] = [];
-    const ALL:string='All';
+    ALL:string='All';
     filteredKeywords:string[] = [];
     filteredThemes:string[] = [];
     filteredAuthors:string[] = [];
     summaryPageOpen : boolean = false;
-    summaryCandidate = null;
+    summaryCandidate: any[];
 
     /**
      * Creates an instance of the SearchPanel
@@ -170,6 +171,7 @@ export class SearchPanel implements OnInit {
     filterThemes(event:any){
         let theme = event.query;
         this.suggestedThemes = [];
+        console.log("themes");
         for(let i = 0; i < this.themes.length; i++) {
             let them = this.themes[i];
             if(them.toLowerCase().indexOf(theme.toLowerCase()) == 0) {
@@ -186,7 +188,7 @@ export class SearchPanel implements OnInit {
         this.suggestedAuthors = [];
         for(let i = 0; i < this.authors.length; i++) {
             let autho = this.authors[i];
-            if(autho.toLowerCase().indexOf(author) == 0) {
+            if(autho.toLowerCase().indexOf(author.toLowerCase()) == 0) {
                 this.suggestedAuthors.push(autho);
             }
         }
@@ -231,7 +233,7 @@ export class SearchPanel implements OnInit {
 
     filterByTheme(searchResults:any[], selectedTheme:string){
         if(selectedTheme != null && selectedTheme !== this.ALL && selectedTheme !== "") {
-            var filteredResults = [];
+            var filteredResults: any[] = [];
             if (searchResults && searchResults.length > 0 ) {
                 for (let resultItem of searchResults)
                 {
@@ -247,10 +249,8 @@ export class SearchPanel implements OnInit {
      }
 
     filterByAuthor(searchResults:any[], selectedAuthor:string){
-        console.log("called filterByAuthor: " + selectedAuthor);
-
         if(selectedAuthor != null  && selectedAuthor !== this.ALL  && selectedAuthor !== "") {
-            var filteredResults = [];
+            var filteredResults : any[] = [];
             if (searchResults && searchResults.length > 0) {
                 for (let resultItem of searchResults)
                 {
@@ -311,8 +311,8 @@ export class SearchPanel implements OnInit {
     }
 
 
-    filterByKeyword(searchResults, selectedKeywords){
-        var filteredResults = [];
+    filterByKeyword(searchResults:any[], selectedKeywords:any[]){
+        var filteredResults : any[] = [];
         if(selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
             if (searchResults != null && searchResults.length > 0) {
                 for (let resultItem of searchResults)
