@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
       console.log('Environment config', Config);
   }
 
-    ngOnInit(){
+    ngOnInit() {
         Modena.init();
     }
 }

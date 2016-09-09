@@ -8,7 +8,6 @@ import { routes } from './app.routes';
 
 import { AboutModule } from './+about/about.module';
 import { HomeModule } from './+home/home.module';
-import { SearchModule } from './+search/search.module';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({

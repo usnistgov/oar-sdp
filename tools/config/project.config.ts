@@ -25,7 +25,7 @@ export class ProjectConfig extends SeedConfig {
       this.SYSTEM_BUILDER_CONFIG.packages['primeng'] = {
           main: 'primeng.js',
           defaultExtension : 'js'
-      }
+      };
 
     /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;

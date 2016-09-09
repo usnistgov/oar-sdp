@@ -4,7 +4,7 @@ import { BaseRequestOptions, ConnectionBackend, Http, HTTP_PROVIDERS, Response, 
 import { MockBackend } from '@angular/http/testing';
 import { Observable } from 'rxjs/Observable';
 
-import { TaxonomyListService } from './taxonomy-list.service';
+//import { TaxonomyListService } from './taxonomy-list.service';
 
 export function main() {
   describe('TaxonomyList Service', () => {
@@ -36,7 +36,7 @@ export function main() {
       let connection: any;
       backend.connections.subscribe((c: any) => connection = c);
       initialResponse = nameListService.get();
-      connection.mockRespond(new Response(new ResponseOptions({ body: '[{"name":"Chemistry1"},{"name":"Physics"}]'})));
+      connection.mockRespond(new Response(new ResponseOptions({ body: '[{'name':'Chemistry1'},{'name1':'Physics'}]'})));
     });
 
     it('should return an Observable when get called', () => {
@@ -46,7 +46,7 @@ export function main() {
     it('should resolve to list of names when get called', () => {
       let taxonomies: any;
       initialResponse.subscribe((data: any) => taxonomies = data);
-      expect(taxonomies).toEqual([{"name":"Chemistry1"},{"name":"Physics"}]);
+      expect(taxonomies).toEqual([{'name':'Chemistry1'},{'name':'Physics'}]);
     });
   });
 }
