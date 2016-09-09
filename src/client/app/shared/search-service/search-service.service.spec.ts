@@ -46,7 +46,7 @@ export function main() {
     it('should resolve to list of names when get called', () => {
       let taxonomies: any;
       initialResponse.subscribe((data: any) => taxonomies = data);
-      expect(taxonomies).toEqual([{"name":"Chemistry1"},{"name":"Physics"}]);
+      expect(taxonomies).toEqual([{'name':'Chemistry1'},{'name':'Physics'}]);
     });
   });
 }

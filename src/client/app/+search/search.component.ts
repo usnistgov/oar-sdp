@@ -1,12 +1,11 @@
-import { Component, OnInit,OnDestroy } from '@angular/core';
-import { Config,SearchService,TaxonomyListService} from '../shared/index';
+import { Component, OnInit } from '@angular/core';
+import { SearchService,TaxonomyListService} from '../shared/index';
 import { ActivatedRoute}     from '@angular/router';
-import { Observable }         from 'rxjs/Observable';
+//import { Observable }         from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import {SelectItem} from 'primeng/primeng';
-import {Header} from 'primeng/primeng';
-import {Footer} from 'primeng/primeng';
+
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -22,9 +21,9 @@ import {Footer} from 'primeng/primeng';
 })
 
 
-export class SearchPanel implements OnInit {
 
-    private _routeParamsSubscription: Subscription;
+export class SearchPanelComponent implements OnInit {
+
     errorMessage: string;
     searchResults: any[] = [];
     searchValue:string;
@@ -51,14 +50,13 @@ export class SearchPanel implements OnInit {
     filteredAuthors:string[] = [];
     summaryPageOpen : boolean = false;
     summaryCandidate: any[];
-
+    private _routeParamsSubscription: Subscription;
     /**
      * Creates an instance of the SearchPanel
      *
      */
     constructor(private route: ActivatedRoute, public taxonomyListService: TaxonomyListService, public searchService:SearchService) {
     }
-
 
     /**
      * Handle the nameListService observable
@@ -71,7 +69,7 @@ export class SearchPanel implements OnInit {
         );
     }
 
-    toTaxonomiesItems(taxonomies:any[]){
+    toTaxonomiesItems(taxonomies:any[]) {
         let items :SelectItem[] = [];
         items.push({label:this.ALL, value:''});
         for (let taxonomy of taxonomies) {
@@ -80,12 +78,12 @@ export class SearchPanel implements OnInit {
         return items;
     }
 
-    collectThemes(searchResults:any[]){
+    collectThemes(searchResults:any[]) {
         let themes :string[] = [];
         for (let resultItem of searchResults) {
-            if(resultItem.theme && resultItem.theme != null && resultItem.theme.length > 0){
+            if(resultItem.theme && resultItem.theme !== null && resultItem.theme.length > 0) {
                 for (let theme of resultItem.theme) {
-                    if(themes.indexOf(theme) < 0){
+                    if(themes.indexOf(theme) < 0) {
                         themes.push(theme);
                     }
                 }
@@ -95,11 +93,11 @@ export class SearchPanel implements OnInit {
     }
 
 
-    collectAuthors(searchResults:any[]){
+    collectAuthors(searchResults:any[]) {
         let authors :string[] = [];
         for (let resultItem of searchResults) {
-            if(resultItem.contactPoint && resultItem.contactPoint != null && resultItem.contactPoint.fn != null){
-                if(authors.indexOf(resultItem.contactPoint.fn) < 0){
+            if(resultItem.contactPoint && resultItem.contactPoint !== null && resultItem.contactPoint.fn !== null) {
+                if(authors.indexOf(resultItem.contactPoint.fn) < 0) {
                     authors.push(resultItem.contactPoint.fn);
                 }
             }
@@ -108,12 +106,12 @@ export class SearchPanel implements OnInit {
     }
 
 
-    collectKeywords(searchResults:any[]){
+    collectKeywords(searchResults:any[]) {
         let kwords :string[] = [];
         for (let resultItem of searchResults) {
-            if(resultItem.keyword && resultItem.keyword != null && resultItem.keyword.length > 0){
+            if(resultItem.keyword && resultItem.keyword !== null && resultItem.keyword.length > 0) {
                 for (let keyword of resultItem.keyword) {
-                    if(kwords.indexOf(keyword) < 0){
+                    if(kwords.indexOf(keyword) < 0) {
                         kwords.push(keyword);
                     }
                 }
@@ -123,7 +121,7 @@ export class SearchPanel implements OnInit {
      }
 
 
-    onSuccess(searchResults:any[]){
+    onSuccess(searchResults:any[]) {
         this.searchResults = searchResults;
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
@@ -134,7 +132,7 @@ export class SearchPanel implements OnInit {
     }
 
 
-    onError(error:any[]){
+    onError(error:any[]) {
         this.errorMessage = <any>error;
         this.searchResults = [];
         this.filteredResults = [];
@@ -142,7 +140,7 @@ export class SearchPanel implements OnInit {
         this.themes = [];
     }
 
-    search(){
+    search() {
         this.searching = true;
         this.keyword = '';
         let that = this;
@@ -155,12 +153,12 @@ export class SearchPanel implements OnInit {
     }
 
 
-    filterKeywords(event:any){
+    filterKeywords(event:any) {
         let keyword = event.query;
         this.suggestedKeywords = [];
         for(let i = 0; i < this.keywords.length; i++) {
             let keyw = this.keywords[i];
-            if(keyw.toLowerCase().indexOf(keyword.toLowerCase()) == 0) {
+            if(keyw.toLowerCase().indexOf(keyword.toLowerCase()) === 0) {
                 this.suggestedKeywords.push(keyw);
             }
         }
@@ -168,36 +166,36 @@ export class SearchPanel implements OnInit {
 //        this.suggestedKeywords.splice(0, 0, "All");
     }
 
-    filterThemes(event:any){
+    filterThemes(event:any) {
         let theme = event.query;
         this.suggestedThemes = [];
-        console.log("themes");
+        console.log('themes');
         for(let i = 0; i < this.themes.length; i++) {
             let them = this.themes[i];
-            if(them.toLowerCase().indexOf(theme.toLowerCase()) == 0) {
+            if(them.toLowerCase().indexOf(theme.toLowerCase()) === 0) {
                 this.suggestedThemes.push(them);
             }
         }
         this.suggestedThemes = this.sortAlphabetically(this.suggestedThemes);
-        this.suggestedThemes.splice(0, 0, "All");
+        this.suggestedThemes.splice(0, 0, 'All');
 
     }
 
-    filterAuthors(event:any){
+    filterAuthors(event:any) {
         let author = event.query;
         this.suggestedAuthors = [];
         for(let i = 0; i < this.authors.length; i++) {
             let autho = this.authors[i];
-            if(autho.toLowerCase().indexOf(author.toLowerCase()) == 0) {
+            if(autho.toLowerCase().indexOf(author.toLowerCase()) === 0) {
                 this.suggestedAuthors.push(autho);
             }
         }
         this.suggestedAuthors = this.sortAlphabetically(this.suggestedAuthors);
-        this.suggestedAuthors.splice(0, 0, "All");
+        this.suggestedAuthors.splice(0, 0, 'All');
     }
 
 
-    sortAlphabetically(array:string[]){
+    sortAlphabetically(array:string[]) {
         var sortedArray: string[] = array.sort((n1,n2) => {
             if (n1 > n2) {
                 return 1;
@@ -211,8 +209,8 @@ export class SearchPanel implements OnInit {
     }
 
 
-    onThemeDropdownClick(event:any){
-        var tmp = this.suggestedThemes; // wierd, have to do this, otherwise nothing display
+    onThemeDropdownClick(event:any) {
+        //var tmp = this.suggestedThemes; // wierd, have to do this, otherwise nothing display
         this.suggestedThemes = [];
         //mimic remote call
         setTimeout(() => {
@@ -220,8 +218,8 @@ export class SearchPanel implements OnInit {
         }, 100);
     }
 
-    onAuthorDropdownClick(event:any){
-        var tmp = this.suggestedAuthors; // wierd, have to do this, otherwise nothing display
+    onAuthorDropdownClick(event:any) {
+        //var tmp = this.suggestedAuthors; // wierd, have to do this, otherwise nothing display
         this.suggestedAuthors = [];
         //mimic remote call
         setTimeout(() => {
@@ -231,42 +229,43 @@ export class SearchPanel implements OnInit {
 
 
 
-    filterByTheme(searchResults:any[], selectedTheme:string){
-        if(selectedTheme != null && selectedTheme !== this.ALL && selectedTheme !== "") {
+    filterByTheme(searchResults:any[], selectedTheme:string) {
+        if(selectedTheme !== null && selectedTheme !== this.ALL && selectedTheme !== '') {
             var filteredResults: any[] = [];
             if (searchResults && searchResults.length > 0 ) {
                 for (let resultItem of searchResults)
                 {
-                    if (resultItem.theme && resultItem.theme != null && this.containsTheme(resultItem.theme, selectedTheme)) {
+                    if (resultItem.theme && resultItem.theme !== null && this.containsTheme(resultItem.theme, selectedTheme)) {
                         filteredResults.push(resultItem);
                     }
                 }
              }
             return filteredResults;
-        }else{
+        } else {
             return searchResults;
         }
      }
 
-    filterByAuthor(searchResults:any[], selectedAuthor:string){
-        if(selectedAuthor != null  && selectedAuthor !== this.ALL  && selectedAuthor !== "") {
+    filterByAuthor(searchResults:any[], selectedAuthor:string) {
+        if(selectedAuthor !== null  && selectedAuthor !== this.ALL  && selectedAuthor !== '') {
             var filteredResults : any[] = [];
             if (searchResults && searchResults.length > 0) {
                 for (let resultItem of searchResults)
                 {
-                    if (resultItem.contactPoint && resultItem.contactPoint != null && resultItem.contactPoint.fn != null &&  selectedAuthor === resultItem.contactPoint.fn) {
+                    if (resultItem.contactPoint && resultItem.contactPoint !== null &&
+                        resultItem.contactPoint.fn !== null &&  selectedAuthor === resultItem.contactPoint.fn) {
                         filteredResults.push(resultItem);
                     }
                 }
             }
             return filteredResults;
-        }else{
+        } else {
             return searchResults;
         }
     }
 
 
-    filterResults(event:any){
+    filterResults(event:any) {
         this.filteredResults =this.filterByKeyword(this.searchResults, this.selectedKeywords);
         this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         this.suggestedThemes = this.collectThemes(this.filteredResults);
@@ -280,7 +279,7 @@ export class SearchPanel implements OnInit {
     /**
      *
      */
-    clearFilters(){
+    clearFilters() {
 
         this.filteredResults = this.searchResults;
         this.suggestedThemes = [];
@@ -297,7 +296,7 @@ export class SearchPanel implements OnInit {
      * @param keywords
      * @returns {boolean}
      */
-    containsAllKeywords(resultKeywords:string[], keywords:string[]){
+    containsAllKeywords(resultKeywords:string[], keywords:string[]) {
         for (let keyw of keywords) {
             if(resultKeywords.indexOf(keyw) === -1)
                 return false;
@@ -306,18 +305,19 @@ export class SearchPanel implements OnInit {
     }
 
 
-    containsTheme(resultThemes:string[], theme:string){
-        return resultThemes && resultThemes != null && resultThemes.indexOf(theme) >= 0;
+    containsTheme(resultThemes:string[], theme:string) {
+        return resultThemes && resultThemes !== null && resultThemes.indexOf(theme) >= 0;
     }
 
 
-    filterByKeyword(searchResults:any[], selectedKeywords:any[]){
+    filterByKeyword(searchResults:any[], selectedKeywords:any[]) {
         var filteredResults : any[] = [];
         if(selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
-            if (searchResults != null && searchResults.length > 0) {
+            if (searchResults !== null && searchResults.length > 0) {
                 for (let resultItem of searchResults)
                 {
-                    if (resultItem.keyword && resultItem.keyword != null && this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
+                    if (resultItem.keyword && resultItem.keyword !== null &&
+                        this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
                         filteredResults.push(resultItem);
                     }
                 }
@@ -328,12 +328,11 @@ export class SearchPanel implements OnInit {
         }
      }
 
-    openSummaryPage(searchItem:any){
-        console.log("Called: " + searchItem.title);
+    openSummaryPage(searchItem:any) {
+        console.log('called: '+ searchItem.title);
         this.summaryCandidate = searchItem;
         this.summaryPageOpen = true;
     }
-
 
     /**
      * Get the params OnInit
@@ -361,7 +360,6 @@ export class SearchPanel implements OnInit {
 
 
     ngOnDestroy() {
-           this._routeParamsSubscription.unsubscribe();
+          this._routeParamsSubscription.unsubscribe();
     }
-
 }

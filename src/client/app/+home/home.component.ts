@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {SelectItem} from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchService } from '../shared/search-service/index';
-import {provideRouter, ROUTER_DIRECTIVES, Router,ActivatedRoute,NavigationExtras} from '@angular/router';
+import {Router,NavigationExtras} from '@angular/router';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
         );
     }
 
-    toTaxonomiesItems(taxonomies:any[]){
+    toTaxonomiesItems(taxonomies:any[]) {
         let items :SelectItem[] = [];
         items.push({label:'All', value:''});
         for (let taxonomy of taxonomies) {
@@ -55,12 +55,12 @@ export class HomeComponent implements OnInit {
         return items;
     }
 
-    search(){
+    search() {
         if(this.searchValue !== '' && this.searchValue !== undefined) {
             let params:NavigationExtras = {
                 queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:''}
             };
-            this.router.navigate(["/search"], params);
+            this.router.navigate(['/search'], params);
         }
     }
 
