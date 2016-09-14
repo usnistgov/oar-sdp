@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchService,TaxonomyListService} from '../shared/index';
 import { ActivatedRoute}     from '@angular/router';
 //import { Observable }         from 'rxjs/Observable';
@@ -10,19 +10,17 @@ import {SelectItem} from 'primeng/primeng';
 /**
  * This class represents the lazy loaded HomeComponent.
  */
-@Component({
+@Component ({
     moduleId: module.id,
     selector: 'sdp-search',
     templateUrl: 'search.component.html',
     styleUrls: ['search.component.css'],
-    providers:[TaxonomyListService, SearchService],
-    directives: [
-     ]
+    providers:[TaxonomyListService, SearchService]
 })
 
 
 
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
 
     errorMessage: string;
     searchResults: any[] = [];
@@ -333,6 +331,7 @@ export class SearchPanelComponent implements OnInit {
         this.summaryCandidate = searchItem;
         this.summaryPageOpen = true;
     }
+
 
     /**
      * Get the params OnInit
