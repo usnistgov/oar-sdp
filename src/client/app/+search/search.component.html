@@ -1,80 +1,221 @@
 <!-- Left Column -->
-<div id="search-page">
-<p-dialog [draggable]="false" position="top" showEffect="fade" [minWidth]="800" [width]="800" [modal]="true" [responsive]="true" [appendTo]="body" header="Summary Page" [(visible)]="summaryPageOpen">
-
 <div class="Container100" >
     <div class="Container100 Responsive100">
 
-        <div class="Container" *ngIf="summaryCandidate != null">
+        <div class="Container" *ngIf="summaryPageOpen == true" style="background-color:#ffffff;">
         <!--<div class="Container100 Responsive50">-->
         <!---->
         <!--<div class="EmptyBox10"></div>-->
         <!--</div>-->
-        <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Title</span>
-                </div>
-                <div class="ui-grid-col-8">
-                    <p>{{summaryCandidate.title}}</p>
-                </div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Description</span>
-                </div>
-                <div class="ui-grid-col-8">
-                    <p class="summary-content">{{summaryCandidate.description}}</p>
-                </div>
-            </div>
+         <div class="EmptyBox20"></div>
+        <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
+        <div class="EmptyBox20"></div>
 
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Author</span>
-                </div>
-                <div class="ui-grid-col-8">
-                    <p>{{summaryCandidate.contactPoint.fn}}</p>
-                </div>
-            </div>
+        <div *ngFor="let summaryCandidate of filteredResults">
+            <p-tabView>
+                <p-tabPanel header="Summary" >
+                    <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Title</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.title}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Description</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.description}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label "><b>Keywords</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.keyword}}
+                            </div>
+                        </div>
 
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Keywords</span>
-                </div>
-                <div class="ui-grid-col-8">
-                    <p class="summary-content">{{summaryCandidate.keyword}}</p>
-                </div>
-            </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Last Updated Date</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.modified}}
+                            </div>
+                        </div>
 
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Reseach Topics</span>
-                </div>
-                <div class="ui-grid-col-8">
-                    <p class="summary-content">{{summaryCandidate.theme}}</p>
-                </div>
-            </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Home Page URL</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                <a target="_blank" [(href)]="summaryCandidate.landingPage">{{summaryCandidate.landingPage}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel header="Contact" >
+                    <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Author</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.contactPoint.fn}}
+                            </div>
+                        </div>            
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Contact Email</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.contactPoint.hasEmail}}
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel header="Record Info" >
+                    <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Unique Identifier</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.identifier}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Bureau Code</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.bureauCode}}
+                            </div>
+                        </div>
 
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Landing Page</span>
-                </div>
-                <div class="ui-grid-col-8">
-                    <!--<a [(href)]="summaryCandidate.landingPage"></a>-->
-                </div>
-            </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Program Code</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.programCode}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Update Frequency</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.accrualPeriodicity}}
+                            </div>
+                        </div>            
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Language</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.language}}
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel header="Data Access" >
+                    <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Access Level</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.accessLevel}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Rights</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.rights}}
+                            </div>
+                        </div>
+                        <!--
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Download URL</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.distribution.accessURL}}
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label "><b>Format</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.distribution.format}}
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel header="Publication Info" >
+                    <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Category</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.theme}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Publications</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.references}}
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Dataset update date</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.issued}}
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label "><b>Publisher</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.publisher.name}}
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+                <p-tabPanel header="Record Info" >
+                    <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2"><b>Update Frequency</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.accrualPeriodicity}}
+                            </div>
+                        </div>
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-2 label"><b>Language</b>
+                            </div>
+                            <div class="ui-grid-col-10">
+                                {{summaryCandidate.language}}
+                            </div>
+                        </div>
+                    </div>
+                </p-tabPanel>
+
+            </p-tabView>
         </div>
     </div>
 
 </div>
-
-</div>
-</p-dialog>
-
-<div class="Container100 Responsive100">
+<div *ngIf="summaryPageOpen != true"> 
+<div class="Container100 Responsive100" style="background-color:#e4f2fc;justify-content:center;display:flex">
     <!-- Section 1 -->
-    <div class="Container100">
+    <div class="Container50">
         <div class="ContainerIndent">
             <div class="">
                 <div class="Container">
                     <div class="Container100 Responsive100">
                         <div class="Container">
-                            <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad">
-                                <div class="ui-grid-row">
+                            <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad" >
+                                <div class="ui-grid-row TexAlCenter" >
                                     <div class="ui-grid-col-7">
                                         <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..."
                                         />
@@ -99,8 +240,7 @@
     </div>
 </div>
 
-<div class="EmptyBox10"></div>
-
+<div class="EmptyBox10" style="background-color:#e4f2fc;"></div>
 
 <div *ngIf="searching">
 <div style="height:100%;text-align:center">
@@ -110,23 +250,23 @@
 </div>
 </div>
 <div *ngIf="!searching">
-<div class="Container100 Responsive100">
+<div class="Container100 Responsive100" style="background-color:#e4f2fc;">
     <div class="Container30 Responsive100 ">
         <!-- Section 1 -->
         <div class="Container100">
             <div class="ContainerIndent">
-                <div class="Card ShadowEffect HeiAutoOnMobile filters" style="min-height:500px;">
+                <div class="Card ShadowEffect HeiAutoOnMobile filters" style="min-height:500px;" style="background-color:#ffffff;">
 
                     <div class="Container100 Responsive100">
                     <div class="Container">
                     <div class="ui-grid-row">
-                        <div class="ui-grid-col-8"><span class="LeadenGreen Fs16 FontRobotoLight">Filters</span>
+                        <div class="ui-grid-col-8"><b><span class="black Fs16 FontRobotoLight">Filters</span></b>
                         </div>
                         <div class="ui-grid-col-4">
                             <button
                             (click)="clearFilters()" pButton label="Clear Filters"
                             icon="fa fa-times"
-                            type="button" class="GrayButton"></button>
+                            type="button" class="CyanButton Wid100"></button>
                         </div>
                     </div>
                     </div>
@@ -215,9 +355,9 @@
         <div class="Container100 results">
             <div class="ContainerIndent results">
                 <div class="Card ShadowEffect HeiAutoOnMobile results" style="min-height:400px;">
-                    <h2 class="CardTopic TexAlCenter"> <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
+                    <b><h2 class="CardTopic TexAlCenter"> <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
                         (click)="results.exportCSV()" style="float:left"></button>
-                     Results</h2>
+                     Results</h2></b>
 
                     <div class="SeparatorFull"></div>
                     <div class="EmptyBox10"></div>
@@ -226,7 +366,7 @@
 
                     <p-dataTable
 
-                    [paginatorPosition]="top"
+                    [paginatorPosition]="top" expandableRows = "true"
                      #results [options]="columnOptions" scrollable="true" scrollHeight="600px" [value]="filteredResults"
                     [rows]="20" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
 
@@ -239,32 +379,44 @@
                             <!--(click)="results.exportCSV()" style="float:left"></button>-->
                         <!--</div>-->
                     <!--</header>-->
+                <div class="Container" >
+                
+                    <template let-resultItem pTemplate type="body">
+                        <span ><b>Description</b> : {{resultItem.description}}</span><br>
+                        <span ><b>Keywords</b> : {{resultItem.keyword}}</span>
 
+                    </template>
+                </div>
                     <p-column styleClass="col-button" header="Action">
                         <template let-resultItem="rowData" pTemplate type="body">
-                            <button class="CyanButton" type="button" pButton icon="fa-external-link-square"
-                            (click)="openSummaryPage(resultItem)" iconPos="left" title="Open Summary Page"></button>
-                            <button type="button" pButton icon="fa-external-link"
-                            (click)="openLandingPage(resultItem)" iconPos="left" title="Open Landing Page"></button>
+                           <a href = "search?identifier={{resultItem.identifier}}" target="_" >  <button class="CyanButton" type="button" pButton icon="fa-external-link-square"
+                            iconPos="left" title="Open Summary Page" onclick="openSummaryPage(resultItem)"></button> </a>
+
+                          <a [(href)] = "resultItem.landingPage" target="_">  <button type="button" pButton icon="fa-external-link"
+                             iconPos="left" title="Open Landing Page"></button></a>
+
                         </template>
                     </p-column>
                     <p-column field="title"
                     [sortable]="true" [filter]="true" header="Title"></p-column>
                     <p-column field="contactPoint.fn"
                     [sortable]="true" [filter]="true" header="Author"></p-column>
-                    <p-column field="description" [filter]="true" header="Description">
+
+
+                    <p-column field="description" [filter]="true" header="Description" expander = "true">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
-                        <span class="glimpse-content">{{resultItem[col.field]}}</span>
+                        <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>
                     </p-column>
-                    <p-column field="keyword" [filter]="true" header="Keywords" [styleClass]="glimpse-content" ></p-column>
+                    <p-column field="keyword" [filter]="true" header="Keywords" expander="true" >
+                    <template let-col let-resultItem="rowData" pTemplate type="body">
+                        <span class="glimpse-content" >{{resultItem[col.field]}}</span>
+                    </template>
+                    </p-column>
                     <p-column field="modified"
                     [sortable]="true" [filter]="true" header="Date Modified"></p-column>
 
                     </p-dataTable>
-
-
-
 
                 </div>
 
@@ -283,6 +435,6 @@
 
 
 </div>
-
+</div>
 
 

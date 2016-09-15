@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import {SelectItem, TabViewModule} from 'primeng/primeng';
+
 /**
  * This class represents the headbar component.
  */

@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs/Subscription';
 import {SelectItem} from 'primeng/primeng';
 
 
+
+
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -17,7 +19,7 @@ import {SelectItem} from 'primeng/primeng';
     styleUrls: ['search.component.css'],
     providers:[TaxonomyListService, SearchService]
 })
-
+     
 
 
 export class SearchPanelComponent implements OnInit, OnDestroy {
@@ -326,9 +328,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
      }
 
-    openSummaryPage(searchItem:any) {
-        console.log('called: '+ searchItem.title);
-        this.summaryCandidate = searchItem;
+    openSummaryPage(param : string) {
         this.summaryPageOpen = true;
     }
 
@@ -349,10 +349,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             this.columnOptions.push({label: this.cols[i].header, value: this.cols[i]});
         }
 
+
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-            this.searchValue =params['q'];
-            this.searchTaxonomyKey=params['key'];
-            this.getTaxonomies();
+            if params['identifier'] != null
+            {
+                this.searchValue =params['identifier'];
+                this.summaryPageOpen = true
+             
+            }
+            else
+            {
+                this.searchValue =params['q'];
+                this.searchTaxonomyKey=params['key'];
+                this.getTaxonomies();
+            }
+            
             this.search();
         });
     }

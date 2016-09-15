@@ -1,10 +1,10 @@
-<div style="background-color:#fff;" class="BlueBody PopupMenu">
-    <div class="Container100 GrayBack sdp-page" id="modena-highlight">
-        <div class="Wid90 OvHidden MarAuto">
+<div style="background-color:#ffffff;" class="BlueBody PopupMenu">
+    <div class="Container100  sdp-page" id="modena-highlight" style="background-color:#ffffff;">
+        <div class="MarAuto">
             <div class="Container100">
-                 <span class="DispBlock Fs20 FontRobotoLight White TexAlCenter">Welcome to NIST</span>
+                 <span class="DispBlock Fs20 FontRobotoLight black TexAlCenter">Welcome to NIST</span>
                 <div class="EmptyBox20"></div>
-                <h1 class="FontRobotoRegular Fs50 WhiteBlue TexAlCenter">SCIENCE DATA PORTAL</h1>
+                <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
                 <div class="EmptyBox20"></div>
                 <div class="Wid50 MarAuto ui-fluid Responsive100">
                     <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad">
@@ -13,7 +13,7 @@
                                 <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..." />
                             </div>
                             <div class="ui-grid-col-3">
-                                <p-dropdown [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'200px'" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" styleClass="Fleft" ></p-dropdown>
+                                <p-dropdown [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'300px'" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" styleClass="Fleft" ></p-dropdown>
                             </div>
                             <div class="ui-grid-col-2"><button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="button" class="CyanButton Wid100"></button></div>
                         </div>

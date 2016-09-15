@@ -2391,8 +2391,8 @@ label {
   font-size: 16px;
   font-family: 'robotoregular' !important;
   padding: 2px 2px 1px !important;
-  border: 0px none;
-  border-bottom: 1px solid #b0bec5;
+  //border: 0px none;
+  border: 1px solid #b0bec5;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   -ms-transition: all 0.2s ease;
@@ -2405,7 +2405,7 @@ label {
   background-color: transparent;
 }
 .ui-inputtext.ui-state-focus {
-  border-bottom: solid 1px #03a9f4;
+  border: solid 1px #03a9f4;
 }
 textarea.ui-inputtext {
   border-radius: 0px;
@@ -2919,7 +2919,7 @@ textarea.ui-inputtext {
   font-size: 16px !important;
   font-family: 'robotoregular' !important;
   padding: 0px 56px 0px 0px !important;
-  border-bottom: solid 1px #B0BEC5 !important;
+  border: solid 1px #B0BEC5 !important;
   -webkit-transition: none;
   -moz-transition: none;
   -ms-transition: none;
@@ -3019,7 +3019,7 @@ textarea.ui-inputtext {
 }
 .ui-dropdown.ui-state-focus,
 .ui-multiselect.ui-state-focus {
-  border-bottom: solid 1px #03a9f4 !important;
+  border: solid 1px #03a9f4 !important;
 }
 .ui-fluid .ui-dropdown .ui-dropdown-trigger {
   width: 38px !important;
@@ -3825,10 +3825,10 @@ textarea.ui-inputtext {
 .ui-autocomplete .ui-autocomplete-dropdown {
   border-radius: 0px !important;
   background-color: #f5f5f5;
-  border-bottom: solid 1px #b0bec5;
+  border: solid 1px #b0bec5;
 }
 .ui-autocomplete .ui-autocomplete-dropdown.ui-state-hover {
-  border-bottom: solid 1px #03a9f4;
+  border: solid 1px #03a9f4;
   background-color: #e0e0e0 !important;
 }
 .ui-autocomplete .ui-autocomplete-dropdown.ui-state-focus {
