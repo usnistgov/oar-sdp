@@ -24,7 +24,7 @@ export class SearchService {
   searchPhrase(searchValue:string): Observable<string[]> {
 
       let params: URLSearchParams = new URLSearchParams();
-      params.set('title', searchValue);
+      params.set('searchphrase', searchValue);
 
 
 
