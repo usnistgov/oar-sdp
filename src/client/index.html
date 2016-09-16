@@ -15,40 +15,6 @@
 </head>
 <body class="GrayModena Geometry">
 
-
-
-  <script>
-  // Fixes undefined module function in SystemJS bundle
-  function module() {}
-  </script>
-
-  <!-- shims:js -->
-  <!-- endinject -->
-
-  <% if (ENV === 'dev') { %>
-  <script>
-    System.config(<%=
-      JSON.stringify(SYSTEM_CONFIG, null, 2)
-    %>)
-  </script>
-  <% } %>
-
-  <!-- libs:js -->
-  <!-- endinject -->
-
-  <!-- inject:js -->
-  <!-- endinject -->
-
-  <% if (ENV === 'dev') { %>
-  <script>
-  System.import('<%= BOOTSTRAP_MODULE %>')
-    .catch(function (e) {
-      console.error(e,
-        'Report this error at https://github.com/mgechev/angular2-seed/issues');
-    });
-  </script>
-  <% } %>
-
   <style>
 
       .ui-datatable table tbody tr td, .ui-datatable table tbody td, .ui-datatable table tbody tr {
@@ -82,6 +48,40 @@
 
 
   </sd-app>
+
+    <script>
+  // Fixes undefined module function in SystemJS bundle
+  function module() {}
+  </script>
+
+  <!-- shims:js -->
+  <!-- endinject -->
+
+  <% if (ENV === 'dev') { %>
+  <script>
+    System.config(<%=
+      JSON.stringify(SYSTEM_CONFIG, null, 2)
+    %>)
+  </script>
+  <% } %>
+
+  <!-- libs:js -->
+  <!-- endinject -->
+
+  <!-- inject:js -->
+  <!-- endinject -->
+
+  <% if (ENV === 'dev') { %>
+  <script>
+  System.import('<%= BOOTSTRAP_MODULE %>')
+    .catch(function (e) {
+      console.error(e,
+        'Report this error at https://github.com/mgechev/angular2-seed/issues');
+    });
+  </script>
+  <% } %>
+
+
 
 </body>
 </html>
