@@ -351,7 +351,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
 
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-            if params['identifier'] != null
+            if (params['identifier'] != null)
             {
                 this.searchValue =params['identifier'];
                 this.summaryPageOpen = true

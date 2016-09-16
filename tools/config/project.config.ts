@@ -12,8 +12,8 @@ export class ProjectConfig extends SeedConfig {
 
     FONTS_DEST = `${this.APP_DEST}/fonts`;
     FONTS_SRC = [
-         '${this.APP_SRC}/client/libs/modena-1.0.2/layout/fonts/**'
-    ];
+          `${this.APP_SRC}/libs/modena-1.0.2/layout/fonts/**`
+     ];
 
   constructor() {
     super();
