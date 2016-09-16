@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SearchService,TaxonomyListService} from '../shared/index';
 import { ActivatedRoute}     from '@angular/router';
 //import { Observable }         from 'rxjs/Observable';
@@ -7,22 +7,22 @@ import { Subscription } from 'rxjs/Subscription';
 import {SelectItem} from 'primeng/primeng';
 
 
+
+
 /**
  * This class represents the lazy loaded HomeComponent.
  */
-@Component({
+@Component ({
     moduleId: module.id,
     selector: 'sdp-search',
     templateUrl: 'search.component.html',
     styleUrls: ['search.component.css'],
-    providers:[TaxonomyListService, SearchService],
-    directives: [
-     ]
+    providers:[TaxonomyListService, SearchService]
 })
+     
 
 
-
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
 
     errorMessage: string;
     searchResults: any[] = [];
@@ -328,11 +328,10 @@ export class SearchPanelComponent implements OnInit {
         }
      }
 
-    openSummaryPage(searchItem:any) {
-        console.log('called: '+ searchItem.title);
-        this.summaryCandidate = searchItem;
+    openSummaryPage(param : string) {
         this.summaryPageOpen = true;
     }
+
 
     /**
      * Get the params OnInit
@@ -350,10 +349,21 @@ export class SearchPanelComponent implements OnInit {
             this.columnOptions.push({label: this.cols[i].header, value: this.cols[i]});
         }
 
+
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-            this.searchValue =params['q'];
-            this.searchTaxonomyKey=params['key'];
-            this.getTaxonomies();
+            if params['identifier'] != null
+            {
+                this.searchValue =params['identifier'];
+                this.summaryPageOpen = true
+             
+            }
+            else
+            {
+                this.searchValue =params['q'];
+                this.searchTaxonomyKey=params['key'];
+                this.getTaxonomies();
+            }
+            
             this.search();
         });
     }

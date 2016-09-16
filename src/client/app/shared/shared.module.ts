@@ -11,7 +11,7 @@ import { NavbarComponent } from './navbar/index';
 
 import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,
 PanelModule,DataTableModule,DialogModule,AutoCompleteModule,MultiSelectModule,
-PaginatorModule,CalendarModule} from 'primeng/primeng';
+PaginatorModule,CalendarModule,TabViewModule} from 'primeng/primeng';
 
 
 /**
@@ -26,7 +26,7 @@ PaginatorModule,CalendarModule} from 'primeng/primeng';
   exports: [HeadbarComponent, FootbarComponent,NavbarComponent,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
     SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
-    MultiSelectModule,PaginatorModule,DialogModule,CalendarModule]
+    MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
