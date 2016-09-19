@@ -260,13 +260,7 @@
                     <div class="Container100 Responsive100">
                     <div class="Container">
                     <div class="ui-grid-row">
-                        <div class="ui-grid-col-8"><b><span class="black Fs16 FontRobotoLight">Filters</span></b>
-                        </div>
-                        <div class="ui-grid-col-4">
-                            <button
-                            (click)="clearFilters()" pButton label="Clear Filters"
-                            icon="fa fa-times"
-                            type="button" class="CyanButton Wid100"></button>
+                        <div class="ui-grid-col-8"><b><span class="black Fs16 FontRobotoLight" >Filters</span></b>
                         </div>
                     </div>
                     </div>
@@ -330,6 +324,30 @@
                                         </div>
                                     </div>
 
+                                     <div class="ui-grid-col-4">
+                                        <button
+                                        (click)="clearAuthorFilter()" pButton label="Clear Author"
+                                        icon="fa fa-times"
+                                        type="button" class="CyanButton" style="width:90%"></button>
+                                    </div>
+
+                                    <div class=""></div>
+
+                                     <div class="ui-grid-col-4">
+                                        <button
+                                        (click)="clearResearchFilter()" pButton label="Clear Research"
+                                        icon="fa fa-times"
+                                        type="button" class="CyanButton Wid10" style="width:90%"></button>
+                                    </div>
+
+                                    <div class="ui-grid-col-4">
+                                        <button
+                                        (click)="clearFilters()" pButton label="Clear All Filters"
+                                        icon="fa fa-times"
+                                        type="button" class="CyanButton Wid10" ></button>
+                                    </div>
+
+
                                     <!--<div class="ui-grid-row">-->
                                         <!--<div class="ui-grid-col-4"><span-->
                                                 <!--class="LeadenGreen Fs20 FontRobotoLight">$98,13</span></div>-->
@@ -355,21 +373,32 @@
         <div class="Container100 results">
             <div class="ContainerIndent results">
                 <div class="Card ShadowEffect HeiAutoOnMobile results" style="min-height:400px;">
-                    <b><h2 class="CardTopic TexAlCenter"> <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
-                        (click)="results.exportCSV()" style="float:left"></button>
-                     Results</h2></b>
-
+              
                     <div class="SeparatorFull"></div>
                     <div class="EmptyBox10"></div>
                     <div *ngIf="filteredResults.length > 0">
-
+    
 
                     <p-dataTable
 
                     [paginatorPosition]="top" expandableRows = "true"
                      #results [options]="columnOptions" scrollable="true" scrollHeight="600px" [value]="filteredResults"
                     [rows]="20" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                    <div class="Container" >
+                    
+                        <template let-resultItem pTemplate type="body">
+                            <span ><b>Description</b> : {{resultItem.description}}</span><br>
+                            <span ><b>Keywords</b> : {{resultItem.keyword}}</span>
 
+                        </template>
+                    </div>
+                    <header>
+                        <DIV>
+                               <b><h3> <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
+                            (click)='results.exportCSV()' style="float:left"></button>
+                         Search Results</h3></b>
+                        </DIV>
+                    </header>   
                     <!--<header>-->
                         <!--&lt;!&ndash;<div style="text-align:left">&ndash;&gt;-->
                             <!--&lt;!&ndash;<p-multiSelect [options]="columnOptions" [(ngModel)]="cols"></p-multiSelect>&ndash;&gt;-->
@@ -379,18 +408,12 @@
                             <!--(click)="results.exportCSV()" style="float:left"></button>-->
                         <!--</div>-->
                     <!--</header>-->
-                <div class="Container" >
-                
-                    <template let-resultItem pTemplate type="body">
-                        <span ><b>Description</b> : {{resultItem.description}}</span><br>
-                        <span ><b>Keywords</b> : {{resultItem.keyword}}</span>
-
-                    </template>
-                </div>
+            
                     <p-column styleClass="col-button" header="Action">
                         <template let-resultItem="rowData" pTemplate type="body">
                            <a href = "search?identifier={{resultItem.identifier}}" target="_" >  <button class="CyanButton" type="button" pButton icon="fa-external-link-square"
-                            iconPos="left" title="Open Summary Page" onclick="openSummaryPage(resultItem)"></button> </a>
+                            iconPos="left" title="Open Summary Page" 
+                            onclick="openSummaryPage()"></button> </a>
 
                           <a [(href)] = "resultItem.landingPage" target="_">  <button type="button" pButton icon="fa-external-link"
                              iconPos="left" title="Open Landing Page"></button></a>
@@ -408,7 +431,7 @@
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>
                     </p-column>
-                    <p-column field="keyword" [filter]="true" header="Keywords" expander="true" >
+                    <p-column field="keyword" [filter]="true" header="Keywords" expander="true" filterMatchMode="contains">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>

@@ -4,7 +4,7 @@ import { ActivatedRoute}     from '@angular/router';
 //import { Observable }         from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import {SelectItem} from 'primeng/primeng';
+import {SelectItem, AutoCompleteModule} from 'primeng/primeng';
 
 
 
@@ -271,6 +271,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.suggestedThemes = this.collectThemes(this.filteredResults);
         this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedTheme);
         this.suggestedAuthors = this.collectAuthors(this.filteredResults);
+        console.log("selected author" + this.selectedAuthor);
         this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
     }
 
@@ -290,6 +291,28 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.selectedTheme =null;
     }
 
+
+    /**
+     *
+     */
+    clearAuthorFilter() {
+
+        this.filteredResults = this.searchResults;
+        this.suggestedAuthors = [];
+        this.selectedAuthor = null;
+    }
+
+
+    /**
+     *
+     */
+    clearResearchFilter() {
+
+        this.filteredResults = this.searchResults;
+        this.suggestedThemes = [];
+        this.selectedTheme =null;
+    }
+    
     /**
      *
      * @param resultKeywords
@@ -328,7 +351,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
      }
 
-    openSummaryPage(param : string) {
+    openSummaryPage() {
         this.summaryPageOpen = true;
     }
 
@@ -355,13 +378,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             {
                 this.searchValue =params['identifier'];
                 this.summaryPageOpen = true
-             
+                console.log("inside identifier");
             }
             else
             {
                 this.searchValue =params['q'];
                 this.searchTaxonomyKey=params['key'];
                 this.getTaxonomies();
+                console.log("inside search q");
             }
             
             this.search();
