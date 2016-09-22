@@ -1,5 +1,4 @@
 import { Component,OnInit} from '@angular/core';
-import { ROUTER_DIRECTIVES } from '@angular/router';
 import { Config, HeadbarComponent, FootbarComponent } from './shared/index';
 
 /**
@@ -10,9 +9,8 @@ declare var Modena: any;
 
 @Component({
   moduleId: module.id,
-  selector: 'sd-app',
-  templateUrl: 'app.component.html',
-  directives: [ROUTER_DIRECTIVES, HeadbarComponent, FootbarComponent]
+  selector: 'sdp-app',
+  templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit {
 
