@@ -9,13 +9,9 @@ import {SelectItem, TabViewModule} from 'primeng/primeng';
   moduleId: module.id,
   selector: 'sdp-headbar',
   templateUrl: 'headbar.component.html',
-  styleUrls: ['headbar.component.css'],
-    directives: [
-    ]
+  styleUrls: ['headbar.component.css']
 })
 
 export class HeadbarComponent {
-
-
 
 }

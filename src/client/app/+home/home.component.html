@@ -12,7 +12,7 @@
                             <div class="ui-grid-col-7">
                                 <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..." />
                             </div>
-                            <div class="ui-grid-col-3">
+                            <div class="ui-grid-col-6">
                                 <p-dropdown [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'300px'" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" styleClass="Fleft" ></p-dropdown>
                             </div>
                             <div class="ui-grid-col-2"><button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="button" class="CyanButton Wid100"></button></div>

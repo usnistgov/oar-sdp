@@ -3824,7 +3824,7 @@ textarea.ui-inputtext {
 }
 .ui-autocomplete .ui-autocomplete-dropdown {
   border-radius: 0px !important;
-  background-color: #f5f5f5;
+  background-color: #b0bec5;
   border: solid 1px #b0bec5;
 }
 .ui-autocomplete .ui-autocomplete-dropdown.ui-state-hover {

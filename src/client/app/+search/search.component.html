@@ -1,6 +1,6 @@
 <!-- Left Column -->
-<div class="Container100" >
-    <div class="Container100 Responsive100">
+<div class="Container100" style="background-color:#ffffff;">
+    <div class="Container100 Responsive100" >
 
         <div class="Container" *ngIf="summaryPageOpen == true" style="background-color:#ffffff;">
         <!--<div class="Container100 Responsive50">-->
@@ -206,9 +206,9 @@
 
 </div>
 <div *ngIf="summaryPageOpen != true"> 
-<div class="Container100 Responsive100" style="background-color:#e4f2fc;justify-content:center;display:flex">
+<div class="Container100 Responsive100" style="background-color:#ffffff;justify-content:left;display:flex">
     <!-- Section 1 -->
-    <div class="Container50">
+    <div class="Container100">
         <div class="ContainerIndent">
             <div class="">
                 <div class="Container">
@@ -231,6 +231,7 @@
                                         (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
                                         type="button" class="CyanButton Wid100"></button></div>
                                 </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -239,9 +240,7 @@
         </div>
     </div>
 </div>
-
-<div class="EmptyBox10" style="background-color:#e4f2fc;"></div>
-
+<div class="SeparatorFull"></div>
 <div *ngIf="searching">
 <div style="height:100%;text-align:center">
     <div style="margin-top:25px">
@@ -250,114 +249,87 @@
 </div>
 </div>
 <div *ngIf="!searching">
-<div class="Container100 Responsive100" style="background-color:#e4f2fc;">
+<div class="Container100 Responsive100" style="background-color:#ffffff;">
     <div class="Container30 Responsive100 ">
         <!-- Section 1 -->
         <div class="Container100">
             <div class="ContainerIndent">
-                <div class="Card ShadowEffect HeiAutoOnMobile filters" style="min-height:500px;" style="background-color:#ffffff;">
+                <div class="HeiAutoOnMobile " style="min-height:500px;" style="background-color:#ffffff;">
 
                     <div class="Container100 Responsive100">
-                    <div class="Container">
-                    <div class="ui-grid-row">
-                        <div class="ui-grid-col-8"><b><span class="black Fs16 FontRobotoLight" >Filters</span></b>
+                    <div class="ui-grid-row" >
+                        <div class="ui-grid-col-6" ><b><span class="Fs20 FontRobotoLight" >Filters</span></b>
                         </div>
                     </div>
                     </div>
-                    </div>
-                    <div class="EmptyBox10"></div>
-                    <div class="SeparatorFull"></div>
                     <div class="EmptyBox10"></div>
                     <div class="Container100">
                         <div class="Container100 Responsive100">
-
-                            <div class="Container">
-                                <!--<div class="Container100 Responsive50">-->
-                                <!---->
-                                <!--<div class="EmptyBox10"></div>-->
-                                <!--</div>-->
+                             <div class="Container">
                                 <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
                                     <div class="ui-grid-row">
-                                        <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Author</span>
-                                        </div>
-                                        <div class="ui-grid-col-8">
+                                        <div class="ui-grid-col-4 Wid90"><span class="black Fs16"><b>Author</b></span> <br>
+                                        
+                                        <div class="ui-grid-col-8 Wid90">
+                                            <div *ngIf="selectedAuthorDropdown === false">
                                             <p-autoComplete [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors" (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                             placeholder="Search author..." [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                            (onSelect)="filterResults($event)"
-                                            (onUnselect)="filterResults($event)"
+                                            (onSelect)="filterResults($event,'Author')"                 
                                             >
                                             </p-autoComplete>
+                                            </div>
+                                            <div *ngIf="selectedAuthorDropdown === true">
+                                                  <ul class="ui-autocomplete-multiple ui-widget ui-inputtext ui-state-default ui-corner-all">
+                                                    <li class="ui-autocomplete-input-token">
+                                                       <span>{{selectedAuthor}}</span>
+                                                      <i style="align:right" (click)="clearAuthorFilter()" class="fa fa-times">
+                                                      </i>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                       </div>
+                                        </div>
 
                                         </div>
-                                    </div>
-
-                                    <div class="ui-grid-row">
-                                        <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Keyword</span>
-                                        </div>
-                                        <div class="ui-grid-col-8">
-                                            <!--<p-autoComplete [(ngModel)]="keyword"  [suggestions]="keywords" (completeMethod)="filterByKeyword($event)"></p-autoComplete>-->
-
+                                    <div class="ui-grid-row" >
+                                        <div class="ui-grid-col-4 Wid90" ><span class="black Fs16 " ><b>Keyword</b></span><br>
+                                        
+                                        <div class="ui-grid-col-8 Wid90">
                                             <p-autoComplete [(ngModel)]="selectedKeywords" [suggestions]="suggestedKeywords" (completeMethod)="filterKeywords($event)"
                                             [multiple]="true"
                                             (onSelect)="filterResults($event)"
                                             (onUnselect)="filterResults($event)"
                                             [minLength]="1" placeholder="Hint: search...">
                                             </p-autoComplete>
-
+                       
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="ui-grid-row">
-                                        <div class="ui-grid-col-4"><span class="LeadenGreen Fs16 FontRobotoLight">Research Topics</span>
-                                        </div>
-                                        <div class="ui-grid-col-8">
-                                            <!--<p-dropdown-->
-                                            <!--[options]="themes" [(ngModel)]="selectedTheme" [scrollHeight]="'200px'"-->
-                                            <!--[style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" [styleClass]="Fleft"-->
-                                            <!--></p-dropdown>-->
-                                            <p-autoComplete [(ngModel)]="selectedTheme" [suggestions]="suggestedThemes" (completeMethod)="filterThemes($event)" [size]="30"
-                                            [minLength]="1" placeholder="Search topic..." [dropdown]="true" (onDropdownClick)="onThemeDropdownClick($event)"
+                                    <div class="ui-grid-row" >
+                                       <div class="ui-grid-col-4 Wid90" ><span class="black Fs16"><b>Research Topics</b></span> <br>
+                                        
+                                        <div class="ui-grid-col-8 Wid90" >
+                                        
+                                           <p-autoComplete [(ngModel)]="selectedThemes" [suggestions]="suggestedThemes" (completeMethod)="filterThemes($event)" [size]="30"
+                                            [minLength]="1" placeholder="Search topic..." [multiple]="true"
                                             (onSelect)="filterResults($event)"
                                             (onUnselect)="filterResults($event)"
                                             >
                                             </p-autoComplete>
-
                                         </div>
+                                        </div>                                    
+                                     
                                     </div>
-
-                                     <div class="ui-grid-col-4">
-                                        <button
-                                        (click)="clearAuthorFilter()" pButton label="Clear Author"
-                                        icon="fa fa-times"
-                                        type="button" class="CyanButton" style="width:90%"></button>
-                                    </div>
-
-                                    <div class=""></div>
-
-                                     <div class="ui-grid-col-4">
-                                        <button
-                                        (click)="clearResearchFilter()" pButton label="Clear Research"
-                                        icon="fa fa-times"
-                                        type="button" class="CyanButton Wid10" style="width:90%"></button>
-                                    </div>
-
-                                    <div class="ui-grid-col-4">
+                                     <div class="EmptyBox10"></div>
+                                       <div class="ui-grid-row" style="text-align: center ">
+                                    <div class="ui-grid-col-5" style="text-align: center ">
                                         <button
                                         (click)="clearFilters()" pButton label="Clear All Filters"
                                         icon="fa fa-times"
-                                        type="button" class="CyanButton Wid10" ></button>
+                                        type="button" class="CyanButton Wid100"></button>
                                     </div>
-
-
-                                    <!--<div class="ui-grid-row">-->
-                                        <!--<div class="ui-grid-col-4"><span-->
-                                                <!--class="LeadenGreen Fs20 FontRobotoLight">$98,13</span></div>-->
-                                        <!--<div class="ui-grid-col-4"><span-->
-                                                <!--class="Fs20 BoldGray FontRobotoLight"> - </span></div>-->
-                                        <!--<div class="ui-grid-col-4"><span class="Fs16 BoldGray FontRobotoLight">28.05.2015 Paid</span>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -369,46 +341,36 @@
 
     <!-- Right Column -->
     <div class="Container70 Responsive100 results">
+
         <!-- Section 1 -->
         <div class="Container100 results">
             <div class="ContainerIndent results">
-                <div class="Card ShadowEffect HeiAutoOnMobile results" style="min-height:400px;">
-              
-                    <div class="SeparatorFull"></div>
+                <div class="HeiAutoOnMobile results" style="min-height:400px;">
                     <div class="EmptyBox10"></div>
                     <div *ngIf="filteredResults.length > 0">
-    
-
+                       <div class="ui-grid-row" >
+                        <div class="ui-grid-col-6" ><b><span class="Fs20 FontRobotoLight" >
+                    {{filteredResults.length}} Results</span>  
+                    </b></div></div>  
+                    <DIV>
+                       <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
+                       (click)='results.exportCSV()' style="float:left"></button>
+                     
+                    </DIV>
                     <p-dataTable
 
                     [paginatorPosition]="top" expandableRows = "true"
-                     #results [options]="columnOptions" scrollable="true" scrollHeight="600px" [value]="filteredResults"
-                    [rows]="20" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20]" sortMode="multiple">
+                     #results scrollable="true" scrollHeight="600px" [value]="filteredResults"
+                    [rows]="50" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20,50]" sortMode="multiple">
                     <div class="Container" >
                     
                         <template let-resultItem pTemplate type="body">
                             <span ><b>Description</b> : {{resultItem.description}}</span><br>
+                            <div class="EmptyBox10"></div>
                             <span ><b>Keywords</b> : {{resultItem.keyword}}</span>
 
                         </template>
                     </div>
-                    <header>
-                        <DIV>
-                               <b><h3> <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
-                            (click)='results.exportCSV()' style="float:left"></button>
-                         Search Results</h3></b>
-                        </DIV>
-                    </header>   
-                    <!--<header>-->
-                        <!--&lt;!&ndash;<div style="text-align:left">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<p-multiSelect [options]="columnOptions" [(ngModel)]="cols"></p-multiSelect>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--<div style="text-align:left" >-->
-                            <!--<button type="button" pButton icon="fa-download" iconPos="left" label="CSV"-->
-                            <!--(click)="results.exportCSV()" style="float:left"></button>-->
-                        <!--</div>-->
-                    <!--</header>-->
-            
                     <p-column styleClass="col-button" header="Action">
                         <template let-resultItem="rowData" pTemplate type="body">
                            <a href = "search?identifier={{resultItem.identifier}}" target="_" >  <button class="CyanButton" type="button" pButton icon="fa-external-link-square"
@@ -421,12 +383,12 @@
                         </template>
                     </p-column>
                     <p-column field="title"
-                    [sortable]="true" [filter]="true" header="Title"></p-column>
+                    [sortable]="true" [filter]="true" header="Title" filterMatchMode="contains"></p-column>
                     <p-column field="contactPoint.fn"
-                    [sortable]="true" [filter]="true" header="Author"></p-column>
+                    [sortable]="true" [filter]="true" header="Author" filterMatchMode="contains"></p-column>
 
 
-                    <p-column field="description" [filter]="true" header="Description" expander = "true">
+                    <p-column field="description" [filter]="true" header="Description" expander = "true" filterMatchMode="contains">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>
@@ -436,7 +398,7 @@
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>
                     </p-column>
-                    <p-column field="modified"
+                    <p-column field="modified" filterMatchMode="contains"
                     [sortable]="true" [filter]="true" header="Date Modified"></p-column>
 
                     </p-dataTable>

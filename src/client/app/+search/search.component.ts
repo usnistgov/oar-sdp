@@ -39,7 +39,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     keyword:string;
     Keywords:string[] = [];
     selectedKeywords:string[] = [];
-    selectedTheme:string;
+    selectedThemes:string[] = [];
     selectedAuthor:string;
     suggestedKeywords:string[] = [];
     suggestedThemes:string[] = [];
@@ -51,6 +51,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     summaryPageOpen : boolean = false;
     summaryCandidate: any[];
     private _routeParamsSubscription: Subscription;
+    selectedAuthorDropdown: boolean = false;
+    
     /**
      * Creates an instance of the SearchPanel
      *
@@ -192,6 +194,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
         this.suggestedAuthors = this.sortAlphabetically(this.suggestedAuthors);
         this.suggestedAuthors.splice(0, 0, 'All');
+
     }
 
 
@@ -227,22 +230,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }, 100);
     }
 
-
-
-    filterByTheme(searchResults:any[], selectedTheme:string) {
-        if(selectedTheme !== null && selectedTheme !== this.ALL && selectedTheme !== '') {
-            var filteredResults: any[] = [];
-            if (searchResults && searchResults.length > 0 ) {
+    filterByTheme(searchResults:any[], selectedThemes:string[]) {
+     var filteredResults : any[] = [];
+       if(selectedThemes.length > 0 && selectedThemes.indexOf(this.ALL) < 0) {
+            if (searchResults !== null && searchResults.length > 0) {
                 for (let resultItem of searchResults)
                 {
-                    if (resultItem.theme && resultItem.theme !== null && this.containsTheme(resultItem.theme, selectedTheme)) {
+                    if (resultItem.theme && resultItem.theme !== null &&
+                        this.containsAllThemes(resultItem.theme, selectedThemes)) {
                         filteredResults.push(resultItem);
                     }
                 }
-             }
+            }
             return filteredResults;
-        } else {
-            return searchResults;
+        }else {
+           return searchResults;
         }
      }
 
@@ -265,16 +267,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
 
 
-    filterResults(event:any) {
+    filterResults(event:any,selectedDropdown:string) {
+        if (selectedDropdown !== null)
+        {
+            if (selectedDropdown === "Author")
+                {
+                    this.selectedAuthorDropdown = true;
+                }
+           
+        }
+
         this.filteredResults =this.filterByKeyword(this.searchResults, this.selectedKeywords);
         this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         this.suggestedThemes = this.collectThemes(this.filteredResults);
-        this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedTheme);
+        this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedThemes);
         this.suggestedAuthors = this.collectAuthors(this.filteredResults);
         console.log("selected author" + this.selectedAuthor);
         this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
     }
-
 
 
     /**
@@ -288,7 +298,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.suggestedAuthors = [];
         this.selectedAuthor = null;
         this.selectedKeywords = [];
-        this.selectedTheme =null;
+        this.selectedThemes =[];
+        this.selectedAuthorDropdown = false;
     }
 
 
@@ -300,19 +311,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.filteredResults = this.searchResults;
         this.suggestedAuthors = [];
         this.selectedAuthor = null;
+        this.selectedAuthorDropdown = false;
     }
 
-
-    /**
-     *
-     */
-    clearResearchFilter() {
-
-        this.filteredResults = this.searchResults;
-        this.suggestedThemes = [];
-        this.selectedTheme =null;
-    }
-    
     /**
      *
      * @param resultKeywords
@@ -328,8 +329,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
 
 
-    containsTheme(resultThemes:string[], theme:string) {
-        return resultThemes && resultThemes !== null && resultThemes.indexOf(theme) >= 0;
+    containsAllThemes(resultThemes:string[], themes:string[]) {
+          for (let theme of themes) {
+            if(resultThemes.indexOf(theme) === -1)
+                return false;
+        }
+        return true;
     }
 
 
