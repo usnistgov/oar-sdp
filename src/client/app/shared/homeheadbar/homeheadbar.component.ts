@@ -10,12 +10,12 @@ import {SelectItem, TabViewModule} from 'primeng/primeng';
  
 @Component({
   moduleId: module.id,
-  selector: 'sdp-headbar',
-  templateUrl: 'headbar.component.html',
-  styleUrls: ['headbar.component.css']
+  selector: 'sdp-homeheadbar',
+  templateUrl: 'homeheadbar.component.html',
+  styleUrls: ['homeheadbar.component.css']
 })
 
-export class HeadbarComponent implements OnInit {
+export class HomeHeadbarComponent implements OnInit {
 
   ngOnInit() {
         Modena.init();

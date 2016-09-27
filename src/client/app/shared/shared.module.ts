@@ -8,6 +8,7 @@ import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
 import { HeadbarComponent } from './headbar/index';
 import { NavbarComponent } from './navbar/index';
+import { HomeHeadbarComponent } from './homeheadbar/index';
 
 import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,
 PanelModule,DataTableModule,DialogModule,AutoCompleteModule,MultiSelectModule,
@@ -22,8 +23,8 @@ PaginatorModule,CalendarModule,TabViewModule} from 'primeng/primeng';
   imports: [CommonModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
   SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
   MultiSelectModule,PaginatorModule,DialogModule,CalendarModule],
-  declarations: [HeadbarComponent, FootbarComponent, NavbarComponent],
-  exports: [HeadbarComponent, FootbarComponent,NavbarComponent,
+  declarations: [HomeHeadbarComponent, HeadbarComponent, FootbarComponent, NavbarComponent],
+  exports: [HomeHeadbarComponent, HeadbarComponent, FootbarComponent,NavbarComponent,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
     SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
     MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule]

@@ -1,9 +1,23 @@
-import { Route } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import {SearchPanelComponent } from './index';
+import { HeadbarComponent } from '../shared/headbar/index';
 
-export const SearchRoutes: Route[] = [
+
+export const SearchRoutes: Routes = [
+
   {
     path: 'search',
-    component:SearchPanelComponent
+    children: [
+      {
+        path: '',
+        component: SearchPanelComponent
+      },
+      {
+        path: '',
+        component: HeadbarComponent,
+        outlet: 'route1'
+      }
+    ]
   }
+
 ];
