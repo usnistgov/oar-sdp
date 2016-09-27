@@ -1,9 +1,21 @@
-import { Route } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './index';
+import { HomeHeadbarComponent } from '../shared/homeheadbar/index';
 
-export const HomeRoutes: Route[] = [
+export const HomeRoutes: Routes = [
+
   {
     path: '',
-    component: HomeComponent
+    children: [
+      {
+        path: '',
+        component: HomeComponent
+      },
+      {
+        path: '',
+        component: HomeHeadbarComponent,
+        outlet: 'route1'
+      }
+    ]
   }
 ];

@@ -8,7 +8,7 @@
 @font-face {
   font-family: 'robotoregular';
   src: url("../fonts/roboto-regular-webfont.eot");
-  src: url("../fonts/roboto-regular-webfont.eot#iefix") format('embedded-opentype'), url("../fonts/roboto-regular-webfont.woff2") format('woff2'), url("../fonts/roboto-regular-webfont.woff") format('woff'), url("../fonts/roboto-regular-webfont.ttf") format('truetype'), url("../fonts/roboto-regular-webfont.svg#robotoregular") format('svg');
+  src: url("../fonts/roboto-regular-webfont.eot#iefix") format('etopmbedded-opentype'), url("../fonts/roboto-regular-webfont.woff2") format('woff2'), url("../fonts/roboto-regular-webfont.woff") format('woff'), url("../fonts/roboto-regular-webfont.ttf") format('truetype'), url("../fonts/roboto-regular-webfont.svg#robotoregular") format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -50,7 +50,7 @@ body {
   background-image: none;
 }
 .GrayModena #layout-topbar {
-  background-color: #37474F;
+  background-color: #000000;
 }
 /* Blue Theme*/
 .BlueModena.Geometry {

@@ -2391,7 +2391,7 @@ label {
   font-size: 16px;
   font-family: 'robotoregular' !important;
   padding: 2px 2px 1px !important;
-  //border: 0px none;
+  border: 0px none;
   border: 1px solid #b0bec5;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
@@ -3003,19 +3003,18 @@ textarea.ui-inputtext {
   background-color: #ffffff;
   border-radius: 2px;
 }
-.ui-dropdown-panel .ui-dropdown-filter-container .ui-icon-search {
-  width: 30px;
-  height: 30px;
-  background-size: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: url("images/search-icon.svg");
-  left: 5px !important;
-  top: 8px !important;
+.ui-dropdown-panel .ui-dropdown-filter-container .fa {
+  left: 17px;
+  width: 16px;
 }
 .ui-dropdown-panel .ui-dropdown-filter-container .ui-inputtext {
   padding-left: 30px !important;
-  width: 75%;
+  width: 95%;
+  box-sizing: border-box;
+}
+.ui-dropdown-panel .ui-dropdown-filter-container {
+  width: 100%;
+  box-sizing: border-box;
 }
 .ui-dropdown.ui-state-focus,
 .ui-multiselect.ui-state-focus {

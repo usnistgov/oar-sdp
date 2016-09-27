@@ -1,13 +1,12 @@
+
+
+
 <!-- Left Column -->
 <div class="Container100" style="background-color:#ffffff;">
     <div class="Container100 Responsive100" >
 
         <div class="Container" *ngIf="summaryPageOpen == true" style="background-color:#ffffff;">
-        <!--<div class="Container100 Responsive50">-->
-        <!---->
-        <!--<div class="EmptyBox10"></div>-->
-        <!--</div>-->
-         <div class="EmptyBox20"></div>
+       <div class="EmptyBox20"></div>
         <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
         <div class="EmptyBox20"></div>
 
@@ -57,7 +56,7 @@
                 <p-tabPanel header="Contact" >
                     <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
                         <div class="ui-grid-row">
-                            <div class="ui-grid-col-2 label"><b>Author</b>
+                            <div class="ui-grid-col-2 label"><b>Contact</b>
                             </div>
                             <div class="ui-grid-col-10">
                                 {{summaryCandidate.contactPoint.fn}}
@@ -214,6 +213,8 @@
                 <div class="Container">
                     <div class="Container100 Responsive100">
                         <div class="Container">
+                            <div class="EmptyBox20"></div>
+
                             <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad" >
                                 <div class="ui-grid-row TexAlCenter" >
                                     <div class="ui-grid-col-7">
@@ -231,7 +232,8 @@
                                         (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
                                         type="button" class="CyanButton Wid100"></button></div>
                                 </div>
-                               
+                                <div class="EmptyBox20"></div>
+
                             </div>
                         </div>
                     </div>
@@ -262,18 +264,17 @@
                         </div>
                     </div>
                     </div>
-                    <div class="EmptyBox10"></div>
                     <div class="Container100">
                         <div class="Container100 Responsive100">
                              <div class="Container">
                                 <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
                                     <div class="ui-grid-row">
-                                        <div class="ui-grid-col-4 Wid90"><span class="black Fs16"><b>Author</b></span> <br>
+                                        <div class="ui-grid-col-4 Wid90"><span class="black Fs16"><b>Contact</b></span> <br>
                                         
                                         <div class="ui-grid-col-8 Wid90">
                                             <div *ngIf="selectedAuthorDropdown === false">
                                             <p-autoComplete [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors" (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
-                                            placeholder="Search author..." [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
+                                            placeholder="Search Contact..." [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
                                             (onSelect)="filterResults($event,'Author')"                 
                                             >
                                             </p-autoComplete>
@@ -294,12 +295,12 @@
                                     <div class="ui-grid-row" >
                                         <div class="ui-grid-col-4 Wid90" ><span class="black Fs16 " ><b>Keyword</b></span><br>
                                         
-                                        <div class="ui-grid-col-8 Wid90">
+                                        <div class="ui-grid-col-8 Wid90"  style='word-wrap: break-word'>
                                             <p-autoComplete [(ngModel)]="selectedKeywords" [suggestions]="suggestedKeywords" (completeMethod)="filterKeywords($event)"
-                                            [multiple]="true"
+                                            [multiple]="true" [size]="30"
                                             (onSelect)="filterResults($event)"
                                             (onUnselect)="filterResults($event)"
-                                            [minLength]="1" placeholder="Hint: search...">
+                                            [minLength]="1"  placeholder="Hint: search...">
                                             </p-autoComplete>
                        
                                             </div>
@@ -328,16 +329,21 @@
                                         icon="fa fa-times"
                                         type="button" class="CyanButton Wid100"></button>
                                     </div>
+
                                     </div>
+ 
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
+            </div>
+
+        </div>
+ 
+    </div>
 
     <!-- Right Column -->
     <div class="Container70 Responsive100 results">
@@ -346,17 +352,17 @@
         <div class="Container100 results">
             <div class="ContainerIndent results">
                 <div class="HeiAutoOnMobile results" style="min-height:400px;">
-                    <div class="EmptyBox10"></div>
                     <div *ngIf="filteredResults.length > 0">
                        <div class="ui-grid-row" >
                         <div class="ui-grid-col-6" ><b><span class="Fs20 FontRobotoLight" >
                     {{filteredResults.length}} Results</span>  
                     </b></div></div>  
-                    <DIV>
+                    <div class="EmptyBox10"></div>
+
+                    <div>
                        <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
                        (click)='results.exportCSV()' style="float:left"></button>
-                     
-                    </DIV>
+                    </div>
                     <p-dataTable
 
                     [paginatorPosition]="top" expandableRows = "true"
@@ -385,7 +391,7 @@
                     <p-column field="title"
                     [sortable]="true" [filter]="true" header="Title" filterMatchMode="contains"></p-column>
                     <p-column field="contactPoint.fn"
-                    [sortable]="true" [filter]="true" header="Author" filterMatchMode="contains"></p-column>
+                    [sortable]="true" [filter]="true" header="Contact" filterMatchMode="contains"></p-column>
 
 
                     <p-column field="description" [filter]="true" header="Description" expander = "true" filterMatchMode="contains">
