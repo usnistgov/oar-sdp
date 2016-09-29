@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {SelectItem} from 'primeng/primeng';
+import {SelectItem,DialogModule} from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchService } from '../shared/search-service/index';
 import {Router,NavigationExtras} from '@angular/router';
@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
     searchValue:string;
     taxonomies: SelectItem[];
     searchTaxonomyKey: string;
+    display: boolean = false;
 
     /**
      *
@@ -35,6 +36,11 @@ export class HomeComponent implements OnInit {
         this.getTaxonomies();
   }
 
+   showDialog() {
+        this.display = true;
+    }
+
+    
     /**
      * Handle the nameListService observable
      */

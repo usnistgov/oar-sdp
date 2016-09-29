@@ -1,5 +1,5 @@
-<div style="background-color:#ffffff;" class="BlueBody PopupMenu">
-    <div class="Container100  sdp-page" id="modena-highlight" style="background-color:#ffffff;">
+<div class="BlueBody PopupMenu ">
+    <div class="Container100  sdp-page background-white" id="modena-highlight ">
         <div class="MarAuto">
             <div class="Container100">
                  <span class="DispBlock Fs20 FontRobotoLight black TexAlCenter">Welcome to NIST</span>
@@ -12,10 +12,14 @@
                             <div class="ui-grid-col-7">
                                 <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..." />
                             </div>
+                            
                             <div class="ui-grid-col-6">
                                 <p-dropdown [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'300px'" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" styleClass="Fleft" ></p-dropdown>
                             </div>
                             <div class="ui-grid-col-2"><button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="button" class="CyanButton Wid100"></button></div>
+                        </div>
+                        <div>
+                          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
                         </div>
                     </div>
                 </div>
@@ -25,5 +29,12 @@
         </div>
     </div>
 </div>
+
+<p-dialog header="Search Examples" [(visible)]="display">
+    
+</p-dialog>
+
+
+
 
 

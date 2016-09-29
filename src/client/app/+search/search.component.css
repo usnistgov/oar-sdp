@@ -42,3 +42,14 @@
 .style-vertical {
    border-left: thick solid #ff0000;
 }
+
+.background-white 
+{
+  background-color:#ffffff;
+}
+
+.content-center
+{
+  justify-content:left;
+  display:flex
+}
