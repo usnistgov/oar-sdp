@@ -2,10 +2,10 @@
 
 
 <!-- Left Column -->
-<div class="Container100" style="background-color:#ffffff;">
+<div class="Container100 background-white" >
     <div class="Container100 Responsive100" >
 
-        <div class="Container" *ngIf="summaryPageOpen == true" style="background-color:#ffffff;">
+        <div class="Container background-white" *ngIf="summaryPageOpen == true">
        <div class="EmptyBox20"></div>
         <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
         <div class="EmptyBox20"></div>
@@ -205,7 +205,7 @@
 
 </div>
 <div *ngIf="summaryPageOpen != true"> 
-<div class="Container100 Responsive100" style="background-color:#ffffff;justify-content:left;display:flex">
+<div class="Container100 Responsive100 background-white content-center">
     <!-- Section 1 -->
     <div class="Container100">
         <div class="ContainerIndent">
@@ -244,19 +244,19 @@
 </div>
 <div class="SeparatorFull"></div>
 <div *ngIf="searching">
-<div style="height:100%;text-align:center">
-    <div style="margin-top:25px">
+<div style="height:100%;text-align:center" class="background-white">
+    <div style="margin-top:25px" class="background-white">
         <img src="libs/modena-1.0.2/layout/images/loader.gif"/>
     </div>
 </div>
 </div>
 <div *ngIf="!searching">
-<div class="Container100 Responsive100" style="background-color:#ffffff;">
+<div class="Container100 Responsive100 background-white" >
     <div class="Container30 Responsive100 ">
         <!-- Section 1 -->
         <div class="Container100">
             <div class="ContainerIndent">
-                <div class="HeiAutoOnMobile " style="min-height:500px;" style="background-color:#ffffff;">
+                <div class="HeiAutoOnMobile background-white " style="min-height:500px;">
 
                     <div class="Container100 Responsive100">
                     <div class="ui-grid-row" >
@@ -392,8 +392,6 @@
                     [sortable]="true" [filter]="true" header="Title" filterMatchMode="contains"></p-column>
                     <p-column field="contactPoint.fn"
                     [sortable]="true" [filter]="true" header="Contact" filterMatchMode="contains"></p-column>
-
-
                     <p-column field="description" [filter]="true" header="Description" expander = "true" filterMatchMode="contains">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
