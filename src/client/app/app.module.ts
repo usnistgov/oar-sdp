@@ -8,17 +8,17 @@ import { routes } from './app.routes';
 import { HomeHeadbarComponent , HeadbarComponent, FootbarComponent } from './shared/index';
 
 
-import { AboutModule } from './+about/about.module';
-import { HomeModule } from './+home/home.module';
+import { AboutModule } from './about/about.module';
+import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
-import { FaqModule } from './+faq/faq.module';
-import { ApiModule } from './+api/api.module';
-import { CodeRepoModule } from './+code_repo/code_repo.module';
-import { SearchModule } from './+search/search.module';
+import { FaqModule } from './faq/faq.module';
+import { ApiModule } from './api/api.module';
+import { CodeRepoModule } from './code_repo/code_repo.module';
+import { SearchModule } from './search/search.module';
 
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes), AboutModule, HomeModule, FaqModule, ApiModule,CodeRepoModule, SearchModule, SharedModule.forRoot()],
+  imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes,{ useHash: true }), AboutModule, HomeModule, FaqModule, ApiModule,CodeRepoModule, SearchModule, SharedModule.forRoot()],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,

@@ -1,16 +1,13 @@
-
-
-
 <!-- Left Column -->
-<div class="Container100 background-white" >
+<div class="Container100">
     <div class="Container100 Responsive100" >
 
-        <div class="Container background-white" *ngIf="summaryPageOpen == true">
+        <div class="Container background-blue " *ngIf="summaryPageOpen == true">
        <div class="EmptyBox20"></div>
-        <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
+        <h1 class="FontRobotoRegular Fs30 black TexAlCenter">Summary</h1>
         <div class="EmptyBox20"></div>
 
-        <div *ngFor="let summaryCandidate of filteredResults">
+        <div *ngFor="let summaryCandidate of filteredResults" >
             <p-tabView>
                 <p-tabPanel header="Summary" >
                     <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
@@ -213,12 +210,12 @@
                 <div class="Container">
                     <div class="Container100 Responsive100">
                         <div class="Container">
-                            <div class="EmptyBox20"></div>
+                            <div class="EmptyBox10"></div>
 
                             <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad" >
                                 <div class="ui-grid-row TexAlCenter" >
                                     <div class="ui-grid-col-7">
-                                        <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..."
+                                        <input type="text" pInputText [(ngModel)]="searchValue" (keyup.enter) = "search(searchValue,searchTaxonomyKey)" placeholder="Search..."
                                         />
                                     </div>
                                     <div class="ui-grid-col-3">
@@ -230,10 +227,8 @@
                                     <div class="ui-grid-col-2">
                                         <button
                                         (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
-                                        type="button" class="CyanButton Wid100"></button></div>
+                                        type="button" class="custButton Wid100"></button></div>
                                 </div>
-                                <div class="EmptyBox20"></div>
-
                             </div>
                         </div>
                     </div>
@@ -242,7 +237,6 @@
         </div>
     </div>
 </div>
-<div class="SeparatorFull"></div>
 <div *ngIf="searching">
 <div style="height:100%;text-align:center" class="background-white">
     <div style="margin-top:25px" class="background-white">
@@ -251,16 +245,16 @@
 </div>
 </div>
 <div *ngIf="!searching">
-<div class="Container100 Responsive100 background-white" >
+<div class="Container100 Responsive100 background-blue " >
     <div class="Container30 Responsive100 ">
         <!-- Section 1 -->
         <div class="Container100">
             <div class="ContainerIndent">
-                <div class="HeiAutoOnMobile background-white " style="min-height:500px;">
+                <div class="HeiAutoOnMobile background-white " style="min-height:300px;overflow: auto; ">
 
                     <div class="Container100 Responsive100">
-                    <div class="ui-grid-row" >
-                        <div class="ui-grid-col-6" ><b><span class="Fs20 FontRobotoLight" >Filters</span></b>
+                    <div class="ui-grid-row background-black" >
+                        <div class="ui-grid-col-6" ><span class="Fs20 FontRobotoMedium White" >&nbsp;&nbsp;Filters</span>
                         </div>
                     </div>
                     </div>
@@ -269,9 +263,9 @@
                              <div class="Container">
                                 <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
                                     <div class="ui-grid-row">
-                                        <div class="ui-grid-col-4 Wid90"><span class="black Fs16"><b>Contact</b></span> <br>
+                                        <div class="ui-grid-col-4 Wid100"><span class="FontRobotoRegular Fs16">Contact</span> <br>
                                         
-                                        <div class="ui-grid-col-8 Wid90">
+                                        <div class="ui-grid-col-8 Wid100">
                                             <div *ngIf="selectedAuthorDropdown === false">
                                             <p-autoComplete [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors" (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                             placeholder="Search Contact..." [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
@@ -293,23 +287,23 @@
 
                                         </div>
                                     <div class="ui-grid-row" >
-                                        <div class="ui-grid-col-4 Wid90" ><span class="black Fs16 " ><b>Keyword</b></span><br>
+                                        <div class="ui-grid-col-4 Wid100" ><span class="FontRobotoRegular Fs16 " >Keyword</span><br>
                                         
-                                        <div class="ui-grid-col-8 Wid90"  style='word-wrap: break-word'>
+                                        <div class="ui-grid-col-8 Wid100" >
                                             <p-autoComplete [(ngModel)]="selectedKeywords" [suggestions]="suggestedKeywords" (completeMethod)="filterKeywords($event)"
                                             [multiple]="true" [size]="30"
                                             (onSelect)="filterResults($event)"
                                             (onUnselect)="filterResults($event)"
-                                            [minLength]="1"  placeholder="Hint: search...">
+                                            [minLength]="1" placeholder="Hint: search...">
                                             </p-autoComplete>
-                       
+                                            
                                             </div>
                                         </div>
                                     </div>
                                     <div class="ui-grid-row" >
-                                       <div class="ui-grid-col-4 Wid90" ><span class="black Fs16"><b>Research Topics</b></span> <br>
+                                       <div class="ui-grid-col-4 Wid100" ><span class="FontRobotoRegular Fs16">Research Topics</span> <br>
                                         
-                                        <div class="ui-grid-col-8 Wid90" >
+                                        <div class="ui-grid-col-8 Wid100" >
                                         
                                            <p-autoComplete [(ngModel)]="selectedThemes" [suggestions]="suggestedThemes" (completeMethod)="filterThemes($event)" [size]="30"
                                             [minLength]="1" placeholder="Search topic..." [multiple]="true"
@@ -322,12 +316,12 @@
                                      
                                     </div>
                                      <div class="EmptyBox10"></div>
-                                       <div class="ui-grid-row" style="text-align: center ">
-                                    <div class="ui-grid-col-5" style="text-align: center ">
+                                       <div class="ui-grid-row">
+                                    <div class="ui-grid-col-5">
                                         <button
                                         (click)="clearFilters()" pButton label="Clear All Filters"
                                         icon="fa fa-times"
-                                        type="button" class="CyanButton Wid100"></button>
+                                        type="button" class="custButton Wid100"></button>
                                     </div>
 
                                     </div>
@@ -353,56 +347,49 @@
             <div class="ContainerIndent results">
                 <div class="HeiAutoOnMobile results" style="min-height:400px;">
                     <div *ngIf="filteredResults.length > 0">
-                       <div class="ui-grid-row" >
-                        <div class="ui-grid-col-6" ><b><span class="Fs20 FontRobotoLight" >
-                    {{filteredResults.length}} Results</span>  
-                    </b></div></div>  
-                    <div class="EmptyBox10"></div>
-
-                    <div>
+                     <div>
                        <button *ngIf="filteredResults.length > 0" type="button" pButton icon="fa-download" iconPos="left" label="CSV"
-                       (click)='results.exportCSV()' style="float:left"></button>
+                       (click)='results.exportCSV()' style = "background-color:#2C539E"> </button><span class="Fs20 White">&nbsp;&nbsp;<b>
+                    {{filteredResults.length}} Results</b></span>
                     </div>
                     <p-dataTable
 
-                    [paginatorPosition]="top" expandableRows = "true"
+                     expandableRows = "true"
                      #results scrollable="true" scrollHeight="600px" [value]="filteredResults"
-                    [rows]="50" [paginator]="true" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20,50]" sortMode="multiple">
+                    [rows]="50" [paginator]="true" [paginatorPosition]="bottom" [pageLinks]="5" [rowsPerPageOptions]="[5,10,20,50]" sortMode="multiple">
                     <div class="Container" >
-                    
-                        <template let-resultItem pTemplate type="body">
+                       <template let-resultItem pTemplate type="body">
                             <span ><b>Description</b> : {{resultItem.description}}</span><br>
                             <div class="EmptyBox10"></div>
                             <span ><b>Keywords</b> : {{resultItem.keyword}}</span>
 
                         </template>
                     </div>
-                    <p-column styleClass="col-button" header="Action">
-                        <template let-resultItem="rowData" pTemplate type="body">
-                           <a href = "search?identifier={{resultItem.identifier}}" target="_" >  <button class="CyanButton" type="button" pButton icon="fa-external-link-square"
+                    <p-column styleClass="col-button "  [style] = "{'color':'#000000'}"header="Action">
+                        <template let-resultItem="rowData" pTemplate type="body" >
+                           <a href = "/search?identifier={{resultItem.identifier}}" target="_" >  <button style = "background-color: #595959" type="button" pButton icon="fa-external-link-square"
                             iconPos="left" title="Open Summary Page" 
                             onclick="openSummaryPage()"></button> </a>
-
                           <a [(href)] = "resultItem.landingPage" target="_">  <button type="button" pButton icon="fa-external-link"
-                             iconPos="left" title="Open Landing Page"></button></a>
+                             iconPos="left"  style = "background-color:#2C539E" title="Open Landing Page"></button></a>
 
                         </template>
                     </p-column>
                     <p-column field="title"
-                    [sortable]="true" [filter]="true" header="Title" filterMatchMode="contains"></p-column>
+                    [sortable]="true" [filter]="true" [style] = "{'color':'#000000'}" header="Title" filterMatchMode="contains"></p-column>
                     <p-column field="contactPoint.fn"
-                    [sortable]="true" [filter]="true" header="Contact" filterMatchMode="contains"></p-column>
-                    <p-column field="description" [filter]="true" header="Description" expander = "true" filterMatchMode="contains">
+                    [sortable]="true" [filter]="true" header="Contact" [style] = "{'color':'#000000'}"  filterMatchMode="contains"></p-column>
+                    <p-column field="description" [filter]="true" [style] = "{'color':'#000000'}" header="Description" expander = "true" filterMatchMode="contains">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>
                     </p-column>
-                    <p-column field="keyword" [filter]="true" header="Keywords" expander="true" filterMatchMode="contains">
+                    <p-column field="keyword" [filter]="true" [style] = "{'color':'#000000'}"  header="Keywords" expander="true" filterMatchMode="contains">
                     <template let-col let-resultItem="rowData" pTemplate type="body">
                         <span class="glimpse-content" >{{resultItem[col.field]}}</span>
                     </template>
                     </p-column>
-                    <p-column field="modified" filterMatchMode="contains"
+                    <p-column field="modified" [style] = "{'color':'#000000'}"  filterMatchMode="contains"
                     [sortable]="true" [filter]="true" header="Date Modified"></p-column>
 
                     </p-dataTable>

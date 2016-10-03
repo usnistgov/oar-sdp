@@ -882,7 +882,7 @@ label {
   border: solid 1px #c1d5df;
   outline: none;
   padding: 10px;
-  font-family: 'robotolight';
+  font-family: 'robotoregular';
   font-size: 16px;
 }
 .ui-datatable table thead tr th.ui-state-hover,
@@ -1084,7 +1084,7 @@ label {
 .ui-paginator {
   margin: 0px;
   padding: 0px !important;
-  background-color: #0277bd;
+  background-color: #000000;
   border-radius: 1px;
 }
 .ui-paginator .ui-paginator-pages {
@@ -1149,7 +1149,7 @@ label {
   color: #ffffff !important;
   font-family: 'robotoregular';
   font-size: 18px !important;
-  background-color: #0277bd;
+  background-color: #00BCD4;
   border: solid 1px transparent;
 }
 .ui-paginator .ui-paginator-rpp-options.ui-state-focus {
@@ -3877,8 +3877,8 @@ textarea.ui-inputtext {
   font-weight: normal;
 }
 .ui-autocomplete-panel .ui-autocomplete-items .ui-state-highlight {
-  background-color: #f5f5f5;
-  color: #03a9f4;
+  background-color: #595959;
+  color: #ffffff;
 }
 .ui-autocomplete-multiple .ui-autocomplete-multiple-container .ui-autocomplete-token {
   background-color: #c6d6df;
@@ -4602,4 +4602,13 @@ hr.ui-widget-header {
 }
 .Yellow {
   color: #F7D100;
+}
+
+.custButton
+{
+background: rgb(44,83,158); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(44,83,158,1) 0%, rgba(44,83,158,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  rgba(44,83,158,1) 0%,rgba(44,83,158,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  rgba(44,83,158,1) 0%,rgba(44,83,158,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
 }

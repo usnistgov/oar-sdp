@@ -22,9 +22,9 @@ build/Release
 # Dependency directory
 # Commenting this out is preferred by some people, see
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
-/node_modules/
-/typings/
-/bower_components/
+node_modules
+typings
+bower_components
 
 # Users Environment Variables
 .lock-wscript
@@ -49,4 +49,6 @@ gulpfile.js.map
 
 # OS X trash files
 .DS_Store
+src/client/app/shared/config/env.config.js
+src/client/app/shared/config/env.config.js.map
 

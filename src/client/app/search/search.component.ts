@@ -4,7 +4,7 @@ import { ActivatedRoute}     from '@angular/router';
 //import { Observable }         from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import {SelectItem, AutoCompleteModule} from 'primeng/primeng';
+import {SelectItem, AutoCompleteModule, DataTableModule,SharedModule} from 'primeng/primeng';
 
 
 
@@ -160,10 +160,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.suggestedKeywords = [];
         for(let i = 0; i < this.keywords.length; i++) {
             let keyw = this.keywords[i];
-            if(keyw.toLowerCase().indexOf(keyword.toLowerCase()) === 0) {
+            if(keyw.indexOf(keyword) >= 0) {
                 this.suggestedKeywords.push(keyw);
             }
         }
+
         this.suggestedKeywords = this.sortAlphabetically(this.suggestedKeywords);
 //        this.suggestedKeywords.splice(0, 0, "All");
     }
@@ -174,7 +175,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         console.log('themes');
         for(let i = 0; i < this.themes.length; i++) {
             let them = this.themes[i];
-            if(them.toLowerCase().indexOf(theme.toLowerCase()) === 0) {
+            if(them.toLowerCase().indexOf(theme.toLowerCase()) >= 0) {
                 this.suggestedThemes.push(them);
             }
         }
@@ -188,7 +189,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.suggestedAuthors = [];
         for(let i = 0; i < this.authors.length; i++) {
             let autho = this.authors[i];
-            if(autho.toLowerCase().indexOf(author.toLowerCase()) === 0) {
+            if(autho.toLowerCase().indexOf(author.toLowerCase()) >= 0) {
                 this.suggestedAuthors.push(autho);
             }
         }

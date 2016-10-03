@@ -2,12 +2,11 @@ import * as gulp from 'gulp';
 import * as util from 'gulp-util';
 import * as runSequence from 'run-sequence';
 
-import { PROJECT_TASKS_DIR, SEED_TASKS_DIR } from './tools/config';
+import Config from './tools/config';
 import { loadTasks } from './tools/utils';
 
-
-loadTasks(SEED_TASKS_DIR);
-loadTasks(PROJECT_TASKS_DIR);
+loadTasks(Config.SEED_TASKS_DIR);
+loadTasks(Config.PROJECT_TASKS_DIR);
 
 
 // --------------
@@ -17,7 +16,7 @@ gulp.task('build.dev', (done: any) =>
 //              'tslint',
 //              'css-lint',
               'build.assets.dev',
-      'build.fonts',
+              'build.fonts',
               'build.html_css',
               'build.js.dev',
               'build.index.dev',
@@ -44,14 +43,33 @@ gulp.task('build.e2e', (done: any) =>
 // Build prod.
 gulp.task('build.prod', (done: any) =>
   runSequence('clean.prod',
-//               'tslint',
+//            'tslint',
+//            'css-lint'
               'build.assets.prod',
               'build.fonts',
               'build.html_css',
-              'copy.js.prod',
+              'copy.prod',
               'build.js.prod',
               'build.bundles',
               'build.bundles.app',
+              'minify.bundles',
+              'build.index.prod',
+              done));
+
+// --------------
+// Build prod.
+gulp.task('build.prod.exp', (done: any) =>
+  runSequence('clean.prod',
+//              'tslint',
+//              'css-lint',
+              'build.assets.prod',
+              'build.html_css',
+              'copy.prod',
+              'compile.ahead.prod',
+              'build.js.prod.exp',
+              'build.bundles',
+              'build.bundles.app.exp',
+              'minify.bundles',
               'build.index.prod',
               done));
 
@@ -72,7 +90,8 @@ gulp.task('build.test', (done: any) =>
 gulp.task('build.test.watch', (done: any) =>
   runSequence('build.test',
               'watch.test',
-              done));
+              'karma.watch',
+               done));
 
 // --------------
 // Build tools.
@@ -117,8 +136,8 @@ gulp.task('serve.prod', (done: any) =>
 // Test.
 gulp.task('test', (done: any) =>
   runSequence('build.test',
-      'build.fonts',
-              'karma.start',
+              'build.fonts',
+              'karma.run',
               done));
 
 // --------------
@@ -133,4 +152,4 @@ gulp.task('clean.once', (done: any) => {
     util.log('Skipping clean on rebuild');
     done();
   }
-})
+});
