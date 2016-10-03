@@ -1,5 +1,7 @@
 import { Component,OnInit} from '@angular/core';
 import { Config, HeadbarComponent, FootbarComponent } from './shared/index';
+import './operators';
+
 
 /**
  * This class represents the main application component. Within the @Routes annotation is the configuration of the
