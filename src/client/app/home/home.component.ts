@@ -17,7 +17,7 @@ import {Router,NavigationExtras} from '@angular/router';
 export class HomeComponent implements OnInit {
 
     errorMessage: string;
-    searchValue:string;
+    searchValue:string = '';
     taxonomies: SelectItem[];
     searchTaxonomyKey: string;
     display: boolean = false;
@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
         this.display = true;
     }
 
-    
+
     /**
      * Handle the nameListService observable
      */
@@ -56,21 +56,26 @@ export class HomeComponent implements OnInit {
         let items :SelectItem[] = [];
         items.push({label:'All', value:''});
         for (let taxonomy of taxonomies) {
-            items.push({label:taxonomy.researchCategory, value:taxonomy.keyIdentifier});
+            items.push({label:taxonomy.researchCategory, value:taxonomy.researchCategory});
         }
         return items;
     }
 
     search() {
-        if(this.searchValue !== '' && this.searchValue !== undefined) {
             let params:NavigationExtras = {
                 queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:''}
             };
-            
+
             this.router.navigate(['/search'], params);
-           
-        }
+
+
     }
 
+    searchExample (popupValue:string)
+
+    {
+      this.display = false;
+      this.searchValue = popupValue;
+    }
 
 }

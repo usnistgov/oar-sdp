@@ -22,9 +22,13 @@ export class TaxonomyListService {
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<string[]> {
-    return this.http.get('/assets/taxonomies.json')
-                    .map((res: Response) => res.json())
-                    .catch(this.handleError);
+  //  return this.http.get('/assets/taxonomies.json')
+    //                .map((res: Response) => res.json())
+      //              .catch(this.handleError);
+
+    return this.http.get("http://10.200.222.248:8082/RMMApi/taxanomy")
+      .map((res: Response) => res.json().content)
+      .catch(this.handleError);
   }
 
   /**

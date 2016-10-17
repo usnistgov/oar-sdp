@@ -1,14 +1,13 @@
+<div [ngClass]="{'layout-wrapper':true,'layout-compact':layoutCompact}" >
 
-<router-outlet name="route1"></router-outlet>
+  <div [ngClass]="{'layout-container':true,'menu-layout-static':(layoutMode=='static'||layoutMode=='horizontal'),
+            'menu-layout-overlay':(layoutMode=='overlay'),'menu-layout-horizontal':(layoutMode=='horizontal')}">
 
-<div id="wrapper">
-    <div id="wrapperIndent">
-        
-        <div id="layout-portlets-cover" style="padding:0px; min-height: 500px">
-            <div class="Container100 Fnone MarAuto">
-                <router-outlet></router-outlet>
-            </div>
-        </div>
+    <router-outlet name="route1"></router-outlet>
+
+    <div class="layout-main"  >
+      <router-outlet></router-outlet>
     </div>
+  </div>
 </div>
 <sdp-footbar></sdp-footbar>
