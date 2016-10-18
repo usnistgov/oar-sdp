@@ -12,7 +12,7 @@ export class ProjectConfig extends SeedConfig {
 
     FONTS_DEST = `${this.APP_DEST}/fonts`;
     FONTS_SRC = [
-          `${this.APP_SRC}/libs/ultima-ng-1.0.1/layout/fonts/**`
+          `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/fonts/**`
     ];
 
   constructor() {
