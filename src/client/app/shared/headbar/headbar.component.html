@@ -1,52 +1,42 @@
+<div [ngClass]="{'layout-wrapper':true,'layout-compact':layoutCompact}">
 
-<div id="layout-topbar" align="center">
-    <a id="mobile-menu-button">
-        <span class="ButtonLine" id="ButtonLine1"></span>
-        <span class="ButtonLine" id="ButtonLine2"></span>
-        <span class="ButtonLine" id="ButtonLine3"></span>
-    </a>
-    <a [routerLink]="['/']" id="logo">
-    <!--<span class="Fleft">SDP</span>-->
-    <!--<img src="../libs/modela-1.0.2/layout/images/logo.svg" class="Fleft" />-->
-    </a>
-    <a id="show-top-menu" class="ShowOnMobile ripplelink"><i class="icon-more_vert" id="active"></i><i class="icon-close DispNone" id="passive"></i> </a>
-    <img srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">
-    <span class="Fs30 White" >Science Data Portal</span>
-    <ul id="top-menu">
-        <!--<li>-->
-            <!--<a class="ripplelink"><i class="icon-search"></i> <span class="ShowOnMobile">Search Here</span></a>-->
-            <!--<ul>-->
-                <!--<li>-->
-                    <!--<a href="#"><i class="icon-search"></i><input type="text"/> </a>-->
-                <!--</li>-->
-            <!--</ul>-->
-        <!--</li>-->
-        <li>
-            <a class="ripplelink" [routerLink]="['/data_cart']" ><i class="icon-shopping_cart Fs30"></i> <span class="ShowOnMobile">Data Cart</span></a>
-        </li>
-        <li>
-            <a class="ripplelink" [routerLink]="['/help']"><i class="icon-live_help"></i> <span class="ShowOnMobile">Help</span></a>
-        </li>
-    </ul>
+  <div [ngClass]="{'layout-container':true,'menu-layout-static':(layoutMode=='static'||layoutMode=='horizontal'),
+            'menu-layout-overlay':(layoutMode=='overlay'),'menu-layout-horizontal':(layoutMode=='horizontal')}">
+    <div class="topbar clearfix" style="background-color: #000000">
+
+        <div style="color: white;text-align: center;font-size: xx-large;margin-top: 20px;"> <img style="float: left;" srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology"> Science Data Portal </div>
+      <div class="topbar-right">
+        <a id="menu-button" href="#" style="float: right">
+          <i class="material-icons" style="color: black"></i>
+        </a>
+      </div>
+    </div>
+    <!-- Menu -->
+    <div [ngClass]="{'layout-menu':true,'layout-menu-dark':darkMenu}" >
+      <div class="nano">
+        <div class="nano-content menu-scroll-content">
+          <ul id="main-menu" class="ultima-menu clearfix">
+            <li role="menuitem"><a [routerLink]="['/']"><i class="material-icons">home</i><span>Home</span></a></li>
+            <li role="menuitem" >
+              <a href="#" class="ripplelink"><i class="material-icons">list</i><span>Key Datasets</span><i class="material-icons">keyboard_arrow_down</i></a>
+              <ul role="menu">
+                <li role="menuitem"><a class="ripplelink" target = "_blank" href="http://webbook.nist.gov/chemistry"><i class="material-icons"></i><span>Chemistry WebBook</span></a></li>
+                <li role="menuitem"><a class="ripplelink" target = "_blank" href="http://csrc.nist.gov/groups/SNS/nvd/"><i class="material-icons"></i><span>National Vulnerability Database</span></a></li>
+                <li role="menuitem"><a class="ripplelink" target = "_blank" href="https://www.nist.gov/pml/productsservices/physical-reference-data"><i class="material-icons"></i><span>Physical Reference Data</span></a></li>
+                <li role="menuitem"><a class="ripplelink" target = "_blank" href="https://www.nist.gov/srd"><i class="material-icons"></i><span>Standard Reference Data (SRD)</span></a></li>
+              </ul>
+            </li>
+            <li role="menu"><a class="ripplelink" [routerLink]="['/about']"><i class="material-icons">info</i><span>About NIST Data</span></a></li>
+            <li role="menu"><a class="ripplelink" href="https://github.com/usnistgov" target="_blank"><i class="material-icons">device_hub</i><span>NIST GitHub</span></a></li>
+            <li role="menu"><a class="ripplelink" [routerLink]="['/api']"><i class="material-icons">extension</i><span>API</span></a></li>
+            <li role="menu"><a class="ripplelink" [routerLink]="['/faq']"><i class="material-icons">question_answer</i><span>FAQ</span></a></li>
+            <li role="menu"><a class="ripplelink" [routerLink]="['/data_cart']" ><i class="material-icons">shopping_cart</i><span>Data Cart</span></a></li>
+            <li><a class="ripplelink" [routerLink]="['/help']"><i class="material-icons">help</i><span>Help</span></a></li>
+          </ul>
+
+        </div>
+
+      </div>
+    </div>
 </div>
-
-<div class="Animated05" id="layout-menu-cover">
-    <ul id="menu" class="layout-menu ShadowEffect modena-menu">
-        <li role="menuitem"><a class="menulink ripplelink" [routerLink]="['/']"><i class="icon-null"></i><i class="icon-home"></i>Home</a></li>
-        <li role="menuitem">
-        <a href="#" class="menulink ripplelink"><i class="icon-null"></i><i class="icon-store"></i>Key Datasets</a>
-            <ul role="menu">
-                <li role="menuitem"><a class="menulink ripplelink" target = "_blank" href="http://webbook.nist.gov/chemistry" ><i class="icon-null"></i><i class="icon-domain"></i>Chemistry WebBook</a>
-                <li role="menuitem"><a class="menulink ripplelink" href="http://csrc.nist.gov/groups/SNS/nvd/" target="_blank" ><i class="icon-null"></i><i class="icon-domain"></i>National Vulnerability Database</a></li>
-                <li role="menuitem"><a class="menulink ripplelink" href="https://www.nist.gov/pml/productsservices/physical-reference-data" target="_blank" ><i class="icon-null"></i><i class="icon-domain"></i>Physical Reference Data</a></li>
-                <li role="menuitem"><a class="menulink ripplelink" href="https://www.nist.gov/srd" target="_blank"><i class="icon-null"></i><i class="icon-domain"></i>Standard Reference Data (SRD)</a></li>
-            </ul>
-        </li>
-        <li role="menuitem"><a class="menulink ripplelink" [routerLink]="['/about']"><i class="icon-null"></i><i class="icon-info"></i>About NIST Data</a></li>
-        <li role="menuitem"><a class="menulink ripplelink" [routerLink]="['/code_repo']"><i class="icon-null"></i><i class="icon-code"></i>NIST Github</a></li>
-        <li role="menuitem"><a class="menulink ripplelink" [routerLink]="['/api']"><i class="icon-null"></i><i class="fa fa-jsfiddle"></i>API</a></li>
-        <li role="menuitem"><a class="menulink ripplelink" [routerLink]="['/faq']"><i class="icon-null"></i><i class="icon-question_answer"></i>FAQ</a></li>
-        <li class="Separator"></li>
-    </ul>
-</div>
-
+  </div>

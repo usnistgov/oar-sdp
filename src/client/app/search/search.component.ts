@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy,AfterViewInit, ElementRef } from '@angular/core';
 import { SearchService,TaxonomyListService} from '../shared/index';
 import { ActivatedRoute}     from '@angular/router';
-//import { Observable }         from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import {SelectItem, AutoCompleteModule, DataTableModule,SharedModule} from 'primeng/primeng';
+import {SelectItem} from 'primeng/primeng';
 
 
+declare var Ultima: any;
 
 
 /**
@@ -19,17 +19,26 @@ import {SelectItem, AutoCompleteModule, DataTableModule,SharedModule} from 'prim
     styleUrls: ['search.component.css'],
     providers:[TaxonomyListService, SearchService]
 })
-     
 
 
-export class SearchPanelComponent implements OnInit, OnDestroy {
 
+export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
+
+
+  layoutCompact: boolean = true;
+
+  layoutMode: string = 'horizontal';
+
+  darkMenu: boolean = false;
+
+  profileMode: string = 'inline';
     errorMessage: string;
     searchResults: any[] = [];
     searchValue:string;
     taxonomies: SelectItem[];
     searchTaxonomyKey: string;
     cols: any[];
+    rows: number = 5;
     columnOptions: SelectItem[];
     searching:boolean = false;
     keywords: string[];
@@ -52,13 +61,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     summaryCandidate: any[];
     private _routeParamsSubscription: Subscription;
     selectedAuthorDropdown: boolean = false;
-    
+
     /**
      * Creates an instance of the SearchPanel
      *
      */
-    constructor(private route: ActivatedRoute, public taxonomyListService: TaxonomyListService, public searchService:SearchService) {
+    constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService: TaxonomyListService, public searchService:SearchService) {
     }
+
+  ngAfterViewInit() {
+    Ultima.init(this.el.nativeElement);
+  }
 
     /**
      * Handle the nameListService observable
@@ -73,9 +86,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     toTaxonomiesItems(taxonomies:any[]) {
         let items :SelectItem[] = [];
-        items.push({label:this.ALL, value:''});
+        items.push({label:this.ALL, value:'All'});
         for (let taxonomy of taxonomies) {
-            items.push({label:taxonomy.researchCategory, value:taxonomy.keyIdentifier});
+            items.push({label:taxonomy.researchCategory, value:taxonomy.researchCategory});
         }
         return items;
     }
@@ -130,7 +143,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.themes = this.collectThemes(searchResults);
         this.authors = this.collectAuthors(searchResults);
         this.clearFilters();
-        console.log('Themes size=' + this.themes.length);
+        if (this.filteredResults.length < 5)
+        {
+         console.log("length" + this.filteredResults.length);
+
+          this.rows = 20;
+        }
+        console.log('Themes size=' + this.filteredResults);
     }
 
 
@@ -146,7 +165,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.searching = true;
         this.keyword = '';
         let that = this;
-        return this.searchService.searchPhrase(this.searchValue)
+        console.log("searchvalue--" + this.searchValue);
+        console.log("search taxonomy--" + this.searchTaxonomyKey);
+        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey)
             .subscribe(
             searchResults => that.onSuccess(searchResults),
             error => that.onError(error),
@@ -160,7 +181,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.suggestedKeywords = [];
         for(let i = 0; i < this.keywords.length; i++) {
             let keyw = this.keywords[i];
-            if(keyw.indexOf(keyword) >= 0) {
+            if(keyw.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
                 this.suggestedKeywords.push(keyw);
             }
         }
@@ -180,7 +201,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             }
         }
         this.suggestedThemes = this.sortAlphabetically(this.suggestedThemes);
-        this.suggestedThemes.splice(0, 0, 'All');
+        //this.suggestedThemes.splice(0, 0, 'All');
 
     }
 
@@ -194,7 +215,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             }
         }
         this.suggestedAuthors = this.sortAlphabetically(this.suggestedAuthors);
-        this.suggestedAuthors.splice(0, 0, 'All');
+        //this.suggestedAuthors.splice(0, 0, 'All');
 
     }
 
@@ -215,7 +236,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     onThemeDropdownClick(event:any) {
         //var tmp = this.suggestedThemes; // wierd, have to do this, otherwise nothing display
-        this.suggestedThemes = [];
+         this.suggestedThemes = [];
         //mimic remote call
         setTimeout(() => {
             this.suggestedThemes = this.themes;
@@ -275,7 +296,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
                 {
                     this.selectedAuthorDropdown = true;
                 }
-           
+
         }
 
         this.filteredResults =this.filterByKeyword(this.searchResults, this.selectedKeywords);
@@ -359,6 +380,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     openSummaryPage() {
         this.summaryPageOpen = true;
+      console.log("test" + this.summaryPageOpen);
     }
 
 
@@ -383,8 +405,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             if (params['identifier'] != null)
             {
                 this.searchValue =params['identifier'];
-                this.summaryPageOpen = true
-                console.log("inside identifier");
+                this.summaryPageOpen = true;
+                 console.log("inside search qi");
+                this.searchTaxonomyKey = '';
+
             }
             else
             {
@@ -393,7 +417,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
                 this.getTaxonomies();
                 console.log("inside search q");
             }
-            
+
             this.search();
         });
     }

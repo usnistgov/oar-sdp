@@ -1,7 +1,14 @@
-.background-white 
+.background-white
 {
 	background-color:#ffffff;
 }
+
+.background-blue
+{
+  background-color :#2c539e;
+}
+
+
 .custButton
 {
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2c539e+0,2c539e+100;Blue+3D+%232 */
@@ -11,4 +18,13 @@ background: -webkit-linear-gradient(top,  #2c539e 0%,#2c539e 100%); /* Chrome10-
 background: linear-gradient(to bottom,  #2c539e 0%,#2c539e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
 
+}
+.button {
+  background:none!important;
+  border:none;
+  padding:0!important;
+  font: inherit;
+  /*border is optional*/
+  border-bottom:1px solid #444;
+  cursor: pointer;
 }
