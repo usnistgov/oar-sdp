@@ -21,10 +21,16 @@ export class SearchService {
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  searchPhrase(searchValue:string): Observable<string[]> {
+  searchPhrase(searchValue:string, searchTaxonomyKey:string): Observable<string[]> {
 
       let params: URLSearchParams = new URLSearchParams();
       params.set('searchphrase', searchValue);
+      if (searchTaxonomyKey == "")
+      {
+        searchTaxonomyKey = 'All';
+      }
+      params.set('theme',searchTaxonomyKey);
+
 
 
 
@@ -32,7 +38,7 @@ export class SearchService {
 //                    .map((res: Response) => res.json())
 //                    .catch(this.handleError);
 
-      return this.http.get("http://oardev3.nist.gov:8080/RMMApi/records/search",
+      return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch",
           {
               search: params
           })

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit,ElementRef } from '@angular/core';
 import { Location} from '@angular/common';
 import {SelectItem, TabViewModule} from 'primeng/primeng';
 
@@ -6,8 +6,9 @@ import {SelectItem, TabViewModule} from 'primeng/primeng';
  * This class represents the headbar component.
  */
 
- declare var Modena: any;
- 
+declare var Ultima: any;
+
+
 @Component({
   moduleId: module.id,
   selector: 'sdp-homeheadbar',
@@ -15,10 +16,18 @@ import {SelectItem, TabViewModule} from 'primeng/primeng';
   styleUrls: ['homeheadbar.component.css']
 })
 
-export class HomeHeadbarComponent implements OnInit {
+export class HomeHeadbarComponent implements  AfterViewInit {
 
-  ngOnInit() {
-        Modena.init();
-    }
+  layoutCompact: boolean = true;
+  layoutMode: string = 'horizontal';
+  profileMode: string = 'inline';
+  darkMenu: boolean = false;
 
+  constructor( private el: ElementRef) {
+  }
+
+
+  ngAfterViewInit() {
+    Ultima.init(this.el.nativeElement);
+  }
 }

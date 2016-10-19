@@ -43,9 +43,14 @@
    border-left: thick solid #ff0000;
 }
 
-.background-white 
+.background-white
 {
   background-color:#ffffff;
+}
+
+.white
+{
+  color:#ffffff;
 }
 
 .background-blue
@@ -53,7 +58,7 @@
   background-color :#2c539e;
 }
 
-.background-black 
+.background-black
 {
   background-color:#000000;
 }
