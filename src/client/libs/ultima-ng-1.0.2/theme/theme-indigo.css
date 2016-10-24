@@ -863,6 +863,9 @@
 .fa-check:before {
   content: "check"; }
 
+.fa-twitter:before {
+  content: "\f099"; }
+
 .fa-caret-up:before {
   content: "keyboard_arrow_up"; }
 
@@ -1603,6 +1606,9 @@
 
 .ui-icon-check:before {
   content: "check"; }
+
+.ui-icon-twitter:before {
+  content: "\f099"; }
 
 .ui-icon-check-box:before {
   content: "check_box"; }
