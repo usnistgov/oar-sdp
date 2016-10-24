@@ -446,8 +446,8 @@ input[type="text"], input[type="password"], textarea{ -webkit-appearance: none; 
 
 .item-list li{
   display:inline;
-  padding:0px 35.2px 0px 0px;
-  padding:0rem 2.2rem 0rem 0rem;
+  padding:0px 0px 0px 0px;
+  padding:0rem .2rem 0rem 0rem;
   list-style-type:none;
   background-image:none;
   margin-bottom:24px;
@@ -531,58 +531,6 @@ a:visited {
   color: #2d9de7;
 }
 
-.social-btn {
-  margin-right: 2px;
-  margin-left: 0;
-  padding: 0;
-  height: 34px;
-  color: white;
-}
-
-.social-btn--large i:before {
-  font-size: 26px;
-  line-height: 40px;
-  height: 40px;
-  width: 40px;
-}
-
-.social-btn i:before {
-  font-size: 22px;
-  line-height: 34px;
-  height: 34px;
-  width: 34px;
-  text-align: center;
-  display: inline-block;
-}
-
-.social-btn--large {
-  height: 40px;
-}
-
-.fa-twitter:before, .social-share-twitter:before {
-  content: "\f099";
-}
-
-.fa-facebook:before, .social-share-facebook:before {
-  content: "\f09a";
-}
-
-.fa-google-plus:before, .social-share-googleplus:before {
-  content: "\f0d5";
-}
-
-.fa-youtube:before {
-  content: "\f167";
-}
-
-.fa-rss:before {
-  content: "\f09e";
-}
-
-.fa-envelope:before {
-  content: "\f0e0";
-}
-
 .social-btn .ext {
   display: none;
 }
@@ -625,7 +573,6 @@ span.ext {
 .menu--footer-menu {
   clear: both;
 }
-
 
 .menu--footer-menu ul.menu {
   margin: 0;
@@ -701,5 +648,3 @@ a:visited {
   margin-bottom: 0;
   margin-left: 0;
 }
-
-

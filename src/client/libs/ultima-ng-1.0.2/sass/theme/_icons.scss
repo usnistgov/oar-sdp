@@ -10,6 +10,8 @@
 .fa-angle-left {@include icon-override("play_arrow"); @include rotate(180deg);}
 .fa-angle-double-left {@include icon-override("fast_rewind");}
 .fa-check {@include icon-override("check");}
+.fa-twitter {@include icon-override("twitter");}
+
 .fa-caret-up {@include icon-override("keyboard_arrow_up");}
 .fa-caret-down {@include icon-override("keyboard_arrow_down");}
 .fa-caret-right {@include icon-override("keyboard_arrow_right");}
@@ -32,7 +34,7 @@
 .fa-arrow-circle-right {@include icon-override("play_circle_outline"); }
 .fa-arrow-circle-left {@include icon-override("play_circle_outline"); @include rotate(180deg);}
 .fa-calendar { @include icon-override("date_range"); }
-.fa-arrow-down{ @include icon-override("arrow_downward"); } 
+.fa-arrow-down{ @include icon-override("arrow_downward"); }
 .fa-arrow-up { @include icon-override("arrow_upward"); }
 
 .ui-icon-carat-2-n-s {@include icon-override("sort");}
@@ -235,6 +237,8 @@
 .ui-icon-chat-bubble { @include icon-override("chat_bubble"); }
 .ui-icon-chat-bubble-outline { @include icon-override("chat_bubble_outline"); }
 .ui-icon-check { @include icon-override("check"); }
+.ui-icon-twitter { @include icon-override("twitter"); }
+
 .ui-icon-check-box { @include icon-override("check_box"); }
 .ui-icon-check-box-outline-blank { @include icon-override("check_box_outline_blank"); }
 .ui-icon-check-circle { @include icon-override("check_circle"); }

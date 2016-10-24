@@ -17,6 +17,9 @@
     width: 286px;
 }
 
+field-items img
+{width:100%;}
+
 img {
     border: 0;
     max-width: 100%;
@@ -42,10 +45,14 @@ img {
     padding-bottom : .6rem;
 }
 
+.custom-icon:hover {
+  color:#8ac34e;
+}
+
 .item-list li{
   display:inline;
-  padding:0px 35.2px 0px 0px;
-  padding:0rem 2.2rem 0rem 0rem;
+  padding:0px 0px 0px 0px;
+  padding:0rem .2rem 0rem 0rem;
   list-style-type:none;
   background-image:none;
   margin-bottom:24px;
@@ -147,43 +154,8 @@ a:visited {
     line-height: 40px;
     height: 40px;
     width: 40px;
-}
-
-.social-btn i:before {
-    font-size: 22px;
-    line-height: 34px;
-    height: 34px;
-    width: 34px;
     text-align: center;
     display: inline-block;
-}
-
-.social-btn--large {
-    height: 40px;
-}
-
-.fa-twitter:before, .social-share-twitter:before {
-    content: "\f099";
-}
-
-.fa-facebook:before, .social-share-facebook:before {
-    content: "\f09a";
-}
-
-.fa-google-plus:before, .social-share-googleplus:before {
-    content: "\f0d5";
-}
-
-.fa-youtube:before {
-    content: "\f167";
-}
-
-.fa-rss:before {
-    content: "\f09e";
-}
-
-.fa-envelope:before {
-    content: "\f0e0";
 }
 
 .social-btn .ext {
@@ -225,7 +197,7 @@ span.ext {
 #footer .footer__contact {
     font-size: 15px;
     line-height: 17px;
-    margin: 30px 0;
+    margin: 0px 0;
 }
 
 .menu--footer-menu {
@@ -312,4 +284,12 @@ a:visited {
     margin-left: 0;
 }
 
-
+  .social-btn{margin-right:2px;margin-left:0;padding:0;height:40px;color:gray;}
+  .social-btn:hover,.social-btn:visited,.social-btn:active{color:gray;}
+  .social-btn i:before{font-size:22px;line-height:40px;height:40px;width:40px;text-align:center;display:inline-block;}
+  .social-btn i{transition:background-color 300ms ease;}
+  .social-btn i:hover{color:#fff;background:gray;height: 40px;line-height: 40px;text-align:center;display:inline-block;}
+  .social-btn i.ion-social-facebook:hover{background:#3a5897;}
+  .social-btn i.ion-social-googleplus:hover{background:#d2412f;}
+  .social-btn i.ion-social-twitter:hover{background:#0077b5;}
+  .social-btn i.ion-social-youtube:hover{background:#e52d27;}
