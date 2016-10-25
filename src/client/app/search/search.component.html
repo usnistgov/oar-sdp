@@ -2,8 +2,8 @@
   <h1 class=" TexAlCenter" >Full Record</h1>
   <div class="EmptyBox20"></div>
   <div *ngFor="let summaryCandidate of filteredResults">
-    <p-tabView>
-      <p-tabPanel header="Summary">
+    <p-accordion [multiple]="true">
+      <p-accordionTab header="Summary" [selected] = "true">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Title</b>
@@ -43,15 +43,15 @@
             </div>
           </div>
           <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Download JSON</b>
+            <div class="ui-grid-col-2 label"><b>Download Full Record</b>
             </div>
             <div class="ui-grid-col-10">
               <a href="http://10.200.222.248:8082/RMMApi/records/advancedsearch?identifier={{summaryCandidate.identifier}}" target="_blank" > JSON</a>
             </div>
           </div>
         </div>
-      </p-tabPanel>
-      <p-tabPanel header="Contact">
+      </p-accordionTab>
+      <p-accordionTab header="Contact">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2 label"><b>Contact</b>
@@ -68,8 +68,8 @@
             </div>
           </div>
         </div>
-      </p-tabPanel>
-      <p-tabPanel header="Record Info">
+      </p-accordionTab>
+      <p-accordionTab header="Record Info">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Unique Identifier</b>
@@ -108,8 +108,8 @@
             </div>
           </div>
         </div>
-      </p-tabPanel>
-      <p-tabPanel header="Data Access">
+      </p-accordionTab>
+      <p-accordionTab header="Data Access">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Access Level</b>
@@ -155,8 +155,8 @@
               </div>
           </div>
         </div>
-      </p-tabPanel>
-      <p-tabPanel header="Publication Info">
+      </p-accordionTab>
+      <p-accordionTab header="Publication Info">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Category</b>
@@ -191,8 +191,8 @@
             </div>
           </div>
         </div>
-      </p-tabPanel>
-    </p-tabView>
+      </p-accordionTab>
+    </p-accordion>
   </div>
 </div>
 
