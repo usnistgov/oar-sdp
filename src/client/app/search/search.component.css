@@ -88,3 +88,26 @@ background: -webkit-linear-gradient(top,  #2c539e 0%,#2c539e 100%); /* Chrome10-
 background: linear-gradient(to bottom,  #2c539e 0%,#2c539e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
 }
+
+.divExpCSV
+{
+  float:right;
+  margin-top: 5px;
+}
+
+.spanResults
+{
+  float: left;
+  color: #ffffff;
+  margin-top: 10px;
+}
+
+.landingPageBackground
+{
+  background-color:#2C539E;
+}
+
+.summaryPageBackground
+{
+  background-color: #595959;
+}
