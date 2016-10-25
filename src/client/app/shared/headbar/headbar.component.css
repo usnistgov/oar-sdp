@@ -22,5 +22,17 @@ img {
     height: auto;
 }
 
+.marTop20
+{
+  margin-top: 20px;
+}
 
+.textTopCenter
+{
+  color: white;text-align: center;font-size: xx-large;margin-top: 25px;
+}
 
+.background-black
+{
+  background-color: #000000;
+}
