@@ -2,9 +2,13 @@
 
   <div [ngClass]="{'layout-container':true,'menu-layout-static':(layoutMode=='static'||layoutMode=='horizontal'),
             'menu-layout-overlay':(layoutMode=='overlay'),'menu-layout-horizontal':(layoutMode=='horizontal')}">
-    <div class="topbar clearfix" style="background-color: #000000">
-
-        <div style="color: white;text-align: center;font-size: xx-large;margin-top: 20px;"> <img style="float: left;" srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology"> Science Data Portal </div>
+    <div class="topbar clearfix background-black" >
+        <div class="marTop20">
+          <img class="Fleft" srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
+        </div>
+        <div class="textTopCenter">
+          Science Data Portal
+        </div>
       <div class="topbar-right">
         <a id="menu-button" href="#" style="float: right">
           <i class="material-icons" style="color: black"></i>
