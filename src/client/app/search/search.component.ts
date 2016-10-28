@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy,AfterViewInit, ElementRef } from '@angular/core';
-import { SearchService,TaxonomyListService} from '../shared/index';
+import { SearchService,TaxonomyListService,SearchFieldsListService} from '../shared/index';
 import { ActivatedRoute}     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
@@ -17,7 +17,7 @@ declare var Ultima: any;
     selector: 'sdp-search',
     templateUrl: 'search.component.html',
     styleUrls: ['search.component.css'],
-    providers:[TaxonomyListService, SearchService]
+    providers:[TaxonomyListService, SearchService, SearchFieldsListService]
 })
 
 
@@ -36,6 +36,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     searchResults: any[] = [];
     searchValue:string;
     taxonomies: SelectItem[];
+    fields: SelectItem[];
     searchTaxonomyKey: string;
     cols: any[];
     rows: number = 5;
@@ -66,7 +67,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
      * Creates an instance of the SearchPanel
      *
      */
-    constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService: TaxonomyListService, public searchService:SearchService) {
+    constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService: TaxonomyListService, public searchService:SearchService,  public searchFieldsListService: SearchFieldsListService) {
     }
 
   ngAfterViewInit() {
@@ -165,8 +166,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.searching = true;
         this.keyword = '';
         let that = this;
-        console.log("searchvalue--" + this.searchValue);
-        console.log("search taxonomy--" + this.searchTaxonomyKey);
         return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey)
             .subscribe(
             searchResults => that.onSuccess(searchResults),

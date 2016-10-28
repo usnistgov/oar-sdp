@@ -177,15 +177,6 @@ span.ext {
     text-decoration: none;
 }
 
-.fa, .social-share a {
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
 .element-invisible, .element-focusable, #navigation .block-menu .block__title, #navigation .block-menu-block .block__title {
     position: absolute !important;
     height: 1px;

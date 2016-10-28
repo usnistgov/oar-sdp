@@ -227,32 +227,27 @@
           <div class="ui-g">
             <div class="ui-g-12">
               <label>Contact</label>
-              <div *ngIf="selectedAuthorDropdown === false">
+              <div *ngIf="selectedAuthorDropdown == false">
                 <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                                 (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                 [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                (onSelect)="filterResults($event,'Author')"
-                >
+                                (onSelect)="filterResults($event,'Author')">
                 </p-autoComplete>
               </div>
-              <div *ngIf="selectedAuthorDropdown === true">
-                <ul class="ui-autocomplete-multiple ui-widget ui-inputtext ui-state-default ui-corner-all">
-                  <li class="ui-autocomplete-input-token">
+              <div *ngIf="selectedAuthorDropdown == true">
                     <span>{{selectedAuthor}}</span>
-                    <i style="align:right" (click)="clearAuthorFilter()" icon="ui-icon-clear">
+                    <i style="vertical-align: middle" (click)="clearAuthorFilter()" class="material-icons"> clear
                     </i>
-                  </li>
-                </ul>
               </div>
             </div>
             <div class="ui-g-12">
               <label>Keyword</label>
               <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords" [suggestions]="suggestedKeywords"
                               (completeMethod)="filterKeywords($event)"
-                              [multiple]="true" [size]="30"
+                              [multiple]="true" [size]="100"
                               (onSelect)="filterResults($event)"
                               (onUnselect)="filterResults($event)"
-                              [minLength]="1">
+                              [minLength]="1" [maxlength] = "100">
               </p-autoComplete>
             </div>
             <div class="ui-g-12">
@@ -290,7 +285,7 @@
           expandableRows="true"
           #results scrollable="true" scrollHeight="600px" [value]="filteredResults"
           [rows]="rows" [paginator]="true" [paginatorPosition]="bottom" [pageLinks]="20"
-          [rowsPerPageOptions]="[5,10,20,50]" sortMode="multiple" >
+          [rowsPerPageOptions]="[10,20,50]" sortMode="multiple" >
 
           <div class="Container">
             <template let-resultItem pTemplate type="body">
@@ -303,7 +298,7 @@
             <template let-resultItem="rowData" pTemplate type="body">
               <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
                 <button class="summaryPageBackground"  type="button" pButton
-                        icon="ui-icon-open-in-new"
+                        icon="ui-icon-open-in-browser"
                         iconPos="left" title="Open Summary Page"
                 ></button>
               </a>
