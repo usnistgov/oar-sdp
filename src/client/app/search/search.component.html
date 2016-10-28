@@ -278,11 +278,12 @@
 
         <div class="card">
           <div>
-            <button *ngIf="filteredResults.length > 0" type="button" pButton icon="ui-icon-file-download" iconPos="left"
+            <button *ngIf="filteredResults.length > 0" type="button" pButton icon="ui-icon-file-download"
+                    iconPos="left"
                     label="CSV"
                     (click)='results.exportCSV()'
-                    style="float:right"></button>
-            <span  style="float: left;color: #ffffff;">&nbsp;&nbsp;
+                    class="divExpCSV"></button>
+            <span class="spanResults">&nbsp;&nbsp;
                     {{filteredResults.length}} Result(s)</span>
           </div>
         <p-dataTable
@@ -301,19 +302,19 @@
           <p-column styleClass="col-button " [style]="{'color':'#000000'}" header="Action">
             <template let-resultItem="rowData" pTemplate type="body">
               <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
-                <button style="background-color: #595959; target: '_blank'" type="button" pButton
+                <button class="summaryPageBackground"  type="button" pButton
                         icon="ui-icon-open-in-new"
                         iconPos="left" title="Open Summary Page"
                 ></button>
               </a>
               <a [(href)]="resultItem.landingPage" target="_blank">
                 <button type="button" pButton icon="ui-icon-open-in-new"
-                        iconPos="left" style="background-color:#2C539E" title="Open Landing Page"></button>
+                        iconPos="left" class="landingPageBackground" title="Open Landing Page"></button>
               </a>
             </template>
           </p-column>
           <p-column field="title"
-                    [sortable]="true" [filter]="true" [style]="{'color':'#000000'}" header="Title"
+                    [sortable]="true" [filter]="true" header="Title" [style]="{'color':'#000000'}"
                     filterMatchMode="contains"></p-column>
           <p-column field="contactPoint.fn"
                     [sortable]="true" [filter]="true" header="Contact" [style]="{'color':'#000000'}"
