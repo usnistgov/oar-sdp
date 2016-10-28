@@ -1,4 +1,4 @@
-    <div style="align-content: center" >
+<div style="align-content: center" >
       <div class="card">
                  <span class="DispBlock Fs20 FontRobotoLight black TexAlCenter">Welcome to NIST</span>
                 <div class="EmptyBox20"></div>
@@ -12,21 +12,42 @@
 
                               </p-dropdown>
                           </div>
-                            <div class="ui-grid-col-12">
+                            <div class="ui-grid-col-10">
                                 <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..." (keyup.enter) = "search(searchValue,searchTaxonomyKey)"  />
                             </div>
-                            <div class="ui-grid-col-2" style="height: auto;"><button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button></div>
+                            <div class="ui-grid-col-2"><button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button></div>
                         </div>
-                        <div style="padding-left: 13%">
-                          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
+                          <div *ngIf="showAdvancedSearch == false" class="ui-grid-row" style="padding-left: 15%">
+                            <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
+                            <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" > &nbsp;<b> Show Advanced Search </b></a>
+                          </div>
+                          <div *ngIf="showAdvancedSearch == true" style="padding-left: 15%">
+                            <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
+                            <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" > &nbsp;<b> Hide Advanced Search </b></a>
+                          </div>
+
+                      <div class="EmptyBox20"></div>
+
+                      <template [ngIf]="showAdvancedSearch == true"  >
+                        <div  class="ui-grid-row"  *ngFor='let row of rows; let rowIndex = index'>
+                          <div class="ui-grid-col-2">
+                            <p-dropdown [options]="fields" [(ngModel)]="row.column1" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}"></p-dropdown>
+                            </div>
+                          <div class="ui-grid-col-10">
+                            <input type="text" pInputText [(ngModel)]="row.column2" placeholder="Search..."   />
+                          </div>
+
+                        <div class="text-center" class="ui-grid-col-2">
+                          <button (click)="addRow()">Add Row</button>
+                          <button (click)="deleteRow(rowIndex)">Delete Row</button>
+
                         </div>
+                      </div>
+                        </template>
                     </div>
                 </div>
-                <div class="EmptyBox20 ShowOnMobile"></div>
-                <div class="EmptyBox120 ShowOnDesktop"></div>
-        </div>
-
-        </div>
+      </div>
+</div>
 
 <p-dialog header="Search Examples" [(visible)]="display" [style]="{'background-color': '#000000'}">
 

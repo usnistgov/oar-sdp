@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { SearchFieldsListService } from './searchfields-list/index';
 import { TaxonomyListService } from './taxonomy-list/index';
 import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
@@ -32,7 +32,7 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [TaxonomyListService,SearchService]
+      providers: [TaxonomyListService,SearchService,SearchFieldsListService]
     };
   }
 }
