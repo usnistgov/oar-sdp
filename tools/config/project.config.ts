@@ -37,8 +37,7 @@ export class ProjectConfig extends SeedConfig {
       ...this.NPM_DEPENDENCIES,
       // {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
       // {src: 'lodash/lodash.min.js', inject: 'libs'},
-        {src: 'primeui/primeui-ng-all.min.css', inject: true},
-      {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
+      {src: 'primeng/primeng.js', inject: 'libs'},
       { src: 'primeng/resources/primeng.min.css', inject: true }
 
 
