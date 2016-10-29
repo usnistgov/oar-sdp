@@ -59,8 +59,8 @@ export class ProjectConfig extends SeedConfig {
       {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/nanoscroller.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/ripple.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/swipe.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/theme/theme-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/css/layout-indigo.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/theme/theme-purple-cyan.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/css/layout-purple-cyan.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/css/animate.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ionicons-2.0.1/css/ionicons.min.css`, inject: true, vendor: false},
 
