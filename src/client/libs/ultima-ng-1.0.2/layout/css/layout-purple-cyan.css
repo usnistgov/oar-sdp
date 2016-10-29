@@ -980,7 +980,7 @@ body {
         transition: all 0.3s;
         font-size: 36px; }
         .layout-container .topbar .topbar-right #menu-button i:before {
-          content: "chevron_left"; }
+          content: "menu"; }
       .layout-container .topbar .topbar-right #menu-button.menu-button-rotate i {
         -webkit-transform: rotate(180deg);
         -moz-transform: rotate(180deg);
@@ -1545,7 +1545,7 @@ body .layout-wrapper.layout-compact {
       font-size: 18px; }
   body .layout-wrapper.layout-compact .layout-container .ultima-menu li ul li a {
     padding: 8px 16px 8px 32px;
-    font-size: 14px; }
+    font-size: 12px; }
   body .layout-wrapper.layout-compact .layout-container .ultima-menu li ul li ul li a {
     padding-left: 48px; }
   body .layout-wrapper.layout-compact .layout-container .ultima-menu li ul li ul ul li a {
@@ -2151,7 +2151,7 @@ body .layout-wrapper.layout-compact {
     top: 36px; }
     body .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li a {
       padding: 8px 16px 8px 16px;
-      font-size: 14px; }
+      font-size: 12px; }
     body .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li ul li a {
       padding-left: 32px; }
     body .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li ul ul li a {
@@ -2167,7 +2167,7 @@ body .layout-wrapper.layout-compact {
     width: auto; } }
 @media (max-width: 1024px) {
   body .layout-wrapper.layout-compact .layout-container .topbar .topbar-right .topbar-items > li > a {
-    font-size: 14px;
+    font-size: 12px;
     padding: 14px 16px; }
     body .layout-wrapper.layout-compact .layout-container .topbar .topbar-right .topbar-items > li > a i {
       font-size: 20px; } }
