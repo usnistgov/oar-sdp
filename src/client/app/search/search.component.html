@@ -51,7 +51,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab header="Contact">
+      <p-accordionTab header="Contact" [selected] = "true">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2 label"><b>Contact</b>
@@ -69,7 +69,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab header="Record Info">
+      <p-accordionTab header="Record Info" [selected] = "true">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Unique Identifier</b>
@@ -109,7 +109,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab header="Data Access">
+      <p-accordionTab header="Data Access" [selected] = "true">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Access Level</b>
@@ -156,7 +156,7 @@
           </div>
         </div>
       </p-accordionTab>
-      <p-accordionTab header="Publication Info">
+      <p-accordionTab header="Publication Info" [selected] = "true">
         <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
           <div class="ui-grid-row">
             <div class="ui-grid-col-2"><b>Category</b>
@@ -244,10 +244,10 @@
               <label>Keyword</label>
               <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords" [suggestions]="suggestedKeywords"
                               (completeMethod)="filterKeywords($event)"
-                              [multiple]="true" [size]="100"
+                              [multiple]="true" [size]="30"
                               (onSelect)="filterResults($event)"
                               (onUnselect)="filterResults($event)"
-                              [minLength]="1" [maxlength] = "100">
+                              [minLength]="1" [maxlength] = "30">
               </p-autoComplete>
             </div>
             <div class="ui-g-12">
@@ -272,8 +272,8 @@
       <div class="ui-g-12 ui-md-8 ">
 
         <div class="card">
-          <div>
-            <button *ngIf="filteredResults.length > 0" type="button" pButton icon="ui-icon-file-download"
+          <div *ngIf="filteredResults.length > 0">
+            <button  type="button" pButton icon="ui-icon-file-download"
                     iconPos="left"
                     label="CSV"
                     (click)='results.exportCSV()'
@@ -281,64 +281,107 @@
             <span class="spanResults">&nbsp;&nbsp;
                     {{filteredResults.length}} Result(s)</span>
           </div>
-        <p-dataTable
-          expandableRows="true"
-          #results scrollable="true" scrollHeight="600px" [value]="filteredResults"
-          [rows]="rows" [paginator]="true" [paginatorPosition]="bottom" [pageLinks]="20"
-          [rowsPerPageOptions]="[10,20,50]" sortMode="multiple" >
-
-          <div class="Container">
-            <template let-resultItem pTemplate type="body">
-              <span><b>Description</b> : {{resultItem.description}}</span><br>
-              <div class="EmptyBox10"></div>
-              <span><b>Keywords</b> : {{resultItem.keyword}}</span>
-            </template>
+          <div *ngIf="filteredResults.length<=10">
+            <p-dataTable
+              expandableRows="true"
+              #results [value]="filteredResults"
+              [rows]="10" [paginator]="true" [responsive] = "true" [paginatorPosition]="bottom" [pageLinks]="10"
+               sortMode="multiple" >
+              <div class="Container">
+                <template let-resultItem pTemplate type="body">
+                  <span><b>Description</b> : {{resultItem.description}}</span><br>
+                  <div class="EmptyBox10"></div>
+                  <span><b>Keywords</b> : {{resultItem.keyword}}</span>
+                </template>
+              </div>
+              <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
+                <template let-resultItem="rowData" pTemplate type="body">
+                  <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
+                    <button class="summaryPageBackground"  type="button" pButton
+                            icon="ui-icon-open-in-browser"
+                            iconPos="left" title="Open Summary Page"
+                    ></button>
+                  </a>
+                  <a [(href)]="resultItem.landingPage" target="_blank">
+                    <button type="button" pButton icon="ui-icon-open-in-new"
+                            iconPos="left" class="landingPageBackground" title="Open Landing Page"></button>
+                  </a>
+                </template>
+              </p-column>
+              <p-column field="title"
+                        [sortable]="true" [filter]="true" header="Title" [style]="{'color':'#000000'}"
+                        filterMatchMode="contains"></p-column>
+              <p-column field="contactPoint.fn"
+                        [sortable]="true" [filter]="true" header="Contact" [style]="{'color':'#000000'}"
+                        filterMatchMode="contains"></p-column>
+              <p-column field="description" [filter]="true" [style]="{'width':'150px'}"  header="Description"
+                        expander="true"
+                        filterMatchMode="contains">
+                <template let-col let-resultItem="rowData" pTemplate type="body">
+                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
+                </template>
+              </p-column>
+              <p-column field="keyword" [filter]="true" [style]="{'width':'150px'}"  header="Keywords" expander="true"
+                        filterMatchMode="contains">
+                <template let-col let-resultItem="rowData" pTemplate type="body">
+                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
+                </template>
+              </p-column>
+              <p-column field="modified" [style]="{'width':'150px'}" filterMatchMode="contains"
+                        [sortable]="true" [filter]="true" header="Date Modified"></p-column>
+            </p-dataTable>
           </div>
-          <p-column styleClass="col-button " [style]="{'color':'#000000'}" header="Action">
-            <template let-resultItem="rowData" pTemplate type="body">
-              <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
-                <button class="summaryPageBackground"  type="button" pButton
-                        icon="ui-icon-open-in-browser"
-                        iconPos="left" title="Open Summary Page"
-                ></button>
-              </a>
-              <a [(href)]="resultItem.landingPage" target="_blank">
-                <button type="button" pButton icon="ui-icon-open-in-new"
-                        iconPos="left" class="landingPageBackground" title="Open Landing Page"></button>
-              </a>
-            </template>
-          </p-column>
-          <p-column field="title"
-                    [sortable]="true" [filter]="true" header="Title" [style]="{'color':'#000000'}"
-                    filterMatchMode="contains"></p-column>
-          <p-column field="contactPoint.fn"
-                    [sortable]="true" [filter]="true" header="Contact" [style]="{'color':'#000000'}"
-                    filterMatchMode="contains"></p-column>
-          <p-column field="description" [filter]="true" [style]="{'color':'#000000'}" header="Description"
-                    expander="true"
-                    filterMatchMode="contains">
-            <template let-col let-resultItem="rowData" pTemplate type="body">
-              <span class="glimpse-content">{{resultItem[col.field]}}</span>
-            </template>
-          </p-column>
-          <p-column field="keyword" [filter]="true" [style]="{'color':'#000000'}" header="Keywords" expander="true"
-                    filterMatchMode="contains">
-            <template let-col let-resultItem="rowData" pTemplate type="body">
-              <span class="glimpse-content">{{resultItem[col.field]}}</span>
-            </template>
-          </p-column>
-          <p-column field="modified" [style]="{'color':'#000000'}" filterMatchMode="contains"
-                    [sortable]="true" [filter]="true" header="Date Modified"></p-column>
-        </p-dataTable>
+          <div *ngIf="filteredResults.length>10">
+            <p-dataTable
+              expandableRows="true"
+              #results [value]="filteredResults"
+              [rows]="10" [paginator]="true" [responsive] = "true" [rowsPerPageOptions]="[10,20,50]" [paginatorPosition]="bottom" [pageLinks]="10"
+              sortMode="multiple" >
+              <div class="Container">
+                <template let-resultItem pTemplate type="body">
+                  <span><b>Description</b> : {{resultItem.description}}</span><br>
+                  <div class="EmptyBox10"></div>
+                  <span><b>Keywords</b> : {{resultItem.keyword}}</span>
+                </template>
+              </div>
+              <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
+                <template let-resultItem="rowData" pTemplate type="body">
+                  <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
+                    <button class="summaryPageBackground"  type="button" pButton
+                            icon="ui-icon-open-in-browser"
+                            iconPos="left" title="Open Summary Page"
+                    ></button>
+                  </a>
+                  <a [(href)]="resultItem.landingPage" target="_blank">
+                    <button type="button" pButton icon="ui-icon-open-in-new"
+                            iconPos="left" class="landingPageBackground" title="Open Landing Page"></button>
+                  </a>
+                </template>
+              </p-column>
+              <p-column field="title"
+                        [sortable]="true" [filter]="true" header="Title" [style]="{'color':'#000000'}"
+                        filterMatchMode="contains"></p-column>
+              <p-column field="contactPoint.fn"
+                        [sortable]="true" [filter]="true" header="Contact" [style]="{'color':'#000000'}"
+                        filterMatchMode="contains"></p-column>
+              <p-column field="description" [filter]="true" [style]="{'width':'150px'}"  header="Description"
+                        expander="true"
+                        filterMatchMode="contains">
+                <template let-col let-resultItem="rowData" pTemplate type="body">
+                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
+                </template>
+              </p-column>
+              <p-column field="keyword" [filter]="true"  header="Keywords" [style]="{'width':'150px'}"  expander="true"
+                        filterMatchMode="contains">
+                <template let-col let-resultItem="rowData" pTemplate type="body">
+                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
+                </template>
+              </p-column>
+              <p-column field="modified" [style]="{'width':'150px'}" filterMatchMode="contains"
+                        [sortable]="true" [filter]="true" header="Date Modified"></p-column>
+            </p-dataTable>
           </div>
-        <div
-          *ngIf="filteredResults.length <= 0">
-          No Result found.
-          <div class="ui-g-12">
-            <button type="button" label="Refresh" icon="ui-icon-refresh" pButton></button>
           </div>
-        </div>
+          </div>
       </div>
     </div>
-  </div>
-</div>

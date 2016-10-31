@@ -4049,7 +4049,7 @@ body {
     font-feature-settings: 'liga'; }
   body .ui-inputtext {
     background: transparent;
-    border-width: 0 0 1px 0;
+    border-width: 1px 1px 1px 1px;
     padding: 2px 2px 1px 2px;
     font-size: 16px;
     border-color: #bdbdbd;
@@ -4062,7 +4062,7 @@ body {
     -webkit-border-radius: 0px;
     border-radius: 0px; }
     body .ui-inputtext.ui-state-focus {
-      border-width: 0 0 2px 0;
+      border-width: 2px 2px 2px 2px;
       border-color: #673AB7;
       padding-bottom: 0px; }
     body .ui-inputtext.ui-state-disabled {
@@ -4913,7 +4913,7 @@ body {
     body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-token .ui-autocomplete-token-icon {
       margin-top: -12px; }
   body .ui-dropdown {
-    border-bottom: 1px solid #bdbdbd;
+    border: 1px solid #bdbdbd;
     box-sizing: border-box;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -5375,7 +5375,7 @@ body {
       top: 5px;
       left: -5px; }
       body .ui-datepicker .ui-timepicker-div .ui_tpicker_time input.ui-state-focus {
-        border-width: 0 0 2px 0;
+        border-width: 2px 2px 2px 2px;
         border-color: #673AB7;
         padding-bottom: 0px; }
     body .ui-datepicker .ui-timepicker-div dl {

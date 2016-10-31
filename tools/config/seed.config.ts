@@ -344,6 +344,7 @@ export class SeedConfig {
     ],
     paths: {
       [this.BOOTSTRAP_MODULE]: `${this.APP_BASE}${this.BOOTSTRAP_MODULE}`,
+      'primeng': `${this.APP_BASE}node_modules/primeng`,
       '@angular/common': `node_modules/@angular/common/bundles/common.umd.js`,
       '@angular/compiler': `node_modules/@angular/compiler/bundles/compiler.umd.js`,
       '@angular/core': `node_modules/@angular/core/bundles/core.umd.js`,
