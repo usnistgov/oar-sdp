@@ -4,7 +4,9 @@
             'menu-layout-overlay':(layoutMode=='overlay'),'menu-layout-horizontal':(layoutMode=='horizontal')}">
     <div class="topbar clearfix background-black" >
         <div class="marTop20">
+          <a href="/" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
           <img class="Fleft" srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
+            </a>
         </div>
         <div class="textTopCenter">
           Science Data Portal
@@ -34,8 +36,8 @@
             <li role="menu"><a class="ripplelink" href="https://github.com/usnistgov" target="_blank"><i class="material-icons">device_hub</i><span>NIST GitHub</span></a></li>
             <li role="menu"><a class="ripplelink" [routerLink]="['/api']"><i class="material-icons">extension</i><span>API</span></a></li>
             <li role="menu"><a class="ripplelink" [routerLink]="['/faq']"><i class="material-icons">question_answer</i><span>FAQ</span></a></li>
-            <li role="menu"><a class="ripplelink" [routerLink]="['/data_cart']" ><i class="material-icons">shopping_cart</i><span>Data Cart</span></a></li>
-            <li><a class="ripplelink" [routerLink]="['/help']"><i class="material-icons">help</i><span>Help</span></a></li>
+            <li role="menu" style="float: right;margin-right: 20px"><a class="ripplelink" [routerLink]="['/data_cart']" ><i class="material-icons">shopping_cart</i></a></li>
+            <li role="menu" style="float: right;"><a class="ripplelink" [routerLink]="['/help']"><i class="material-icons">help</i></a></li>
           </ul>
 
         </div>
