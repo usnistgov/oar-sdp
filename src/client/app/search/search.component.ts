@@ -4,6 +4,7 @@ import { ActivatedRoute}     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import {SelectItem} from 'primeng/primeng';
+import {Message} from "primeng/components/common/api";
 
 
 declare var Ultima: any;
@@ -32,8 +33,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   darkMenu: boolean = false;
 
   profileMode: string = 'inline';
+    msgs: Message[] = [];
+    exception : string;
+    errorMsg: string;
+    status: string;
     errorMessage: string;
     searchResults: any[] = [];
+    errorMessageArray: string[];
     searchValue:string;
     taxonomies: SelectItem[];
     fields: SelectItem[];
@@ -146,20 +152,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.clearFilters();
         if (this.filteredResults.length < 5)
         {
-         console.log("length" + this.filteredResults.length);
-
           this.rows = 20;
         }
-        console.log('Themes size=' + this.filteredResults);
     }
 
 
     onError(error:any[]) {
-        this.errorMessage = <any>error;
         this.searchResults = [];
         this.filteredResults = [];
         this.keywords = [];
         this.themes = [];
+        this.msgs = [];
+        this.exception = (<any>error).ex;
+        this.errorMsg = (<any>error).message;
+        this.status = (<any>error).httpStatus;
+        this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
     }
 
     search() {
@@ -169,8 +176,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey)
             .subscribe(
             searchResults => that.onSuccess(searchResults),
-            error => that.onError(error),
-            () => this.searching = false
+            error => that.onError(error)
          );
     }
 
@@ -192,7 +198,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     filterThemes(event:any) {
         let theme = event.query;
         this.suggestedThemes = [];
-        console.log('themes');
         for(let i = 0; i < this.themes.length; i++) {
             let them = this.themes[i];
             if(them.toLowerCase().indexOf(theme.toLowerCase()) >= 0) {
@@ -303,7 +308,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.suggestedThemes = this.collectThemes(this.filteredResults);
         this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedThemes);
         this.suggestedAuthors = this.collectAuthors(this.filteredResults);
-        console.log("selected author" + this.selectedAuthor);
         this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
     }
 
@@ -379,7 +383,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
 
     openSummaryPage() {
         this.summaryPageOpen = true;
-      console.log("test" + this.summaryPageOpen);
     }
 
 
@@ -405,7 +408,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
             {
                 this.searchValue =params['identifier'];
                 this.summaryPageOpen = true;
-                 console.log("inside search qi");
                 this.searchTaxonomyKey = '';
 
             }
@@ -414,7 +416,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.searchValue =params['q'];
                 this.searchTaxonomyKey=params['key'];
                 this.getTaxonomies();
-                console.log("inside search q");
             }
 
             this.search();

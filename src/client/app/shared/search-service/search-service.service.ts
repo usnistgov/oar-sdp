@@ -3,7 +3,7 @@ import { Http, Response,URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-
+import 'rxjs/add/observable/throw';
 /**
  * This class provides the Search service with methods to search for records from tha rmm.
  */
@@ -40,16 +40,16 @@ export class SearchService {
 
       return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch",
           {
-              search: params
+            search:params
           })
           .map((res: Response) => res.json())
-          .catch(this.handleError);
+          .catch((error:any) => Observable.throw(error.json()));
+      }
 
-  }
 
   /**
     * Handle HTTP error
-    */
+
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message
@@ -58,5 +58,6 @@ export class SearchService {
     console.error(errMsg); // log to console instead
     return Observable.throw(errMsg);
   }
+   */
 }
 

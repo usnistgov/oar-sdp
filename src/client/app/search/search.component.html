@@ -195,6 +195,7 @@
     </p-accordion>
   </div>
 </div>
+<p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true" >
   <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad ">
@@ -218,7 +219,7 @@
       </div>
     </div>
   </div>
-    <div *ngIf="!searching">
+    <div *ngIf="searching">
 
     <div class="ui-g " >
       <div class="ui-g-12 ui-md-6 ui-lg-4 ui-fluid " >
