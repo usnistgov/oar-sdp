@@ -4,7 +4,7 @@
                 <div class="EmptyBox20"></div>
                 <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
                 <div class="EmptyBox20"></div>
-                <div class="Wid100 ui-fluid Responsive100">
+                <div class="Wid100 ">
                     <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad">
                         <div class="ui-grid-row">
                           <div class="ui-grid-col-2">
@@ -17,13 +17,21 @@
                             </div>
                             <div class="ui-grid-col-2"><button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button></div>
                         </div>
-                          <div *ngIf="showAdvancedSearch == false" class="ui-grid-row" style="padding-left: 15%">
-                            <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
-                            <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" > &nbsp;<b> Show Advanced Search </b></a>
+                          <div *ngIf="showAdvancedSearch == false" class="ui-grid-row" style="padding-left: 14%">
+                            <div class="ui-grid-col-8">
+                                <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
+                            </div>
+                            <div class="ui-grid-col-3">
+                             <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" > &nbsp;<b> Show Advanced Search </b></a>
+                              </div>
                           </div>
-                          <div *ngIf="showAdvancedSearch == true" style="padding-left: 15%">
-                            <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
-                            <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" > &nbsp;<b> Hide Advanced Search </b></a>
+                          <div *ngIf="showAdvancedSearch == true" class="ui-grid-row" style="padding-left: 14%">
+                            <div class="ui-grid-col-8">
+                              <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
+                            </div>
+                            <div class="ui-grid-col-3">
+                              <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" > &nbsp;<b> Hide Advanced Search </b></a>
+                            </div>
                           </div>
 
                       <div class="EmptyBox20"></div>

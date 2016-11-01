@@ -10,3 +10,13 @@ h2 {
   margin-bottom: 0;
   margin-top: 0.83em;
 }
+
+hr {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+  border: 1px solid #666;
+  padding-bottom: -1px;
+  margin: 1.25rem 0;
+}
