@@ -19,3 +19,8 @@ h2 {
 {
 	align: center;
 }
+
+.divPad
+{
+  padding: 50px 100px 50px 100px;
+}

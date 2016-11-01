@@ -276,7 +276,7 @@
     left: 50%;
     text-align: center; }
   .splash-screen .bar:nth-child(1) {
-    background-color: #E91E63;
+    background-color: #03A9F4;
     animation: loading 3s linear infinite; }
   .splash-screen .bar:nth-child(2) {
     background-color: #8BC34A;
@@ -567,7 +567,7 @@
   .exception-body.notfound-page .exception-panel i {
     color: #9fa8da; }
   .exception-body.accessdenied-page .exception-type {
-    background-color: #e91e63; }
+    background-color: #03A9F4; }
     .exception-body.accessdenied-page .exception-type img {
       width: 50%; }
   .exception-body.accessdenied-page .exception-panel i {
@@ -665,7 +665,7 @@
       margin-top: 30px;
       font-size: 36px; }
     .landing-wrapper #features .feature-icon:hover {
-      background-color: #e91e63; }
+      background-color: #03A9F4; }
       .landing-wrapper #features .feature-icon:hover i {
         color: #ffffff; }
 .landing-wrapper #promotion {
@@ -735,9 +735,9 @@
   .landing-wrapper #pricing .pricing-box.pricing-basic i {
     color: #3f51b5; }
   .landing-wrapper #pricing .pricing-box.pricing-standard .pricing-header {
-    background-color: #e91e63; }
+    background-color: #03A9F4; }
   .landing-wrapper #pricing .pricing-box.pricing-standard i {
-    color: #e91e63; }
+    color: #03A9F4; }
   .landing-wrapper #pricing .pricing-box.pricing-professional .pricing-header {
     background-color: #607d8b; }
   .landing-wrapper #pricing .pricing-box.pricing-professional i {
@@ -933,7 +933,7 @@ body {
       position: relative;
       left: -16px;
       top: 3px;
-      background-color: #E91E63;
+      background-color: #03A9F4;
       -moz-border-radius: 50%;
       -webkit-border-radius: 50%;
       border-radius: 50%;
@@ -1112,7 +1112,7 @@ body {
         background-color: #676767; }
     .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
       color: #ffffff;
-      background-color: #E91E63; }
+      background-color: #03A9F4; }
 .layout-container.menu-layout-overlay .layout-menu {
   margin-left: -250px; }
 .layout-container.menu-layout-overlay .layout-main {
@@ -1235,7 +1235,7 @@ body {
 
 .ajax-loader {
   font-size: 32px;
-  color: #E91E63; }
+  color: #03A9F4; }
 
 @media (min-width: 1025px) {
   .layout-container .topbar-items {
@@ -1256,7 +1256,7 @@ body {
           position: absolute;
           right: -5px;
           top: -5px;
-          background-color: #E91E63;
+          background-color: #03A9F4;
           color: #ffffff;
           -moz-border-radius: 50%;
           -webkit-border-radius: 50%;
@@ -1386,7 +1386,7 @@ body {
           background-color: #e8e8e8; }
       .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a {
         color: #ffffff;
-        background-color: #E91E63; }
+        background-color: #03A9F4; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a i {
           color: #ffffff; }
     .layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark {
@@ -1399,7 +1399,7 @@ body {
             color: #ffffff; }
       .layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
         color: #ffffff;
-        background-color: #E91E63; }
+        background-color: #03A9F4; }
       .layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li ul {
         background-color: #424242; }
   .layout-container.menu-layout-horizontal .layout-main {
@@ -1471,7 +1471,7 @@ body {
         position: absolute;
         left: 30px;
         top: 10px;
-        background-color: #E91E63;
+        background-color: #03A9F4;
         color: #ffffff;
         -moz-border-radius: 50%;
         -webkit-border-radius: 50%;
