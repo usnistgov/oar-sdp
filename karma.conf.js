@@ -4,7 +4,7 @@
 
 var argv = require('yargs').argv;
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -20,6 +20,7 @@ module.exports = function(config) {
     files: [
       // Polyfills.
       'node_modules/core-js/client/shim.min.js',
+      'node_modules/intl/dist/Intl.min.js',
 
       'node_modules/traceur/bin/traceur.js',
 
@@ -29,7 +30,6 @@ module.exports = function(config) {
       // Zone.js dependencies
       'node_modules/zone.js/dist/zone.js',
       'node_modules/zone.js/dist/long-stack-trace-zone.js',
-      'node_modules/zone.js/dist/jasmine-patch.js',
       'node_modules/zone.js/dist/async-test.js',
       'node_modules/zone.js/dist/fake-async-test.js',
       'node_modules/zone.js/dist/sync-test.js',
@@ -44,7 +44,6 @@ module.exports = function(config) {
       // Angular itself
       { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
       { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
-
 
       { pattern: 'dist/dev/**/*.js', included: false, watched: true },
       { pattern: 'dist/dev/**/*.html', included: false, watched: true, served: true },
@@ -68,6 +67,7 @@ module.exports = function(config) {
     exclude: [
       'node_modules/**/*spec.js'
     ],
+
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -107,13 +107,6 @@ module.exports = function(config) {
         base: 'Chrome',
         flags: ['--no-sandbox']
       }
-    },
-
-    coverageReporter: {
-      dir: 'coverage/',
-      reporters: [
-        { type: 'json', subdir: '.', file: 'coverage-final.json' }
-      ]
     },
 
     // Continuous Integration mode

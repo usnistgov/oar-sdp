@@ -335,7 +335,7 @@ Forks of this project demonstrate how to extend and integrate with other librari
 │   │       ├── build.js.e2e.ts
 │   │       ├── build.js.prod.ts
 │   │       ├── build.js.test.ts
-│   │       ├── build.js.tools.ts
+│   │       ├── build.tools.ts
 │   │       ├── check.versions.ts
 │   │       ├── clean.all.ts
 │   │       ├── clean.coverage.ts
