@@ -48,7 +48,7 @@ The seed provides the following tasks:
 | `build.js.e2e.ts`      | Transpiles the TypeScript files (excluding specs and e2e specs) for the `e2e` environment |
 | `build.js.prod.ts`     | Transpiles the TypeScript files (excluding specs and e2e specs) for the `prod` environment |
 | `build.js.test.ts`     | Transpiles the TypeScript files (excluding specs and e2e specs) for the `test` environment |
-| `build.js.tools.ts`    | Transpiles the TypeScript files located in `/tools` |
+| `build.tools.ts`    | Transpiles the TypeScript files located in `/tools` |
 | `check.versions.ts`    | Checks if the required Node and NPM (as defined in `/config/seed.config.ts`) are installed |
 | `clean.all.ts`         | Cleans all files within the `/dist` directory |
 | `clean.coverage.ts`    | Cleans all files within the `/coverage` directory |
