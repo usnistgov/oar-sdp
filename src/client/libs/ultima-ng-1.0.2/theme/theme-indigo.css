@@ -4972,7 +4972,7 @@ body {
       top: 5px;
       right: 8px; }
   body .ui-multiselect {
-    border-bottom: 1px solid #bdbdbd;
+    border: 1px solid #bdbdbd;
     box-sizing: border-box;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
