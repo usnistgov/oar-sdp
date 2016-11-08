@@ -49,7 +49,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     columnOptions: SelectItem[];
     searching:boolean = false;
     keywords: string[];
-    themes:string[] = [];
+    themes:SelectItem[] = [];
     authors:string[] = [];
     filteredResults:any[] = [];
     keyword:string;
@@ -101,12 +101,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     collectThemes(searchResults:any[]) {
-        let themes :string[] = [];
+        let themes :SelectItem[] = [];
+        let themesArray:string[] = [];
         for (let resultItem of searchResults) {
             if(resultItem.theme && resultItem.theme !== null && resultItem.theme.length > 0) {
                 for (let theme of resultItem.theme) {
-                    if(themes.indexOf(theme) < 0) {
-                        themes.push(theme);
+                    if(themesArray.indexOf(theme) < 0) {
+                        themes.push({label:theme,value:theme});
+                        themesArray.push(theme);
                     }
                 }
             }
@@ -169,7 +171,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
     }
 
-    search() {
+    search(searchValue:string,searchTaxonomyKey:string) {
         this.searching = true;
         this.keyword = '';
         let that = this;
@@ -194,7 +196,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.suggestedKeywords = this.sortAlphabetically(this.suggestedKeywords);
 //        this.suggestedKeywords.splice(0, 0, "All");
     }
-
+    /*
     filterThemes(event:any) {
         let theme = event.query;
         this.suggestedThemes = [];
@@ -208,6 +210,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         //this.suggestedThemes.splice(0, 0, 'All');
 
     }
+    */
 
     filterAuthors(event:any) {
         let author = event.query;
@@ -237,7 +240,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return sortedArray;
     }
 
-
+    /*
     onThemeDropdownClick(event:any) {
         //var tmp = this.suggestedThemes; // wierd, have to do this, otherwise nothing display
          this.suggestedThemes = [];
@@ -246,6 +249,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
             this.suggestedThemes = this.themes;
         }, 100);
     }
+    */
 
     onAuthorDropdownClick(event:any) {
         //var tmp = this.suggestedAuthors; // wierd, have to do this, otherwise nothing display
@@ -302,10 +306,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
 
         }
-
+        console.log("inside filter results");
         this.filteredResults =this.filterByKeyword(this.searchResults, this.selectedKeywords);
         this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        this.suggestedThemes = this.collectThemes(this.filteredResults);
+        //this.suggestedThemes = this.collectThemes(this.filteredResults);
         this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedThemes);
         this.suggestedAuthors = this.collectAuthors(this.filteredResults);
         this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
@@ -418,7 +422,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.getTaxonomies();
             }
 
-            this.search();
+            this.search(this.searchValue,this.searchTaxonomyKey);
         });
     }
 

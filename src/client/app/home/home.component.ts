@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {SelectItem,DialogModule} from 'primeng/primeng';
+import {SelectItem,DropdownModule} from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
@@ -19,13 +19,16 @@ export class HomeComponent implements OnInit {
 
     errorMessage: string;
     searchValue:string = '';
+    advSearchValue:string[];
     taxonomies: SelectItem[];
     searchTaxonomyKey: string;
     display: boolean = false;
     showAdvancedSearch: boolean = false;
     rows: any[] ;
     fields: SelectItem[];
-    /**
+    ALL:string='All Fields';
+
+  /**
      *
      */
   constructor(public taxonomyListService: TaxonomyListService, public searchFieldsListService : SearchFieldsListService, public searchService:SearchService, private router:Router) {
@@ -37,8 +40,8 @@ export class HomeComponent implements OnInit {
      *
      */
   ngOnInit() {
-        this.getTaxonomies();
-        this.getSearchFields();
+      this.getTaxonomies();
+      this.getSearchFields();
      this.rows =  [{}];
   }
 
@@ -46,6 +49,32 @@ export class HomeComponent implements OnInit {
         this.display = true;
     }
 
+    saveSearch()
+    {
+      this.searchValue = "";
+      for(let i = 0; i < this.rows.length; i++) {
+        if (typeof this.rows[i].column1 === "undefined")
+        {
+          this.rows[i].column1 = 'AND';
+        }
+        if (typeof this.rows[i].column2 === "undefined")
+        {
+          this.rows[i].column2 = 'searchphrase';
+        }
+        if (typeof this.rows[i].column3 === "undefined")
+        {
+          this.rows[i].column3 = '';
+        }
+        console.log(this.rows[i].column1);
+        console.log(this.rows[i].column2);
+        console.log(this.rows[i].column3);
+        if (i > 0)
+          this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' +  this.rows[i].column2 + '=' + this.rows[i].column3;
+        else
+          this.searchValue += this.rows[i].column2 + '=' + this.rows[i].column3;
+
+      }
+    }
 
     /**
      * Handle the nameListService observable
@@ -78,19 +107,20 @@ export class HomeComponent implements OnInit {
 
   toFieldItems(fields:any[]) {
     let items :SelectItem[] = [];
+    items.push({label:this.ALL, value:'All'});
     for (let field of fields) {
       items.push({label:field.fields, value:field.fields});
     }
     return items;
   }
 
-  search() {
+  search(searchValue:string,searchTaxonomyKey:string) {
+
             let params:NavigationExtras = {
                 queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:''}
             };
 
             this.router.navigate(['/search'], params);
-
 
     }
 
@@ -115,6 +145,7 @@ export class HomeComponent implements OnInit {
     deleteRow (rowIndex:number)
     {
       this.rows.splice(rowIndex,1);
+      this.saveSearch();
     }
 
 }

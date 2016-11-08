@@ -60,8 +60,9 @@ gulp.task('build.prod', (done: any) =>
 gulp.task('build.prod.exp', (done: any) =>
   runSequence('check.tools',
     'clean.prod',
-    'tslint',
+    //'tslint',
     'build.assets.prod',
+    'build.fonts',
     'build.html_css',
     'copy.prod',
     'compile.ahead.prod',

@@ -4,189 +4,204 @@
   <div *ngFor="let summaryCandidate of filteredResults">
     <p-accordion [multiple]="true">
       <p-accordionTab header="Summary" [selected] = "true">
-        <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><b>Title</b>
+        <div class="ui-g ui-g-nopad">
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Title</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.title}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Description</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Description</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.description}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label "><b>Keywords</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Keywords</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.keyword}}
             </div>
           </div>
-
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Last Updated Date</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Last Updated Date</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.modified}}
             </div>
           </div>
-
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Home Page URL</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Home Page URL</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               <a target="_blank" [(href)]="summaryCandidate.landingPage">{{summaryCandidate.landingPage}}</a>
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Download Full Record</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Download Full Record</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               <a href="http://10.200.222.248:8082/RMMApi/records/advancedsearch?identifier={{summaryCandidate.identifier}}" target="_blank" > JSON</a>
             </div>
           </div>
         </div>
       </p-accordionTab>
       <p-accordionTab header="Contact" [selected] = "true">
-        <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Contact</b>
+        <div class="ui-g ">
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Contact</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.contactPoint.fn}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><b>Contact Email</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Contact Email</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.contactPoint.hasmail}}
             </div>
           </div>
         </div>
       </p-accordionTab>
       <p-accordionTab header="Record Info" [selected] = "true">
-        <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><b>Unique Identifier</b>
+        <div class="ui-g">
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Unique Identifier</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.identifier}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Bureau Code</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Bureau Code</b>
             </div>
-            <div class="ui-grid-col-10">
-              {{summaryCandidate.bureauCode}}
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
+              {{summaryCandidate.bureaucode}}
             </div>
           </div>
-
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Program Code</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Program Code</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.programCode}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Update Frequency</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Update Frequency</b>
             </div>
-            <div class="ui-grid-col-10">
-              {{summaryCandidate.accrualPeriodicity}}
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
+              {{summaryCandidate.accrualPeridicity}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><b>Language</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Language</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.language}}
             </div>
           </div>
         </div>
       </p-accordionTab>
       <p-accordionTab header="Data Access" [selected] = "true">
-        <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><b>Access Level</b>
+        <div class="ui-grid">
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Access Level</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.accessLevel}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Rights</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Right</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.rights}}
             </div>
           </div>
-
-          <div class="ui-grid-row">
-              <div class="ui-grid-col-2 label"><b>Download URL</b>
-              </div>
-              <div class="ui-grid-col-10" *ngIf="summaryCandidate.distribution != null">
-
-                <a target="_blank" [(href)]="summaryCandidate.distribution[0].downloadURL">
-                  {{summaryCandidate.distribution[0].downloadURL}}
-                </a>
-              </div>
-          </div>
-
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Access URL</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Download URL</b>
             </div>
-            <div class="ui-grid-col-10" *ngIf="summaryCandidate.distribution != null">
+            <div class="ui-g-12 ui-md-6 ui-lg-10"
+                 *ngIf="summaryCandidate.distribution != null">
+              <a target="_blank" [(href)]="summaryCandidate.distribution[0].downloadURL">
+                {{summaryCandidate.distribution[0].downloadURL}}
+              </a>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Access URL</b>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-10"
+            *ngIf="summaryCandidate.distribution != null">
               <a target="_blank" [(href)]="summaryCandidate.distribution[0].accessURL">
                 {{summaryCandidate.distribution[0].accessURL}}
               </a>
             </div>
           </div>
-
-          <div class="ui-grid-row">
-              <div class="ui-grid-col-2 label "><b>Format</b>
-              </div>
-              <div class="ui-grid-col-10" *ngIf="summaryCandidate.distribution != null">
-                  {{summaryCandidate.distribution[0].format}}
-              </div>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Format</b>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-10" *ngIf="summaryCandidate.distribution != null">
+              {{summaryCandidate.distribution[0].format}}
+            </div>
           </div>
         </div>
       </p-accordionTab>
       <p-accordionTab header="Publication Info" [selected] = "true">
-        <div class="ui-grid ui-grid-responsive  ui-grid-forms ui-fluid ui-grid-pad ">
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2"><b>Category</b>
+        <div class="ui-g ">
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Category</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.theme}}
             </div>
           </div>
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Publications</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Publications</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               <a target="_blank" [(href)]="summaryCandidate.references">
                 {{summaryCandidate.references}}
               </a>
             </div>
           </div>
-
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label"><b>Dataset update date</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Dataset Update Date</b>
             </div>
-            <div class="ui-grid-col-10">
-              {{summaryCandidate.issued}}
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
+                {{summaryCandidate.issued}}
             </div>
           </div>
-
-          <div class="ui-grid-row">
-            <div class="ui-grid-col-2 label "><b>Publisher</b>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Publisher</b>
             </div>
-            <div class="ui-grid-col-10">
+            <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.publisher.name}}
             </div>
           </div>
@@ -198,21 +213,21 @@
 <p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true" >
-  <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad ">
-    <div class="ui-grid-row TexAlCenter">
+  <div class="ui-g ">
+    <div class="ui-g-12">
 
-      <div class="ui-grid-col-2">
+      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
         <p-dropdown
           [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
           [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" [styleClass]="Fleft"
         ></p-dropdown>
       </div>
-      <div class="ui-grid-col-10">
-        <input type="text" pInputText [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
+      <div class="ui-g-12 ui-md-6 ui-lg-8 ">
+        <input type="text" pInputText style="width: 100%" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
                placeholder="Search..."
         />
       </div>
-      <div class="ui-grid-col-1">
+      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
         <button
           (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
           type="button" class="custButton Wid100" icon="ui-icon-search"></button>
@@ -253,13 +268,7 @@
             </div>
             <div class="ui-g-12">
               <label>Research Topics</label>
-
-              <p-autoComplete id="theme" [(ngModel)]="selectedThemes" [suggestions]="suggestedThemes"
-                              (completeMethod)="filterThemes($event)" [size]="30"
-                              [minLength]="1" [multiple]="true"
-                              (onSelect)="filterResults($event)"
-                              (onUnselect)="filterResults($event)">
-              </p-autoComplete>
+              <p-multiSelect [options]="themes" [(ngModel)]="selectedThemes" (onChange)="filterResults($event)"></p-multiSelect>
 
             </div>
           </div>
@@ -270,7 +279,7 @@
 
       <!-- Section 1 -->
 
-      <div class="ui-g-12 ui-md-8 ">
+      <div class="ui-g-12 ui-md-8 ui-lg-8 ">
 
         <div class="card">
           <div *ngIf="filteredResults.length > 0">
@@ -386,3 +395,4 @@
           </div>
       </div>
     </div>
+</div>
