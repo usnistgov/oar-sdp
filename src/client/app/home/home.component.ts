@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
     rows: any[] ;
     fields: SelectItem[];
     ALL:string='All Fields';
+    showDeleteButton:boolean = false;
 
   /**
      *
@@ -42,7 +43,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
       this.getTaxonomies();
       this.getSearchFields();
-     this.rows =  [{}];
+      this.rows =  [{}];
   }
 
    showDialog() {
@@ -65,9 +66,6 @@ export class HomeComponent implements OnInit {
         {
           this.rows[i].column3 = '';
         }
-        console.log(this.rows[i].column1);
-        console.log(this.rows[i].column2);
-        console.log(this.rows[i].column3);
         if (i > 0)
           this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' +  this.rows[i].column2 + '=' + this.rows[i].column3;
         else
@@ -139,13 +137,19 @@ export class HomeComponent implements OnInit {
     {
 
       this.rows.push({});
+      this.showDeleteButton = true;
 
     }
 
-    deleteRow (rowIndex:number)
-    {
-      this.rows.splice(rowIndex,1);
-      this.saveSearch();
-    }
+    deleteRow (rowIndex:number) {
+      if (this.rows.length > 1) {
+        this.rows.splice(rowIndex, 1);
+        this.saveSearch();
+      }
 
+      if (this.rows.length == 1)
+      {
+        this.showDeleteButton = false;
+      }
+    }
 }
