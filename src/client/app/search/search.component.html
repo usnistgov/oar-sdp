@@ -219,15 +219,15 @@
       <div class="ui-g-12 ui-md-6 ui-lg-2 ">
         <p-dropdown
           [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
-          [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" [styleClass]="Fleft"
+          [style]="{'width':'100%'}" [styleClass]="Fleft"
         ></p-dropdown>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-8 ">
+      <div class="ui-g-12 ui-md-6 ui-lg-9 ">
         <input type="text" pInputText style="width: 100%" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
                placeholder="Search..."
         />
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
+      <div class="ui-g-12 ui-md-6 ui-lg-1 ">
         <button
           (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
           type="button" class="custButton Wid100" icon="ui-icon-search"></button>

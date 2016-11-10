@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" >
   <div class="ui-g">
     <div class="ui-g-12">
       <span class="DispBlock Fs20 TexAlCenter">Welcome to NIST</span>
@@ -9,8 +9,10 @@
   </div>
   <div class="ui-g">
     <div class="ui-g-12 ui-g-nopad">
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
+      </div>
       <div class="ui-g-12 ui-md-6 ui-lg-2">
-        <p-dropdown [options]="taxonomies"  [style]="{'width':'90%'}" [(ngModel)]="searchTaxonomyKey" >
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%'}" [(ngModel)]="searchTaxonomyKey" >
         </p-dropdown>
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-7">
@@ -35,15 +37,15 @@
     <div class="EmptyBox20"></div>
     <template [ngIf]="showAdvancedSearch == true"  >
       <div  class="ui-g-12 ui-g-nopad "  *ngFor='let row of rows; let rowIndex = index'>
-        <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-6 ui-lg-2">
-          <p-dropdown  (click) = "saveSearch()" [style]="{'width':'40%'}" [options]="[{label: 'AND', value: 'AND'},{label: 'OR', value: 'OR'},{label: 'NOT', value: 'NOT'}]" [(ngModel)]="row.column1" ></p-dropdown>
+        <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-6 ui-lg-1">
+          <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
         </div>
-        <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-6 ui-lg-2">
+        <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-6 ui-lg-1">
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-2">
-          <p-dropdown [options]="fields" [style]="{'width':'100%'}" [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'auto', 'margin':'0px 0px 5px 0px'}"></p-dropdown>
+          <p-dropdown [options]="fields" [style]="{'width':'100%'}" [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'100%'}"></p-dropdown>
         </div>
-        <div class="ui-g-12 ui-md-6 ui-lg-5 ">
+        <div class="ui-g-12 ui-md-6 ui-lg-7 ">
           <input type="text" pInputText style="width: 100%;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-1 " style="width: 3%;" *ngIf="showDeleteButton == true" >

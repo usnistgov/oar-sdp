@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit {
     fields: SelectItem[];
     ALL:string='All Fields';
     showDeleteButton:boolean = false;
+    operators:SelectItem[];
 
   /**
      *
@@ -44,6 +45,7 @@ export class HomeComponent implements OnInit {
       this.getTaxonomies();
       this.getSearchFields();
       this.rows =  [{}];
+      this.searchOperators();
   }
 
    showDialog() {
@@ -110,6 +112,14 @@ export class HomeComponent implements OnInit {
       items.push({label:field.fields, value:field.fields});
     }
     return items;
+  }
+
+  searchOperators()
+  {
+    this.operators = [];
+    this.operators.push({label:'AND', value:'AND'});
+    this.operators.push({label:'OR', value:'OR'});
+    this.operators.push({label:'NOT', value:'NOT'});
   }
 
   search(searchValue:string,searchTaxonomyKey:string) {
