@@ -1,75 +1,75 @@
-<div style="align-content: center" >
-      <div class="card">
-                 <span class="DispBlock Fs20 FontRobotoLight black TexAlCenter">Welcome to NIST</span>
-                <div class="EmptyBox20"></div>
-                <h1 class="FontRobotoRegular Fs30 black TexAlCenter">SCIENCE DATA PORTAL</h1>
-                <div class="EmptyBox20"></div>
-                <div class="Wid100 ">
-                    <div class="ui-grid ui-grid-responsive ui-grid-forms ui-fluid ui-grid-pad">
-                        <div class="ui-grid-row">
-                          <div class="ui-grid-col-2">
-                            <p-dropdown [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'300px'" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}" styleClass="Fleft" >
-
-                              </p-dropdown>
-                          </div>
-                            <div class="ui-grid-col-10">
-                                <input type="text" pInputText [(ngModel)]="searchValue" placeholder="Search..." (keyup.enter) = "search(searchValue,searchTaxonomyKey)"  />
-                            </div>
-                            <div class="ui-grid-col-2"><button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button></div>
-                        </div>
-                          <div *ngIf="showAdvancedSearch == false" class="ui-grid-row" style="padding-left: 14%">
-                            <div class="ui-grid-col-8">
-                                <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
-                            </div>
-                            <div class="ui-grid-col-3">
-                             <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" > &nbsp;<b> Show Advanced Search </b></a>
-                              </div>
-                          </div>
-                          <div *ngIf="showAdvancedSearch == true" class="ui-grid-row" style="padding-left: 14%">
-                            <div class="ui-grid-col-8">
-                              <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > &nbsp;<b> Show Examples </b></a>
-                            </div>
-                            <div class="ui-grid-col-3">
-                              <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" > &nbsp;<b> Hide Advanced Search </b></a>
-                            </div>
-                          </div>
-
-                      <div class="EmptyBox20"></div>
-
-                      <template [ngIf]="showAdvancedSearch == true"  >
-                        <div  class="ui-grid-row"  *ngFor='let row of rows; let rowIndex = index'>
-                          <div class="ui-grid-col-2">
-                            <p-dropdown [options]="fields" [(ngModel)]="row.column1" [style]="{'width':'100%', 'margin':'0px 0px 5px 0px'}"></p-dropdown>
-                            </div>
-                          <div class="ui-grid-col-10">
-                            <input type="text" pInputText [(ngModel)]="row.column2" placeholder="Search..."   />
-                          </div>
-
-                        <div class="text-center" class="ui-grid-col-2">
-                          <button (click)="addRow()">Add Row</button>
-                          <button (click)="deleteRow(rowIndex)">Delete Row</button>
-
-                        </div>
-                      </div>
-                        </template>
-                    </div>
-                </div>
+<div class="card" >
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <span class="DispBlock Fs20 TexAlCenter">Welcome to NIST</span>
+      <div class="EmptyBox20"></div>
+      <h1 class="Fs30 TexAlCenter">SCIENCE DATA PORTAL</h1>
+      <div class="EmptyBox20"></div>
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-12 ui-g-nopad">
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
       </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2">
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%'}" [(ngModel)]="searchTaxonomyKey" >
+        </p-dropdown>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-7">
+        <input type="text" style="width: 100%;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
+               (keyup.enter) = "search(searchValue,searchTaxonomyKey)"  />
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2">
+        <button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button></div>
+      <div *ngIf="showAdvancedSearch == false" >
+        <div class="ui-g-12 ui-md-6 ui-lg-7">
+          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
+          <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" style="float: right"> <b> Show Advanced Search </b></a>
+        </div>
+      </div>
+      <div *ngIf="showAdvancedSearch == true" >
+        <div class="ui-g-12 ui-md-6 ui-lg-7">
+          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
+          <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" style="float: right"> <b> Hide Advanced Search </b></a>
+        </div>
+      </div>
+    </div>
+    <div class="EmptyBox20"></div>
+    <template [ngIf]="showAdvancedSearch == true"  >
+      <div  class="ui-g-12 ui-g-nopad "  *ngFor='let row of rows; let rowIndex = index'>
+        <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-6 ui-lg-1">
+          <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
+        </div>
+        <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-6 ui-lg-1">
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-2">
+          <p-dropdown [options]="fields" [style]="{'width':'100%'}" [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-7 ">
+          <input type="text" pInputText style="width: 100%;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-1 " style="width: 3%;" *ngIf="showDeleteButton == true" >
+          <button type="button" (click)="deleteRow(rowIndex)" pButton icon="ui-icon-remove"></button>
+        </div>
+        <div *ngIf="rowIndex == rows.length -1 " class="ui-g-12 ui-md-6 ui-lg-1">
+          <button type="button" (click)="addRow()" pButton  icon="ui-icon-add"></button>
+        </div>
+      </div>
+    </template>
+  </div>
 </div>
 
-<p-dialog header="Search Examples" [(visible)]="display" [style]="{'background-color': '#000000'}">
-
-<div class="card">
-
-  <button (click)="searchExample('kinetics database');" class="button">kinetics database </button><br>
-  <button (click)="searchExample('Gallium');" class="button">Gallium </button><br>
-  <button (click)="searchExample('&quot;SRD 69&quot;');" class="button">"SRD 69" </button><br>
-  <button (click)="searchExample('XPDB');" class="button">XPDB </button><br>
-  <button (click)="searchExample('Interatomic Potentials');" class="button">Interatomic Potentials </button><br>
-  <button (click)="searchExample('Potentials');" class="button">Potientials </button><br>
-  <button (click)="searchExample('Crystallization');" class="button">Crystallization </button><br>
-  <button (click)="searchExample('Infrared spectroscopy');" class="button">Infrared spectroscopy </button><br>
-</div>
+<p-dialog header="Search Examples" [(visible)]="display">
+  <div class="card">
+    <button (click)="searchExample('kinetics database');" class="button">kinetics database </button><br>
+    <button (click)="searchExample('Gallium');" class="button">Gallium </button><br>
+    <button (click)="searchExample('&quot;SRD 69&quot;');" class="button">"SRD 69" </button><br>
+    <button (click)="searchExample('XPDB');" class="button">XPDB </button><br>
+    <button (click)="searchExample('Interatomic Potentials');" class="button">Interatomic Potentials </button><br>
+    <button (click)="searchExample('Potentials');" class="button">Potientials </button><br>
+    <button (click)="searchExample('Crystallization');" class="button">Crystallization </button><br>
+    <button (click)="searchExample('Infrared spectroscopy');" class="button">Infrared spectroscopy </button><br>
+  </div>
 
 </p-dialog>
 

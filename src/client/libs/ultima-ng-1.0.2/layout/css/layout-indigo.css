@@ -1606,13 +1606,13 @@ body .layout-wrapper.layout-compact {
     padding-left: 40px; }
   body .layout-wrapper.layout-compact .ui-button {
     font-size: 14px;
-    height: 30px;
+    height: 25px;
     padding: 0 14px; }
     body .layout-wrapper.layout-compact .ui-button .ui-button-text {
-      line-height: 30px; }
+      line-height: 25px; }
     body .layout-wrapper.layout-compact .ui-button.ui-button-icon-only {
-      width: 32px;
-      height: 32px; }
+      width: 25px;
+      height: 25px; }
       body .layout-wrapper.layout-compact .ui-button.ui-button-icon-only .fa {
         width: 20px;
         height: 20px;
@@ -1631,7 +1631,8 @@ body .layout-wrapper.layout-compact {
   body .layout-wrapper.layout-compact .ui-splitbutton .ui-splitbutton-menubutton {
     height: 30px; }
   body .layout-wrapper.layout-compact .ui-inputtext {
-    font-size: 14px; }
+    font-size: 14px;
+    height: 20px;}
   body .layout-wrapper.layout-compact .ui-chkbox {
     line-height: 18px;
     width: 18px;
