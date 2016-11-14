@@ -235,7 +235,6 @@
     </div>
   </div>
     <div *ngIf="searching">
-
     <div class="ui-g " >
       <div class="ui-g-12 ui-md-6 ui-lg-4 ui-fluid " >
         <div class="card">
@@ -289,7 +288,7 @@
                     (click)='results.exportCSV()'
                     class="divExpCSV"></button>
             <span class="spanResults">&nbsp;&nbsp;
-                    {{filteredResults.length}} Result(s)</span>
+              {{filteredResults.length}} Result(s)</span>
           </div>
           <div *ngIf="filteredResults.length<=10">
             <p-dataTable
@@ -302,6 +301,7 @@
                   <span><b>Description</b> : {{resultItem.description}}</span><br>
                   <div class="EmptyBox10"></div>
                   <span><b>Keywords</b> : {{resultItem.keyword}}</span>
+                  {{results.dataToRender.length}}
                 </template>
               </div>
               <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
