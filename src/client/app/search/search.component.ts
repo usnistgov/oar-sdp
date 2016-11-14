@@ -38,6 +38,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     errorMsg: string;
     status: string;
     errorMessage: string;
+    queryAdvSearch:string;
     searchResults: any[] = [];
     errorMessageArray: string[];
     searchValue:string;
@@ -171,11 +172,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
     }
 
-    search(searchValue:string,searchTaxonomyKey:string) {
+    search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string) {
         this.searching = true;
         this.keyword = '';
         let that = this;
-        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey)
+        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey,queryAdvSearch)
             .subscribe(
             searchResults => that.onSuccess(searchResults),
             error => that.onError(error)
@@ -419,10 +420,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
             {
                 this.searchValue =params['q'];
                 this.searchTaxonomyKey=params['key'];
+                this.queryAdvSearch = params['queryAdvSearch'];
                 this.getTaxonomies();
             }
 
-            this.search(this.searchValue,this.searchTaxonomyKey);
+            this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
         });
     }
 

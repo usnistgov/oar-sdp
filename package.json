@@ -133,12 +133,13 @@
     "@angular/platform-browser": "~2.1.2",
     "@angular/platform-browser-dynamic": "~2.1.2",
     "@angular/router": "~3.1.2",
+    "@types/lodash": "^4.14.38",
     "core-js": "^2.4.1",
     "intl": "^1.2.5",
+    "primeng": "1.0.0-rc.4",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.0-beta.12",
     "systemjs": "0.19.40",
-    "zone.js": "0.6.25",
-    "primeng": "1.0.0-rc.3"
+    "zone.js": "0.6.25"
   }
 }
