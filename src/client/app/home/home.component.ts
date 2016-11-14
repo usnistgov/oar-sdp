@@ -4,6 +4,8 @@ import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
 import {Router,NavigationExtras} from '@angular/router';
+import * as _ from 'lodash';
+
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -23,6 +25,7 @@ export class HomeComponent implements OnInit {
     taxonomies: SelectItem[];
     searchTaxonomyKey: string;
     display: boolean = false;
+    queryAdvSearch:string='';
     showAdvancedSearch: boolean = false;
     rows: any[] ;
     fields: SelectItem[];
@@ -55,12 +58,13 @@ export class HomeComponent implements OnInit {
     saveSearch()
     {
       this.searchValue = "";
+      this.queryAdvSearch = "yes";
       for(let i = 0; i < this.rows.length; i++) {
         if (typeof this.rows[i].column1 === "undefined")
         {
           this.rows[i].column1 = 'AND';
         }
-        if (typeof this.rows[i].column2 === "undefined")
+        if (typeof this.rows[i].column2 === "undefined" || this.rows[i].column2 === 'All' )
         {
           this.rows[i].column2 = 'searchphrase';
         }
@@ -68,10 +72,16 @@ export class HomeComponent implements OnInit {
         {
           this.rows[i].column3 = '';
         }
+
+        let fieldValue:string;
+          fieldValue = this.rows[i].column2;
+          fieldValue = fieldValue.replace(/\s+/g, '');
+
         if (i > 0)
-          this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' +  this.rows[i].column2 + '=' + this.rows[i].column3;
+          this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' + fieldValue + '=' + this.rows[i].column3;
+
         else
-          this.searchValue += this.rows[i].column2 + '=' + this.rows[i].column3;
+          this.searchValue += fieldValue + '=' + this.rows[i].column3;
 
       }
     }
@@ -97,21 +107,27 @@ export class HomeComponent implements OnInit {
     return items;
   }
 
-    getSearchFields() {
+  getSearchFields() {
       this.searchFieldsListService.get()
         .subscribe(
           fields => this.fields = this.toFieldItems(fields),
           error =>  this.errorMessage = <any>error
         );
-    }
+  }
 
   toFieldItems(fields:any[]) {
     let items :SelectItem[] = [];
     items.push({label:this.ALL, value:'All'});
-    for (let field of fields) {
-      items.push({label:field.fields, value:field.fields});
-    }
-    return items;
+    let fieldItems: SelectItem[] = [];
+    Object.keys(fields).forEach(function(fieldKey) {
+    var fieldKey = _.startCase(fieldKey);
+    fieldItems.push({label:fieldKey, value:fieldKey});
+    });
+    fieldItems = _.sortBy(fieldItems, ['label','value']);
+
+    fieldItems.unshift({label:this.ALL, value:'All'});
+
+    return fieldItems;
   }
 
   searchOperators()
@@ -122,10 +138,10 @@ export class HomeComponent implements OnInit {
     this.operators.push({label:'NOT', value:'NOT'});
   }
 
-  search(searchValue:string,searchTaxonomyKey:string) {
+  search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string) {
 
             let params:NavigationExtras = {
-                queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:''}
+                queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:'','queryAdvSearch':this.queryAdvSearch}
             };
 
             this.router.navigate(['/search'], params);

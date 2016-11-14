@@ -36,13 +36,17 @@ export class ProjectConfig extends SeedConfig {
     this.NPM_DEPENDENCIES = [
       ...this.NPM_DEPENDENCIES,
       // {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
-      // {src: 'lodash/lodash.min.js', inject: 'libs'},
       { src: 'primeng/resources/primeng.min.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: true}
 
       // inject into css section
 
   ];
+
+    this.addPackageBundles({
+      name: 'lodash',
+      path: 'node_modules/lodash/lodash.min.js'
+    });
 
     // Add `local` third-party libraries to be injected/bundled.
     this.APP_ASSETS = [

@@ -21,11 +21,10 @@ export class SearchFieldsListService {
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<string[]> {
-    return this.http.get('/assets/searchfields.json')
-                    .map((res: Response) => res.json())
-                    .catch(this.handleError);
+    return this.http.get("http://10.200.222.248:8082/RMMApi/catalogs/records/fieldsnames")
+                    .map((res: Response) => res.json().properties)
+                    .catch(this.handleError)
   }
-
   /**
     * Handle HTTP error
     */

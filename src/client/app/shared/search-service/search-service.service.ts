@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
+import * as _ from 'lodash';
+
 /**
  * This class provides the Search service with methods to search for records from tha rmm.
  */
@@ -21,30 +23,36 @@ export class SearchService {
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  searchPhrase(searchValue:string, searchTaxonomyKey:string): Observable<string[]> {
-
-      let params: URLSearchParams = new URLSearchParams();
-      params.set('searchphrase', searchValue);
-      if (searchTaxonomyKey == "")
+  searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string): Observable<string[]> {
+      if (queryAdvSearch === 'yes' && (!(_.includes(searchValue,'searchphrase'))))
       {
-        searchTaxonomyKey = 'All';
+        return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch?" + searchValue)
+          .map((res: Response) => res.json())
+          .catch((error:any) => Observable.throw(error.json()));
       }
-      params.set('theme',searchTaxonomyKey);
-
-
-
-
-//    return this.http.get('http://oardev3.nist.gov:8080/RestApi/records/search?searchPhrase='+ searchValue)
-//                    .map((res: Response) => res.json())
-//                    .catch(this.handleError);
-
-      return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch",
+      else
+      {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('searchphrase', searchValue);
+        if (searchTaxonomyKey == "")
+        {
+          searchTaxonomyKey = 'All';
+        }
+        params.set('theme',searchTaxonomyKey);
+        return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch",
           {
             search:params
           })
           .map((res: Response) => res.json())
           .catch((error:any) => Observable.throw(error.json()));
       }
+  }
+
+
+//    return this.http.get('http://oardev3.nist.gov:8080/RestApi/records/search?searchPhrase='+ searchValue)
+//                    .map((res: Response) => res.json())
+//                    .catch(this.handleError);
+
 
 
   /**
