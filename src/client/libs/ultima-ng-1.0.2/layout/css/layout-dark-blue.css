@@ -484,7 +484,8 @@
 
 .login-body {
   background: url("../images/login/login.png") top left no-repeat #f7f7f7;
-  background-size: 100% auto; }
+  background-size: 100% auto;
+  height: auto; }
 
 .login-panel {
   text-align: center;
@@ -923,7 +924,8 @@ body {
     -moz-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
     box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3); }
   .layout-container .topbar .topbar-right {
-    padding: 15px; }
+    padding: 15px;
+    position: relative; }
     .layout-container .topbar .topbar-right #menu-button {
       color: #ffffff;
       display: inline-block;
@@ -989,11 +991,12 @@ body {
         transform: rotate(180deg); }
     .layout-container .topbar .topbar-right #topbar-menu-button {
       display: none;
-      float: right;
       color: #ffffff;
       vertical-align: middle;
       height: 36px;
-      margin: 5px 10px 0 0;
+      position: absolute;
+      top: 20px;
+      right: 25px;
       -moz-transition: all 0.3s;
       -o-transition: all 0.3s;
       -webkit-transition: all 0.3s;
@@ -1507,6 +1510,7 @@ body {
         border-color: #bdbdbd;
         color: #212121; }
         .layout-container .topbar .topbar-right .topbar-items > li.search-item input:focus {
+          margin-bottom: -1px;
           border-color: #bdbdbd; }
       .layout-container .topbar .topbar-right .topbar-items > li.search-item input:focus ~ label,
       .layout-container .topbar .topbar-right .topbar-items > li.search-item input.ui-state-filled ~ label {
@@ -1532,6 +1536,9 @@ body {
       display: inline-block; }
     .layout-container .topbar .topbar-right .topbar-items.topbar-items-visible {
       display: block; } }
+@media (max-width: 399px) {
+  .layout-container .topbar .topbar-right #topbar-menu-button {
+    right: 15px; } }
 body .layout-wrapper.layout-compact {
   font-size: 14px;
   line-height: 18px;

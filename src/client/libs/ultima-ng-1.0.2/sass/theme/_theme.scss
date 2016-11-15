@@ -250,6 +250,7 @@ body {
             padding: $inputOptionPadding;
             margin: 0;
             @include border-radius(0px);
+            color: $textColor;
             
             &.ui-state-hover {
                 @include hover-element();
@@ -333,7 +334,8 @@ body {
                 padding: $inputOptionPadding;
                 margin: 0;
                 @include border-radius(0px);
-                
+                color: $textColor;
+
                 &.ui-state-hover {
                     @include hover-element();
                 }
@@ -374,6 +376,7 @@ body {
             @include rippleitem();
             @include transition(background-color .3s);
             @include border-radius(0px);
+            color: $textColor;
 
             &.ui-state-hover {
                 @include hover-element();
@@ -428,10 +431,6 @@ body {
             margin-top: -1px;
             box-sizing: border-box;
             color: #ffffff;
-            
-            span {
-                display: none;
-            }
             
             &.ui-state-hover {
                 background-color: $primaryLightColor;
@@ -782,13 +781,6 @@ body {
         display: block;
         position:relative; 
         
-        input:focus ~ label,
-        input.ui-state-filled ~ label {
-          top:-20px;
-          font-size:12px;
-          color:$primaryColor;
-        }
-        
         label {
           color:#999; 
           font-weight:normal;
@@ -799,6 +791,15 @@ body {
           transition: 0.3s ease all; 
           -moz-transition: 0.3s ease all; 
           -webkit-transition: 0.3s ease all;
+        }
+        
+        input:focus ~ label,
+        input.ui-state-filled ~ label,
+        .ui-inputwrapper-focus ~ label,
+        .ui-inputwrapper-filled ~ label {
+          top:-20px;
+          font-size:12px;
+          color:$primaryColor;
         }
     }
     
@@ -1172,6 +1173,7 @@ body {
                 font-size: $inputOptionFontSize;
                 padding: $inputOptionPadding;
                 @include border-radius(0);
+                color: $textColor;
                 
                 .ui-autocomplete-query {
                     font-weight: 700;
@@ -1286,6 +1288,7 @@ body {
             padding: $inputOptionPadding;
             @include transition(background-color .3s);
             @include border-radius(0);
+            color: $textColor;
             
             &.ui-state-hover {
                 @include hover-element();
@@ -1415,6 +1418,7 @@ body {
         .ui-multiselect-item {
             font-size: $inputOptionFontSize;
             padding: $inputOptionPadding;
+            color: $textColor;
             
             label {
                 padding-left: 28px;
@@ -1703,6 +1707,7 @@ body {
                 font-size: 24px;
                 right: 8px;
                 @include material-icon("play_circle_outline");
+                color: #ffffff;
                 
                 .fa {
                     display: none;
@@ -1720,6 +1725,7 @@ body {
                 @include material-icon("play_circle_outline");
                 @include rotate(180deg);
                 left: 8px;
+                color: #ffffff;
                 
                 .fa {
                     display: none;
@@ -1885,6 +1891,12 @@ body {
             color: #ffffff;
         }
         
+        .ui-messages-success {
+            background-color: #8BC34A;
+            border-color: #8BC34A;
+            color: #ffffff;
+        }
+        
         .ui-messages-close {
             text-decoration: none;
             color: #fff;
@@ -1923,10 +1935,25 @@ body {
     /* Info */
     .ui-messages .ui-messages-icon {
         background: none;
-        @include material-icon("info");
         font-size: 28px;
         color: #fff;
         margin-top: -2px;
+        
+        &.fa-info {
+            @include material-icon("info");
+        }
+        
+        &.fa-warning {
+            @include material-icon("warning");
+        }
+        
+        &.fa-close {
+            @include material-icon("error_outline");
+        }
+        
+        &.fa-check {
+            @include material-icon("check_circle");
+        }
     }
     
     .ui-growl {
@@ -1944,27 +1971,24 @@ body {
         .ui-growl-item {
             .ui-growl-image {
                 background: none;
-                color: #ffffff;      
-    
-                &.ui-growl-image-info {
-                    @include material-icon("info");        
-                    font-size: 36px;
+                color: #ffffff;  
+                font-size: 36px;
+                
+                &.fa-info-circle {
+                    @include material-icon("info");
                 }
                 
-                &.ui-growl-image-error {
-                    @include material-icon("error");
-                    font-size: 36px;
+                &.fa-warning {
+                    @include material-icon("warning");
                 }
                 
-                &.ui-growl-image-warn {
-                    @include material-icon("warn");
-                    font-size: 36px;
+                &.fa-close {
+                    @include material-icon("error_outline");
                 }
                 
-                &.ui-growl-image-fatal {
-                    @include material-icon("fatal");
-                    font-size: 36px;
-                }
+                &.fa-check {
+                    @include material-icon("check_circle");
+                }   
             }
             
             .ui-growl-message {
@@ -2459,6 +2483,7 @@ body {
                             display: inline-block;
                             vertical-align: middle;
                             float: none;
+                            color: $textColor;
                         }
                         
                         .ui-menuitem-text {
@@ -3131,65 +3156,6 @@ body {
         }
     }
     
-    .ui-log {
-        .ui-log-header {
-            padding: $headerPadding;
-            height: auto;
-            
-            > .ui-log-button {
-                line-height: 16px;
-                position: static;
-                display: inline-block;
-                vertical-align: middle;
-                margin-right: 4px;
-                border: 1px solid transparent;
-                padding: 1px 3px;
-                @include border-radius(50%);
-                @include transition(background-color .3s);
-                
-                &.ui-state-hover {
-                    background-color: $primaryLightColor;
-                }
-            }
-        }
-    }
-    
-    .ui-tagcloud {
-        li {
-            margin: 4px 0px;
-            
-            a {
-                @include transition(background-color .3s);
-                @include border-radius(3px);
-                
-                &:hover {
-                    @include hover-element();
-                }
-            } 
-        }
-    }
-    
-    .timeline-frame {
-        .timeline-event {
-            border-color: $dividerColor;
-            background-color: #ffffff;
-            
-            &.ui-state-active {
-                background-color: $accentColor;
-                border-color: $accentColor;
-                color: $accentTextColor;
-            }
-        }
-        
-        .timeline-axis {
-            border-color: $dividerColor;
-        }
-        
-        .timeline-navigation {
-            height: 36px;
-        }
-    }
-    
     .ui-tooltip {
         @include opacity(.9);
         font-size: $fontSize - 2px;
@@ -3219,6 +3185,17 @@ body {
         &.ui-tooltip-right {
             .ui-tooltip-arrow {
                 border-right-color: #323232;
+            }
+        }
+    }
+    
+    .ui-inplace {
+        .ui-inplace-display {
+            @include transition(background-color .3s);
+            @include border-radius(3px);
+            
+            &.ui-state-hover {
+                background-color: $hoverBgColor;
             }
         }
     }

@@ -1,405 +1,407 @@
-/**
- * PrimeFaces Ultima Layout
+/** 
+ * PrimeNG Ultima Layout
  */
 Ultima = {
+    
+    init: function(app) {
+        this.wrapper = $(app.children[0]);
+        this.container = this.wrapper.children('.layout-container');
+        this.topbar = this.container.children('.topbar');
+        this.menu = $('#main-menu');
+        this.menuWrapper = this.menu.closest('.layout-menu');
+        this.menulinks = this.menu.find('a');
+        this.profileButton = $('#profile-options');
+        this.profileMenu = $('#profile-menu');
+        this.topbarItems = this.topbar.find('.topbar-items');
+        this.topbarLinks = this.topbarItems.find('> li > a');
+        this.menuButton = $('#menu-button');
+        this.topbarMenuButton = $('#topbar-menu-button');
+        this.menuActive = false;
+        this.topbarLinkClick = false;
+        this.topbarMenuClick = false;
 
-  init: function(app) {
-    this.wrapper = $(app.children[0]);
-    this.container = this.wrapper.children('.layout-container');
-    this.topbar = this.container.children('.topbar');
-    this.menu = $('#main-menu');
-    this.menuWrapper = this.menu.closest('.layout-menu');
-    this.menulinks = this.menu.find('a');
-    this.profileButton = $('#profile-options');
-    this.profileMenu = $('#profile-menu');
-    this.topbarItems = this.topbar.find('.topbar-items');
-    this.topbarLinks = this.topbarItems.find('> li > a');
-    this.menuButton = $('#menu-button');
-    this.topbarMenuButton = $('#topbar-menu-button');
-    this.menuActive = false;
-    this.topbarLinkClick = false;
-    this.topbarMenuClick = false;
-
-    this._bindEvents();
-
-    if(!this.container.hasClass('menu-layout-horizontal')) {
-      this.restoreMenuState();
-    }
-
-    this.menuWrapper.children('.nano').nanoScroller({flash:true});
-  },
-
-  _bindEvents: function() {
-    var $this = this;
-
-    this.menuButton.off('click.ultima').on('click.ultima', function(e) {
-      $this.menuButton.toggleClass('menu-button-rotate');
-      $this.topbarItems.removeClass('topbar-items-visible');
-
-      //overlay
-      if($this.container.hasClass('menu-layout-overlay')) {
-        $this.container.toggleClass('layout-menu-overlay-active');
-
-        if($this.container.hasClass('layout-menu-overlay-active')) {
-          $this.enableModal();
+        this._bindEvents();
+        
+        if(!this.container.hasClass('menu-layout-horizontal')) {
+            this.restoreMenuState();
         }
-        else {
-          $this.disableModal();
-        }
-      }
-      //static
-      else {
-        if($this.isDesktop()) {
-          $this.container.toggleClass('layout-menu-static-inactive')
-        }
-        else {
-          if($this.container.hasClass('layout-menu-static-active')) {
-            $this.container.removeClass('layout-menu-static-active');
-            $this.disableModal();
-          }
-          else {
-            $this.container.addClass('layout-menu-static-active');
-            $this.container.removeClass('layout-menu-static-inactive');
-            $this.enableModal();
-          }
-        }
-      }
-
-      e.preventDefault();
-    });
-
-    this.topbarMenuButton.off('click.ultima').on('click.ultima', function(e) {
-      $this.topbarMenuClick = true;
-      $this.topbarItems.find('ul').removeClass('fadeInDown fadeOutUp');
-
-      if($this.container.hasClass('layout-menu-overlay-active')||$this.container.hasClass('layout-menu-static-active')) {
-        $this.menuButton.removeClass('menu-button-rotate');
-        $this.container.removeClass('layout-menu-overlay-active layout-menu-static-active');
-        $this.disableModal();
-      }
-
-      if($this.topbarItems.hasClass('topbar-items-visible')) {
-        $this.topbarItems.addClass('fadeOutUp');
-
-        setTimeout(function() {
-          $this.topbarItems.removeClass('fadeOutUp topbar-items-visible');
-        },500);
-      }
-      else {
-        $this.topbarItems.addClass('topbar-items-visible fadeInDown');
-      }
-
-      e.preventDefault();
-    });
-
-    this.menu.off('click.ultima').on('click.ultima', 'a', function(e) {
-      var link = $(this),
-        item = link.parent(),
-        submenu = item.children('ul'),
-        horizontal = $this.isHorizontal() && $this.isDesktop();
-
-      if(horizontal) {
-        $this.horizontalMenuClick = true;
-      }
-
-      if(item.hasClass('active-menuitem')) {
-        if(submenu.length) {
-          item.removeClass('active-menuitem');
-
-          if(horizontal) {
-            if(item.parent().is($this.menu)) {
-              $this.menuActive = false;
+                
+        this.menuWrapper.children('.nano').nanoScroller({flash:true});
+    },
+    
+    _bindEvents: function() {
+        var $this = this;
+        
+        this.menuButton.off('click.ultima').on('click.ultima', function(e) {
+            $this.menuButton.toggleClass('menu-button-rotate');
+            $this.topbarItems.removeClass('topbar-items-visible');
+            
+            //overlay
+            if($this.container.hasClass('menu-layout-overlay')) {
+                $this.container.toggleClass('layout-menu-overlay-active');
+                
+                if($this.container.hasClass('layout-menu-overlay-active')) {
+                    $this.enableModal();
+                }
+                else {
+                    $this.disableModal();
+                }
+            }
+            //static
+            else {
+                if($this.isDesktop()) {
+                    $this.container.toggleClass('layout-menu-static-inactive')
+                }
+                else {
+                    if($this.container.hasClass('layout-menu-static-active')) {
+                        $this.container.removeClass('layout-menu-static-active');
+                        $this.disableModal();
+                    }
+                    else {
+                        $this.container.addClass('layout-menu-static-active');
+                        $this.container.removeClass('layout-menu-static-inactive');
+                        $this.enableModal();
+                    }
+                }
+            }
+            
+            e.preventDefault();
+        });
+        
+        this.topbarMenuButton.off('click.ultima').on('click.ultima', function(e) {
+            $this.topbarMenuClick = true;
+            $this.topbarItems.find('ul').removeClass('fadeInDown fadeOutUp');
+            
+            if($this.container.hasClass('layout-menu-overlay-active')||$this.container.hasClass('layout-menu-static-active')) {
+                $this.menuButton.removeClass('menu-button-rotate');
+                $this.container.removeClass('layout-menu-overlay-active layout-menu-static-active');
+                $this.disableModal();
             }
 
-            submenu.hide();
-          }
-          else {
-            submenu.slideUp();
-          }
-        }
-      }
-      else {
-        if(horizontal) {
-          if(submenu.length) {
-            $this.deactivateItems(item.siblings());
-            item.addClass('active-menuitem');
-            $this.menuActive = true;
-            submenu.show();
-          }
-          else {
-            $this.deactivateHorizontalMenu();
-          }
-        }
-        else {
-          $this.deactivateItems(item.siblings(), true);
-          $this.activate(item);
-        }
-      }
-
-      if($this.isOverlay()||!$this.isDesktop()) {
-        if(!submenu.length) {
-          $this.container.removeClass('layout-menu-overlay-active layout-menu-static-active');
-          $this.disableModal();
-          $this.menuButton.toggleClass('menu-button-rotate');
-        }
-      }
-
-      if(!horizontal) {
-        setTimeout(function() {
-          $(".nano").nanoScroller();
-        }, 500);
-      }
-
-      if(submenu.length) {
-        e.preventDefault();
-      }
-    });
-
-    this.menu.off('mouseenter.ultima').on('mouseenter.ultima','> li > a', function(e) {
-      if($this.isHorizontal() && $this.isDesktop()) {
-        var link = $(this),
-          item = link.parent(),
-          submenu = item.children('ul');
-
-        if(!item.hasClass('active-menuitem')) {
-          $this.menu.find('.active-menuitem').removeClass('active-menuitem');
-          $this.menu.find('ul:visible').hide();
-          $this.menu.find('.ink').remove();
-
-          if($this.menuActive) {
-            item.addClass('active-menuitem');
-            item.children('ul').show();
-          }
-        }
-      }
-    });
-
-    this.profileButton.off('click.ultima').on('click.ultima', function(e) {
-      var profile = $this.profileMenu.prev('.profile'),
-        expanded = profile.hasClass('profile-expanded');
-
-      $this.profileMenu.slideToggle();
-      $this.profileMenu.prev('.profile').toggleClass('profile-expanded');
-
-      setTimeout(function() {
-        $(".nano").nanoScroller();
-      }, 500);
-
-      e.preventDefault();
-    });
-
-    this.topbar.off('click.ultima').on('click.ultima','.topbar-items > li > a', function(e) {
-      var link = $(this),
-        item = link.parent(),
-        submenu = link.next();
-
-      $this.topbarLinkClick = true;
-
-      item.siblings('.active-top-menu').removeClass('active-top-menu');
-      if($this.container.hasClass('layout-menu-overlay-active')) {
-        $this.menuButton.removeClass('menu-button-rotate');
-        $this.container.removeClass('layout-menu-overlay-active');
-        $this.disableModal();
-      }
-
-      if($this.isDesktop()) {
-        if(submenu.length) {
-          if(item.hasClass('active-top-menu')) {
-            submenu.addClass('fadeOutUp');
-
+            if($this.topbarItems.hasClass('topbar-items-visible')) {
+                $this.topbarItems.addClass('fadeOutUp');
+                
+                setTimeout(function() {
+                    $this.topbarItems.removeClass('fadeOutUp topbar-items-visible');
+                },500);
+            }
+            else {
+                $this.topbarItems.addClass('topbar-items-visible fadeInDown');
+            }
+            
+            e.preventDefault();
+        });
+        
+        this.menu.off('click.ultima').on('click.ultima', 'a', function(e) {
+            var link = $(this),
+            item = link.parent(),
+            submenu = item.children('ul'),
+            horizontal = $this.isHorizontal() && $this.isDesktop();
+            
+            if(horizontal) {
+                $this.horizontalMenuClick = true;
+            }
+                                     
+            if(item.hasClass('active-menuitem')) {
+                if(submenu.length) {
+                    item.removeClass('active-menuitem');
+                    
+                    if(horizontal) {
+                        if(item.parent().is($this.menu)) {
+                            $this.menuActive = false;
+                        }
+                        
+                        submenu.hide();
+                    }
+                    else {
+                        submenu.slideUp();
+                    }
+                }
+            }
+            else {                
+                if(horizontal) {
+                    if(submenu.length) {
+                        $this.deactivateItems(item.siblings());
+                        item.addClass('active-menuitem');
+                        $this.menuActive = true;
+                        submenu.show();
+                    }
+                    else {
+                        $this.deactivateHorizontalMenu();
+                    }
+                }
+                else {
+                    $this.deactivateItems(item.siblings(), true);
+                    $this.activate(item);
+                }
+            }
+            
+            if($this.isOverlay()||!$this.isDesktop()) {
+                if(!submenu.length) {
+                    $this.container.removeClass('layout-menu-overlay-active layout-menu-static-active');
+                    $this.disableModal();
+                    $this.menuButton.toggleClass('menu-button-rotate');
+                }                
+            }
+            
+            if(!horizontal) {
+                setTimeout(function() {
+                    $(".nano").nanoScroller();
+                }, 500);
+            }
+                                    
+            if(submenu.length) {
+                e.preventDefault();
+            }
+        });
+        
+        this.menu.off('mouseenter.ultima').on('mouseenter.ultima','> li > a', function(e) {    
+            if($this.isHorizontal() && $this.isDesktop()) {
+                var link = $(this),
+                item = link.parent(),
+                submenu = item.children('ul');
+                
+                if(!item.hasClass('active-menuitem')) {
+                    $this.menu.find('.active-menuitem').removeClass('active-menuitem');
+                    $this.menu.find('ul:visible').hide();
+                    $this.menu.find('.ink').remove();
+                    
+                    if($this.menuActive) {
+                        item.addClass('active-menuitem');
+                        item.children('ul').show();
+                    }
+                }
+            }
+        });
+        
+        this.profileButton.off('click.ultima').on('click.ultima', function(e) {
+            var profile = $this.profileMenu.prev('.profile'),
+            expanded = profile.hasClass('profile-expanded');
+            
+            $this.profileMenu.slideToggle();
+            $this.profileMenu.prev('.profile').toggleClass('profile-expanded');
+          
             setTimeout(function() {
-              item.removeClass('active-top-menu'),
-                submenu.removeClass('fadeOutUp');
-            },500);
-          }
-          else {
-            item.addClass('active-top-menu');
-            submenu.addClass('fadeInDown');
-          }
+                $(".nano").nanoScroller();
+            }, 500);
+            
+            e.preventDefault();
+        });
+                
+        this.topbar.off('click.ultima').on('click.ultima','.topbar-items > li > a', function(e) {
+            var link = $(this),
+            item = link.parent(),
+            submenu = link.next();
+            
+            $this.topbarLinkClick = true;
+
+            item.siblings('.active-top-menu').removeClass('active-top-menu');
+            if($this.container.hasClass('layout-menu-overlay-active')) {
+                $this.menuButton.removeClass('menu-button-rotate');
+                $this.container.removeClass('layout-menu-overlay-active');
+                $this.disableModal();
+            }
+
+            if($this.isDesktop()) {
+                if(submenu.length) {
+                    if(item.hasClass('active-top-menu')) {
+                        submenu.addClass('fadeOutUp');
+                        
+                        setTimeout(function() {
+                            item.removeClass('active-top-menu'),
+                            submenu.removeClass('fadeOutUp');
+                        },500);
+                    }
+                    else {
+                        item.addClass('active-top-menu');
+                        submenu.addClass('fadeInDown');
+                    }
+                }
+            }
+            else {
+                item.children('ul').removeClass('fadeInDown fadeOutUp');
+                item.toggleClass('active-top-menu');
+            }   
+            
+            e.preventDefault();         
+        });
+        
+        $this.topbarItems.children('.search-item').off('click.ultima').on('click.ultima', function(e) {
+            $this.topbarLinkClick = true;
+        });
+        
+        $(document.body).off('click.ultima').on('click.ultima', function() {
+            if($this.isHorizontal() && !$this.horizontalMenuClick && $this.isDesktop()) {
+                $this.deactivateHorizontalMenu();
+            }
+            if(!$this.topbarMenuClick && !$this.topbarLinkClick) {
+                $this.topbarItems.find('.active-top-menu').removeClass('active-top-menu');
+                $this.topbarItems.removeClass('topbar-items-visible');
+            }
+            
+            $this.horizontalMenuClick = false;
+            $this.topbarLinkClick = false;
+            $this.topbarMenuClick = false;
+        });
+    },
+    
+    deactivateHorizontalMenu: function() {
+        this.menu.find('.active-menuitem').removeClass('active-menuitem');
+        this.menu.find('ul:visible').hide();
+        this.menuActive = false;
+    },
+    
+    activate: function(item) {
+        var submenu = item.children('ul');
+        item.addClass('active-menuitem');
+
+        if(submenu.length) {
+            submenu.slideDown();
         }
-      }
-      else {
-        item.children('ul').removeClass('fadeInDown fadeOutUp');
-        item.toggleClass('active-top-menu');
-      }
-
-      e.preventDefault();
-    });
-
-    $this.topbarItems.children('.search-item').off('click.ultima').on('click.ultima', function(e) {
-      $this.topbarLinkClick = true;
-    });
-
-    $(document.body).off('click.ultima').on('click.ultima', function() {
-      if($this.isHorizontal() && !$this.horizontalMenuClick && $this.isDesktop()) {
-        $this.deactivateHorizontalMenu();
-      }
-      if(!$this.topbarMenuClick && !$this.topbarLinkClick) {
-        $this.topbarItems.find('.active-top-menu').removeClass('active-top-menu');
-        $this.topbarItems.removeClass('topbar-items-visible');
-      }
-
-      $this.horizontalMenuClick = false;
-      $this.topbarLinkClick = false;
-      $this.topbarMenuClick = false;
-    });
-  },
-
-  deactivateHorizontalMenu: function() {
-    this.menu.find('.active-menuitem').removeClass('active-menuitem');
-    this.menu.find('ul:visible').hide();
-    this.menuActive = false;
-  },
-
-  activate: function(item) {
-    var submenu = item.children('ul');
-    item.addClass('active-menuitem');
-
-    if(submenu.length) {
-      submenu.slideDown();
-    }
-  },
-
-  deactivate: function(item) {
-    var submenu = item.children('ul');
-    item.removeClass('active-menuitem');
-
-    if(submenu.length) {
-      submenu.hide();
-    }
-  },
-
-  deactivateItems: function(items, animate) {
-    var $this = this;
-
-    for(var i = 0; i < items.length; i++) {
-      var item = items.eq(i),
-        submenu = item.children('ul');
-
-      if(submenu.length) {
-        if(item.hasClass('active-menuitem')) {
-          var activeSubItems = item.find('.active-menuitem');
-          item.removeClass('active-menuitem');
-          item.find('.ink').remove();
-
-          if(animate) {
-            submenu.slideUp('normal', function() {
-              $(this).parent().find('.active-menuitem').each(function() {
-                $this.deactivate($(this));
-              });
-            });
-          }
-          else {
+    },
+    
+    deactivate: function(item) {
+        var submenu = item.children('ul');
+        item.removeClass('active-menuitem');
+        
+        if(submenu.length) {
             submenu.hide();
-            item.find('.active-menuitem').each(function() {
-              $this.deactivate($(this));
-            });
-          }
         }
-        else {
-          item.find('.active-menuitem').each(function() {
-            var subItem = $(this);
-            $this.deactivate(subItem);
-          });
+    },
+        
+    deactivateItems: function(items, animate) {
+        var $this = this;
+        
+        for(var i = 0; i < items.length; i++) {
+            var item = items.eq(i),
+            submenu = item.children('ul');
+            
+            if(submenu.length) {
+                if(item.hasClass('active-menuitem')) {
+                    var activeSubItems = item.find('.active-menuitem');
+                    item.removeClass('active-menuitem');
+                    item.find('.ink').remove();
+                    
+                    if(animate) {
+                        submenu.slideUp('normal', function() {
+                            $(this).parent().find('.active-menuitem').each(function() {
+                                $this.deactivate($(this));
+                            });
+                        });
+                    }
+                    else {
+                        submenu.hide();
+                        item.find('.active-menuitem').each(function() {
+                            $this.deactivate($(this));
+                        });
+                    }
+                }
+                else {
+                    item.find('.active-menuitem').each(function() {
+                        var subItem = $(this);
+                        $this.deactivate(subItem);
+                    });
+                }
+            }
+            else if(item.hasClass('active-menuitem')) {
+                $this.deactivate(item);
+            }
         }
-      }
-      else if(item.hasClass('active-menuitem')) {
-        $this.deactivate(item);
-      }
+    },
+            
+    enableModal: function() {
+        this.modal = this.container.append('<div class="layout-mask"></div>').children('.layout-mask');
+    },
+    
+    disableModal: function() {
+        if(this.modal) {
+            this.modal.remove();
+        }
+    },
+        
+    isHorizontal: function() {
+        return this.container.hasClass('menu-layout-horizontal');
+    },
+    
+    isOverlay: function() {
+        return this.container.hasClass('menu-layout-overlay');
+    },
+    
+    isTablet: function() {
+        var width = window.innerWidth;
+        return width <= 1024 && width > 640;
+    },
+
+    isDesktop: function() {
+        return window.innerWidth > 1024;
+    },
+
+    isMobile: function() {
+        return window.innerWidth <= 640;
+    },
+    
+    restoreMenuState: function() {
+        var $this = this;
+        setTimeout(function() {
+            var activeMenuLink = $this.menu.find('a.active-menulink');
+            if(activeMenuLink.length) {
+                var menuitem = activeMenuLink.parent();
+                $this.restoreMenuitem(menuitem);
+                
+                var parentList = menuitem.parent();
+                while(parentList.get(0) != $this.menu.get(0)) {
+                    var parentItem = parentList.parent();
+                    $this.restoreMenuitem(parentItem);
+                    parentList = parentItem.parent();
+                }
+            }
+        }, 50);
+    },
+    
+    restoreMenuitem: function(item) {
+        item.addClass('active-menuitem');
+        
+        var submenu = item.children('ul');
+        if(submenu.length) {
+            submenu.show();
+        }
     }
-  },
-
-  enableModal: function() {
-    this.modal = this.container.append('<div class="layout-mask"></div>').children('.layout-mask');
-  },
-
-  disableModal: function() {
-    this.modal.remove();
-  },
-
-  isHorizontal: function() {
-    return this.container.hasClass('menu-layout-horizontal');
-  },
-
-  isOverlay: function() {
-    return this.container.hasClass('menu-layout-overlay');
-  },
-
-  isTablet: function() {
-    var width = window.innerWidth;
-    return width <= 1024 && width > 640;
-  },
-
-  isDesktop: function() {
-    return window.innerWidth > 1024;
-  },
-
-  isMobile: function() {
-    return window.innerWidth <= 640;
-  },
-
-  restoreMenuState: function() {
-    var $this = this;
-    setTimeout(function() {
-      var activeMenuLink = $this.menu.find('a.active-menulink');
-      if(activeMenuLink.length) {
-        var menuitem = activeMenuLink.parent();
-        $this.restoreMenuitem(menuitem);
-
-        var parentList = menuitem.parent();
-        while(parentList.get(0) != $this.menu.get(0)) {
-          var parentItem = parentList.parent();
-          $this.restoreMenuitem(parentItem);
-          parentList = parentItem.parent();
-        }
-      }
-    }, 50);
-  },
-
-  restoreMenuitem: function(item) {
-    item.addClass('active-menuitem');
-
-    var submenu = item.children('ul');
-    if(submenu.length) {
-      submenu.show();
-    }
-  }
-
+    
 };
 
 /* Ripple */
-$(function() {
+$(function() {     
 
-  var ink, d, x, y;
-  $(document.body).off('mousedown.ripple')
-    .on('mousedown.ripple','.ripplelink,.ui-button,.ui-listbox-item', null, function(e){
-      var element = $(this);
-
-      if(element.find(".ink").length === 0){
-        if(element.hasClass('ripplelink'))
-          element.children('span').after("<span class='ink'></span>");
-        else
-          element.append("<span class='ink'></span>");
-      }
-
-      ink = $(this).find(".ink");
-      ink.removeClass("animate");
-
-      if(!ink.height() && !ink.width()){
-        d = Math.max($(this).outerWidth(), $(this).outerHeight());
-        ink.css({height: d, width: d});
-      }
-
-      x = e.pageX - $(this).offset().left - ink.width()/2;
-      y = e.pageY - $(this).offset().top - ink.height()/2;
-
-      ink.css({top: y+'px', left: x+'px', 'pointer-events': 'none'}).addClass("animate");
+    var ink, d, x, y;
+    $(document.body).off('mousedown.ripple')
+            .on('mousedown.ripple','.ripplelink,.ui-button,.ui-listbox-item', null, function(e){
+        var element = $(this);
+        
+        if(element.find(".ink").length === 0){
+            if(element.hasClass('ripplelink'))
+                element.children('span').after("<span class='ink'></span>");
+            else
+                element.append("<span class='ink'></span>");
+        }
+             
+        ink = $(this).find(".ink");
+        ink.removeClass("animate");
+         
+        if(!ink.height() && !ink.width()){
+            d = Math.max($(this).outerWidth(), $(this).outerHeight());
+            ink.css({height: d, width: d});
+        }
+         
+        x = e.pageX - $(this).offset().left - ink.width()/2;
+        y = e.pageY - $(this).offset().top - ink.height()/2;
+         
+        ink.css({top: y+'px', left: x+'px', 'pointer-events': 'none'}).addClass("animate");
     });
 });
 
 /*! nanoScrollerJS - v0.8.7 - 2015
- * http://jamesflorentino.github.com/nanoScrollerJS/
- * Copyright (c) 2015 James Florentino; Licensed MIT */
+* http://jamesflorentino.github.com/nanoScrollerJS/
+* Copyright (c) 2015 James Florentino; Licensed MIT */
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
     return define(['jquery'], function($) {
@@ -416,300 +418,300 @@ $(function() {
   defaults = {
 
     /**
-     a classname for the pane element.
-     @property paneClass
-     @type String
-     @default 'nano-pane'
+      a classname for the pane element.
+      @property paneClass
+      @type String
+      @default 'nano-pane'
      */
     paneClass: 'nano-pane',
 
     /**
-     a classname for the slider element.
-     @property sliderClass
-     @type String
-     @default 'nano-slider'
+      a classname for the slider element.
+      @property sliderClass
+      @type String
+      @default 'nano-slider'
      */
     sliderClass: 'nano-slider',
 
     /**
-     a classname for the content element.
-     @property contentClass
-     @type String
-     @default 'nano-content'
+      a classname for the content element.
+      @property contentClass
+      @type String
+      @default 'nano-content'
      */
     contentClass: 'nano-content',
 
     /**
-     a classname for enabled mode
-     @property enabledClass
-     @type String
-     @default 'has-scrollbar'
+      a classname for enabled mode
+      @property enabledClass
+      @type String
+      @default 'has-scrollbar'
      */
     enabledClass: 'has-scrollbar',
 
     /**
-     a classname for flashed mode
-     @property flashedClass
-     @type String
-     @default 'flashed'
+      a classname for flashed mode
+      @property flashedClass
+      @type String
+      @default 'flashed'
      */
     flashedClass: 'flashed',
 
     /**
-     a classname for active mode
-     @property activeClass
-     @type String
-     @default 'active'
+      a classname for active mode
+      @property activeClass
+      @type String
+      @default 'active'
      */
     activeClass: 'active',
 
     /**
-     a setting to enable native scrolling in iOS devices.
-     @property iOSNativeScrolling
-     @type Boolean
-     @default false
+      a setting to enable native scrolling in iOS devices.
+      @property iOSNativeScrolling
+      @type Boolean
+      @default false
      */
     iOSNativeScrolling: false,
 
     /**
-     a setting to prevent the rest of the page being
-     scrolled when user scrolls the `.content` element.
-     @property preventPageScrolling
-     @type Boolean
-     @default false
+      a setting to prevent the rest of the page being
+      scrolled when user scrolls the `.content` element.
+      @property preventPageScrolling
+      @type Boolean
+      @default false
      */
     preventPageScrolling: false,
 
     /**
-     a setting to disable binding to the resize event.
-     @property disableResize
-     @type Boolean
-     @default false
+      a setting to disable binding to the resize event.
+      @property disableResize
+      @type Boolean
+      @default false
      */
     disableResize: false,
 
     /**
-     a setting to make the scrollbar always visible.
-     @property alwaysVisible
-     @type Boolean
-     @default false
+      a setting to make the scrollbar always visible.
+      @property alwaysVisible
+      @type Boolean
+      @default false
      */
     alwaysVisible: false,
 
     /**
-     a default timeout for the `flash()` method.
-     @property flashDelay
-     @type Number
-     @default 1500
+      a default timeout for the `flash()` method.
+      @property flashDelay
+      @type Number
+      @default 1500
      */
     flashDelay: 1500,
 
     /**
-     a minimum height for the `.slider` element.
-     @property sliderMinHeight
-     @type Number
-     @default 20
+      a minimum height for the `.slider` element.
+      @property sliderMinHeight
+      @type Number
+      @default 20
      */
     sliderMinHeight: 20,
 
     /**
-     a maximum height for the `.slider` element.
-     @property sliderMaxHeight
-     @type Number
-     @default null
+      a maximum height for the `.slider` element.
+      @property sliderMaxHeight
+      @type Number
+      @default null
      */
     sliderMaxHeight: null,
 
     /**
-     an alternate document context.
-     @property documentContext
-     @type Document
-     @default null
+      an alternate document context.
+      @property documentContext
+      @type Document
+      @default null
      */
     documentContext: null,
 
     /**
-     an alternate window context.
-     @property windowContext
-     @type Window
-     @default null
+      an alternate window context.
+      @property windowContext
+      @type Window
+      @default null
      */
     windowContext: null
   };
 
   /**
-   @property SCROLLBAR
-   @type String
-   @static
-   @final
-   @private
+    @property SCROLLBAR
+    @type String
+    @static
+    @final
+    @private
    */
   SCROLLBAR = 'scrollbar';
 
   /**
-   @property SCROLL
-   @type String
-   @static
-   @final
-   @private
+    @property SCROLL
+    @type String
+    @static
+    @final
+    @private
    */
   SCROLL = 'scroll';
 
   /**
-   @property MOUSEDOWN
-   @type String
-   @final
-   @private
+    @property MOUSEDOWN
+    @type String
+    @final
+    @private
    */
   MOUSEDOWN = 'mousedown';
 
   /**
-   @property MOUSEENTER
-   @type String
-   @final
-   @private
+    @property MOUSEENTER
+    @type String
+    @final
+    @private
    */
   MOUSEENTER = 'mouseenter';
 
   /**
-   @property MOUSEMOVE
-   @type String
-   @static
-   @final
-   @private
+    @property MOUSEMOVE
+    @type String
+    @static
+    @final
+    @private
    */
   MOUSEMOVE = 'mousemove';
 
   /**
-   @property MOUSEWHEEL
-   @type String
-   @final
-   @private
+    @property MOUSEWHEEL
+    @type String
+    @final
+    @private
    */
   MOUSEWHEEL = 'mousewheel';
 
   /**
-   @property MOUSEUP
-   @type String
-   @static
-   @final
-   @private
+    @property MOUSEUP
+    @type String
+    @static
+    @final
+    @private
    */
   MOUSEUP = 'mouseup';
 
   /**
-   @property RESIZE
-   @type String
-   @final
-   @private
+    @property RESIZE
+    @type String
+    @final
+    @private
    */
   RESIZE = 'resize';
 
   /**
-   @property DRAG
-   @type String
-   @static
-   @final
-   @private
+    @property DRAG
+    @type String
+    @static
+    @final
+    @private
    */
   DRAG = 'drag';
 
   /**
-   @property ENTER
-   @type String
-   @static
-   @final
-   @private
+    @property ENTER
+    @type String
+    @static
+    @final
+    @private
    */
   ENTER = 'enter';
 
   /**
-   @property UP
-   @type String
-   @static
-   @final
-   @private
+    @property UP
+    @type String
+    @static
+    @final
+    @private
    */
   UP = 'up';
 
   /**
-   @property PANEDOWN
-   @type String
-   @static
-   @final
-   @private
+    @property PANEDOWN
+    @type String
+    @static
+    @final
+    @private
    */
   PANEDOWN = 'panedown';
 
   /**
-   @property DOMSCROLL
-   @type String
-   @static
-   @final
-   @private
+    @property DOMSCROLL
+    @type String
+    @static
+    @final
+    @private
    */
   DOMSCROLL = 'DOMMouseScroll';
 
   /**
-   @property DOWN
-   @type String
-   @static
-   @final
-   @private
+    @property DOWN
+    @type String
+    @static
+    @final
+    @private
    */
   DOWN = 'down';
 
   /**
-   @property WHEEL
-   @type String
-   @static
-   @final
-   @private
+    @property WHEEL
+    @type String
+    @static
+    @final
+    @private
    */
   WHEEL = 'wheel';
 
   /**
-   @property KEYDOWN
-   @type String
-   @static
-   @final
-   @private
+    @property KEYDOWN
+    @type String
+    @static
+    @final
+    @private
    */
   KEYDOWN = 'keydown';
 
   /**
-   @property KEYUP
-   @type String
-   @static
-   @final
-   @private
+    @property KEYUP
+    @type String
+    @static
+    @final
+    @private
    */
   KEYUP = 'keyup';
 
   /**
-   @property TOUCHMOVE
-   @type String
-   @static
-   @final
-   @private
+    @property TOUCHMOVE
+    @type String
+    @static
+    @final
+    @private
    */
   TOUCHMOVE = 'touchmove';
 
   /**
-   @property BROWSER_IS_IE7
-   @type Boolean
-   @static
-   @final
-   @private
+    @property BROWSER_IS_IE7
+    @type Boolean
+    @static
+    @final
+    @private
    */
   BROWSER_IS_IE7 = window.navigator.appName === 'Microsoft Internet Explorer' && /msie 7./i.test(window.navigator.appVersion) && window.ActiveXObject;
 
   /**
-   @property BROWSER_SCROLLBAR_WIDTH
-   @type Number
-   @static
-   @default null
-   @private
+    @property BROWSER_SCROLLBAR_WIDTH
+    @type Number
+    @static
+    @default null
+    @private
    */
   BROWSER_SCROLLBAR_WIDTH = null;
   rAF = window.requestAnimationFrame;
@@ -740,11 +742,11 @@ $(function() {
   hasTransform = transform !== false;
 
   /**
-   Returns browser's native scrollbar width
-   @method getBrowserScrollbarWidth
-   @return {Number} the scrollbar width in pixels
-   @static
-   @private
+    Returns browser's native scrollbar width
+    @method getBrowserScrollbarWidth
+    @return {Number} the scrollbar width in pixels
+    @static
+    @private
    */
   getBrowserScrollbarWidth = function() {
     var outer, outerStyle, scrollbarWidth;
@@ -775,10 +777,10 @@ $(function() {
   };
 
   /**
-   @class NanoScroll
-   @param element {HTMLElement|Node} the main element
-   @param options {Object} nanoScroller's options
-   @constructor
+    @class NanoScroll
+    @param element {HTMLElement|Node} the main element
+    @param options {Object} nanoScroller's options
+    @constructor
    */
   NanoScroll = (function() {
     function NanoScroll(el, options) {
@@ -805,12 +807,12 @@ $(function() {
 
 
     /**
-     Prevents the rest of the page being scrolled
-     when user scrolls the `.nano-content` element.
-     @method preventScrolling
-     @param event {Event}
-     @param direction {String} Scroll direction (up or down)
-     @private
+      Prevents the rest of the page being scrolled
+      when user scrolls the `.nano-content` element.
+      @method preventScrolling
+      @param event {Event}
+      @param direction {String} Scroll direction (up or down)
+      @private
      */
 
     NanoScroll.prototype.preventScrolling = function(e, direction) {
@@ -833,9 +835,9 @@ $(function() {
 
 
     /**
-     Enable iOS native scrolling
-     @method nativeScrolling
-     @private
+      Enable iOS native scrolling
+      @method nativeScrolling
+      @private
      */
 
     NanoScroll.prototype.nativeScrolling = function() {
@@ -848,10 +850,10 @@ $(function() {
 
 
     /**
-     Updates those nanoScroller properties that
-     are related to current scrollbar position.
-     @method updateScrollValues
-     @private
+      Updates those nanoScroller properties that
+      are related to current scrollbar position.
+      @method updateScrollValues
+      @private
      */
 
     NanoScroll.prototype.updateScrollValues = function() {
@@ -877,10 +879,10 @@ $(function() {
 
 
     /**
-     Updates CSS styles for current scroll position.
-     Uses CSS 2d transfroms and `window.requestAnimationFrame` if available.
-     @method setOnScrollStyles
-     @private
+      Updates CSS styles for current scroll position.
+      Uses CSS 2d transfroms and `window.requestAnimationFrame` if available.
+      @method setOnScrollStyles
+      @private
      */
 
     NanoScroll.prototype.setOnScrollStyles = function() {
@@ -910,9 +912,9 @@ $(function() {
 
 
     /**
-     Creates event related methods
-     @method createEvents
-     @private
+      Creates event related methods
+      @method createEvents
+      @private
      */
 
     NanoScroll.prototype.createEvents = function() {
@@ -1024,9 +1026,9 @@ $(function() {
 
 
     /**
-     Adds event listeners with jQuery.
-     @method addEvents
-     @private
+      Adds event listeners with jQuery.
+      @method addEvents
+      @private
      */
 
     NanoScroll.prototype.addEvents = function() {
@@ -1045,9 +1047,9 @@ $(function() {
 
 
     /**
-     Removes event listeners with jQuery.
-     @method removeEvents
-     @private
+      Removes event listeners with jQuery.
+      @method removeEvents
+      @private
      */
 
     NanoScroll.prototype.removeEvents = function() {
@@ -1063,10 +1065,10 @@ $(function() {
 
 
     /**
-     Generates nanoScroller's scrollbar and elements for it.
-     @method generate
-     @chainable
-     @private
+      Generates nanoScroller's scrollbar and elements for it.
+      @method generate
+      @chainable
+      @private
      */
 
     NanoScroll.prototype.generate = function() {
@@ -1098,8 +1100,8 @@ $(function() {
 
 
     /**
-     @method restore
-     @private
+      @method restore
+      @private
      */
 
     NanoScroll.prototype.restore = function() {
@@ -1112,11 +1114,11 @@ $(function() {
 
 
     /**
-     Resets nanoScroller's scrollbar.
-     @method reset
-     @chainable
-     @example
-     $(".nano").nanoScroller();
+      Resets nanoScroller's scrollbar.
+      @method reset
+      @chainable
+      @example
+          $(".nano").nanoScroller();
      */
 
     NanoScroll.prototype.reset = function() {
@@ -1195,10 +1197,10 @@ $(function() {
 
 
     /**
-     @method scroll
-     @private
-     @example
-     $(".nano").nanoScroller({ scroll: 'top' });
+      @method scroll
+      @private
+      @example
+          $(".nano").nanoScroller({ scroll: 'top' });
      */
 
     NanoScroll.prototype.scroll = function() {
@@ -1217,12 +1219,12 @@ $(function() {
 
 
     /**
-     Scroll at the bottom with an offset value
-     @method scrollBottom
-     @param offsetY {Number}
-     @chainable
-     @example
-     $(".nano").nanoScroller({ scrollBottom: value });
+      Scroll at the bottom with an offset value
+      @method scrollBottom
+      @param offsetY {Number}
+      @chainable
+      @example
+          $(".nano").nanoScroller({ scrollBottom: value });
      */
 
     NanoScroll.prototype.scrollBottom = function(offsetY) {
@@ -1236,12 +1238,12 @@ $(function() {
 
 
     /**
-     Scroll at the top with an offset value
-     @method scrollTop
-     @param offsetY {Number}
-     @chainable
-     @example
-     $(".nano").nanoScroller({ scrollTop: value });
+      Scroll at the top with an offset value
+      @method scrollTop
+      @param offsetY {Number}
+      @chainable
+      @example
+          $(".nano").nanoScroller({ scrollTop: value });
      */
 
     NanoScroll.prototype.scrollTop = function(offsetY) {
@@ -1255,12 +1257,12 @@ $(function() {
 
 
     /**
-     Scroll to an element
-     @method scrollTo
-     @param node {Node} A node to scroll to.
-     @chainable
-     @example
-     $(".nano").nanoScroller({ scrollTo: $('#a_node') });
+      Scroll to an element
+      @method scrollTo
+      @param node {Node} A node to scroll to.
+      @chainable
+      @example
+          $(".nano").nanoScroller({ scrollTo: $('#a_node') });
      */
 
     NanoScroll.prototype.scrollTo = function(node) {
@@ -1273,12 +1275,12 @@ $(function() {
 
 
     /**
-     To stop the operation.
-     This option will tell the plugin to disable all event bindings and hide the gadget scrollbar from the UI.
-     @method stop
-     @chainable
-     @example
-     $(".nano").nanoScroller({ stop: true });
+      To stop the operation.
+      This option will tell the plugin to disable all event bindings and hide the gadget scrollbar from the UI.
+      @method stop
+      @chainable
+      @example
+          $(".nano").nanoScroller({ stop: true });
      */
 
     NanoScroll.prototype.stop = function() {
@@ -1296,11 +1298,11 @@ $(function() {
 
 
     /**
-     Destroys nanoScroller and restores browser's native scrollbar.
-     @method destroy
-     @chainable
-     @example
-     $(".nano").nanoScroller({ destroy: true });
+      Destroys nanoScroller and restores browser's native scrollbar.
+      @method destroy
+      @chainable
+      @example
+          $(".nano").nanoScroller({ destroy: true });
      */
 
     NanoScroll.prototype.destroy = function() {
@@ -1325,12 +1327,12 @@ $(function() {
 
 
     /**
-     To flash the scrollbar gadget for an amount of time defined in plugin settings (defaults to 1,5s).
-     Useful if you want to show the user (e.g. on pageload) that there is more content waiting for him.
-     @method flash
-     @chainable
-     @example
-     $(".nano").nanoScroller({ flash: true });
+      To flash the scrollbar gadget for an amount of time defined in plugin settings (defaults to 1,5s).
+      Useful if you want to show the user (e.g. on pageload) that there is more content waiting for him.
+      @method flash
+      @chainable
+      @example
+          $(".nano").nanoScroller({ flash: true });
      */
 
     NanoScroll.prototype.flash = function() {
@@ -1396,5 +1398,5 @@ $(function() {
   $.fn.nanoScroller.Constructor = NanoScroll;
 });
 
-
+    
 
