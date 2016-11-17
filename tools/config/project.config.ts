@@ -2,6 +2,9 @@ import { join } from 'path';
 
 import { SeedConfig } from './seed.config';
 
+ import { ExtendPackages } from './seed.config.interfaces';
+
+
 /**
  * This class extends the basic seed configuration, allowing for project specific overrides. A few examples can be found
  * below.
@@ -13,8 +16,8 @@ export class ProjectConfig extends SeedConfig {
     FONTS_DEST = `${this.APP_DEST}/fonts`;
 
     FONTS_SRC = [
-      `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/fonts/**`,
-      `${this.APP_SRC}/libs/ionicons-2.0.1/fonts/**`
+      `${this.APP_SRC}/libs/ultima-ng/layout/fonts/**`,
+      `${this.APP_SRC}/libs/ionicons/fonts/**`,
     ];
 
   constructor() {
@@ -29,7 +32,8 @@ export class ProjectConfig extends SeedConfig {
           defaultExtension : 'js'
       };
 
-    /* Enable typeless compiler runs (faster) between typed compiler runs. */
+
+      /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;
 
     // Add `NPM` third-party libraries to be injected/bundled.
@@ -37,33 +41,42 @@ export class ProjectConfig extends SeedConfig {
       ...this.NPM_DEPENDENCIES,
       // {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
       { src: 'primeng/resources/primeng.min.css', inject: true },
-      {src: 'primeui/primeui-ng-all.min.js', inject: true}
+      {src: 'primeui/primeui-ng-all.min.js', inject: true},
+
 
       // inject into css section
 
   ];
 
-    this.addPackageBundles({
-      name: 'lodash',
-      path: 'node_modules/lodash/lodash.min.js'
-    });
 
     // Add `local` third-party libraries to be injected/bundled.
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
       {src: `${this.APP_SRC}/assets/css/main.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/layout.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/nanoscroller.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/ripple.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/swipe.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/theme/theme-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/css/layout-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/css/animate.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ionicons-2.0.1/css/ionicons.min.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/layout.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/swipe.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ionicons/css/ionicons.min.css`, inject: true, vendor: false},
 
 
 // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
     ];
+
+
+    // Add packages (e.g. lodash)
+      let additionalPackages: ExtendPackages[] = [{
+       name: 'lodash',
+       path: `${this.APP_BASE}node_modules/lodash/lodash.js`,
+       packageMeta: {
+         main: 'index.js',
+         defaultExtension: 'js'
+       }
+     }];
+
+   this.addPackagesBundles(additionalPackages);
 
     /* Add to or override NPM module configurations: */
     // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });

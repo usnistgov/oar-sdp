@@ -282,13 +282,7 @@
 
         <div class="card">
           <div *ngIf="filteredResults.length > 0">
-            <button  type="button" pButton icon="ui-icon-file-download"
-                    iconPos="left"
-                    label="CSV"
-                    (click)='results.exportCSV()'
-                    class="divExpCSV"></button>
-            <span class="spanResults">&nbsp;&nbsp;
-              {{filteredResults.length}} Result(s)</span>
+
           </div>
           <div *ngIf="filteredResults.length<=10">
             <p-dataTable
@@ -296,6 +290,17 @@
               #results [value]="filteredResults"
               [rows]="10" [paginator]="true" [responsive] = "true" [paginatorPosition]="bottom" [pageLinks]="10"
                sortMode="multiple" >
+              <header>
+                <div>
+                <button  type="button" pButton icon="ui-icon-file-download"
+                         iconPos="left"
+                         label="CSV"
+                         (click)='results.exportCSV()'
+                         class="divExpCSV"></button>
+                <span class="spanResults">&nbsp;&nbsp;
+              {{filteredResults.length}} Result(s)</span>
+                </div>
+              </header>
               <div class="Container">
                 <template let-resultItem pTemplate type="body">
                   <span><b>Description</b> : {{resultItem.description}}</span><br>
@@ -347,6 +352,18 @@
               #results [value]="filteredResults"
               [rows]="10" [paginator]="true" [responsive] = "true" [rowsPerPageOptions]="[10,20,50]" [paginatorPosition]="bottom" [pageLinks]="10"
               sortMode="multiple" >
+              <header>
+                <div>
+                  <button  type="button" pButton icon="ui-icon-file-download"
+                           iconPos="left"
+                           label="CSV"
+                           (click)='results.exportCSV()'
+                           class="divExpCSV"></button>
+                  <span class="spanResults">&nbsp;&nbsp;
+              {{filteredResults.length}} Result(s)</span>
+                </div>
+              </header>
+
               <div class="Container">
                 <template let-resultItem pTemplate type="body">
                   <span><b>Description</b> : {{resultItem.description}}</span><br>
