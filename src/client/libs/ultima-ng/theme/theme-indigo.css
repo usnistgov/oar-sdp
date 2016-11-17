@@ -4897,7 +4897,8 @@ body {
       margin-top: -12px; }
   body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container.ui-inputtext {
     box-sizing: border-box;
-    padding: 2px 2px 0px 2px; }
+    padding: 2px 2px 0px 2px;
+    height:auto; }
   body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container.ui-state-focus {
     padding-bottom: 0; }
   body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-input-token {
