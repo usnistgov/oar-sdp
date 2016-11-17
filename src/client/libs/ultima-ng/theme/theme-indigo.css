@@ -3972,7 +3972,7 @@ body {
     body .ui-widget-content .fa {
       color: #757575; }
   body .ui-widget-header {
-    background-color: #3F51B5;
+    background-color: #283593;
     color: #ffffff;
     font-size: 16px;
     border: 1px solid #3F51B5; }
@@ -4441,7 +4441,7 @@ body {
     padding: 10px 16px; }
   body .ui-datatable .ui-datatable-header,
   body .ui-datatable .ui-datatable-footer {
-    padding: 10px 16px; }
+    }
     body .ui-datatable .ui-datatable-header .ui-inputtext,
     body .ui-datatable .ui-datatable-footer .ui-inputtext {
       color: #ffffff; }

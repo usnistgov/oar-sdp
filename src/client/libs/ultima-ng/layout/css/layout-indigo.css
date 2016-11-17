@@ -1842,7 +1842,7 @@ body .layout-wrapper.layout-compact {
     padding: 8px 14px; }
   body .layout-wrapper.layout-compact .ui-datatable .ui-datatable-header,
   body .layout-wrapper.layout-compact .ui-datatable .ui-datatable-footer {
-    padding: 8px 14px; }
+     }
   body .layout-wrapper.layout-compact .ui-datatable .ui-paginator {
     padding: 8px 14px; }
   body .layout-wrapper.layout-compact .ui-datatable thead th {
