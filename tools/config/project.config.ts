@@ -16,8 +16,8 @@ export class ProjectConfig extends SeedConfig {
     FONTS_DEST = `${this.APP_DEST}/fonts`;
 
     FONTS_SRC = [
-      `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/fonts/**`,
-      `${this.APP_SRC}/libs/ionicons-2.0.1/fonts/**`
+      `${this.APP_SRC}/libs/ultima-ng/layout/fonts/**`,
+      `${this.APP_SRC}/libs/ionicons/fonts/**`,
     ];
 
   constructor() {
@@ -53,13 +53,13 @@ export class ProjectConfig extends SeedConfig {
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
       {src: `${this.APP_SRC}/assets/css/main.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/layout.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/nanoscroller.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/ripple.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/js/swipe.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/theme/theme-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng-1.0.2/layout/css/layout-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ionicons-2.0.1/css/ionicons.min.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/layout.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/swipe.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ionicons/css/ionicons.min.css`, inject: true, vendor: false},
 
 
 // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
@@ -76,8 +76,7 @@ export class ProjectConfig extends SeedConfig {
        }
      }];
 
-
-     this.addPackagesBundles(additionalPackages);
+   this.addPackagesBundles(additionalPackages);
 
     /* Add to or override NPM module configurations: */
     // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });
