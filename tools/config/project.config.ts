@@ -2,7 +2,7 @@ import { join } from 'path';
 
 import { SeedConfig } from './seed.config';
 
- import { ExtendPackages } from './seed.config.interfaces';
+import { ExtendPackages } from './seed.config.interfaces';
 
 
 /**
@@ -17,7 +17,7 @@ export class ProjectConfig extends SeedConfig {
 
     FONTS_SRC = [
       `${this.APP_SRC}/libs/ultima-ng/layout/fonts/**`,
-      `${this.APP_SRC}/libs/ionicons/fonts/**`,
+      `${this.APP_SRC}/libs/font-awesome/fonts/**`,
     ];
 
   constructor() {
@@ -59,8 +59,7 @@ export class ProjectConfig extends SeedConfig {
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/swipe.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ionicons/css/ionicons.min.css`, inject: true, vendor: false},
-
+      {src: `${this.APP_SRC}/libs/font-awesome/css/font-awesome.min.css`, inject: true, vendor: false},
 
 // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
     ];
