@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit,ElementRef } from '@angular/core';
-import { Location} from '@angular/common';
-import {SelectItem, TabViewModule} from 'primeng/primeng';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Location } from '@angular/common';
+import { SelectItem, TabViewModule } from 'primeng/primeng';
 
 /**
  * This class represents the headbar component.

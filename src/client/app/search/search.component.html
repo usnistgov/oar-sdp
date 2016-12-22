@@ -50,7 +50,7 @@
               <b>Download Full Record</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              <a href="http://10.200.222.248:8082/RMMApi/records/advancedsearch?identifier={{summaryCandidate.identifier}}" target="_blank" > JSON</a>
+              <a href="http://10.200.222.250:8082/RMMApi/records/advancedsearch?resId={{summaryCandidate.resId}}" target="_blank" > JSON</a>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@
               <b>Contact Email</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              {{summaryCandidate.contactPoint.hasmail}}
+              {{summaryCandidate.contactPoint.hasEmail}}
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@
               <b>Unique Identifier</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              {{summaryCandidate.identifier}}
+              {{summaryCandidate.id}}
             </div>
           </div>
           <div class="ui-g-12 ui-g-nopad">
@@ -114,7 +114,7 @@
               <b>Language</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              {{summaryCandidate.language}}
+              {{summaryCandidate.resLanguage}}
             </div>
           </div>
         </div>
@@ -219,7 +219,7 @@
       <div class="ui-g-12 ui-md-6 ui-lg-2 ">
         <p-dropdown
           [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
-          [style]="{'width':'100%'}" [styleClass]="Fleft"
+          [style]="{'width':'100%'}"
         ></p-dropdown>
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-9 ">
@@ -279,19 +279,15 @@
       <!-- Section 1 -->
 
       <div class="ui-g-12 ui-md-8 ui-lg-8 ">
-
         <div class="card">
-          <div *ngIf="filteredResults.length > 0">
-
-          </div>
           <div *ngIf="filteredResults.length<=10">
             <p-dataTable
               expandableRows="true"
               #results [value]="filteredResults"
-              [rows]="10" [paginator]="true" [responsive] = "true" [paginatorPosition]="bottom" [pageLinks]="10"
+              [rows]="10" [paginator]="true" paginatorPosition = "top" [responsive] = "true" [pageLinks]="10"
                sortMode="multiple" >
               <header>
-                <div>
+                <div *ngIf="filteredResults.length > 0">
                 <button  type="button" pButton icon="ui-icon-file-download"
                          iconPos="left"
                          label="CSV"
@@ -311,7 +307,7 @@
               </div>
               <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
                 <template let-resultItem="rowData" pTemplate type="body">
-                  <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
+                  <a href="/#/search?resId={{resultItem.resId}}" target="_blank">
                     <button class="summaryPageBackground"  type="button" pButton
                             icon="ui-icon-open-in-browser"
                             iconPos="left" title="Open Summary Page"
@@ -350,7 +346,7 @@
             <p-dataTable
               expandableRows="true"
               #results [value]="filteredResults"
-              [rows]="10" [paginator]="true" [responsive] = "true" [rowsPerPageOptions]="[10,20,50]" [paginatorPosition]="bottom" [pageLinks]="10"
+              [rows]="10" [paginator]="true" [responsive] = "true" paginatorPosition = "top" [rowsPerPageOptions]="[10,20,50]" [pageLinks]="10"
               sortMode="multiple" >
               <header>
                 <div>
@@ -373,7 +369,7 @@
               </div>
               <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
                 <template let-resultItem="rowData" pTemplate type="body">
-                  <a href="/#/search?identifier={{resultItem.identifier}}" target="_blank">
+                  <a href="/#/search?resId={{resultItem.resId}}" target="_blank">
                     <button class="summaryPageBackground"  type="button" pButton
                             icon="ui-icon-open-in-browser"
                             iconPos="left" title="Open Summary Page"
