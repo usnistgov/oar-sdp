@@ -90,7 +90,7 @@
               <b>Bureau Code</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              {{summaryCandidate.bureaucode}}
+              {{summaryCandidate.bureauCode}}
             </div>
           </div>
           <div class="ui-g-12 ui-g-nopad">
@@ -106,7 +106,7 @@
               <b>Update Frequency</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              {{summaryCandidate.accrualPeridicity}}
+              {{summaryCandidate.accrualPeriodicity}}
             </div>
           </div>
           <div class="ui-g-12 ui-g-nopad">
@@ -131,21 +131,10 @@
           </div>
           <div class="ui-g-12 ui-g-nopad">
             <div class="ui-g-12 ui-md-6 ui-lg-2">
-              <b>Right</b>
+              <b>Rights</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
               {{summaryCandidate.rights}}
-            </div>
-          </div>
-          <div class="ui-g-12 ui-g-nopad">
-            <div class="ui-g-12 ui-md-6 ui-lg-2">
-              <b>Download URL</b>
-            </div>
-            <div class="ui-g-12 ui-md-6 ui-lg-10"
-                 *ngIf="summaryCandidate.distribution != null">
-              <a target="_blank" [(href)]="summaryCandidate.distribution[0].downloadURL">
-                {{summaryCandidate.distribution[0].downloadURL}}
-              </a>
             </div>
           </div>
           <div class="ui-g-12 ui-g-nopad">
@@ -157,14 +146,6 @@
               <a target="_blank" [(href)]="summaryCandidate.distribution[0].accessURL">
                 {{summaryCandidate.distribution[0].accessURL}}
               </a>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-g-nopad">
-            <div class="ui-g-12 ui-md-6 ui-lg-2">
-              <b>Format</b>
-            </div>
-            <div class="ui-g-12 ui-md-6 ui-lg-10" *ngIf="summaryCandidate.distribution != null">
-              {{summaryCandidate.distribution[0].format}}
             </div>
           </div>
         </div>
@@ -184,9 +165,16 @@
               <b>Publications</b>
             </div>
             <div class="ui-g-12 ui-md-6 ui-lg-10">
-              <a target="_blank" [(href)]="summaryCandidate.references">
-                {{summaryCandidate.references}}
-              </a>
+              <p-accordion [multiple]="true">
+                <p-accordionTab header="Publications"  *ngFor = "let ref of summaryCandidate.references">
+                  <div class="ui-g-12">
+                    <b>Location</b>
+                    <a target="_blank" [(href)]="ref.location">
+                    {{ref.location}}
+                    </a>
+                  </div>
+                </p-accordionTab>
+              </p-accordion>
             </div>
           </div>
           <div class="ui-g-12 ui-g-nopad">
@@ -205,6 +193,25 @@
               {{summaryCandidate.publisher.name}}
             </div>
           </div>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Format</b>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-10" *ngIf="summaryCandidate.component != null">
+              {{summaryCandidate.component.format}}
+            </div>
+          </div>
+          <div class="ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-6 ui-lg-2">
+              <b>Download URL</b>
+            </div>
+            <div class="ui-g-12 ui-md-6 ui-lg-10"
+                 *ngIf="summaryCandidate.distribution != null">
+              <a target="_blank" [(href)]="summaryCandidate.component.downloadURL">
+                {{summaryCandidate.component.downloadURL}}
+              </a>
+            </div>
+          </div>
         </div>
       </p-accordionTab>
     </p-accordion>
@@ -214,15 +221,13 @@
 
 <div *ngIf="summaryPageOpen != true" >
   <div class="ui-g ">
-    <div class="ui-g-12">
-
-      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
+      <div class="ui-g-12 ui-md-6 ui-lg-3 ">
         <p-dropdown
           [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
           [style]="{'width':'100%'}"
         ></p-dropdown>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-9 ">
+      <div class="ui-g-12 ui-md-6 ui-lg-8 ">
         <input type="text" pInputText style="width: 100%" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
                placeholder="Search..."
         />
@@ -232,11 +237,10 @@
           (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
           type="button" class="custButton Wid100" icon="ui-icon-search"></button>
       </div>
-    </div>
   </div>
     <div *ngIf="searching">
     <div class="ui-g " >
-      <div class="ui-g-12 ui-md-6 ui-lg-4 ui-fluid " >
+      <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " >
         <div class="card">
         <p-panel header="Filters">
           <div class="ui-g">
@@ -257,7 +261,7 @@
             </div>
             <div class="ui-g-12">
               <label>Keyword</label>
-              <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords" [suggestions]="suggestedKeywords"
+              <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
                               (completeMethod)="filterKeywords($event)"
                               [multiple]="true" [size]="30"
                               (onSelect)="filterResults($event)"
@@ -278,7 +282,7 @@
 
       <!-- Section 1 -->
 
-      <div class="ui-g-12 ui-md-8 ui-lg-8 ">
+      <div class="ui-g-12 ui-md-8 ui-lg-9 ">
         <div class="card">
           <div *ngIf="filteredResults.length<=10">
             <p-dataTable
@@ -287,6 +291,9 @@
               [rows]="10" [paginator]="true" paginatorPosition = "top" [responsive] = "true" [pageLinks]="10"
                sortMode="multiple" >
               <header>
+                <div style="text-align:left">
+                  <p-multiSelect [options]="columnOptions" [(ngModel)]="cols"></p-multiSelect>
+                </div>
                 <div *ngIf="filteredResults.length > 0">
                 <button  type="button" pButton icon="ui-icon-file-download"
                          iconPos="left"
@@ -305,9 +312,9 @@
                   {{results.dataToRender.length}}
                 </template>
               </div>
-              <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
-                <template let-resultItem="rowData" pTemplate type="body">
-                  <a href="/#/search?resId={{resultItem.resId}}" target="_blank">
+              <p-column styleClass="col-button" header="Action">
+                <template let-resultItem="rowData" pTemplate="rowexpansion">
+                  <a href="javascript:encodeString('test:')" target="_blank">
                     <button class="summaryPageBackground"  type="button" pButton
                             icon="ui-icon-open-in-browser"
                             iconPos="left" title="Open Summary Page"
@@ -325,20 +332,20 @@
               <p-column field="contactPoint.fn"
                         [sortable]="true" [filter]="true" header="Contact" [style]="{'color':'#000000'}"
                         filterMatchMode="contains"></p-column>
-              <p-column field="description" [filter]="true" [style]="{'width':'150px'}"  header="Description"
+              <p-column field="description" [filter]="true" header="Description"
                         expander="true"
                         filterMatchMode="contains">
                 <template let-col let-resultItem="rowData" pTemplate type="body">
                   <span class="glimpse-content">{{resultItem[col.field]}}</span>
                 </template>
               </p-column>
-              <p-column field="keyword" [filter]="true" [style]="{'width':'150px'}"  header="Keywords" expander="true"
+              <p-column field="keyword" [filter]="true"  header="Keywords" expander="true"
                         filterMatchMode="contains">
                 <template let-col let-resultItem="rowData" pTemplate type="body">
                   <span class="glimpse-content">{{resultItem[col.field]}}</span>
                 </template>
               </p-column>
-              <p-column field="modified" [style]="{'width':'150px'}" filterMatchMode="contains"
+              <p-column field="modified" filterMatchMode="contains"
                         [sortable]="true" [filter]="true" header="Date Modified"></p-column>
             </p-dataTable>
           </div>
@@ -349,6 +356,9 @@
               [rows]="10" [paginator]="true" [responsive] = "true" paginatorPosition = "top" [rowsPerPageOptions]="[10,20,50]" [pageLinks]="10"
               sortMode="multiple" >
               <header>
+                <div style="text-align:left">
+                  <p-multiSelect [options]="columnOptions"  defaultLabel="Select Columns"  [style]="{'display':'table-caption','width':'150px'}" [(ngModel)]="cols"></p-multiSelect>
+                </div>
                 <div>
                   <button  type="button" pButton icon="ui-icon-file-download"
                            iconPos="left"
@@ -359,17 +369,16 @@
               {{filteredResults.length}} Result(s)</span>
                 </div>
               </header>
-
               <div class="Container">
-                <template let-resultItem pTemplate type="body">
+                <template let-resultItem pTemplate="rowexpansion">
                   <span><b>Description</b> : {{resultItem.description}}</span><br>
                   <div class="EmptyBox10"></div>
                   <span><b>Keywords</b> : {{resultItem.keyword}}</span>
                 </template>
               </div>
-              <p-column styleClass="col-button " [style]="{'width':'100px'}" header="Action">
+              <p-column styleClass="col-button "  header="Action">
                 <template let-resultItem="rowData" pTemplate type="body">
-                  <a href="/#/search?resId={{resultItem.resId}}" target="_blank">
+                  <a href="#" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
                     <button class="summaryPageBackground"  type="button" pButton
                             icon="ui-icon-open-in-browser"
                             iconPos="left" title="Open Summary Page"
@@ -387,21 +396,22 @@
               <p-column field="contactPoint.fn"
                         [sortable]="true" [filter]="true" header="Contact" [style]="{'color':'#000000'}"
                         filterMatchMode="contains"></p-column>
-              <p-column field="description" [filter]="true" [style]="{'width':'150px'}"  header="Description"
+              <p-column field="description" [filter]="true" header="Description"
                         expander="true"
                         filterMatchMode="contains">
                 <template let-col let-resultItem="rowData" pTemplate type="body">
                   <span class="glimpse-content">{{resultItem[col.field]}}</span>
                 </template>
               </p-column>
-              <p-column field="keyword" [filter]="true"  header="Keywords" [style]="{'width':'150px'}"  expander="true"
+              <p-column field="keyword" [filter]="true"  header="Keywords"  expander="true"
                         filterMatchMode="contains">
                 <template let-col let-resultItem="rowData" pTemplate type="body">
                   <span class="glimpse-content">{{resultItem[col.field]}}</span>
                 </template>
               </p-column>
-              <p-column field="modified" [style]="{'width':'150px'}" filterMatchMode="contains"
+              <p-column field="modified" filterMatchMode="contains"
                         [sortable]="true" [filter]="true" header="Date Modified"></p-column>
+              <p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header"></p-column>
             </p-dataTable>
           </div>
           </div>
