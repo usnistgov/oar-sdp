@@ -4,7 +4,7 @@ import { HeadbarComponent } from '../shared/headbar/index';
 
 
 export const FaqRoutes: Route[] = [
-	{
+  {
     path: 'faq',
     children: [
       {
@@ -17,5 +17,5 @@ export const FaqRoutes: Route[] = [
         outlet: 'route1'
       }
     ]
-  	}  
+  }
 ];

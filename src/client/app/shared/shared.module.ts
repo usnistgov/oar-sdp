@@ -9,9 +9,9 @@ import { FootbarComponent } from './footbar/index';
 import { HeadbarComponent } from './headbar/index';
 import { HomeHeadbarComponent } from './homeheadbar/index';
 
-import {InputTextModule,DropdownModule,ButtonModule,SplitButtonModule,MenubarModule,
-PanelModule,DataTableModule,DialogModule,AutoCompleteModule,MultiSelectModule,
-PaginatorModule,CalendarModule,TabViewModule} from 'primeng/primeng';
+import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
+ PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
+ PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
 
 
 /**

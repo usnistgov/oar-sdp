@@ -4,8 +4,7 @@ import { HeadbarComponent } from '../shared/headbar/index';
 
 
 export const CodeRepoRoutes: Route[] = [
-
-	{
+  {
     path: 'code_repo',
     children: [
       {
@@ -18,5 +17,5 @@ export const CodeRepoRoutes: Route[] = [
         outlet: 'route1'
       }
     ]
-  	}
+  }
 ];

@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy,AfterViewInit, ElementRef } from '@angular/core';
-import { SearchService,TaxonomyListService,SearchFieldsListService} from '../shared/index';
-import { ActivatedRoute}     from '@angular/router';
+import { SearchService, TaxonomyListService, SearchFieldsListService } from '../shared/index';
+import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import {SelectItem} from 'primeng/primeng';
-import {Message} from "primeng/components/common/api";
+import { SelectItem } from 'primeng/primeng';
+import { Message } from 'primeng/components/common/api';
 
 
 declare var Ultima: any;
@@ -67,16 +67,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     filteredAuthors:string[] = [];
     summaryPageOpen : boolean = false;
     summaryCandidate: any[];
-    private _routeParamsSubscription: Subscription;
     selectedAuthorDropdown: boolean = false;
+    private _routeParamsSubscription: Subscription;
 
-    /**
-     * Creates an instance of the SearchPanel
-     *
-     */
-    constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService: TaxonomyListService, public searchService:SearchService,  public searchFieldsListService: SearchFieldsListService) {
+
+  /**
+   * Creates an instance of the SearchPanel
+   *
+   */
+    constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService:
+      TaxonomyListService, public searchService:SearchService,  public searchFieldsListService: SearchFieldsListService) {
     }
 
+  /**
+   * Initialize Ultima theme
+   */
   ngAfterViewInit() {
     Ultima.init(this.el.nativeElement);
   }
@@ -92,7 +97,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         );
     }
 
-    toTaxonomiesItems(taxonomies:any[]) {
+  /**
+   * Populate taxonomy items
+   */
+  toTaxonomiesItems(taxonomies:any[]) {
         let items :SelectItem[] = [];
         items.push({label:this.ALL, value:'All'});
         for (let taxonomy of taxonomies) {
@@ -101,7 +109,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return items;
     }
 
-    collectThemes(searchResults:any[]) {
+  /**
+   * Populate list of themes from Search results
+   */
+
+  collectThemes(searchResults:any[]) {
         let themes :SelectItem[] = [];
         let themesArray:string[] = [];
         for (let resultItem of searchResults) {
@@ -117,8 +129,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return themes;
     }
 
+  /**
+   * Populate list of Authors from Search results
+   */
 
-    collectAuthors(searchResults:any[]) {
+  collectAuthors(searchResults:any[]) {
         let authors :string[] = [];
         for (let resultItem of searchResults) {
             if(resultItem.contactPoint && resultItem.contactPoint !== null && resultItem.contactPoint.fn !== null) {
@@ -130,8 +145,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return authors;
     }
 
+  /**
+   * Populate list of keywords from search results
+   */
 
-    collectKeywords(searchResults:any[]) {
+  collectKeywords(searchResults:any[]) {
         let kwords :string[] = [];
         for (let resultItem of searchResults) {
             if(resultItem.keyword && resultItem.keyword !== null && resultItem.keyword.length > 0) {
@@ -145,22 +163,27 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return kwords;
      }
 
+  /**
+   * If Search is successful populate list of keywords themes and authors
+   */
 
-    onSuccess(searchResults:any[]) {
+  onSuccess(searchResults:any[]) {
         this.searchResults = searchResults;
+        console.log("search results" + searchResults.length);
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
         this.authors = this.collectAuthors(searchResults);
         this.clearFilters();
-        if (this.filteredResults.length < 5)
-        {
+        if (this.filteredResults.length < 5) {
           this.rows = 20;
         }
     }
 
-
-    onError(error:any[]) {
+  /**
+   * If search is unsuccessful push the error message
+   */
+  onError(error:any[]) {
         this.searchResults = [];
         this.filteredResults = [];
         this.keywords = [];
@@ -170,21 +193,26 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.errorMsg = (<any>error).message;
         this.status = (<any>error).httpStatus;
         this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
-    }
+  }
 
-    search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string) {
+  /**
+   * call the Search service with parameters
+   */
+  search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string,summaryPageOpen:boolean) {
         this.searching = true;
         this.keyword = '';
         let that = this;
-        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey,queryAdvSearch)
+        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey,queryAdvSearch,this.summaryPageOpen)
             .subscribe(
             searchResults => that.onSuccess(searchResults),
             error => that.onError(error)
-         );
-    }
+            );
+  }
 
-
-    filterKeywords(event:any) {
+  /**
+   * Filter keywords for suggestive search
+   */
+  filterKeywords(event:any) {
         let keyword = event.query;
         this.suggestedKeywords = [];
         for(let i = 0; i < this.keywords.length; i++) {
@@ -195,25 +223,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.suggestedKeywords = this.sortAlphabetically(this.suggestedKeywords);
-//        this.suggestedKeywords.splice(0, 0, "All");
-    }
-    /*
-    filterThemes(event:any) {
-        let theme = event.query;
-        this.suggestedThemes = [];
-        for(let i = 0; i < this.themes.length; i++) {
-            let them = this.themes[i];
-            if(them.toLowerCase().indexOf(theme.toLowerCase()) >= 0) {
-                this.suggestedThemes.push(them);
-            }
-        }
-        this.suggestedThemes = this.sortAlphabetically(this.suggestedThemes);
-        //this.suggestedThemes.splice(0, 0, 'All');
+  }
 
-    }
-    */
+  /**
+   * Filter authors for suggestive search
+   */
 
-    filterAuthors(event:any) {
+  filterAuthors(event:any) {
         let author = event.query;
         this.suggestedAuthors = [];
         for(let i = 0; i < this.authors.length; i++) {
@@ -227,8 +243,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
 
     }
 
-
-    sortAlphabetically(array:string[]) {
+  /**
+   * Sort arrays alphabetically
+   */
+  sortAlphabetically(array:string[]) {
         var sortedArray: string[] = array.sort((n1,n2) => {
             if (n1 > n2) {
                 return 1;
@@ -241,27 +259,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         return sortedArray;
     }
 
-    /*
-    onThemeDropdownClick(event:any) {
-        //var tmp = this.suggestedThemes; // wierd, have to do this, otherwise nothing display
-         this.suggestedThemes = [];
-        //mimic remote call
-        setTimeout(() => {
-            this.suggestedThemes = this.themes;
-        }, 100);
-    }
-    */
-
-    onAuthorDropdownClick(event:any) {
+  /**
+   * Display suggested authors on dropdown click
+   */
+  onAuthorDropdownClick(event:any) {
         //var tmp = this.suggestedAuthors; // wierd, have to do this, otherwise nothing display
         this.suggestedAuthors = [];
         //mimic remote call
         setTimeout(() => {
             this.suggestedAuthors = this.authors;
         }, 100);
-    }
+  }
 
-    filterByTheme(searchResults:any[], selectedThemes:string[]) {
+  /**
+   * Filter themes
+   */
+  filterByTheme(searchResults:any[], selectedThemes:string[]) {
      var filteredResults : any[] = [];
        if(selectedThemes.length > 0 && selectedThemes.indexOf(this.ALL) < 0) {
             if (searchResults !== null && searchResults.length > 0) {
@@ -276,10 +289,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
             return filteredResults;
         }else {
            return searchResults;
-        }
-     }
+       }
+  }
 
-    filterByAuthor(searchResults:any[], selectedAuthor:string) {
+  /**
+   * filter authors
+   */
+  filterByAuthor(searchResults:any[], selectedAuthor:string) {
         if(selectedAuthor !== null  && selectedAuthor !== this.ALL  && selectedAuthor !== '') {
             var filteredResults : any[] = [];
             if (searchResults && searchResults.length > 0) {
@@ -297,17 +313,15 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-
-    filterResults(event:any,selectedDropdown:string) {
-        if (selectedDropdown !== null)
-        {
-            if (selectedDropdown === "Author")
-                {
-                    this.selectedAuthorDropdown = true;
-                }
-
+  /**
+   * filter results
+   */
+  filterResults(event:any,selectedDropdown:string) {
+        if (selectedDropdown !== null) {
+            if (selectedDropdown === 'Author') {
+              this.selectedAuthorDropdown = true;
+            }
         }
-        console.log("inside filter results");
         this.filteredResults =this.filterByKeyword(this.searchResults, this.selectedKeywords);
         this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         //this.suggestedThemes = this.collectThemes(this.filteredResults);
@@ -317,11 +331,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    /**
-     *
-     */
-    clearFilters() {
-
+  /**
+   * clear filters
+   */
+  clearFilters() {
         this.filteredResults = this.searchResults;
         this.suggestedThemes = [];
         this.suggestedKeywords =[];
@@ -330,19 +343,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedKeywords = [];
         this.selectedThemes =[];
         this.selectedAuthorDropdown = false;
-    }
+  }
 
-
-    /**
-     *
-     */
-    clearAuthorFilter() {
-
+  /**
+   * clear author filter
+   */
+  clearAuthorFilter() {
         this.filteredResults = this.searchResults;
         this.suggestedAuthors = [];
         this.selectedAuthor = null;
         this.selectedAuthorDropdown = false;
-    }
+  }
 
     /**
      *
@@ -350,22 +361,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
      * @param keywords
      * @returns {boolean}
      */
-    containsAllKeywords(resultKeywords:string[], keywords:string[]) {
+  containsAllKeywords(resultKeywords:string[], keywords:string[]) {
         for (let keyw of keywords) {
             if(resultKeywords.indexOf(keyw) === -1)
                 return false;
         }
         return true;
-    }
+  }
 
 
-    containsAllThemes(resultThemes:string[], themes:string[]) {
+  containsAllThemes(resultThemes:string[], themes:string[]) {
           for (let theme of themes) {
             if(resultThemes.indexOf(theme) === -1)
                 return false;
         }
         return true;
-    }
+  }
 
 
     filterByKeyword(searchResults:any[], selectedKeywords:any[]) {
@@ -407,27 +418,20 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
             this.columnOptions.push({label: this.cols[i].header, value: this.cols[i]});
         }
 
-
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-            if (params['identifier'] != null)
-            {
-                this.searchValue =params['identifier'];
+            if (params['resId'] != null) {
+                this.searchValue =params['resId'];
                 this.summaryPageOpen = true;
                 this.searchTaxonomyKey = '';
-
-            }
-            else
-            {
+            } else {
                 this.searchValue =params['q'];
                 this.searchTaxonomyKey=params['key'];
                 this.queryAdvSearch = params['queryAdvSearch'];
                 this.getTaxonomies();
             }
-
-            this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
+            this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch,this.summaryPageOpen);
         });
     }
-
 
     ngOnDestroy() {
           this._routeParamsSubscription.unsubscribe();

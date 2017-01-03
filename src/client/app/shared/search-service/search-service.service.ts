@@ -23,23 +23,25 @@ export class SearchService {
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string): Observable<string[]> {
-      if (queryAdvSearch === 'yes' && (!(_.includes(searchValue,'searchphrase'))))
-      {
-        return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch?" + searchValue)
-          .map((res: Response) => res.json())
+  searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string, summaryPageOpen:boolean): Observable<string[]> {
+          if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue,'searchphrase')))) || (summaryPageOpen)) {
+            console.log("params" + searchValue);
+            if (summaryPageOpen)
+            {
+              searchValue = "resId=" + searchValue;
+            }
+            return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
+            .map((res: Response) => res.json())
           .catch((error:any) => Observable.throw(error.json()));
-      }
-      else
-      {
+      } else {
+
         let params: URLSearchParams = new URLSearchParams();
         params.set('searchphrase', searchValue);
-        if (searchTaxonomyKey == "")
-        {
-          searchTaxonomyKey = 'All';
+        if (searchTaxonomyKey === '') {
+          searchTaxonomyKey = '';
         }
         params.set('theme',searchTaxonomyKey);
-        return this.http.get("http://10.200.222.248:8082/RMMApi/records/advancedsearch",
+        return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch',
           {
             search:params
           })

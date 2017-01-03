@@ -3,7 +3,7 @@ import { ApiComponent } from './index';
 import { HeadbarComponent } from '../shared/headbar/index';
 
 export const ApiRoutes: Route[] = [
-	{
+  {
     path: 'api',
     children: [
       {
@@ -16,5 +16,5 @@ export const ApiRoutes: Route[] = [
         outlet: 'route1'
       }
     ]
-  	}
+  }
 ];
