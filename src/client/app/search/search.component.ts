@@ -5,6 +5,8 @@ import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
+import * as _ from 'lodash';
+
 
 
 declare var Ultima: any;
@@ -401,6 +403,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.summaryPageOpen = true;
     }
 
+    encodeString(url:string,param:string)
+    {
+      var urlString = url + encodeURIComponent(param);
+      window.open(urlString);
+    }
 
     /**
      * Get the params OnInit
@@ -408,26 +415,27 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit() {
         this.columnOptions = [];
         this.cols = [];
-        this.cols.push({header:'Author', field:'contactPoint.fn'});
-        this.cols.push({header:'Keyword', field:'keyword'});
-        this.cols.push({header:'Description', field:'description'});
-        this.cols.push({header:'Date Modified', field:'modified'});
+
+        this.cols.push({header:'DOI', field:'doi'});
+        this.cols.push({header:'Publisher', field:'publisher.name'});
+        this.cols.push({header:'Rights', field:'rights'});
+        this.cols.push({header:'Theme', field:'theme'});
 
         this.columnOptions = [];
         for(let i = 0; i < this.cols.length; i++) {
             this.columnOptions.push({label: this.cols[i].header, value: this.cols[i]});
         }
-
+        this.cols = [];
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-            if (params['resId'] != null) {
-                this.searchValue =params['resId'];
-                this.summaryPageOpen = true;
-                this.searchTaxonomyKey = '';
+          if (_.includes(window.location.href,'?')) {
+              this.searchValue =params['q'];
+              this.searchTaxonomyKey=params['key'];
+              this.queryAdvSearch = params['queryAdvSearch'];
+              this.getTaxonomies();
             } else {
-                this.searchValue =params['q'];
-                this.searchTaxonomyKey=params['key'];
-                this.queryAdvSearch = params['queryAdvSearch'];
-                this.getTaxonomies();
+              this.searchValue =_.split(window.location.href,'/')[5];
+              this.summaryPageOpen = true;
+              this.searchTaxonomyKey = '';
             }
             this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch,this.summaryPageOpen);
         });

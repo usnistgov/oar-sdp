@@ -21,8 +21,8 @@ export class SearchFieldsListService {
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<string[]> {
-    return this.http.get('http://10.200.222.250:8082/RMMApi/catalogs/records/fieldsnames')
-                    .map((res: Response) => res.json())
+   return this.http.get('http://10.200.222.250:8082/RMMApi/catalogs/records/fieldsnames')
+      .map((res: Response) => res.json())
                     .catch(this.handleError);
   }
   /**

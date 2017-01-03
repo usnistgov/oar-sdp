@@ -17,5 +17,19 @@ export const SearchRoutes: Routes = [
         outlet: 'route1'
       }
     ]
+  },
+  {
+    path: 'search/:id',
+    children: [
+      {
+        path: '',
+        component: SearchPanelComponent
+      },
+      {
+        path: '',
+        component: HeadbarComponent,
+        outlet: 'route1'
+      }
+    ]
   }
 ];

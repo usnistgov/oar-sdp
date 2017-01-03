@@ -24,32 +24,37 @@ export class SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string, summaryPageOpen:boolean): Observable<string[]> {
-          if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue,'searchphrase')))) || (summaryPageOpen)) {
-            console.log("params" + searchValue);
-            if (summaryPageOpen)
-            {
-              searchValue = "resId=" + searchValue;
-            }
-            return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
-            .map((res: Response) => res.json())
-          .catch((error:any) => Observable.throw(error.json()));
-      } else {
+    if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase')))) || (summaryPageOpen)) {
+      console.log("params" + searchValue);
+      if (summaryPageOpen) {
+        searchValue = "resId=" + searchValue;
+      }
+      return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
+        .map((res: Response) => res.json())
+        .catch((error: any) => Observable.throw(error.json()));
+    } else {
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('searchphrase', searchValue);
-        if (searchTaxonomyKey === '') {
-          searchTaxonomyKey = '';
-        }
-        params.set('theme',searchTaxonomyKey);
+      let params: URLSearchParams = new URLSearchParams();
+      params.set('searchphrase', searchValue);
+      if (searchTaxonomyKey === '') {
+        searchTaxonomyKey = '';
+      }
+      params.set('theme', searchTaxonomyKey);
+
+      if (searchValue == "" && searchTaxonomyKey == "") {
+        return this.http.get('http://10.200.222.250:8082/RMMApi/catalog/records')
+          .map((res: Response) => res.json())
+          .catch((error: any) => Observable.throw(error.json()));
+      } else {
         return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch',
           {
-            search:params
+            search: params
           })
           .map((res: Response) => res.json())
-          .catch((error:any) => Observable.throw(error.json()));
+          .catch((error: any) => Observable.throw(error.json()));
       }
+    }
   }
-
 
 //    return this.http.get('http://oardev3.nist.gov:8080/RestApi/records/search?searchPhrase='+ searchValue)
 //                    .map((res: Response) => res.json())
