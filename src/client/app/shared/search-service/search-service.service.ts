@@ -37,7 +37,7 @@ export class SearchService {
       let params: URLSearchParams = new URLSearchParams();
       params.set('searchphrase', searchValue);
       if (searchTaxonomyKey === '') {
-        searchTaxonomyKey = '';
+        searchTaxonomyKey = 'all';
       }
       params.set('theme', searchTaxonomyKey);
 
@@ -46,10 +46,12 @@ export class SearchService {
           .map((res: Response) => res.json())
           .catch((error: any) => Observable.throw(error.json()));
       } else {
+        console.log("inside if condition");
         return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch',
-          {
+        {
             search: params
-          })
+
+      })
           .map((res: Response) => res.json())
           .catch((error: any) => Observable.throw(error.json()));
       }
