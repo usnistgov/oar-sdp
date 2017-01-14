@@ -409,7 +409,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
       window.open(urlString);
     }
 
-    /**
+    openURL(url:string)
+    {
+       window.open(url);
+    }
+
+
+  /**
      * Get the params OnInit
      */
     ngOnInit() {
