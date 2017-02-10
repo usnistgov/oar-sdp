@@ -235,7 +235,7 @@
                 color: #ffffff;
                 background-color: #03A9F4;
                 font-weight: bold;
-                width: 60px;
+                display: inline-block;
                 padding: 5px;
                 @include border-radius(2px);
             }

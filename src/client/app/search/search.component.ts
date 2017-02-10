@@ -85,7 +85,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
    * Initialize Ultima theme
    */
   ngAfterViewInit() {
-    Ultima.init(this.el.nativeElement);
   }
 
     /**
@@ -171,7 +170,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSuccess(searchResults:any[]) {
         this.searchResults = searchResults;
-        console.log("search results" + searchResults.length);
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
@@ -403,14 +401,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.summaryPageOpen = true;
     }
 
-    encodeString(url:string,param:string)
-    {
+    encodeString(url:string,param:string) {
       var urlString = url + encodeURIComponent(param);
       window.open(urlString);
     }
 
-    openURL(url:string)
-    {
+    openURL(url:string) {
        window.open(url);
     }
 

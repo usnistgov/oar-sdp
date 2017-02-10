@@ -1,3 +1,17 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
 <div class="ui-grid ui-grid-responsive ui-grid-pad center">
   <div class="card" style="padding: 2.5rem 2.5rem 2.5rem 2.5rem">
     <label style="font-size: xx-large;float: left;display: block;">About NIST Data</label>

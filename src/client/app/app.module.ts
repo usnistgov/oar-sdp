@@ -15,12 +15,18 @@ import { FaqModule } from './faq/faq.module';
 import { ApiModule } from './api/api.module';
 import { CodeRepoModule } from './code_repo/code_repo.module';
 import { SearchModule } from './search/search.module';
+import {AppMenuComponent,AppSubMenu}  from './app.menu.component';
+import {AppTopBar}  from './app.topbar.component';
+import {AppSearchTopBar}  from './app.searchtopbar.component';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule,    RouterModule.forRoot(routes ,{ useHash: true })
+  imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
   , AboutModule, HomeModule, FaqModule, ApiModule,CodeRepoModule, SearchModule, SharedModule.forRoot()
   ],
-  declarations: [AppComponent],
+  declarations: [AppComponent,
+    AppMenuComponent,
+    AppSubMenu,
+    AppTopBar,AppSearchTopBar],
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'

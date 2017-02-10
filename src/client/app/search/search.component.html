@@ -1,3 +1,17 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
 <div class="card" *ngIf="summaryPageOpen == true">
   <h1 class=" TexAlCenter" >Full Record</h1>
   <div class="EmptyBox20"></div>
@@ -274,7 +288,7 @@
               #results [value]="filteredResults"
               [rows]="50" [paginator]="true" paginatorPosition = "top" [responsive] = "true" [pageLinks]="10"
               sortMode="multiple" >
-              <header >
+              <p-header >
                   <span class="spanResults">
                     <p-multiSelect [options]="columnOptions"  defaultLabel="Add Columns"  [style]="{'display':'table-caption','width':'150px'}" [(ngModel)]="cols"></p-multiSelect>
                   </span>
@@ -287,7 +301,7 @@
                          (click)='results.exportCSV()'
                          class="divExpCSV"></button>
                 </div>
-              </header>
+              </p-header>
               <div class="Container">
                 <template let-resultItem pTemplate="rowexpansion">
                   <span><b>Description</b> : {{resultItem.description}}</span><br>
@@ -330,6 +344,7 @@
               </p-column>
               <p-column field="modified" filterMatchMode="contains" [style]="{'width':'200px'}"
                         [sortable]="true" [filter]="true" header="Date Modified"></p-column>
+              <p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header" [style]="{'width':'200px'}"></p-column>
             </p-dataTable>
           </div>
           <div *ngIf="filteredResults.length>10">
@@ -338,7 +353,7 @@
               #results [value]="filteredResults" scrollable="true" scrollWidth="100%"
               [rows]="50" [paginator]="true" [responsive] = "true" paginatorPosition = "top" [rowsPerPageOptions]="[10,20,50]" [pageLinks]="10"
               sortMode="multiple" >
-              <header >
+              <p-header >
                   <span class="spanResults">
                     <p-multiSelect [options]="columnOptions"  defaultLabel="Add Columns"  [style]="{'display':'table-caption','width':'150px'}" [(ngModel)]="cols"></p-multiSelect>
                   </span>
@@ -349,7 +364,7 @@
                          label="CSV" style="margin-top: 20px;"
                          (click)='results.exportCSV()'
                          class="divExpCSV"></button>
-              </header>
+              </p-header>
               <div class="Container">
                 <template let-resultItem pTemplate="rowexpansion">
                   <span><b>Description</b> : {{resultItem.description}}</span><br>

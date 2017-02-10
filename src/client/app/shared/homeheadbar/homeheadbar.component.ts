@@ -28,6 +28,5 @@ export class HomeHeadbarComponent implements  AfterViewInit {
 
 
   ngAfterViewInit() {
-    Ultima.init(this.el.nativeElement);
   }
 }

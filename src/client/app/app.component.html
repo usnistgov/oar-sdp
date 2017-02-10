@@ -1,12 +1,44 @@
-<div [ngClass]="{'layout-wrapper':true,'layout-compact':layoutCompact}" >
-  <div [ngClass]="{'layout-container':true,'menu-layout-static':(layoutMode=='static'||layoutMode=='horizontal'),
-            'menu-layout-overlay':(layoutMode=='overlay'),'menu-layout-horizontal':(layoutMode=='horizontal')}">
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
+<div class="layout-wrapper" [ngClass]="{'layout-compact':layoutCompact}">
+
+  <div #layoutContainer class="layout-container"
+       [ngClass]="{'menu-layout-static': !isOverlay(),
+            'menu-layout-overlay': isOverlay(),
+            'layout-menu-overlay-active': overlayMenuActive,
+            'menu-layout-horizontal': isHorizontal(),
+            'layout-menu-static-inactive': staticMenuDesktopInactive,
+            'layout-menu-static-active': staticMenuMobileActive}">
 
     <router-outlet name="route1"></router-outlet>
 
-    <div class="layout-main"  >
-      <router-outlet></router-outlet>
+    <div class="layout-menu" [ngClass]="{'layout-menu-dark':darkMenu}" (click)="onMenuClick($event)">
+      <div #layoutMenuScroller class="nano">
+        <div class="nano-content menu-scroll-content">
+          <inline-profile *ngIf="profileMode=='inline'&&!isHorizontal()"></inline-profile>
+          <app-menu [reset]="resetMenu"></app-menu>
+        </div>
+      </div>
     </div>
+
+    <div class="layout-main">
+      <router-outlet></router-outlet>
+      <sdp-footbar></sdp-footbar>
+    </div>
+
+    <div class="layout-mask"></div>
   </div>
+
 </div>
-<sdp-footbar></sdp-footbar>
