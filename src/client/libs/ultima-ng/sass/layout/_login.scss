@@ -20,6 +20,36 @@
             }
         }
     }
+    
+    .ui-button {
+        &:hover {
+            background-color: $primaryDarkColor;   
+        }
+        
+        &:focus {
+            outline: 0 none;
+            background-color: lighten($primaryColor,10%);
+        }
+        
+        &.secondary {
+            &:hover {
+                background-color: $accentDarkColor;   
+            }
+            
+            &:focus {
+                outline: 0 none;
+                background-color: lighten($accentColor,10%);
+            }
+        }
+    }
+    
+    .ui-inputtext {
+        &:focus {
+            border-width: 0 0 2px 0;
+            border-color: $primaryColor;  
+            padding-bottom: 0px;
+        }
+    }
 }
 
 .login-footer {

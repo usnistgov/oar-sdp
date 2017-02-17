@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { ApiComponent } from './index';
 import { HeadbarComponent } from '../shared/headbar/index';
+import { SearchTopBarComponent } from '../app.searchtopbar.component';
 
 export const ApiRoutes: Route[] = [
   {
@@ -12,7 +13,7 @@ export const ApiRoutes: Route[] = [
       },
       {
         path: '',
-        component: HeadbarComponent,
+        component: SearchTopBarComponent,
         outlet: 'route1'
       }
     ]

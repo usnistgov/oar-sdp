@@ -26,7 +26,8 @@ export class TaxonomyListService {
     //                .map((res: Response) => res.json())
       //              .catch(this.handleError);
 
-    return this.http.get('http://10.200.222.250:8082/RMMApi/taxanomy?sort=researchCategory,asc')
+    //return this.http.get('http://10.200.222.250:8082/RMMApi/taxanomy?sort=researchCategory,asc')
+    return this.http.get('http://localhost:9090/RMMApi/taxanomy?sort=researchCategory,asc')
      .map((res: Response) => res.json().content)
       .catch(this.handleError);
   }

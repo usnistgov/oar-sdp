@@ -1,5 +1,6 @@
 .exception-body {
     background-color: #f7f7f7;
+    height: auto;
     
     .exception-type {
         width: 100%;
@@ -12,7 +13,7 @@
     .exception-panel {
         text-align: center;
         width: 350px;
-        padding: 50px 50px;
+        padding: 35px;
         margin: -10% auto 0 auto;
         z-index: 100;
         

@@ -1,19 +1,30 @@
-<div class="ui-grid ui-grid-responsive ui-grid-pad center">
-  <div class="card" style="padding: 2.5rem 2.5rem 2.5rem 2.5rem">
-    <label style="font-size: xx-large;float: left;display: block;">API</label>
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
+<div class="card" style="padding: 2.5rem 2.5rem 2.5rem 2.5rem;width: 100%;">
+  <div class="ui-g">
+    <div class="ui-g-12">
+    <label style="font-size: xx-large;float: left;display: block;">APIs</label>
       <div class="EmptyBox20"></div>
         <div class="ui-grid-row" >
            This NIST Science Data Portal page hosts access to a web based public API, Application Programming Interface.  This API provides our user community the capability to dynamically query the underlying data resource catalog, a collection of key NIST research dataset descriptions (metadata), with network enabled computer programs.   The portal search API leverages integration of standard metadata representations and indexing of domain services to enable discovery and data mining of the NIST research public datasets.   In addition to the main portal API, this page includes a listing of individual key resource APIs hosted at NIST serving scientific domain expertise and access to the underlying datasets.
         </div>
         <div class="EmptyBox20"></div>
         <div class="ui-grid-row">
-          <a href="http://10.200.222.250:8082/RMMApi/swagger-ui.html" target="_blank">NIST Science Data Portal API</a>
-        </div>
-        <div class="EmptyBox20"></div>
-        <div class="ui-grid-row" >
-          <a href="http://10.200.222.250:8082/RMMApi/ResourceApi" target="_blank">
-            Key Data Resource API listing </a>
+          <a href="http://10.200.222.250:8082/RMMApi/swagger-ui.html" target="_blank">NIST Data Discovery API</a>
         </div>
   </div>
+</div>
 </div>
 

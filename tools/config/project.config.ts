@@ -40,8 +40,10 @@ export class ProjectConfig extends SeedConfig {
     this.NPM_DEPENDENCIES = [
       ...this.NPM_DEPENDENCIES,
       {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
+      {src: 'nanoscroller/bin/javascripts/jquery.nanoscroller.js', inject: 'libs'},
+      {src: 'nanoscroller/bin/css/nanoscroller.css', inject: true},
       { src: 'primeng/resources/primeng.min.css', inject: true },
-      {src: 'primeui/primeui-ng-all.min.js', inject: true},
+      {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
 
 
       // inject into css section
@@ -53,10 +55,8 @@ export class ProjectConfig extends SeedConfig {
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
       {src: `${this.APP_SRC}/assets/css/main.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/layout.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/swipe.js`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/font-awesome/css/font-awesome.min.css`, inject: true, vendor: false},

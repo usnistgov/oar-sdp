@@ -12,10 +12,11 @@
     "pretty": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "../../node_modules/@types",
       "../../node_modules"
@@ -23,7 +24,6 @@
     "types": [
       "node",
       "jasmine",
-      "protractor",
       "systemjs"
     ]
   },

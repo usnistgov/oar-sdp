@@ -1,3 +1,17 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
 <div class="ui-g ">
   <div class="card" style="display: block;margin: auto;">
       <img style="align-content: center" srcset="./assets/images/under_construction.jpg" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">

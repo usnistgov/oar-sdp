@@ -21,9 +21,10 @@
 .fa-check {@include icon-override("check");}
 .fa-info-circle {@include icon-override("info");}
 .fa-upload  {@include icon-override("file_upload");}
-.fa-chevron-circle-left {@include icon-override("chevron_left");}
-.fa-chevron-circle-right {@include icon-override("chevron_right");}
-.fa-chevron-circle-down {@include icon-override("chevron_right"); @include rotate(90deg);}
+.fa-chevron-circle-left {@include icon-override("keyboard_arrow_left");}
+.fa-chevron-circle-right {@include icon-override("keyboard_arrow_right");}
+.fa-chevron-circle-down {@include icon-override("keyboard_arrow_down");}
+.fa-chevron-circle-up {@include icon-override("keyboard_arrow_up");}
 .fa-home {@include icon-override("home");}
 .fa-chevron-right {@include icon-override("chevron_right");}
 .fa-chevron-left {@include icon-override("chevron_left");}
@@ -1016,7 +1017,7 @@
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 1.5em;  /* Preferred icon size */
   display: inline-block;
   width: 1em;
   height: 1em;

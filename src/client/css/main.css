@@ -443,3 +443,52 @@ input[type="text"], input[type="password"], textarea{ -webkit-appearance: none; 
 .Container:after {
   clear: both;
 }
+
+.header__inner {
+  /*background-color: white;*/
+  background: white;
+  color: black;
+}
+
+.header__logo {
+  display: inline-block;
+}
+
+.header__logo-link {
+  display: block;
+}
+
+.header__logo a img {
+  width: 289px;
+}
+
+img {
+  border: 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.divHeight30
+{
+  height: 35px;
+}
+
+.divColorBlack
+{
+  color: #000000;
+}
+
+.marTop20
+{
+  margin-top: 20px;
+}
+
+.textTopCenter
+{
+  color: white;font-size: x-large;margin-top: 20px;margin-left:40%;
+}
+
+.background-black
+{
+  background-color: #000000;
+}
