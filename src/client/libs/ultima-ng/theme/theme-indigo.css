@@ -4297,7 +4297,7 @@ body .ui-panel {
   padding: 0; }
   body .ui-panel .ui-panel-titlebar {
     border: 0 none;
-    border-bottom: 1px solid #1471AE;
+    border-bottom: 1px solid #F6F6F6;
     padding: 0.625em 1em;
     -moz-border-radius-topleft: 2px;
     -webkit-border-top-left-radius: 2px;
