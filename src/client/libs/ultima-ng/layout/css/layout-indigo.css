@@ -193,7 +193,7 @@
     opacity: 0;
     transform: scale(2.5); } }
 .splash-screen {
-  background-color: #3F51B5;
+  background-color: #1471AE;
   height: 100%; }
   .splash-screen .splash-container {
     padding-top: 250px;
@@ -444,7 +444,7 @@
     .login-panel .ui-g .ui-g-12 .ui-button {
       margin-bottom: 20px; }
   .login-panel .ui-button:hover {
-    background-color: #283593; }
+    background-color: #1471AE; }
   .login-panel .ui-button:focus {
     outline: 0 none;
     background-color: #606fc7; }
@@ -455,7 +455,7 @@
     background-color: #ee4c83; }
   .login-panel .ui-inputtext:focus {
     border-width: 0 0 2px 0;
-    border-color: #3F51B5;
+    border-color: #1471AE;
     padding-bottom: 0px; }
 
 .login-footer {
@@ -523,7 +523,7 @@
   .exception-body.error-page .exception-panel i {
     color: #f79a84; }
   .exception-body.notfound-page .exception-type {
-    background-color: #3f51b5; }
+    background-color: #1471AE; }
     .exception-body.notfound-page .exception-type img {
       width: 54%; }
   .exception-body.notfound-page .exception-panel i {
@@ -693,9 +693,9 @@
       .landing-wrapper #pricing .pricing-box .pricing-content ul li span {
         vertical-align: middle; }
   .landing-wrapper #pricing .pricing-box.pricing-basic .pricing-header {
-    background-color: #3f51b5; }
+    background-color: #1471AE; }
   .landing-wrapper #pricing .pricing-box.pricing-basic i {
-    color: #3f51b5; }
+    color: #1471AE; }
   .landing-wrapper #pricing .pricing-box.pricing-standard .pricing-header {
     background-color: #e91e63; }
   .landing-wrapper #pricing .pricing-box.pricing-standard i {
@@ -864,7 +864,7 @@ body {
   z-index: 100;
   width: 100%;
   height: 75px;
-  background-color: #3F51B5;
+  background-color: #1471AE;
   -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); }
@@ -880,7 +880,7 @@ body {
     padding: 20px;
     height: 75px;
     width: 250px;
-    background-color: #283593;
+    background-color: #1471AE;
     float: left;
     -webkit-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
@@ -978,7 +978,7 @@ body {
     .layout-container .topbar .topbar-right .topbar-items .search-item input:focus ~ label {
       top: -5px;
       font-size: 12px;
-      color: #3F51B5; }
+      color: #1471AE; }
     .layout-container .topbar .topbar-right .topbar-items .search-item input.ui-state-filled ~ label {
       display: none; }
     .layout-container .topbar .topbar-right .topbar-items .search-item label {
@@ -1153,15 +1153,15 @@ body {
       display: inline-block;
       vertical-align: middle; }
     .layout-container .ultima-menu li a.active-menuitem-routerlink {
-      color: #3F51B5; }
+      color: #1471AE; }
       .layout-container .ultima-menu li a.active-menuitem-routerlink > i {
-        color: #3F51B5; }
+        color: #1471AE; }
       .layout-container .ultima-menu li a.active-menuitem-routerlink:hover {
         color: #212121; }
         .layout-container .ultima-menu li a.active-menuitem-routerlink:hover > i {
           color: #757575; }
   .layout-container .ultima-menu li.active-menuitem > a {
-    color: #3F51B5;
+    color: #1471AE;
     background-color: #e8e8e8; }
     .layout-container .ultima-menu li.active-menuitem > a i:last-child {
       -webkit-transform: rotate(-180deg);
@@ -1288,7 +1288,7 @@ body {
     -webkit-box-shadow: none;
     -moz-box-shadow: none; }
     .layout-container.menu-layout-horizontal .topbar .topbar-left {
-      background-color: #3F51B5;
+      background-color: #1471AE;
       box-shadow: none;
       -webkit-box-shadow: none;
       -moz-box-shadow: none; }
@@ -1300,7 +1300,7 @@ body {
     width: 100%;
     top: 75px;
     height: auto;
-    background-color: #283593;
+    background-color: #1471AE;
     -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
     -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); }
@@ -1350,7 +1350,7 @@ body {
         -moz-box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
         box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2); }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li a {
-          padding: 10px 16px; }
+          padding: 10px 10px; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li ul {
           position: static; }
           .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li ul li a {
@@ -1364,7 +1364,7 @@ body {
           .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li ul ul ul ul ul li a {
             padding-left: 96px; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li.active-menuitem > a {
-          color: #3F51B5;
+          color: #1471AE;
           background-color: #e8e8e8; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li.active-menuitem > ul {
           display: block; }
@@ -1483,7 +1483,7 @@ body {
         display: inline-block;
         vertical-align: middle; }
     .layout-container .topbar .topbar-right .topbar-items > li.active-top-menu > a {
-      color: #3F51B5; }
+      color: #1471AE; }
     .layout-container .topbar .topbar-right .topbar-items > li.active-top-menu > ul {
       display: block; }
       .layout-container .topbar .topbar-right .topbar-items > li.active-top-menu > ul li a {
@@ -1509,7 +1509,7 @@ body {
       .layout-container .topbar .topbar-right .topbar-items > li.search-item input:focus ~ label,
       .layout-container .topbar .topbar-right .topbar-items > li.search-item input.ui-state-filled ~ label {
         top: -20px;
-        color: #3F51B5; }
+        color: #1471AE; }
       .layout-container .topbar .topbar-right .topbar-items > li.search-item label {
         top: 1px;
         color: #212121; }
