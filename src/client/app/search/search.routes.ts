@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { SearchPanelComponent } from './index';
 import { HeadbarComponent } from '../shared/headbar/index';
-import { AppSearchTopBar } from '../app.searchtopbar.component';
+import { SearchTopBarComponent } from '../app.searchtopbar.component';
 
 
 export const SearchRoutes: Routes = [
@@ -14,7 +14,7 @@ export const SearchRoutes: Routes = [
       },
       {
         path: '',
-        component: AppSearchTopBar,
+        component: SearchTopBarComponent,
         outlet: 'route1'
       }
     ]
@@ -28,7 +28,7 @@ export const SearchRoutes: Routes = [
       },
       {
         path: '',
-        component: AppSearchTopBar,
+        component: SearchTopBarComponent,
         outlet: 'route1'
       }
     ]

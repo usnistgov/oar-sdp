@@ -1,4 +1,4 @@
-import {Component,AfterViewInit,ElementRef,Renderer,ViewChild} from '@angular/core';
+import { Component,AfterViewInit,ElementRef,Renderer,ViewChild } from '@angular/core';
 import { Config, HeadbarComponent, FootbarComponent } from './shared/index';
 import './operators';
 enum MenuOrientation {
@@ -84,8 +84,7 @@ export class AppComponent implements AfterViewInit {
 
     if(this.layoutMode === MenuOrientation.OVERLAY) {
       this.overlayMenuActive = !this.overlayMenuActive;
-    }
-    else {
+    }  else    {
       if(this.isDesktop())
         this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive;
       else

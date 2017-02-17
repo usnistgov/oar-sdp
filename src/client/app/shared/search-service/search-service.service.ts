@@ -25,12 +25,13 @@ export class SearchService {
    */
   searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string, summaryPageOpen:boolean): Observable<string[]> {
     if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase')))) || (summaryPageOpen)) {
-      console.log("params" + searchValue);
       if (summaryPageOpen) {
         searchValue = "resId=" + searchValue;
       }
-      return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
-        .map((res: Response) => res.json())
+      //return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
+      return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch?' + searchValue)
+
+    .map((res: Response) => res.json())
         .catch((error: any) => Observable.throw(error.json()));
     } else {
 
@@ -47,7 +48,8 @@ export class SearchService {
           .catch((error: any) => Observable.throw(error.json()));
       } else {
         console.log("inside if condition");
-        return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch',
+        //return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch',
+        return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch',
         {
             search: params
 

@@ -15,9 +15,9 @@
 <div class="card" >
   <div class="ui-g">
     <div class="ui-g-12">
-      <h1 class="Fs30 TexAlCenter">NIST Data Discovery</h1>
+      <h1 class="Fs38 TexAlCenter"><b>NIST DATA DISCOVERY</b></h1>
       <div class="EmptyBox20"></div>
-      <h1 class="Fs15 TexAlCenter"><i>Explore data, tools, and resources for Science, Engineering, Technology and <a href="" [routerLink]="['/about']">more</a></i>
+      <h1 class="Fs15 TexAlCenter"><i>Explore data, tools, and resources for Science, Engineering, Technology and <a href="" [routerLink]="['/about']"><u>more</u></a></i>
         </h1>
       <div class="EmptyBox20"></div>
     </div>
@@ -30,7 +30,7 @@
         <p-dropdown [options]="taxonomies"  [style]="{'width':'100%'}" [(ngModel)]="searchTaxonomyKey" >
         </p-dropdown>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-7">
+      <div class="ui-g-12 ui-md-6 ui-lg-6">
         <input type="text" style="width: 100%;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
                (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)"  />
       </div>
@@ -38,13 +38,13 @@
         <button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
       </div>
       <div *ngIf="showAdvancedSearch == false" >
-      <div class="ui-g-12 ui-md-6 ui-lg-7">
+      <div class="ui-g-12 ui-md-6 ui-lg-6">
         <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
         <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" style="float: right"> <b> Show Advanced Search </b></a>
       </div>
     </div>
       <div *ngIf="showAdvancedSearch == true" >
-        <div class="ui-g-12 ui-md-6 ui-lg-7">
+        <div class="ui-g-12 ui-md-6 ui-lg-6">
           <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
           <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" style="float: right"> <b> Hide Advanced Search </b></a>
         </div>
@@ -61,7 +61,7 @@
         <div class="ui-g-12 ui-md-6 ui-lg-2">
           <p-dropdown [options]="fields" [style]="{'width':'100%'}" [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'100%'}"></p-dropdown>
         </div>
-        <div class="ui-g-12 ui-md-6 ui-lg-7 ">
+        <div class="ui-g-12 ui-md-6 ui-lg-6 ">
           <input type="text" pInputText style="width: 100%;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-1 " style="width: 3%;" *ngIf="showDeleteButton == true" >

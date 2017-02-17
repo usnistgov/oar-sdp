@@ -1,8 +1,8 @@
-import {Component,Input,OnInit,EventEmitter,ViewChild,trigger,state,transition,style,animate,Inject,forwardRef} from '@angular/core';
-import {Location} from '@angular/common';
-import {Router} from '@angular/router';
-import {MenuItem} from 'primeng/primeng';
-import {AppComponent} from './app.component';
+import { Component,Input,OnInit,EventEmitter,ViewChild,trigger,state,transition,style,animate,Inject,forwardRef } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
+import { MenuItem } from 'primeng/primeng';
+import { AppComponent } from './app.component';
 
 @Component({
   selector: 'app-menu',
@@ -25,15 +25,22 @@ export class AppMenuComponent implements OnInit {
       {
         label: 'Key Datasets',
         items: [
+          {label: 'Atomic Spectroscopy Database',url: 'https://www.nist.gov/node/429021'},
+          {label: 'Ballistics Toolmark', url: 'https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database'},
           {label: 'Chemistry WebBook',url: 'http://webbook.nist.gov/chemistry'},
+          {label: 'Digital Library of Mathematical Functions', url: 'http://dlmf.nist.gov/'},
+          {label: 'Fire Research', url: 'https://www.nist.gov/node/436111'},
+          {label: 'Materials Genome Initiative', url: 'https://mgi.nist.gov/'},
           {label: 'National Vulnerability Database', url: 'http://csrc.nist.gov/groups/SNS/nvd/'},
           {label: 'Physical Reference Data', url: 'https://www.nist.gov/pml/productsservices/physical-reference-data'},
-          {label: 'Standard Reference Data', url: 'https://www.nist.gov/srd'}
+          {label: 'Time',url: 'http://nist.time.gov/'},
+          {label: 'World Trade Center Disaster Investigation Material', url: 'http://wtcdata.nist.gov/'},
         ]
       },
-      { label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov'},
+      {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov'},
       {label: 'APIs', routerLink: ['/api']},
-      {label: 'About NIST Data', routerLink: ['/about']}
+      {label: 'About NIST Data', routerLink: ['/about']},
+      {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd'}
     ];
   }
 }
@@ -44,19 +51,22 @@ export class AppMenuComponent implements OnInit {
   template: `
         <template ngFor let-child let-i="index" [ngForOf]="(root ? item : item.items)">
             <li [ngClass]="{'active-menuitem': isActive(i)}" *ngIf="child.visible === false ? false : true">
-                <a [href]="child.url||'#'" target="_blank" (click)="itemClick($event,child,i)" class="ripplelink" *ngIf="!child.routerLink" [attr.tabindex]="!visible ? '-1' : null">
+                <a [href]="child.url||'#'" target="_blank" (click)="itemClick($event,child,i)" class="ripplelink" 
+                *ngIf="!child.routerLink" [attr.tabindex]="!visible ? '-1' : null">
                     <i class="material-icons">{{child.icon}}</i>
                     <span>{{child.label}}</span>
                     <i class="material-icons" *ngIf="child.items">keyboard_arrow_down</i>
                 </a>
 
                 <a (click)="itemClick($event,child,i)" class="ripplelink" *ngIf="child.routerLink"
-                    [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink" [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null">
+                    [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink" 
+                    [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null">
                     <i class="material-icons">{{child.icon}}</i>
                     <span>{{child.label}}</span>
                     <i class="material-icons" *ngIf="child.items">keyboard_arrow_down</i>
                 </a>
-                <ul app-submenu [item]="child" *ngIf="child.items" [@children]="isActive(i) ? 'visible' : 'hidden'" [visible]="isActive(i)" [reset]="reset"></ul>
+                <ul app-submenu [item]="child" *ngIf="child.items" [@children]="isActive(i) ? 'visible' : 'hidden'" 
+                [visible]="isActive(i)" [reset]="reset"></ul>
             </li>
         </template>
     `,

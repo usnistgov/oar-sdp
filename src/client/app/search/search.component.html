@@ -218,6 +218,7 @@
 <p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true" >
+  <div class="card">
   <div class="ui-g ">
     <div class="ui-g-12 ui-md-6 ui-lg-3 ">
       <p-dropdown
@@ -239,7 +240,7 @@
   <div *ngIf="searching">
     <div class="ui-g " >
       <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " >
-        <div class="card">
+
           <p-panel header="Filters">
             <div class="ui-g">
               <div class="ui-g-12">
@@ -276,12 +277,11 @@
             <button type="button" (click)="clearFilters()" label="Clear All" icon="ui-icon-clear-all" pButton></button>
           </p-panel>
         </div>
-      </div>
+
 
       <!-- Section 1 -->
 
       <div class="ui-g-12 ui-md-8 ui-lg-9 ">
-        <div class="card">
           <div *ngIf="filteredResults.length<=10">
             <p-dataTable
               expandableRows="true" scrollable="true" scrollWidth="100%"
