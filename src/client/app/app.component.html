@@ -12,7 +12,7 @@
   }
 </script>
 
-<div class="layout-wrapper" [ngClass]="{'layout-compact':layoutCompact}">
+<div class="layout-wrapper">
 
   <div #layoutContainer class="layout-container"
        [ngClass]="{'menu-layout-static': !isOverlay(),
@@ -33,10 +33,12 @@
       </div>
     </div>
 
-    <div class="layout-main">
-      <router-outlet></router-outlet>
-      <sdp-footbar></sdp-footbar>
+    <div class="layout-main"  style="background-color: #153971">
     </div>
+    <router-outlet></router-outlet>
+
+    <sdp-footbar></sdp-footbar>
+
 
     <div class="layout-mask"></div>
   </div>

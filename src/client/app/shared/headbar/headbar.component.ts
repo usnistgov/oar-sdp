@@ -16,7 +16,7 @@ declare var Ultima: any;
   styleUrls: ['headbar.component.css']
 })
 
-export class HeadbarComponent implements AfterViewInit {
+export class HeadbarComponent {
 
   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
@@ -26,7 +26,4 @@ export class HeadbarComponent implements AfterViewInit {
   constructor( private el: ElementRef) {
   }
 
-
-  ngAfterViewInit() {
-  }
 }

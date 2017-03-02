@@ -485,7 +485,17 @@ img {
 
 .textTopCenter
 {
-  color: white;font-size: x-large;margin-top: 20px;margin-left:40%;
+  color: white;font-size: 38.4px;font-family: 'Lato',Arial,sans-serif;margin-top: 20px;margin-left:40%;
+}
+
+.homeTitle
+{
+  font-size: 36.0px;font-family: 'Lato',Arial,sans-serif;
+}
+
+.homeSubTitle
+{
+  font-size: 20.0px;font-family: 'Lato',Arial,sans-serif;
 }
 
 .background-black
