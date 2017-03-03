@@ -1,18 +1,18 @@
-/*
-import { Component, Input, ElementRef, OnChanges } from '@angular/core';
+import {Component, Input, ElementRef, OnInit, AfterViewInit } from '@angular/core';
+import {logger} from "codelyzer/util/logger";
 
 @Component({
   selector: 'read-more',
   template: `
         <div [innerHTML]="currentText">
         </div>
-            <button [class.hidden]="hideToggle"  pButton (click)="toggleView()" >Read {{isCollapsed? 'more':'less'}}</button>
+            <a [hidden]="hideToggle" href="javascript:void(0);" (click)="toggleView()">Read {{isCollapsed? 'more':'less'}}</a>
     `
 })
 
-export class ReadMoreComponent implements OnChanges {
+export class ReadMoreComponent implements AfterViewInit   {
   @Input() text: string;
-  @Input() maxLength: number = 1000;
+  @Input() maxLength: number  ;
   currentText: string;
   hideToggle: boolean = true;
 
@@ -22,26 +22,33 @@ export class ReadMoreComponent implements OnChanges {
 
   }
   toggleView() {
+    console.error("inside toggle");
     this.isCollapsed = !this.isCollapsed;
     this.determineView();
   }
   determineView() {
-    if (this.text.length <= this.maxLength) {
+    console.error("inside deter");
+
+    if (this.text.toString().length <= this.maxLength) {
+      console.error(this.text.toString().length);
+      console.error(this.text.toString());
+
       this.currentText = this.text;
       this.isCollapsed = false;
       this.hideToggle = true;
+      console.error("inside deter if");
       return;
     }
     this.hideToggle = false;
-    if (this.isCollapsed === true) {
-      this.currentText = this.text.substring(0, this.maxLength) + '...';
-    } else if(this.isCollapsed === false)  {
+    if (this.isCollapsed == true) {
+      this.currentText = this.text.toString().substring(0, this.maxLength) + "...";
+    } else if(this.isCollapsed == false)  {
       this.currentText = this.text;
     }
-
   }
-  ngOnChanges() {
-    this.determineView();
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.determineView();
+    }, 1);
   }
 }
-*/

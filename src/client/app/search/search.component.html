@@ -281,10 +281,7 @@
                     <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
                       {{resultItem.title}}</a></b></div>
                   </div>
-                  <div class="ui-grid-row">
-                    <div class="ui-grid-col-12">{{resultItem.description}}</div>
-
-                  </div>
+                  <read-more [text]="resultItem.description" [maxLength]="300" ></read-more>
 
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-1"><i>Keywords: </i></div>
