@@ -41,7 +41,6 @@ export class ProjectConfig extends SeedConfig {
       ...this.NPM_DEPENDENCIES,
       {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
       {src: 'nanoscroller/bin/javascripts/jquery.nanoscroller.js', inject: 'libs'},
-      {src: 'readmore-js/readmore.min.js', inject: 'libs'},
       {src: 'nanoscroller/bin/css/nanoscroller.css', inject: true},
       { src: 'primeng/resources/primeng.min.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
