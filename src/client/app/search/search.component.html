@@ -11,7 +11,7 @@
     top.location = self.location;
   }
 </script>
-
+<!--
 <div class="card" *ngIf="summaryPageOpen == true">
   <h1 class=" TexAlCenter" >Full Record</h1>
   <div class="EmptyBox20"></div>
@@ -201,10 +201,12 @@
   </div>
   </div>
 </div>
+-->
 <p-messages [value]="msgs"></p-messages>
 
-<div *ngIf="summaryPageOpen != true" >
-  <div class="ui-g ">
+<div *ngIf="summaryPageOpen != true">
+  <div style="padding-left: 10%;padding-right: 10%;padding-bottom: 5%;" >
+  <div class="ui-g " style="border-right:2px solid #CCCCCC;border-left:2px solid #CCCCCC;padding-top: 3%;padding-bottom: 3%" >
     <div class="ui-g-12 ui-md-6 ui-lg-1 ">
     </div>
     <div class="ui-g-12 ui-md-6 ui-lg-2 ">
@@ -225,22 +227,35 @@
     </div>
   </div>
   <div *ngIf="searching">
-    <div class="ui-g " >
-      <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " >
-            <div class="ui-g">
-              <div class="ui-g-12">
-                <label style="font-size: 20px;"><b>Filters</b></label><a href="#!" style="float: right;" (click)="clearFilters()" >Clear All</a>
-                <br>
-                <p-tree [value]="themesTree" selectionMode="checkbox" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
-                <p-tree [value]="componentsTree" selectionMode="checkbox" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+    <div class="ui-g " style="border:2px solid #CCCCCC"  >
+      <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " style="padding: 0px 0px 0px 0px;"  >
+            <div class="ui-g" style="padding: 0px;" >
+              <div class="ui-g-12" style="padding: 0px;" >
+                <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em;">
+                  <label style="font-size: 16px;"><b>Filters</b></label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
+                </div>
+                <div style="border-bottom:2px solid #cccccc;width: 100%">
+                  <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em">
+                    <label style="font-size: 16px;"><b>Research Topics</b></label>
+                  </div>
+                <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
+                        [style]="{'padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                  <div style="border-bottom:2px solid #cccccc;border-top:2px solid #cccccc;width: 100%;padding: 1em">
+                    <label style="font-size: 16px;"><b>Components</b></label>
+                  </div>
+                  <p-tree [value]="componentsTree" selectionMode="checkbox"
+                          [style]="{'padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                </div>
+                <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em">
+                  <label style="font-size: 16px;"><b>People</b></label>
+                </div>
 
-                <label>People</label>
-                <div *ngIf="selectedAuthorDropdown == false">
+                <div *ngIf="selectedAuthorDropdown == false" style="background-color:#FFFFFF;padding: 1em;">
 
                   <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                                   (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                  (onSelect)="filterResults($event,'Author')">
+                                  (onSelect)="filterResults($event,'Author')" >
                   </p-autoComplete>
                 </div>
                 <div *ngIf="selectedAuthorDropdown == true">
@@ -249,29 +264,29 @@
                   </i>
                 </div>
               </div>
-              <div class="ui-g-12">
-                <label>Keyword</label>
+              <div class="ui-g-12" style="padding: 0px;">
+                <div style="border-bottom:2px solid #cccccc;border-top:2px solid #cccccc;width: 100%;padding: 1em;">
+                  <label style="font-size: 16px;"><b>Keyword</b></label>
+                </div>
+                <div style="padding: 1em;background-color:#FFFFFF">
                 <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
                                 (completeMethod)="filterKeywords($event)"
                                 [multiple]="true" [size]="30"
                                 (onSelect)="filterResults($event)"
                                 (onUnselect)="filterResults($event)"
-                                [minLength]="1" [maxlength] = "30">
+                                [minLength]="1" [maxlength] = "30" >
                 </p-autoComplete>
+                </div>
               </div>
             </div>
         </div>
 
       <!-- Section 1 -->
-      <div class="ui-g-12 ui-md-8 ui-lg-9 ">
-      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
-        <div class="Container">
-          <template let-resultItem pTemplate="rowexpansion">
-            <span><b>Description</b> : {{resultItem.description}}</span><br>
-            <div class="EmptyBox10"></div>
-            <span><b>Keywords</b> : {{resultItem.keyword.join(', ')}}</span>
-          </template>
-        </div>
+      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:2px solid #CCCCCC;background-color: #FFFFFF">
+      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "bottom" [rows]="5">
+        <p-header style="text-align: left;">
+        {{filteredResults.length}} datasets found
+        </p-header>
         <template let-resultItem pTemplate="item">
           <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
             <div class="ui-grid-row nowrap">
@@ -295,7 +310,7 @@
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
                       <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Landing Page"
-                              type="button"  style="width:80%;"></button>&nbsp;</a>
+                              type="button"  style="width:90%;"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>
@@ -305,6 +320,7 @@
         </template>
       </p-dataList>
       </div>
+    </div>
       <!--
       <div class="ui-g-12 ui-md-8 ui-lg-9 ">
           <div *ngIf="filteredResults.length<=10">

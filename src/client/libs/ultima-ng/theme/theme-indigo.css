@@ -3167,9 +3167,10 @@ body .ui-widget-content {
   body .ui-widget-content .fa {
     color: #757575; }
 body .ui-widget-header {
-  background-color: #F6F6F6;
+  background-color: #ffffff;
   color: #000000;
   font-size: 1em;
+  align: left;
   border: 1px solid #F6F6F6; }
   body .ui-widget-header .fa {
     color: #000000; }
