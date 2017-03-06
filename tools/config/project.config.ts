@@ -44,8 +44,6 @@ export class ProjectConfig extends SeedConfig {
       {src: 'nanoscroller/bin/css/nanoscroller.css', inject: true},
       { src: 'primeng/resources/primeng.min.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
-
-
       // inject into css section
 
   ];
@@ -56,7 +54,6 @@ export class ProjectConfig extends SeedConfig {
       ...this.APP_ASSETS,
       {src: `${this.APP_SRC}/assets/css/main.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/readMoreJS.min.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
