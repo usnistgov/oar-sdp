@@ -12,33 +12,39 @@
   }
 </script>
 
-<div class="card" >
-  <div class="ui-g">
+  <div class="ui-g" style="background-color: #153971;color: #FFFFFF">
     <div class="ui-g-12">
-      <h1 class="Fs38 TexAlCenter"><b>NIST DATA DISCOVERY</b></h1>
+      <div class="TexAlCenter homeTitle" > <b> NIST Data Discovery</b></div>
       <div class="EmptyBox20"></div>
-      <h1 class="Fs15 TexAlCenter"><i>Explore data, tools, and resources for Science, Engineering, Technology and <a href="" [routerLink]="['/about']"><u>more</u></a></i>
-        </h1>
+      <div class="TexAlCenter homeSubTitle"><i>Explore data, tools, and resources for Science, Engineering, Technology and <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></div>
       <div class="EmptyBox20"></div>
     </div>
   </div>
-  <div class="ui-g">
-    <div class="ui-g-12 ui-g-nopad">
+  <div class="ui-g"  style="background-color: #EFEFEF">
+    <div class="ui-g-12 ">
+      <div class="EmptyBox40"></div>
+
       <div class="ui-g-12 ui-md-6 ui-lg-1">
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-2">
-        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%'}" [(ngModel)]="searchTaxonomyKey" >
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '20px'}" [(ngModel)]="searchTaxonomyKey" >
         </p-dropdown>
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-6">
-        <input type="text" style="width: 100%;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
+        <input type="text" style="width: 100%;background-color: #FFFFFF;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
                (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)"  />
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-2">
-        <button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
+        <button icon="ui-icon-search" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 20px;" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-4">
       </div>
       <div *ngIf="showAdvancedSearch == false" >
-      <div class="ui-g-12 ui-md-6 ui-lg-6">
+      <div class="ui-g-12 ui-md-6 ui-lg-5">
         <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
         <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" style="float: right"> <b> Show Advanced Search </b></a>
       </div>
@@ -73,7 +79,6 @@
       </div>
     </template>
   </div>
-</div>
 
 <p-dialog header="Search Examples" [(visible)]="display">
   <div class="card">

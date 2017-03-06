@@ -107,9 +107,9 @@ export class HomeComponent implements OnInit {
    */
   toTaxonomiesItems(taxonomies:any[]) {
     let items: SelectItem[] = [];
-    items.push({label: 'All', value: ''});
+    items.push({label: 'All Research', value: ''});
     for (let taxonomy of taxonomies) {
-      items.push({label: taxonomy.researchCategory, value: taxonomy.researchCategory});
+      items.push({label: taxonomy.label, value: taxonomy.label});
     }
     return items;
   }
@@ -136,7 +136,7 @@ export class HomeComponent implements OnInit {
     for (let field of this.displayFields) {
       //Object.keys(fields).forEach(function(fieldKey) {
     var fieldKey = _.startCase(field);
-    fieldItems.push({label:fieldKey, value:fieldKey});
+    fieldItems.push({label:fieldKey, value:field});
     };
     fieldItems = _.sortBy(fieldItems, ['label','value']);
 

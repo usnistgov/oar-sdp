@@ -39,7 +39,6 @@ export class AppMenuComponent implements OnInit {
       },
       {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov'},
       {label: 'APIs', routerLink: ['/api']},
-      {label: 'About NIST Data', routerLink: ['/about']},
       {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd'}
     ];
   }
@@ -83,7 +82,7 @@ export class AppMenuComponent implements OnInit {
     ])
   ]
 })
-export class AppSubMenu {
+export class AppSubMenuComponent {
 
   @Input() item: MenuItem;
 

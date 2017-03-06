@@ -26,35 +26,38 @@ export class SearchService {
   searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string, summaryPageOpen:boolean): Observable<string[]> {
     if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase')))) || (summaryPageOpen)) {
       if (summaryPageOpen) {
-        searchValue = "resId=" + searchValue;
+        searchValue = 'resId=' + searchValue;
       }
       //return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
       return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch?' + searchValue)
+      //return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records?' + searchValue)
 
-    .map((res: Response) => res.json())
+
+    .map((res: Response) => res.json().ResultData)
         .catch((error: any) => Observable.throw(error.json()));
     } else {
 
       let params: URLSearchParams = new URLSearchParams();
       params.set('searchphrase', searchValue);
-      if (searchTaxonomyKey === '') {
-        searchTaxonomyKey = 'all';
+      if (searchTaxonomyKey !== '') {
+        params.set('theme', searchTaxonomyKey);
       }
-      params.set('theme', searchTaxonomyKey);
 
-      if (searchValue == "" && searchTaxonomyKey == "") {
-        return this.http.get('http://10.200.222.250:8082/RMMApi/catalog/records')
-          .map((res: Response) => res.json())
+
+      if (searchValue === '' && searchTaxonomyKey === '') {
+        //return this.http.get('http://10.200.222.250:8082/RMMApi/catalog/records')
+        return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records')
+          .map((res: Response) => res.json().ResultData)
           .catch((error: any) => Observable.throw(error.json()));
       } else {
-        console.log("inside if condition");
         //return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch',
-        return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch',
+        //return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch',
+        return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records',
         {
             search: params
 
       })
-          .map((res: Response) => res.json())
+          .map((res: Response) => res.json().ResultData)
           .catch((error: any) => Observable.throw(error.json()));
       }
     }

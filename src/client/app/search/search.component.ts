@@ -1,15 +1,19 @@
-import { Component, OnInit, OnDestroy,AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef,  ViewChildren } from '@angular/core';
 import { SearchService, TaxonomyListService, SearchFieldsListService } from '../shared/index';
+
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
+import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
 
 
 
 declare var Ultima: any;
+declare var jQuery: any;
+
 
 
 /**
@@ -25,16 +29,17 @@ declare var Ultima: any;
 
 
 
-export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
 
 
   layoutCompact: boolean = true;
 
   layoutMode: string = 'horizontal';
 
-  darkMenu: boolean = false;
-
-  profileMode: string = 'inline';
+   darkMenu: boolean = false;
+   selectedThemesNode: TreeNode[];
+   selectedComponentsNode: TreeNode[];
+   profileMode: string = 'inline';
     msgs: Message[] = [];
     exception : string;
     errorMsg: string;
@@ -43,6 +48,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     queryAdvSearch:string;
     searchResults: any[] = [];
     errorMessageArray: string[];
+    themesTree:any[];
+    componentsTree:any[];
     searchValue:string;
     taxonomies: SelectItem[];
     fields: SelectItem[];
@@ -53,12 +60,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     searching:boolean = false;
     keywords: string[];
     themes:SelectItem[] = [];
+    components:SelectItem[] = [];
     authors:string[] = [];
     filteredResults:any[] = [];
     keyword:string;
     Keywords:string[] = [];
     selectedKeywords:string[] = [];
     selectedThemes:string[] = [];
+    selectedComponents:string[] = [];
     selectedAuthor:string;
     suggestedKeywords:string[] = [];
     suggestedThemes:string[] = [];
@@ -70,6 +79,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     summaryPageOpen : boolean = false;
     summaryCandidate: any[];
     selectedAuthorDropdown: boolean = false;
+    items: MenuItem[];
     private _routeParamsSubscription: Subscription;
 
 
@@ -78,16 +88,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
    *
    */
     constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService:
-      TaxonomyListService, public searchService:SearchService,  public searchFieldsListService: SearchFieldsListService) {
+      TaxonomyListService, public searchService:SearchService, public searchFieldsListService: SearchFieldsListService) {
     }
 
-  /**
-   * Initialize Ultima theme
-   */
-  ngAfterViewInit() {
-  }
-
-    /**
+   /**
      * Handle the nameListService observable
      */
     getTaxonomies() {
@@ -105,7 +109,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         let items :SelectItem[] = [];
         items.push({label:this.ALL, value:'All'});
         for (let taxonomy of taxonomies) {
-            items.push({label:taxonomy.researchCategory, value:taxonomy.researchCategory});
+            items.push({label:taxonomy.label, value:taxonomy.label});
         }
         return items;
     }
@@ -129,6 +133,31 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         return themes;
     }
+
+
+  /**
+   * Populate list of themes from Search results
+   */
+
+  collectComponents(searchResults:any[]) {
+    let components :SelectItem[] = [];
+    let componentsArray:string[] = [];
+    let resultItemComp:string[] = [];
+    for (let resultItem of searchResults) {
+      if(resultItem.components && resultItem.components !== null && resultItem.components.length > 0) {
+        for (let resultItemComponents of resultItem.components) {
+            let comp = resultItemComponents['@type'];
+            let compType = _.split(comp, ',')[0];
+            let compTypeFinal = _.split(compType, ':')[1];
+          if(componentsArray.indexOf(compTypeFinal) < 0) {
+            components.push({label:compTypeFinal,value:compTypeFinal});
+            componentsArray.push(compTypeFinal);
+          }
+        }
+      }
+    }
+    return components;
+  }
 
   /**
    * Populate list of Authors from Search results
@@ -173,6 +202,15 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
+        this.components = this.collectComponents(searchResults);
+        this.themesTree = [{
+          label: 'Research Topics',
+          children: this.themes
+        }];
+        this.componentsTree =   [{
+          label: 'Components',
+          children: this.components
+        }];
         this.authors = this.collectAuthors(searchResults);
         this.clearFilters();
         if (this.filteredResults.length < 5) {
@@ -293,6 +331,37 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
+   * Filter Components
+   */
+  filterByComponents(searchResults:any[], selectedComponents:string[]) {
+    var filteredResults: any[] = [];
+
+    if (selectedComponents.length > 0) {
+      if (searchResults !== null && searchResults.length > 0) {
+        let components: SelectItem[] = [];
+        let componentsArray: string[] = [];
+        let resultItemComp: string[] = [];
+        for (let resultItem of searchResults) {
+          if (resultItem.components && resultItem.components !== null && resultItem.components.length > 0) {
+            for (let resultItemComponents of resultItem.components) {
+              let comp = resultItemComponents['@type'];
+              let compType = _.split(comp, ',')[0];
+              let compTypeFinal: string;
+                compTypeFinal = _.split(compType, ':')[1];
+              if (selectedComponents.indexOf(compTypeFinal) === 0) {
+                filteredResults.push(resultItem);
+              }
+            }
+          }
+        }
+        return filteredResults;
+      } else {
+        return searchResults;
+      }
+    }
+  }
+
+  /**
    * filter authors
    */
   filterByAuthor(searchResults:any[], selectedAuthor:string) {
@@ -317,18 +386,41 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
    * filter results
    */
   filterResults(event:any,selectedDropdown:string) {
-        if (selectedDropdown !== null) {
-            if (selectedDropdown === 'Author') {
-              this.selectedAuthorDropdown = true;
-            }
-        }
-        this.filteredResults =this.filterByKeyword(this.searchResults, this.selectedKeywords);
-        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        //this.suggestedThemes = this.collectThemes(this.filteredResults);
-        this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedThemes);
-        this.suggestedAuthors = this.collectAuthors(this.filteredResults);
-        this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
+    if (selectedDropdown !== null) {
+      if (selectedDropdown === 'Author') {
+        this.selectedAuthorDropdown = true;
+      }
     }
+    if (this.selectedKeywords !== null) {
+      this.filteredResults = this.filterByKeyword(this.searchResults, this.selectedKeywords);
+    }
+
+    this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+    //this.suggestedThemes = this.collectThemes(this.filteredResults);
+    this.selectedThemes = [];
+    this.selectedComponents = [];
+    for (let theme of this.selectedThemesNode)
+    {
+      this.selectedThemes.push(theme.label);
+    }
+
+    if (this.selectedThemes !== null && this.selectedThemes.length > 0) {
+      this.filteredResults =this.filterByTheme(this.filteredResults, this.selectedThemes);
+    }
+
+    for (let comp of this.selectedComponentsNode)
+    {
+      this.selectedComponents.push(comp.label);
+    }
+    if (this.selectedComponents !== null && this.selectedComponents.length > 0) {
+      this.filteredResults =this.filterByComponents(this.filteredResults, this.selectedComponents);
+    }
+    this.suggestedAuthors = this.collectAuthors(this.filteredResults);
+
+    if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
+      this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
+    }
+  }
 
 
   /**
@@ -342,6 +434,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedAuthor = null;
         this.selectedKeywords = [];
         this.selectedThemes =[];
+        this.selectedThemesNode = [];
+        this.selectedComponents =[];
+        this.selectedComponentsNode = [];
         this.selectedAuthorDropdown = false;
   }
 
@@ -415,6 +510,78 @@ export class SearchPanelComponent implements OnInit, OnDestroy, AfterViewInit {
      * Get the params OnInit
      */
     ngOnInit() {
+
+    this.items = [
+      {
+        label: 'File',
+        icon: 'fa-file-o',
+        items: [{
+          label: 'New',
+          icon: 'fa-plus',
+          items: [
+            {label: 'Project'},
+            {label: 'Other'},
+          ]
+        },
+          {label: 'Open'},
+          {label: 'Quit'}
+        ]
+      },
+      {
+        label: 'Edit',
+        icon: 'fa-edit',
+        items: [
+          {label: 'Undo', icon: 'fa-mail-forward'},
+          {label: 'Redo', icon: 'fa-mail-reply'}
+        ]
+      },
+      {
+        label: 'Help',
+        icon: 'fa-question',
+        items: [
+          {
+            label: 'Contents'
+          },
+          {
+            label: 'Search',
+            icon: 'fa-search',
+            items: [
+              {
+                label: 'Text',
+                items: [
+                  {
+                    label: 'Workspace'
+                  }
+                ]
+              },
+              {
+                label: 'File'
+              }
+            ]}
+        ]
+      },
+      {
+        label: 'Actions',
+        icon: 'fa-gear',
+        items: [
+          {
+            label: 'Edit',
+            icon: 'fa-refresh',
+            items: [
+              {label: 'Save', icon: 'fa-save'},
+              {label: 'Update', icon: 'fa-save'},
+            ]
+          },
+          {
+            label: 'Other',
+            icon: 'fa-phone',
+            items: [
+              {label: 'Delete', icon: 'fa-minus'}
+            ]
+          }
+        ]
+      }
+    ];
         this.columnOptions = [];
         this.cols = [];
 

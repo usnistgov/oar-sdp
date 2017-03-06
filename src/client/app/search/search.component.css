@@ -89,6 +89,23 @@ background: linear-gradient(to bottom,  #2c539e 0%,#2c539e 100%); /* W3C, IE10+,
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
 }
 
+.sidebar-box {
+  max-height: 100px;
+  position: relative;
+  overflow: hidden;
+}
+.sidebar-box .read-more {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin: 0; padding: 30px 0;
+
+  /* "transparent" only works here because == rgba(0,0,0,0) */
+  background-image: linear-gradient(to bottom, transparent, black);
+}
+
 .divExpCSV
 {
   float:right;
@@ -110,4 +127,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 .summaryPageBackground
 {
   background-color: #595959;
+}
+
+.title
+{
+  color:#1471AE;
+  font-size: 20px;
 }

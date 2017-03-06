@@ -1,5 +1,10 @@
 {
+  "initialize": [
+    "noop"
+  ],
+
   "build.dev": [
+    "initialize",
     "clean.once",
     "build.assets.dev",
     "build.html_css",
@@ -14,12 +19,14 @@
   ],
 
   "build.e2e": [
+    "initialize",
     "clean.e2e",
     "tslint",
     "build.js.e2e"
   ],
 
   "build.prod": [
+    "initialize",
     "check.tools",
     "clean.prod",
     "tslint",
@@ -35,9 +42,9 @@
   ],
 
   "build.prod.aot": [
+    "initialize",
     "check.tools",
     "clean.prod",
-    "tslint",
     "build.assets.prod",
     "build.html_css",
     "build.fonts",
@@ -51,6 +58,7 @@
   ],
 
   "build.prod.rollup.aot": [
+    "initialize",
     "check.tools",
     "clean.prod",
     "tslint",
@@ -68,6 +76,8 @@
   ],
 
   "build.test": [
+    "initialize",
+    "clean.dev",
     "build.assets.dev",
     "build.html_css",
     "build.fonts",

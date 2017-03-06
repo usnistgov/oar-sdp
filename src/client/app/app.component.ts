@@ -1,4 +1,4 @@
-import { Component,AfterViewInit,ElementRef,Renderer,ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnDestroy } from '@angular/core';
 import { Config, HeadbarComponent, FootbarComponent } from './shared/index';
 import './operators';
 enum MenuOrientation {
@@ -14,7 +14,7 @@ declare var jQuery: any;
   selector: 'sdp-app',
   templateUrl: './app.component.html',
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
 
   layoutCompact: boolean = true;
 
@@ -57,6 +57,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.layoutContainer = <HTMLDivElement> this.layourContainerViewChild.nativeElement;
     this.layoutMenuScroller = <HTMLDivElement> this.layoutMenuScrollerViewChild.nativeElement;
+
 
     //hides the horizontal submenus or top menu if outside is clicked
     this.documentClickListener = this.renderer.listenGlobal('body', 'click', (event) => {

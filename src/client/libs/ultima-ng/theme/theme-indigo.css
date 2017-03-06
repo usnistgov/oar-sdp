@@ -3163,7 +3163,7 @@ body .ui-widget .ui-widget {
 body .ui-widget-content {
   background-color: #ffffff;
   font-size: 1em;
-  border: 1px solid #bdbdbd; }
+  border: 0px solid #bdbdbd; }
   body .ui-widget-content .fa {
     color: #757575; }
 body .ui-widget-header {
@@ -4297,7 +4297,7 @@ body .ui-panel {
   padding: 0; }
   body .ui-panel .ui-panel-titlebar {
     border: 0 none;
-    border-bottom: 1px solid #1471AE;
+    border-bottom: 1px solid #F6F6F6;
     padding: 0.625em 1em;
     -moz-border-radius-topleft: 2px;
     -webkit-border-top-left-radius: 2px;
@@ -4712,7 +4712,7 @@ body .ui-paginator {
     margin: 0 .375em 0 .375em; }
     body .ui-paginator .ui-paginator-pages a {
       padding: 0;
-      color: #ffffff;
+      color: #000000;
       min-width: 1.5em;
       min-height: 1.5em;
       line-height: 1.5em;

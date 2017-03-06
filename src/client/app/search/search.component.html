@@ -16,9 +16,12 @@
   <h1 class=" TexAlCenter" >Full Record</h1>
   <div class="EmptyBox20"></div>
   <div *ngFor="let summaryCandidate of filteredResults">
-    <p-accordion [multiple]="true">
       <div class="ui-g form-group">
-        <div class="ui-g-12 ui-md-1">
+        <div class="ui-g-2">
+          <p-panelMenu [model]="items" [style]="{'width':'300px'}"></p-panelMenu>
+        </div>
+        <div class="ui-g-10">
+        <div class="ui-g-10 ui-md-1">
             <b>Title</b>
         </div>
         <div class="ui-g-12 ui-md-7" *ngIf="summaryCandidate.abbrev != null">
@@ -53,9 +56,6 @@
         <div class="ui-g-12 ui-md-7">
           {{summaryCandidate.keyword.join(', ')}}
         </div>
-      </div>
-      <p-accordionTab header="More About this Resource">
-        <div class="ui-g">
             <div class="ui-g-12 ui-md-1">
               <b>id</b>
             </div>
@@ -100,7 +100,6 @@
           </div>
           <div class="ui-g-12 ui-md-11" *ngIf="summaryCandidate.theme == null">
           </div>
-          <p-accordionTab header="Included Resources" >
           <div *ngFor="let res of summaryCandidate.components" style="width:100%;">
             <div *ngIf="res.proxyFor != null" style="width: 100%">
               <div class="ui-g-12 ui-md-12">
@@ -108,11 +107,6 @@
               </div>
             </div>
           </div>
-            </p-accordionTab>
-          </div>
-      </p-accordionTab>
-      <p-accordionTab header="Access to Data and Tools">
-        <div class="ui-g">
           <div class="ui-g-12 ui-md-1">
               <b>Access Level</b>
           </div>
@@ -132,7 +126,6 @@
               {{summaryCandidate.rights}}
           </div>
 
-          <p-accordionTab header="Downloadable Files">
             <p-dataTable
                #results1 [value]="summaryCandidate.components"
                [rows]="50" [paginator]="true" paginatorPosition = "top" [responsive] = "true" [pageLinks]="10"
@@ -152,16 +145,10 @@
                 </template>
               </p-column>
             </p-dataTable>
-           </p-accordionTab>
-        </div>
-      </p-accordionTab>
-      <p-accordionTab header="References">
+
         <div *ngFor="let ref of summaryCandidate.references" >
           <a href="{{ref.location}}" target="_blank">{{ref.location}}</a>
         </div>
-      </p-accordionTab>
-      <p-accordionTab header="Record Info">
-        <div class="ui-g">
           <div class="ui-g-12 ui-md-1">
             <b>isPartof</b>
           </div>
@@ -211,41 +198,45 @@
               {{summaryCandidate.systemOfRecords}}
           </div>
         </div>
-      </p-accordionTab>
-    </p-accordion>
+  </div>
   </div>
 </div>
 <p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true" >
-  <div class="card">
   <div class="ui-g ">
-    <div class="ui-g-12 ui-md-6 ui-lg-3 ">
+    <div class="ui-g-12 ui-md-6 ui-lg-1 ">
+    </div>
+    <div class="ui-g-12 ui-md-6 ui-lg-2 ">
       <p-dropdown
         [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
-        [style]="{'width':'100%'}"
+        [style]="{'width':'100%','background-color':'#FFFFFF'}"
       ></p-dropdown>
     </div>
-    <div class="ui-g-12 ui-md-6 ui-lg-8 ">
-      <input type="text" pInputText style="width: 100%" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
+    <div class="ui-g-12 ui-md-6 ui-lg-6 ">
+      <input type="text" pInputText style="width: 100%;background-color:#FFFFFF" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
              placeholder="Search..."
       />
     </div>
+    <div class="ui-g-12 ui-md-6 ui-lg-2 ">
+      <button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button>
+    </div>
     <div class="ui-g-12 ui-md-6 ui-lg-1 ">
-      <button
-        (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search"
-        type="button" class="custButton Wid100" icon="ui-icon-search"></button>
     </div>
   </div>
   <div *ngIf="searching">
     <div class="ui-g " >
       <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " >
-
-          <p-panel header="Filters">
             <div class="ui-g">
               <div class="ui-g-12">
-                <label>Contact</label>
+                <label style="font-size: 20px;"><b>Filters</b></label><a href="#!" style="float: right;" (click)="clearFilters()" >Clear All</a>
+                <br>
+                <p-tree [value]="themesTree" selectionMode="checkbox" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                <p-tree [value]="componentsTree" selectionMode="checkbox" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+
+                <label>People</label>
                 <div *ngIf="selectedAuthorDropdown == false">
+
                   <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                                   (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
@@ -268,19 +259,53 @@
                                 [minLength]="1" [maxlength] = "30">
                 </p-autoComplete>
               </div>
-              <div class="ui-g-12">
-                <label>Research Topics</label>
-                <p-multiSelect [options]="themes" [(ngModel)]="selectedThemes" (onChange)="filterResults($event)"></p-multiSelect>
-
-              </div>
             </div>
-            <button type="button" (click)="clearFilters()" label="Clear All" icon="ui-icon-clear-all" pButton></button>
-          </p-panel>
         </div>
 
-
       <!-- Section 1 -->
+      <div class="ui-g-12 ui-md-8 ui-lg-9 ">
+      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
+        <div class="Container">
+          <template let-resultItem pTemplate="rowexpansion">
+            <span><b>Description</b> : {{resultItem.description}}</span><br>
+            <div class="EmptyBox10"></div>
+            <span><b>Keywords</b> : {{resultItem.keyword.join(', ')}}</span>
+          </template>
+        </div>
+        <template let-resultItem pTemplate="item">
+          <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
+            <div class="ui-grid-row nowrap">
+              <div class="ui-grid-col-12">
+                <div class="ui-grid ui-grid-responsive ui-fluid">
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
+                      {{resultItem.title}}</a></b></div>
+                  </div>
+                  <read-more [text]="resultItem.description" [maxLength]="300" ></read-more>
 
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-1"><i>Keywords: </i></div>
+                    <div class="ui-grid-col-11"><i>{{resultItem.keyword.join(', ')}}</i></div>
+                  </div>
+                  <div class="ui-grid-row" *ngIf="resultItem.doi !=null">
+                    <div class="ui-grid-col-1">DOI: </div>
+                    <div class="ui-grid-col-11" style="color:#1471AE;">{{resultItem.doi}}</div>
+                  </div>
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-2">
+                      <a [(href)]="resultItem.landingPage" target="_blank">
+                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Landing Page"
+                              type="button"  style="width:80%;"></button>&nbsp;</a>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </p-dataList>
+      </div>
+      <!--
       <div class="ui-g-12 ui-md-8 ui-lg-9 ">
           <div *ngIf="filteredResults.length<=10">
             <p-dataTable
@@ -411,7 +436,7 @@
             </p-dataTable>
           </div>
         </div>
+        -->
       </div>
     </div>
   </div>
-</div>

@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './index';
 import { HomeHeadbarComponent } from '../shared/homeheadbar/index';
-import { TopBarComponent } from '../app.topbar.component';
+import { SearchTopBarComponent } from '../app.searchtopbar.component';
 
 
 export const HomeRoutes: Routes = [
@@ -15,7 +15,7 @@ export const HomeRoutes: Routes = [
       },
       {
         path: '',
-        component: TopBarComponent,
+        component: SearchTopBarComponent,
         outlet: 'route1'
       }
     ]
