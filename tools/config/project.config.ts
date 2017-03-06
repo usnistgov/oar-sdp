@@ -42,6 +42,7 @@ export class ProjectConfig extends SeedConfig {
       {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
       {src: 'nanoscroller/bin/javascripts/jquery.nanoscroller.js', inject: 'libs'},
       {src: 'nanoscroller/bin/css/nanoscroller.css', inject: true},
+      {src: 'lodash/lodash.min.js', inject: 'libs'},
       { src: 'primeng/resources/primeng.min.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
       // inject into css section
@@ -62,7 +63,15 @@ export class ProjectConfig extends SeedConfig {
 // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
     ];
 
-
+    // Add packages (e.g. ng2-translate)
+     let additionalPackages: ExtendPackages[] = [{
+       name: 'lodash',
+    //   // Path to the package's bundle
+       path: 'node_modules/lodash/lodash.js'
+     }];
+    //
+     this.addPackagesBundles(additionalPackages);
+    /*
     // Add packages (e.g. lodash)
       let additionalPackages: ExtendPackages[] = [{
        name: 'lodash',
@@ -73,8 +82,9 @@ export class ProjectConfig extends SeedConfig {
        }
      }];
 
+     let additionalPackages: ExtendPackages[] = [ { name: 'lodash', path:node_modules/lodash/lodash.js} ];
    this.addPackagesBundles(additionalPackages);
-
+    */
     /* Add to or override NPM module configurations: */
     // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });
   }
