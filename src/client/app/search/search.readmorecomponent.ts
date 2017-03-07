@@ -22,21 +22,15 @@ export class ReadMoreComponent implements AfterViewInit   {
 
   }
   toggleView() {
-    console.error("inside toggle");
     this.isCollapsed = !this.isCollapsed;
     this.determineView();
   }
   determineView() {
-    console.error("inside deter");
 
     if (this.text.toString().length <= this.maxLength) {
-      console.error(this.text.toString().length);
-      console.error(this.text.toString());
-
       this.currentText = this.text;
       this.isCollapsed = false;
       this.hideToggle = true;
-      console.error("inside deter if");
       return;
     }
     this.hideToggle = false;

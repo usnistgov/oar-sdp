@@ -107,7 +107,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   toTaxonomiesItems(taxonomies:any[]) {
         let items :SelectItem[] = [];
-        items.push({label:this.ALL, value:'All'});
+        items.push({label:this.ALL, value:''});
         for (let taxonomy of taxonomies) {
             items.push({label:taxonomy.label, value:taxonomy.label});
         }

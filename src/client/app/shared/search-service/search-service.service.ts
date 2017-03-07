@@ -29,22 +29,22 @@ export class SearchService {
         searchValue = 'resId=' + searchValue;
       }
       //return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
-      return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch?' + searchValue)
-      //return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records?' + searchValue)
-
-
+      //return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records')
+      //return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch?' + searchValue)
+      return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
         .catch((error: any) => Observable.throw(error.json()));
     } else {
-
       let params: URLSearchParams = new URLSearchParams();
       params.set('searchphrase', searchValue);
       if (searchTaxonomyKey !== '') {
+        console.log("inside else not null");
+
         params.set('theme', searchTaxonomyKey);
       }
 
 
-      if (searchValue === '' && searchTaxonomyKey === '') {
+      if (searchValue == '' && searchTaxonomyKey == '') {
         //return this.http.get('http://10.200.222.250:8082/RMMApi/catalog/records')
         return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records')
           .map((res: Response) => res.json().ResultData)
