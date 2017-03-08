@@ -10,7 +10,6 @@ hooks:
  BeforeInstall:
    - location: scripts/beforecicd.sh
      runas: ubuntu
-
-AfterInstall:
-   - location:scripts/aftercicd.sh
+ AfterInstall:
+   - location: scripts/aftercicd.sh
      runas: ubuntu
