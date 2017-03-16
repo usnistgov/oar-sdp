@@ -1,12 +1,10 @@
-import {Component, Input, ElementRef, OnInit, AfterViewInit } from '@angular/core';
-import {logger} from "codelyzer/util/logger";
+import { Component, Input, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'read-more',
   template: `
-        <div [innerHTML]="currentText">
-        </div>
-            <a [hidden]="hideToggle" href="javascript:void(0);" (click)="toggleView()">Read {{isCollapsed? 'more':'less'}}</a>
+        <span [innerHTML]='currentText'>
+        </span> <a [hidden]="hideToggle" href="javascript:void(0);" (click)="toggleView()">Read {{isCollapsed? 'more':'less'}}</a>
     `
 })
 
@@ -34,9 +32,9 @@ export class ReadMoreComponent implements AfterViewInit   {
       return;
     }
     this.hideToggle = false;
-    if (this.isCollapsed == true) {
-      this.currentText = this.text.toString().substring(0, this.maxLength) + "...";
-    } else if(this.isCollapsed == false)  {
+    if (this.isCollapsed === true) {
+      this.currentText = this.text.toString().substring(0, this.maxLength) + '...';
+    } else if(this.isCollapsed === false)  {
       this.currentText = this.text;
     }
   }

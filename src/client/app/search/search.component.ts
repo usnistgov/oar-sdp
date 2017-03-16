@@ -8,8 +8,6 @@ import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
-import {split} from "ts-node/dist";
-
 
 
 declare var Ultima: any;
@@ -63,11 +61,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     keywords: string[];
     themes:SelectItem[] = [];
     themesWithCount:SelectItem[] = [];
+    componentsWithCount:SelectItem[] = [];
     components:SelectItem[] = [];
     authors:string[] = [];
     themesAllArray:string[] = [];
-
-  filteredResults:any[] = [];
+    componentsAllArray:string[] = [];
+    componentsAllDupArray:string[] = [];
+    filteredResults:any[] = [];
     keyword:string;
     Keywords:string[] = [];
     selectedKeywords:string[] = [];
@@ -78,6 +78,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     suggestedThemes:string[] = [];
     suggestedAuthors:string[] = [];
     ALL:string='All';
+    unspecified:string='Unspecified';
+    unspecifiedCount:number = 0;
     filteredKeywords:string[] = [];
     filteredThemes:string[] = [];
     filteredAuthors:string[] = [];
@@ -112,7 +114,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   toTaxonomiesItems(taxonomies:any[]) {
         let items :SelectItem[] = [];
-        items.push({label:this.ALL, value:''});
+        items.push({label:'All Research', value:''});
         for (let taxonomy of taxonomies) {
             items.push({label:taxonomy.label, value:taxonomy.label});
         }
@@ -128,16 +130,19 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         let themesArray:string[] = [];
         let topics:string;
         for (let resultItem of searchResults) {
-            if(resultItem.topic && resultItem.topic !== null && resultItem.topic.length > 0) {
+            if(typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
                 for (let topic of resultItem.topic) {
-                    topics = _.split(topic.tag, ':')[0]
+                    topics = _.split(topic.tag, ':')[0];
                     this.themesAllArray.push(topics);
                     if(themesArray.indexOf(topics) < 0) {
                         themes.push({label:topics,value:topics});
                         themesArray.push(topics);
                     }
                 }
+            } else {
+              this.unspecifiedCount += 1;
             }
+
         }
         return themes;
     }
@@ -150,16 +155,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   collectComponents(searchResults:any[]) {
     let components :SelectItem[] = [];
     let componentsArray:string[] = [];
+    let componentsAllArray:string[] = [];
     let resultItemComp:string[] = [];
+    let comp:any[] = [];
+    let compType:string;
+
     for (let resultItem of searchResults) {
-      if(resultItem.components && resultItem.components !== null && resultItem.components.length > 0) {
-        for (let resultItemComponents of resultItem.components) {
-            let comp = resultItemComponents['@type'];
-            let compType = _.split(comp, ',')[0];
-            let compTypeFinal = _.split(compType, ':')[1];
-          if(componentsArray.indexOf(compTypeFinal) < 0) {
-            components.push({label:compTypeFinal,value:compTypeFinal});
-            componentsArray.push(compTypeFinal);
+      if(resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+        for (let resultItemComponents of resultItem.inventory) {
+          comp = resultItemComponents.byType;
+          for (let type of comp) {
+            let compType = type.forType;
+            if ((_.includes(compType, 'nrd')) && !(_.includes(compType, 'Hidden'))) {
+              this.componentsAllArray.push(_.startCase( _.split(compType, ':')[1]));
+              if (componentsArray.indexOf(compType) < 0) {
+                components.push({label: _.startCase( _.split(compType, ':')[1]), value: _.startCase( _.split(compType, ':')[1])});
+                componentsArray.push(compType);
+              }
+            }
           }
         }
       }
@@ -210,23 +223,29 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
-
+        this.themesWithCount.push({label:this.unspecified + ' (' + this.unspecifiedCount + ')',value:''});
         for (let theme of this.themes)
         {
           let count:any;
-          count = _.countBy(this.themesAllArray, _.partial(_.isEqual, theme.label))["true"];
-          this.themesWithCount.push({label:theme.label + "(" + count + ")",value:theme.label});
-
+          count = _.countBy(this.themesAllArray, _.partial(_.isEqual, theme.label))['true'];
+          this.themesWithCount.push({label:theme.label + ' (' + count + ')',value:theme.label});
         }
 
-    this.components = this.collectComponents(searchResults);
+        this.components = this.collectComponents(searchResults);
+        for (let comp of this.components)
+        {
+          let count:any;
+          count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
+          this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
+        }
+
         this.themesTree = [{
           label: 'Research Topics',
           children: this.themesWithCount
         }];
         this.componentsTree =   [{
           label: 'Components',
-          children: this.components
+          children: this.componentsWithCount
         }];
         this.authors = this.collectAuthors(searchResults);
         this.clearFilters();
@@ -253,11 +272,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * call the Search service with parameters
    */
-  search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string,summaryPageOpen:boolean) {
+  search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string) {
         this.searching = true;
         this.keyword = '';
         let that = this;
-        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey,queryAdvSearch,this.summaryPageOpen)
+        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey,queryAdvSearch)
             .subscribe(
             searchResults => that.onSuccess(searchResults),
             error => that.onError(error)
@@ -335,11 +354,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             if (searchResults !== null && searchResults.length > 0) {
                 for (let resultItem of searchResults)
                 {
-                    if (resultItem.topic != null )
-                    {
-                      console.log("inside filterby theme -- " + selectedThemes);
-                       if (this.containsAllThemes(resultItem.topic, selectedThemes))
-                      {
+                    if (resultItem.topic !== null ) {
+                       if (this.containsAllThemes(resultItem.topic, selectedThemes)) {
                         filteredResults.push(resultItem);
                       }
                     }
@@ -363,22 +379,29 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         let componentsArray: string[] = [];
         let resultItemComp: string[] = [];
         for (let resultItem of searchResults) {
-          if (resultItem.components && resultItem.components !== null && resultItem.components.length > 0) {
-            for (let resultItemComponents of resultItem.components) {
-              let comp = resultItemComponents['@type'];
-              let compType = _.split(comp, ',')[0];
-              let compTypeFinal: string;
-                compTypeFinal = _.split(compType, ':')[1];
-              if (selectedComponents.indexOf(compTypeFinal) === 0) {
-                filteredResults.push(resultItem);
+          if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+            for (let resultItemComponents of resultItem.inventory) {
+              let comp = resultItemComponents.byType;
+              if (comp !== null) {
+                for (let type of comp) {
+                  let compType = type.forType;
+                  compType = _.startCase(_.split(compType, ':')[1]);
+                  for (let comps of selectedComponents) {
+                    if (comps !== null) {
+                      if (compType.indexOf(comps) === 0) {
+                        filteredResults.push(resultItem);
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
-        return filteredResults;
-      } else {
-        return searchResults;
       }
+      return filteredResults;
+    } else {
+      return searchResults;
     }
   }
 
@@ -397,8 +420,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             for (let resultItemThemes of resultItem.topic) {
               let theme = resultItemThemes.tag;
               let themeStr = _.split(theme, ':')[0];
-              if (selectedThemes.indexOf(themeStr) === 0) {
-                filteredResults.push(resultItem);
+              for (let selTheme of selectedThemes) {
+                if (themeStr.indexOf(selTheme) === 0) {
+                  filteredResults.push(resultItem);
+                }
               }
             }
           }
@@ -451,19 +476,16 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     for (let theme of this.selectedThemesNode)
     {
-      console.log("theme inside" + theme.value );
       this.selectedThemes.push(theme.value);
-
     }
 
     if (this.selectedThemes !== null && this.selectedThemes.length > 0) {
-      console.log("inside if" + this.selectedThemes);
       this.filteredResults =this.filterByThemes(this.filteredResults, this.selectedThemes);
     }
 
     for (let comp of this.selectedComponentsNode)
     {
-      this.selectedComponents.push(comp.label);
+      this.selectedComponents.push(comp.value);
     }
     if (this.selectedComponents !== null && this.selectedComponents.length > 0) {
       this.filteredResults =this.filterByComponents(this.filteredResults, this.selectedComponents);
@@ -520,16 +542,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   containsAllThemes(resultThemes:any[], themes:string[]) {
           for (let theme of themes) {
-            if (resultThemes != null) {
+            if (resultThemes !== null) {
               for (let result of resultThemes) {
-                if (result.tag != null)
-                {
-                  console.log("result topic tag" + result.tag);
-                  console.log("result topic theme" + theme);
-                  if (!_.some(result.tag, theme)) {
-                    console.log("result topic tag -- " + result.tag);
-                    console.log("result topic theme -- " + theme);
-                    console.log("does not includes");
+                if (result.tag !== null) {
+                  if ((result.tag).indexOf(theme)) {
                     return false;
                   }
                 }
@@ -538,7 +554,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           }
         return true;
   }
-
 
     filterByKeyword(searchResults:any[], selectedKeywords:any[]) {
         var filteredResults : any[] = [];
@@ -672,7 +687,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
               this.summaryPageOpen = true;
               this.searchTaxonomyKey = '';
             }
-            this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch,this.summaryPageOpen);
+            this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
         });
     }
 
