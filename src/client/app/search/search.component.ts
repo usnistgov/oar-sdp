@@ -78,7 +78,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     suggestedThemes:string[] = [];
     suggestedAuthors:string[] = [];
     ALL:string='All';
-    unspecified:string='Unspecified';
+    unspecified:string='unspecified';
     unspecifiedCount:number = 0;
     filteredKeywords:string[] = [];
     filteredThemes:string[] = [];
@@ -87,6 +87,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     summaryCandidate: any[];
     selectedAuthorDropdown: boolean = false;
     items: MenuItem[];
+    uniqueComp : string[] = [];
     private _routeParamsSubscription: Subscription;
 
 
@@ -162,18 +163,27 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     for (let resultItem of searchResults) {
       if(resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+        this.uniqueComp = [];
         for (let resultItemComponents of resultItem.inventory) {
           comp = resultItemComponents.byType;
           for (let type of comp) {
             let compType = type.forType;
             if ((_.includes(compType, 'nrd')) && !(_.includes(compType, 'Hidden'))) {
-              this.componentsAllArray.push(_.startCase( _.split(compType, ':')[1]));
+              //this.componentsAllArray.push(_.startCase(_.split(compType, ':')[1]));
+              this.uniqueComp.push(_.startCase(_.split(compType, ':')[1]));
               if (componentsArray.indexOf(compType) < 0) {
-                components.push({label: _.startCase( _.split(compType, ':')[1]), value: _.startCase( _.split(compType, ':')[1])});
+                components.push({
+                  label: _.startCase(_.split(compType, ':')[1]),
+                  value: _.startCase(_.split(compType, ':')[1])
+                });
                 componentsArray.push(compType);
               }
             }
           }
+          this.uniqueComp = this.uniqueComp.filter(this.onlyUnique);
+        }
+        for (let comp of this.uniqueComp) {
+          this.componentsAllArray.push(comp);
         }
       }
     }
@@ -223,7 +233,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
-        this.themesWithCount.push({label:this.unspecified + ' (' + this.unspecifiedCount + ')',value:''});
+        if (this.unspecifiedCount > 0)
+        {
+          this.themesWithCount.push({label:this.unspecified + ' (' + this.unspecifiedCount + ')',value:'unspecified'});
+        }
         for (let theme of this.themes)
         {
           let count:any;
@@ -235,16 +248,20 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let comp of this.components)
         {
           let count:any;
+          console.log("comp value" + comp.value);
+          console.log("arra - " + this.componentsAllArray[1]);
           count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
           this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
         }
 
         this.themesTree = [{
           label: 'Research Topics',
+          "expanded" : 'true',
           children: this.themesWithCount
         }];
         this.componentsTree =   [{
-          label: 'Components',
+          label: 'Record Components',
+          "expanded" : 'true',
           children: this.componentsWithCount
         }];
         this.authors = this.collectAuthors(searchResults);
@@ -387,6 +404,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
                   let compType = type.forType;
                   compType = _.startCase(_.split(compType, ':')[1]);
                   for (let comps of selectedComponents) {
+                    console.log("selected component" + comps);
                     if (comps !== null) {
                       if (compType.indexOf(comps) === 0) {
                         filteredResults.push(resultItem);
@@ -410,7 +428,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   filterByThemes(searchResults:any[], selectedThemes:string[]) {
     var filteredResults: any[] = [];
-
+    console.log("selected theme" + selectedThemes);
     if (selectedThemes.length > 0) {
       if (searchResults !== null && searchResults.length > 0) {
         let themes: SelectItem[] = [];
@@ -425,6 +443,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
                   filteredResults.push(resultItem);
                 }
               }
+            }
+          } else {
+            if (_.includes(selectedThemes, 'unspecified')) {
+              filteredResults.push(resultItem);
             }
           }
         }
@@ -481,6 +503,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     if (this.selectedThemes !== null && this.selectedThemes.length > 0) {
       this.filteredResults =this.filterByThemes(this.filteredResults, this.selectedThemes);
+      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
     }
 
     for (let comp of this.selectedComponentsNode)
@@ -489,12 +512,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
     if (this.selectedComponents !== null && this.selectedComponents.length > 0) {
       this.filteredResults =this.filterByComponents(this.filteredResults, this.selectedComponents);
+      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
     }
     this.suggestedAuthors = this.collectAuthors(this.filteredResults);
 
     if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
       this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
     }
+  }
+
+  onlyUnique(value, index, self) {
+     return self.indexOf(value) === index;
   }
 
 

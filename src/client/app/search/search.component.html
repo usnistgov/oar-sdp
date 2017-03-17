@@ -234,7 +234,7 @@
             <div class="ui-g" style="padding: 0px;" >
               <div class="ui-g-12" style="padding: 0px;" >
                 <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em;">
-                  <label style="font-size: 16px;"><b>Filters</b></label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
+                  <label style="font-size: 16px;">Filters</label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
                 </div>
                 <div style="border-bottom:2px solid #cccccc;width: 100%">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
@@ -300,18 +300,18 @@
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-1"><i>Keywords: </i></div>
                     <div class="ui-grid-col-11"><i>
-                      <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="100" ></read-more>
+                      <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
                       </i></div>
                   </div>
                   <div class="ui-grid-row" *ngIf="resultItem.doi !=null">
-                    <div class="ui-grid-col-2">DOI: </div>
-                    <div class="ui-grid-col-10" style="color:#1471AE;">{{resultItem.doi}}</div>
+                    <div class="ui-grid-col-1">DOI: </div>
+                    <div class="ui-grid-col-11" style="color:#1471AE;">{{resultItem.doi}}</div>
                   </div>
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
                       <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Home Page"
-                              type="button"  style="width:100%;font-size: small"></button>&nbsp;</a>
+                              type="button"  style="width:75%;font-size: small"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>
