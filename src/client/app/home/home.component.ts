@@ -159,6 +159,7 @@ export class HomeComponent implements OnInit {
    * Set the search parameters and redirect to search page
    */
   search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string) {
+      this.searchTaxonomyKey = searchTaxonomyKey;
       let params:NavigationExtras = {
         queryParams: { 'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey:'',
           'queryAdvSearch':this.queryAdvSearch}

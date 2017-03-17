@@ -21,7 +21,7 @@ export class AppMenuComponent implements OnInit {
 
   ngOnInit() {
     this.model = [
-      {label: 'Search', routerLink: ['/']},
+      {label: '', icon: 'home', routerLink: ['/']},
       {
         label: 'Key Datasets',
         items: [
@@ -39,7 +39,23 @@ export class AppMenuComponent implements OnInit {
       },
       {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov'},
       {label: 'APIs', routerLink: ['/api']},
-      {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd'}
+      {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd'},
+      {
+        label: 'About',
+        items: [
+          {label: 'About NIST Data',routerLink: ['/about']},
+          {label: 'Policy', url: 'https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database'},
+          {label: 'FAQ',url: 'http://webbook.nist.gov/chemistry'},
+          {label: 'Help', url: 'http://dlmf.nist.gov/'},
+        ]
+      },
+      {
+        label: 'Find Papers',
+        items: [
+          {label: 'Search All Papers',url: ['https://www.nist.gov/publications']},
+          {label: 'JRes NIST', url: 'https://www.nist.gov/nist-research-library/journal-research-nist'},
+        ]
+      },
     ];
   }
 }

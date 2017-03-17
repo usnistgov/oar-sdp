@@ -29,7 +29,6 @@
     "initialize",
     "check.tools",
     "clean.prod",
-    "tslint",
     "build.assets.prod",
     "build.html_css",
     "build.fonts",

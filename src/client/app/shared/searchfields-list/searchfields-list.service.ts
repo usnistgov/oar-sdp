@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { Config } from '../config/env.config';
+
 
 
 /**
@@ -8,6 +10,7 @@ import { Observable } from 'rxjs/Observable';
  */
 @Injectable()
 export class SearchFieldsListService {
+  private RestAPIURL: string = Config.API;
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -22,7 +25,7 @@ export class SearchFieldsListService {
    */
   get(): Observable<string[]> {
 
-   return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records/fields')
+   return this.http.get(this.RestAPIURL + 'oar-rmm-service/records/fields')
       .map((res: Response) => res.json())
                     .catch(this.handleError);
   }

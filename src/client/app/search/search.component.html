@@ -205,25 +205,27 @@
 <p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true">
-  <div style="padding-left: 10%;padding-right: 10%;padding-bottom: 5%;" >
+  <div style="padding-left: 5%;padding-right: 5%;padding-bottom: 5%;" >
   <div class="ui-g " style="border-right:2px solid #CCCCCC;border-left:2px solid #CCCCCC;padding-top: 3%;padding-bottom: 3%" >
     <div class="ui-g-12 ui-md-6 ui-lg-1 ">
     </div>
     <div class="ui-g-12 ui-md-6 ui-lg-2 ">
       <p-dropdown
         [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
-        [style]="{'width':'100%','background-color':'#FFFFFF'}"
+        [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}"
       ></p-dropdown>
     </div>
     <div class="ui-g-12 ui-md-6 ui-lg-6 ">
-      <input type="text" pInputText style="width: 100%;background-color:#FFFFFF" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
+      <input type="text" pInputText style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
+          font-size: 20px;" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
              placeholder="Search..."
       />
     </div>
-    <div class="ui-g-12 ui-md-6 ui-lg-2 ">
-      <button icon="ui-icon-search" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button>
-    </div>
     <div class="ui-g-12 ui-md-6 ui-lg-1 ">
+      <button style="height: 42px;font-weight: 400;font-style: italic;
+          font-size: 20px;" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button>
     </div>
   </div>
   <div *ngIf="searching">
@@ -232,22 +234,19 @@
             <div class="ui-g" style="padding: 0px;" >
               <div class="ui-g-12" style="padding: 0px;" >
                 <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em;">
-                  <label style="font-size: 16px;"><b>Filters</b></label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
+                  <label style="font-size: 16px;">Filters</label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
                 </div>
                 <div style="border-bottom:2px solid #cccccc;width: 100%">
-                  <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em">
-                    <label style="font-size: 16px;"><b>Research Topics</b></label>
-                  </div>
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
-                        [style]="{'padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
-                  <div style="border-bottom:2px solid #cccccc;border-top:2px solid #cccccc;width: 100%;padding: 1em">
-                    <label style="font-size: 16px;"><b>Components</b></label>
-                  </div>
+                        [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                </div>
+                  <div style="border-bottom:2px solid #cccccc;width: 100%">
+
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
                           [style]="{'padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
                 </div>
                 <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em">
-                  <label style="font-size: 16px;"><b>People</b></label>
+                  <label style="font-size: 16px;"><b>Authors and Contributors</b></label>
                 </div>
 
                 <div *ngIf="selectedAuthorDropdown == false" style="background-color:#FFFFFF;padding: 1em;">
@@ -283,12 +282,13 @@
 
       <!-- Section 1 -->
       <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:2px solid #CCCCCC;background-color: #FFFFFF">
-      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "bottom" [rows]="5">
-        <p-header style="text-align: left;">
-        {{filteredResults.length}} datasets found
+      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
+        <p-header>
+        <span style="font-size: 35px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif"> {{filteredResults.length}} records found </span>
         </p-header>
         <template let-resultItem pTemplate="item">
           <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
+            <div class="EmptyBox10"></div>
             <div class="ui-grid-row nowrap">
               <div class="ui-grid-col-12">
                 <div class="ui-grid ui-grid-responsive ui-fluid">
@@ -296,11 +296,12 @@
                     <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
                       {{resultItem.title}}</a></b></div>
                   </div>
-                  <read-more [text]="resultItem.description" [maxLength]="300" ></read-more>
-
+                  <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-1"><i>Keywords: </i></div>
-                    <div class="ui-grid-col-11"><i>{{resultItem.keyword.join(', ')}}</i></div>
+                    <div class="ui-grid-col-11"><i>
+                      <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
+                      </i></div>
                   </div>
                   <div class="ui-grid-row" *ngIf="resultItem.doi !=null">
                     <div class="ui-grid-col-1">DOI: </div>
@@ -309,8 +310,8 @@
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
-                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Landing Page"
-                              type="button"  style="width:90%;"></button>&nbsp;</a>
+                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Home Page"
+                              type="button"  style="width:75%;font-size: small"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>

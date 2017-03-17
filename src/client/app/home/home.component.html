@@ -23,44 +23,45 @@
   <div class="ui-g"  style="background-color: #EFEFEF">
     <div class="ui-g-12 ">
       <div class="EmptyBox40"></div>
-
       <div class="ui-g-12 ui-md-6 ui-lg-1 ">
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-2">
         <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
         ,'font-weight': '400','font-style': 'italic',
-          'font-size': '20px'}" [(ngModel)]="searchTaxonomyKey" >
+          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
         </p-dropdown>
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-6">
-        <input type="text" style="width: 100%;background-color: #FFFFFF;height: 42px;font-weight: 400;font-style: italic;
+        <input type="text" style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
           font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
                (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)"  />
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2">
-        <button icon="ui-icon-search" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
+        <button style="height: 42px;font-weight: 400;font-style: italic;
           font-size: 20px;" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2">
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
       </div>
     </div>
-    <div class="ui-g-12 ">
-      <div class="ui-g-12 ui-md-6 ui-lg-3">
-      </div>
-    <div *ngIf="showAdvancedSearch == false" >
-      <div class="ui-g-12 ui-md-6 ui-lg-4">
-        <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
-      </div>
+  <div class="ui-g-12">
+      <div *ngIf="showAdvancedSearch == false"  >
+        <div class="ui-g-12 ui-md-6 ui-lg-3">
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-4">
+          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()"> <b> Example Searches </b></a>
+        </div>
         <div class="ui-g-12 ui-md-6 ui-lg-2">
           <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(true)" style="float: right"> <b> Show Advanced Search </b></a>
         </div>
-    </div>
+      </div>
       <div *ngIf="showAdvancedSearch == true" >
+        <div class="ui-g-12 ui-md-6 ui-lg-3">
+        </div>
         <div class="ui-g-12 ui-md-6 ui-lg-4">
-          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Show Examples </b></a>
+          <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Example Searches </b></a>
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-2">
-        <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" style="float: right"> <b> Hide Advanced Search </b></a>
+          <a id= "advsearch" class = "Blue" href = "#" (click) = "advancedSearch(false)" style="float: right"> <b> Hide Advanced Search </b></a>
         </div>
       </div>
     </div>
@@ -68,15 +69,20 @@
     <template [ngIf]="showAdvancedSearch == true"  >
       <div  class="ui-g-12 ui-g-nopad "  *ngFor='let row of rows; let rowIndex = index'>
         <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-6 ui-lg-1">
-          <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
+          <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
         </div>
         <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-6 ui-lg-1">
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-2">
-          <p-dropdown [options]="fields" [style]="{'width':'100%'}" [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'100%'}"></p-dropdown>
+          <p-dropdown [options]="fields" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}"  [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'100%'}"></p-dropdown>
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-6 ">
-          <input type="text" pInputText style="width: 100%;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
+          <input type="text" pInputText style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
+          font-size: 20px;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
         </div>
         <div class="ui-g-12 ui-md-6 ui-lg-1 " style="width: 3%;" *ngIf="showDeleteButton == true" >
           <button type="button" (click)="deleteRow(rowIndex)" pButton icon="ui-icon-remove"></button>
@@ -86,78 +92,100 @@
         </div>
       </div>
     </template>
-    <div class="ui-g-12 ui-md-1">
+  </div>
+<div class="ui-g">
+  <div class="ui-g-12 ui-md-3 ui-lg-5">
+  </div>
+  <div class="ui-g-12 ui-md-3 ui-lg-3" style="color:#1471AE;font-size: large"> <b>FEATURED RESEARCH</b>
+  </div>
+</div>
+  <div class="ui-g">
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
     </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Information Technology','')" onmouseover="background-color: #000000">
+      <div class="card overview cardDiv"  style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10% ">
         <div class="overview-content clearfix">
-          <span class="overview-title">ADVANCED COMMUNICATIONS</span>
+          <span class="overview-title" style="color:#1471AE;font-size: small"><b>INFORMATION TECHNOLOGY</b></span>
         </div>
       </div>
+      </a>
     </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Mathematics and Statistics','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-          <span class="overview-title">ADVANCED MANUFACTURING</span>
+          <span class="overview-title" style="color:#1471AE;font-size: small;text-align: center"><b>MATHEMATICS AND STATISTICS</b></span>
         </div>
       </div>
+    </a>
     </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Manufacturing','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
         <div class="overview-content clearfix">
-          <span class="overview-title">CYBERSECURITY</span>
+          <span class="overview-title" style="color:#1471AE;font-size: small"><b>MANUFACTURING</b></span>
         </div>
       </div>
+      </a>
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Forensics','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+        <div class="overview-content clearfix">
+          <span class="overview-title" style="color:#1471AE;font-size: small"><b>FORENSICS</b></span>
+        </div>
+      </div>
+      </a>
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Materials','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+        <div class="overview-content clearfix">
+         <span class="overview-title" style="color:#1471AE;font-size: small"><b>MATERIALS</b></span>
+        </div>
+      </div>
+      </a>
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Physics Neutron','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+        <div class="overview-content clearfix">
+          <span class="overview-title" style="color:#1471AE;font-size: small"><b>PHYSICS AND NEUTRON</b></span>
+        </div>
+      </div>
+      </a>
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-2">
+      <a  href = "#!"  (click)="search('','Advanced Communications','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+        <div class="overview-content clearfix">
+          <span class="overview-title" style="color:#1471AE;font-size: small"><b>ADVANCED COMMUNICATIONS</b></span>
+        </div>
+      </div>
+      </a>
+    </div>
+    <div class="ui-g-12 ui-md-3 ui-lg-2" >
+      <a  href = "#!"  (click)="search('','Chemistry','')">
+      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+        <div class="overview-content clearfix">
+         <span class="overview-title" style="color:#1471AE;font-size: small"><b>CHEMISTRY</b></span>
+        </div>
+      </div>
+      </a>
     </div>
     <div class="ui-g-12 ui-md-2">
     </div>
     <div class="ui-g-12 ui-md-1">
-    </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
-        <div class="overview-content clearfix">
-          <span class="overview-title">FORENSIC SCIENCE</span>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
-        <div class="overview-content clearfix">
-          <span class="overview-title">ENERGY AND ENVIRONMENT</span>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
-        <div class="overview-content clearfix">
-          <span class="overview-title">RESILENCE</span>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-md-2">
-    </div>
-    <div class="ui-g-12 ui-md-1">
-    </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
-        <div class="overview-content clearfix">
-          <span class="overview-title">HEALTH AND BIOSCIENCE</span>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-md-3">
-      <div class="card overview">
-        <div class="overview-content clearfix">
-          <span class="overview-title">QUANTUM SCIENCE</span>
-        </div>
-      </div>
-    </div>
-    <div class="ui-g-12 ui-md-4">
     </div>
   </div>
 
 
-<p-dialog header="Search Examples" [(visible)]="display">
+<p-dialog header="Example Searches" [(visible)]="display">
   <div class="card">
     <button (click)="searchExample('&quot;Kinetics database&quot;');" class="button">"Kinetics database" </button><br>
     <button (click)="searchExample('Gallium');" class="button">Gallium </button><br>

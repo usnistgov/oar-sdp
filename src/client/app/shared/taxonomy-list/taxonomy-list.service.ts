@@ -3,12 +3,15 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
+import { Config } from '../config/env.config';
+
 
 /**
  * This class provides the TaxonomyList service with methods to read taxonomies and add names.
  */
 @Injectable()
 export class TaxonomyListService {
+  private RestAPIURL: string = Config.API;
 
   /**
    * Creates a new TaxonomyListService with the injected Http.
@@ -28,7 +31,7 @@ export class TaxonomyListService {
 
     //return this.http.get('http://10.200.222.250:8082/RMMApi/taxanomy?sort=researchCategory,asc')
     //return this.http.get('http://localhost:9090/RMMApi/taxanomy?sort=researchCategory,asc')
-    return this.http.get('http://10.200.222.250:8082/oar-rmm-service/taxonomy?level=1')
+    return this.http.get(this.RestAPIURL + 'oar-rmm-service/taxonomy?level=1')
      .map((res: Response) => res.json())
       .catch(this.handleError);
   }
