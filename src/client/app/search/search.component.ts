@@ -131,7 +131,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         let themes :SelectItem[] = [];
         let themesArray:string[] = [];
         let uniqueThemes:string[] = [];
+        let themesAllArray:string[] = [];
         let topics:string;
+        this.themesAllArray = [];
+        this.unspecifiedCount = 0;
         for (let resultItem of searchResults) {
           this.uniqueThemes = [];
           if(typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
@@ -165,7 +168,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let resultItemComp:string[] = [];
     let comp:any[] = [];
     let compType:string;
-
+    this.componentsAllArray = [];
     for (let resultItem of searchResults) {
       if(resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
         this.uniqueComp = [];
@@ -238,9 +241,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
+        this.themesWithCount = [];
+        this.componentsWithCount = [];
         if (this.unspecifiedCount > 0)
         {
-          this.themesWithCount.push({label:this.unspecified + ' (' + this.unspecifiedCount + ')',value:'unspecified'});
+          this.themesWithCount.push({label:this.unspecified + ' (' + this.unspecifiedCount + ')',value:this.unspecified});
         }
         for (let theme of this.themes)
         {
@@ -416,7 +421,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
                   let compType = type.forType;
                   compType = _.startCase(_.split(compType, ':')[1]);
                   for (let comps of selectedComponents) {
-                    console.log("selected component" + comps);
                     if (comps !== null) {
                       if (compType.indexOf(comps) === 0) {
                         filteredResults.push(resultItem);
