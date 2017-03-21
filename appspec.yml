@@ -9,7 +9,7 @@ files:
 hooks:
  BeforeInstall:
    - location: scripts/beforecicd.sh
-     runas: ubuntu
+     runas: root
  AfterInstall:
    - location: scripts/aftercicd.sh
-     runas: ubuntu
+     runas: root
