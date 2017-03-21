@@ -11,202 +11,11 @@
     top.location = self.location;
   }
 </script>
-<!--
-<div class="card" *ngIf="summaryPageOpen == true">
-  <h1 class=" TexAlCenter" >Full Record</h1>
-  <div class="EmptyBox20"></div>
-  <div *ngFor="let summaryCandidate of filteredResults">
-      <div class="ui-g form-group">
-        <div class="ui-g-2">
-          <p-panelMenu [model]="items" [style]="{'width':'300px'}"></p-panelMenu>
-        </div>
-        <div class="ui-g-10">
-        <div class="ui-g-10 ui-md-1">
-            <b>Title</b>
-        </div>
-        <div class="ui-g-12 ui-md-7" *ngIf="summaryCandidate.abbrev != null">
-            {{summaryCandidate.title}} ({{summaryCandidate.abbrev}})
-        </div>
-        <div class="ui-g-12 ui-md-7" *ngIf="summaryCandidate.abbrev == null">
-          {{summaryCandidate.title}}
-        </div>
-        <div class="ui-g-12 ui-md-1">
-          <b>Full Record</b>
-        </div>
-        <div class="ui-g-12 ui-md-3">
-          <a href="http://10.200.222.250:8082/RMMApi/records/advancedsearch?resId={{summaryCandidate.resId}}" target="_blank" > JSON </a>
-        </div>
-        <div class="ui-g-12 ui-md-1">
-            <b>Description</b>
-          </div>
-        <div class="ui-g-12 ui-md-7">
-            {{summaryCandidate.description}}
-        </div>
-        <div class="ui-g-12 ui-md-4">
-        </div>
-        <div class="ui-g-12 ui-md-1">
-          <b>DOI</b>
-        </div>
-        <div class="ui-g-12 ui-md-11">
-          {{summaryCandidate.doi}}
-        </div>
-        <div class="ui-g-12 ui-md-1">
-          <b>Keywords</b>
-        </div>
-        <div class="ui-g-12 ui-md-7">
-          {{summaryCandidate.keyword.join(', ')}}
-        </div>
-            <div class="ui-g-12 ui-md-1">
-              <b>id</b>
-            </div>
-            <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.id}}
-            </div>
-            <div class="ui-g-12 ui-md-1">
-              <b>Contact</b>
-            </div>
-            <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.contactPoint.fn}}
-            </div>
-            <div class="ui-g-12 ui-md-1">
-              <b>Contact Email</b>
-            </div>
-            <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.contactPoint.hasEmail}}
-            </div>
-            <div class="ui-g-12 ui-md-1">
-              <b>Modified</b>
-            </div>
-            <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.modified}}
-            </div>
-            <div class="ui-g-12 ui-md-1">
-                <b>Issued</b>
-            </div>
-            <div class="ui-g-12 ui-md-11">
-                {{summaryCandidate.issued}}
-            </div>
-            <div class="ui-g-12 ui-md-1">
-              <b>Publisher</b>
-            </div>
-            <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.publisher.name}}
-            </div>
-            <div class="ui-g-12 ui-md-2">
-              <b>Theme</b>
-            </div>
-          <div class="ui-g-12 ui-md-11" *ngIf="summaryCandidate.theme != null">
-            {{summaryCandidate.theme.join(', ')}}
-          </div>
-          <div class="ui-g-12 ui-md-11" *ngIf="summaryCandidate.theme == null">
-          </div>
-          <div *ngFor="let res of summaryCandidate.components" style="width:100%;">
-            <div *ngIf="res.proxyFor != null" style="width: 100%">
-              <div class="ui-g-12 ui-md-12">
-              <a href="#" (click)="encodeString('/#/search/',res.proxyFor)" target="_blank">{{res.title}}</a>
-              </div>
-            </div>
-          </div>
-          <div class="ui-g-12 ui-md-1">
-              <b>Access Level</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.accessLevel}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-              <b>License</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.license}}
-            </div>
-          <div class="ui-g-12 ui-md-1">
-              <b>Rights</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.rights}}
-          </div>
-
-            <p-dataTable
-               #results1 [value]="summaryCandidate.components"
-               [rows]="50" [paginator]="true" paginatorPosition = "top" [responsive] = "true" [pageLinks]="10"
-               sortMode="multiple" >
-               <p-column field="title"
-                   [sortable]="true" [filter]="true" header="Title"
-                   filterMatchMode="contains" ></p-column>
-               <p-column field="describedBy"
-                   [sortable]="true" [filter]="true" header="Described By"
-                   filterMatchMode="contains" ></p-column>
-              <p-column styleClass="col-button" [sortable]="true" [filter]="true" filterMatchMode="contains">
-                <template pTemplate="header">
-                  <header>Download URL</header>
-                </template>
-                <template let-resultItem="rowData" pTemplate="body">
-                  <a href="{{resultItem.downloadURL}}" target="_blank">{{resultItem.downloadURL}}</a>
-                </template>
-              </p-column>
-            </p-dataTable>
-
-        <div *ngFor="let ref of summaryCandidate.references" >
-          <a href="{{ref.location}}" target="_blank">{{ref.location}}</a>
-        </div>
-          <div class="ui-g-12 ui-md-1">
-            <b>isPartof</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-            {{summaryCandidate.isPartof}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-              <b>Language</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.language}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-            <b>Accrual Periodicity</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-            {{summaryCandidate.accrualPeriodicity}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-              <b>Ediid</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-            {{summaryCandidate.ediid}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-            <b>Bureau Code</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-            {{summaryCandidate.bureauCode}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-            <b>Data Quality</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-            {{summaryCandidate.dataQuality}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-            <b>Primary IT Investment</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-            {{summaryCandidate.primaryITInvestmentUII}}
-          </div>
-          <div class="ui-g-12 ui-md-1">
-            <b>System of Records</b>
-          </div>
-          <div class="ui-g-12 ui-md-11">
-              {{summaryCandidate.systemOfRecords}}
-          </div>
-        </div>
-  </div>
-  </div>
-</div>
--->
 <p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true">
   <div style="padding-left: 5%;padding-right: 5%;padding-bottom: 5%;" >
-  <div class="ui-g " style="border-right:2px solid #CCCCCC;border-left:2px solid #CCCCCC;padding-top: 3%;padding-bottom: 3%" >
+  <div class="ui-g " style="padding-top: 3%;padding-bottom: 3%" >
     <div class="ui-g-12 ui-md-6 ui-lg-1 ">
     </div>
     <div class="ui-g-12 ui-md-6 ui-lg-2 ">
@@ -229,23 +38,23 @@
     </div>
   </div>
   <div *ngIf="searching">
-    <div class="ui-g " style="border:2px solid #CCCCCC"  >
+    <div class="ui-g " style="border:1px solid #CCCCCC"  >
       <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " style="padding: 0px 0px 0px 0px;"  >
             <div class="ui-g" style="padding: 0px;" >
               <div class="ui-g-12" style="padding: 0px;" >
-                <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em;">
+                <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em;">
                   <label style="font-size: 16px;">Filters</label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
                 </div>
-                <div style="border-bottom:2px solid #cccccc;width: 100%">
+                <div style="border-bottom:1px solid #cccccc;width: 100%">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
                         [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
                 </div>
-                  <div style="border-bottom:2px solid #cccccc;width: 100%">
+                  <div style="border-bottom:1px solid #cccccc;width: 100%">
 
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
                           [style]="{'padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
                 </div>
-                <div style="border-bottom:2px solid #cccccc;width: 100%;padding: 1em">
+                <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em">
                   <label style="font-size: 16px;"><b>Authors and Contributors</b></label>
                 </div>
 
@@ -264,7 +73,7 @@
                 </div>
               </div>
               <div class="ui-g-12" style="padding: 0px;">
-                <div style="border-bottom:2px solid #cccccc;border-top:2px solid #cccccc;width: 100%;padding: 1em;">
+                <div style="border-bottom:1px solid #cccccc;border-top:1px solid #cccccc;width: 100%;padding: 1em;">
                   <label style="font-size: 16px;"><b>Keyword</b></label>
                 </div>
                 <div style="padding: 1em;background-color:#FFFFFF">
@@ -281,10 +90,10 @@
         </div>
 
       <!-- Section 1 -->
-      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:2px solid #CCCCCC;background-color: #FFFFFF">
+      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:1px solid #CCCCCC;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
-        <p-header>
-        <span style="font-size: 35px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif"> {{filteredResults.length}} records found </span>
+        <p-header style="border:0px solid #FFFFFF;">
+        <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 20px;"> {{filteredResults.length}} records found </span>
         </p-header>
         <template let-resultItem pTemplate="item">
           <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
@@ -311,7 +120,7 @@
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
                       <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Home Page"
-                              type="button"  style="width:75%;font-size: small"></button>&nbsp;</a>
+                              type="button"  style="width:70%;font-size: small;background-color: #277E2F"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>
@@ -322,138 +131,6 @@
       </p-dataList>
       </div>
     </div>
-      <!--
-      <div class="ui-g-12 ui-md-8 ui-lg-9 ">
-          <div *ngIf="filteredResults.length<=10">
-            <p-dataTable
-              expandableRows="true" scrollable="true" scrollWidth="100%"
-              #results [value]="filteredResults"
-              [rows]="50" [paginator]="true" paginatorPosition = "top" [responsive] = "true" [pageLinks]="10"
-              sortMode="multiple" >
-              <p-header >
-                  <span class="spanResults">
-                    <p-multiSelect [options]="columnOptions"  defaultLabel="Add Columns"  [style]="{'display':'table-caption','width':'150px'}" [(ngModel)]="cols"></p-multiSelect>
-                  </span>
-                <div *ngIf="filteredResults.length > 0">
-                    <span class="spanResults">&nbsp;&nbsp;
-                      {{results.dataToRender.length}} Result(s)</span>
-                    <button  type="button" pButton icon="ui-icon-file-download"
-                         iconPos="left"
-                         label="CSV" style="margin-top: 20px;"
-                         (click)='results.exportCSV()'
-                         class="divExpCSV"></button>
-                </div>
-              </p-header>
-              <div class="Container">
-                <template let-resultItem pTemplate="rowexpansion">
-                  <span><b>Description</b> : {{resultItem.description}}</span><br>
-                  <div class="EmptyBox10"></div>
-                  <span><b>Keywords</b> : {{resultItem.keyword.join(', ')}}</span>
-                </template>
-              </div>
-              <p-column styleClass="col-button" header="Action" [style]="{'width':'110px'}">
-                <template let-resultItem="rowData" pTemplate="rowexpansion">
-                  <a href="#" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
-                    <button class="summaryPageBackground"  type="button" pButton
-                            icon="ui-icon-open-in-browser"
-                            iconPos="left" title="Open Full Record Page"
-                    ></button>
-                  </a>
-                  <a [(href)]="resultItem.landingPage" target="_blank">
-                    <button type="button" pButton icon="ui-icon-open-in-new"
-                            iconPos="left" class="landingPageBackground" title="Open Landing Page"></button>
-                  </a>
-                </template>
-              </p-column>
-              <p-column field="title"
-                        [sortable]="true" [filter]="true" header="Title" [style]="{'width':'200px'}"
-                        filterMatchMode="contains"></p-column>
-              <p-column field="contactPoint.fn" [style]="{'width':'150px'}"
-                        [sortable]="true" [filter]="true" header="Contact"
-                        filterMatchMode="contains"></p-column>
-              <p-column field="description" [filter]="true" header="Description"
-                        expander="true" [style]="{'width':'220px'}"
-                        filterMatchMode="contains">
-                <template let-col let-resultItem="rowData" pTemplate="body">
-                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
-                </template>
-              </p-column>
-              <p-column field="keyword" [filter]="true"  header="Keywords" expander="true" [style]="{'width':'200px'}"
-                        filterMatchMode="contains">
-                <template let-col let-resultItem="rowData" pTemplate="body">
-                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
-                </template>
-              </p-column>
-              <p-column field="modified" filterMatchMode="contains" [style]="{'width':'200px'}"
-                        [sortable]="true" [filter]="true" header="Date Modified"></p-column>
-              <p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header" [style]="{'width':'200px'}"></p-column>
-            </p-dataTable>
-          </div>
-          <div *ngIf="filteredResults.length>10">
-            <p-dataTable
-              expandableRows="true"
-              #results [value]="filteredResults" scrollable="true" scrollWidth="100%"
-              [rows]="50" [paginator]="true" [responsive] = "true" paginatorPosition = "top" [rowsPerPageOptions]="[10,20,50]" [pageLinks]="10"
-              sortMode="multiple" >
-              <p-header >
-                  <span class="spanResults">
-                    <p-multiSelect [options]="columnOptions"  defaultLabel="Add Columns"  [style]="{'display':'table-caption','width':'150px'}" [(ngModel)]="cols"></p-multiSelect>
-                  </span>
-                  <span class="spanResults">&nbsp;&nbsp;
-                      {{filteredResults.length}} Result(s)</span>
-                      <button  type="button" pButton icon="ui-icon-file-download"
-                         iconPos="left"
-                         label="CSV" style="margin-top: 20px;"
-                         (click)='results.exportCSV()'
-                         class="divExpCSV"></button>
-              </p-header>
-              <div class="Container">
-                <template let-resultItem pTemplate="rowexpansion">
-                  <span><b>Description</b> : {{resultItem.description}}</span><br>
-                  <div class="EmptyBox10"></div>
-                  <span><b>Keywords</b> : {{resultItem.keyword.join(', ')}}</span>
-                </template>
-              </div>
-              <p-column styleClass="col-button "  header="Action" [style]="{'width':'110px'}">
-                <template let-resultItem="rowData" pTemplate="body">
-                  <a href="#" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
-                    <button class="summaryPageBackground"  type="button" pButton
-                            icon="ui-icon-open-in-browser"
-                            iconPos="left" title="Open Full Record Page"
-                    ></button>
-                  </a>
-                  <a [(href)]="resultItem.landingPage" target="_blank">
-                    <button type="button" pButton icon="ui-icon-open-in-new"
-                            iconPos="left" class="landingPageBackground" title="Open Landing Page"></button>
-                  </a>
-                </template>
-              </p-column>
-              <p-column field="title"
-                        [sortable]="true" [filter]="true" header="Title" [style]="{'width':'200px'}"
-                        filterMatchMode="contains"></p-column>
-              <p-column field="contactPoint.fn"
-                        [sortable]="true" [filter]="true" header="Contact" [style]="{'width':'150px'}"
-                        filterMatchMode="contains"></p-column>
-              <p-column field="description" [filter]="true" header="Description"
-                        expander="true" [style]="{'width':'220px'}"
-                        filterMatchMode="contains">
-                <template let-col let-resultItem="rowData" pTemplate="body">
-                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
-                </template>
-              </p-column>
-              <p-column field="keyword" [filter]="true"  header="Keywords"  expander="true" [style]="{'width':'200px'}"
-                        filterMatchMode="contains">
-                <template let-col let-resultItem="rowData" pTemplate type="body">
-                  <span class="glimpse-content">{{resultItem[col.field]}}</span>
-                </template>
-              </p-column>
-              <p-column field="modified" filterMatchMode="contains" [style]="{'width':'200px'}"
-                        [sortable]="true" [filter]="true" header="Date Modified"></p-column>
-              <p-column *ngFor="let col of cols" [field]="col.field" [header]="col.header" [style]="{'width':'200px'}"></p-column>
-            </p-dataTable>
-          </div>
-        </div>
-        -->
-      </div>
-    </div>
+   </div>
   </div>
+</div>

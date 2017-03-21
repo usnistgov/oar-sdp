@@ -1150,8 +1150,9 @@ body {
     .layout-container .ultima-menu li a:hover {
       background-color: #e8e8e8; }
     .layout-container .ultima-menu li a span {
-      display: inline-block;
-      vertical-align: middle; }
+      display: inline;
+      vertical-align: middle;
+      word-break: break-all; }
     .layout-container .ultima-menu li a.active-menuitem-routerlink {
       color: #1471AE; }
       .layout-container .ultima-menu li a.active-menuitem-routerlink > i {
