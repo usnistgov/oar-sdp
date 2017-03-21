@@ -78,7 +78,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     suggestedThemes:string[] = [];
     suggestedAuthors:string[] = [];
     ALL:string='All';
-    unspecified:string='unspecified';
+    unspecified:string='Unspecified';
     unspecifiedCount:number = 0;
     filteredKeywords:string[] = [];
     filteredThemes:string[] = [];
@@ -88,6 +88,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     selectedAuthorDropdown: boolean = false;
     items: MenuItem[];
     uniqueComp : string[] = [];
+    uniqueThemes : string[] = [];
     private _routeParamsSubscription: Subscription;
 
 
@@ -129,17 +130,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   collectThemes(searchResults:any[]) {
         let themes :SelectItem[] = [];
         let themesArray:string[] = [];
+        let uniqueThemes:string[] = [];
         let topics:string;
         for (let resultItem of searchResults) {
-            if(typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
+          this.uniqueThemes = [];
+          if(typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
                 for (let topic of resultItem.topic) {
                     topics = _.split(topic.tag, ':')[0];
-                    this.themesAllArray.push(topics);
+                    this.uniqueThemes.push(topics);
                     if(themesArray.indexOf(topics) < 0) {
                         themes.push({label:topics,value:topics});
                         themesArray.push(topics);
                     }
+
                 }
+              this.themesAllArray  =  this.themesAllArray.concat(this.uniqueThemes.filter(this.onlyUnique));
             } else {
               this.unspecifiedCount += 1;
             }
@@ -240,16 +245,23 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let theme of this.themes)
         {
           let count:any;
+
           count = _.countBy(this.themesAllArray, _.partial(_.isEqual, theme.label))['true'];
+          console.log("obj" + JSON.stringify(_.countBy(this.themesAllArray)));
+
           this.themesWithCount.push({label:theme.label + ' (' + count + ')',value:theme.label});
         }
 
-        this.components = this.collectComponents(searchResults);
+        for (let theme of this.themesAllArray)
+        {
+          console.log("theme--" + theme);
+        }
+
+
+      this.components = this.collectComponents(searchResults);
         for (let comp of this.components)
         {
           let count:any;
-          console.log("comp value" + comp.value);
-          console.log("arra - " + this.componentsAllArray[1]);
           count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
           this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
         }
@@ -260,7 +272,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           children: this.themesWithCount
         }];
         this.componentsTree =   [{
-          label: 'Record Components',
+          label: 'Resource Features',
           "expanded" : 'true',
           children: this.componentsWithCount
         }];
@@ -445,7 +457,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
               }
             }
           } else {
-            if (_.includes(selectedThemes, 'unspecified')) {
+            if (_.includes(selectedThemes, 'Unspecified')) {
               filteredResults.push(resultItem);
             }
           }

@@ -3171,7 +3171,7 @@ body .ui-widget-header {
   color: #000000;
   font-size: 1em;
   align: left;
-  border: 1px solid #F6F6F6; }
+  }
   body .ui-widget-header .fa {
     color: #000000; }
 body .ui-state-active, body .ui-state-highlight {
@@ -4581,7 +4581,8 @@ body .ui-orderlist .ui-orderlist-controls {
     display: inline-block; }
 body .ui-paginator {
   background-color: #F6F6F6;
-  padding: 0.625em 1em; }
+  padding: 0.625em 1em;
+  text-align: right;}
   body .ui-paginator > a {
     box-sizing: border-box;
     color: #000000; }
@@ -4712,7 +4713,10 @@ body .ui-paginator {
     vertical-align: middle;
     margin: 0 .375em 0 .375em; }
     body .ui-paginator .ui-paginator-pages a {
-      padding: 0;
+      padding-left: .5em;
+      padding-top: 0;
+      padding-right: .5em;
+      padding-bottom: 0;
       color: #000000;
       min-width: 1.5em;
       min-height: 1.5em;
@@ -4736,7 +4740,7 @@ body .ui-datagrid .ui-panel .ui-panel-titlebar {
   color: #212121;
   border-color: #bdbdbd; }
 body .ui-datalist .ui-datalist-header {
-  padding: 0.625em 1em; }
+   }
 body .ui-datatable .ui-datatable-header,
 body .ui-datatable .ui-datatable-footer {
   padding: 0.625em 1em; }
