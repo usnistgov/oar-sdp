@@ -134,3 +134,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
   color:#1471AE;
   font-size: 20px;
 }
+
+.ui-tree .ui-tree-container {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  padding: .25em;
+word-break: break-all;
+hyphens: auto;}
+
+.ui-tree .ui-treenode-label {
+padding: 0 .25em;
+  vertical-align: middle;
+}

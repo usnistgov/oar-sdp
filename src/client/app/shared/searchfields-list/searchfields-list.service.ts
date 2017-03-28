@@ -24,7 +24,6 @@ export class SearchFieldsListService {
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<string[]> {
-
    return this.http.get(this.RestAPIURL + 'oar-rmm-service/records/fields')
       .map((res: Response) => res.json())
                     .catch(this.handleError);
