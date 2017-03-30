@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LandingPanelComponent } from './landing.component';
 import {Collaspe} from './collapse.directive';
-
+import { MetadataComponent } from './metadata.component';
 import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
   MessagesModule, MultiSelectModule, DataTableModule, DataListModule,MenuModule } from 'primeng/primeng';
 
@@ -11,7 +11,7 @@ import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, T
 @NgModule({
     imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
       DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule],
-    declarations: [LandingPanelComponent,Collaspe],
+    declarations: [LandingPanelComponent,Collaspe,MetadataComponent],
     exports: [LandingPanelComponent],
     providers: []
     

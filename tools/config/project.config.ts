@@ -22,7 +22,7 @@ export class ProjectConfig extends SeedConfig {
 
   constructor() {
     super();
-    this.APP_TITLE = 'NIST Science Data Portal';
+    this.APP_TITLE = '';
 
       this.SYSTEM_CONFIG_DEV.paths['primeng'] =
       `${this.APP_BASE}node_modules/primeng/primeng`;

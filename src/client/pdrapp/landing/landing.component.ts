@@ -8,7 +8,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
-
+import { Config } from '../shared/config/env.config';
+import { HeadbarComponent } from '../shared/index';
 import * as _ from 'lodash';
 
 declare var Ultima: any;
@@ -40,14 +41,18 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     errorMessageArray: string[];
     searchResults: any[] = [];
     searchValue:string;
-    filteredResults:any[] = [];
     keyword:string;
     summaryCandidate: any[];
     private _routeParamsSubscription: Subscription;
     findId: string;
     private leftmenu: MenuItem[];
     private rightmenu: MenuItem[];
-    private files: TreeNode[];
+    private files: TreeNode[] = [];
+    private fileHierarchy : TreeNode;
+    metadata: boolean = false;
+    private rmmApi : string = Config.RMMAPI;
+    private displayIdentifier :string;
+    private dataHierarchy: any[]=[];
 
   /**
    * Creates an instance of the SearchPanel
@@ -63,10 +68,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   onSuccess(searchResults:any[]) {
   
         this.searchResults = searchResults;
-        this.filteredResults = searchResults;
-       // alert("on success :"+this.searchResults[0]);
-       // this.createInventoryHierarachy(this.searchResults);
-
+        this.createDataHierarchy();
     }
 
  sortResults(){
@@ -111,8 +113,15 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       this.leftmenu = [{
             label: 'Overview', icon: "Menu",
             items: [
-                {label: 'References', icon:"Submenu", command: (event)=>{alert("Test References");}},
-                {label: 'Inventory', icon:"Submenu"}
+                {label: 'References', icon:"Submenu", command: (event)=>{alert("Test References");
+                    window.location.href="#reference";
+                   
+                }},
+                {label: 'Inventory', icon:"Submenu", command: (event)=>{alert("Test References");
+                    window.location.href="#inventory";
+                   
+                }
+                }
             ]
         },
         {
@@ -123,14 +132,12 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             ]
         },
         {
-            label: 'Related Resources', icon: "Menu", routerLink:""
-        },
-        {
-            label: 'Metadata',  icon: "Menu",url:""
-            
-        },
-        {
-            label: 'History', icon: "Menu",url:""
+            label: 'Other',  icon: "Menu",
+            items: [
+                {label: 'Related Resources',icon: "Submenu",  url:""},
+                {label: 'Metadata',  icon: "Submenu", command: (event)=>{this.metadata = true;}},
+                {label: 'History', icon: "Submenu",url:""}
+            ]
         }
         ];
     }
@@ -147,7 +154,9 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
                   //alert("Test References"+this.searchResults[0].license);
                 }},
                 {label: 'Download all data', icon: "fa-download"},
-                {label: 'Add All to DataCart', icon: "fa-cart-arrow-down"}
+                {label: 'Add All to DataCart', icon: "fa-cart-arrow-down",command: (event)=>{
+                   alert("Coming soon...");}
+                }
             ]
         },
         {
@@ -162,7 +171,16 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
         },
         {
             label: 'Metrices',  icon: "Menu", items: [
-                {label: 'Similar Resources',  icon: "fa-external-link",url:"http://10.200.222.250:8082/oar-rmm-service/records?searchphrase="},
+                {label: 'Google Analytics',  icon: "fa-external-link",url:""},
+                {label: 'Service Logs',icon: "fa-external-link",command: (event)=>{
+                    alert("Coming soon ...");
+                  }}
+               
+            ]
+        },
+        {
+            label: 'Find',  icon: "Menu", items: [
+                {label: 'Similar Resources',  icon: "fa-external-link",url:this.rmmApi+"?searchphrase="},
                 {label: 'Resources by Authors',icon: "fa-external-link",url:""},
                 {label: 'Data,Sites,Tools', icon: "fa-external-link",url:""}
             ]
@@ -171,7 +189,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             label: 'Export Metadata', icon: "Menu", items: [
                 {label: 'PDF',  icon: "fa-file-pdf-o",url:""},
                 {label: 'POD JSON', icon: "fa-file-o",url:"https://www.nist.gov/sites/default/files/data.json"},
-                {label: 'Extended JSON', icon: "fa-file-o",url:"http://10.200.222.250:8082/oar-rmm-service/records"}
+                {label: 'Extended JSON', icon: "fa-file-o",url:this.rmmApi}
             ]
             
         }
@@ -198,11 +216,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             this.findId = params['id'];
             this.searchbyid(this.findId);
              this.files =[];
-            //this.searchService.readSampleData().then(files => this.files = files);
            
-             this.createTestObj();
-             this.files.push(this.testObj);
-            //this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch,this.summaryPageOpen);
         });
 
         this.updateLeftMenu();
@@ -218,112 +232,41 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       return (Object.keys(obj).length === 0);
     }
 
-   /***Collect some data from searchresults */
 
-
-
-    /****This is all trial code */
-
-   private testObj:TreeNode;
-   private test2obj:TreeNode;
-   createTestObj(){
-     this.test2obj = {
-            "label": "New2Documents",
-            "data": "Documents Folder",
-            "expandedIcon": "fa-folder-open",
-            "collapsedIcon": "fa-folder",
-            "children": [{
-                    "label": "Work",
-                    "data": "Work Folder",
-                    "expandedIcon": "fa-folder-open",
-                    "collapsedIcon": "fa-folder",
-                    "children": [{"label": "Expenses.doc", "icon": "fa-file-word-o", "data": "Expenses Document"}, {"label": "Resume.doc", "icon": "fa-file-word-o", "data": "Resume Document"}]
-                },
-                {
-                    "label": "Home",
-                    "data": "Home Folder",
-                    "expandedIcon": "fa-folder-open",
-                    "collapsedIcon": "fa-folder",
-                    "children": [{"label": "Invoices.txt", "icon": "fa-file-word-o", "data": "Invoices for this month"}]
-                }]
-        };
-     this.testObj = {};
-     this.testObj.label = "New Document Test";
-     this.testObj.data = "Description of data";
-     this.testObj.expandedIcon = "fa-folder-open";
-     this.testObj.collapsedIcon =  "fa-folder";
-     this.testObj.children=[];
-
-     this.testObj.children.push(this.test2obj);
-   }
-
-
-  collectComponents(searchResults:any[]) {
-    let components :TreeNode[] = [];
-    let componentsArray:string[] = [];
-    let resultItemComp:string[] = [];
-    for (let resultItem of searchResults) {
-      if(resultItem.components && resultItem.components !== null && resultItem.components.length > 0) {
-        for (let resultItemComponents of resultItem.components) {
-            let comp = resultItemComponents['@type'][0];
-            let compType = _.split(comp, ':')[1];
-            let compTypeFinal = _.split(compType, ':')[1];
-           
-          
-        }
-      }
-    }
-    return components;
-  }
-
-
- private FileTreeStructure:TreeNode = {};
-
-  ////This is specific for NERDm data
-  createInventoryHierarachy(forCol:string){
-      let inventoryrootList:string[] =[];
-        
-      for (let resultItem of this.searchResults) {
-        if(resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
-          //inventoryrootList = resultItem.inventory[0];
-          //  for(let childCollection of resultItem.inventory[0].childCollections){
-          //   //   this.createTreeStructure(childCollection);
-          //   //  compHierarchy.push(this.createTreeObj(childCollection, childCollection));
-          //   //  this.files.push(this.createTreeObj(childCollection, childCollection));
-          // }
-          for(let inventoryItem of resultItem.inventory){
-            
-            if(inventoryItem.forCollection == "" && inventoryItem.childCollection !== null){
-                this.FileTreeStructure = this.createTreeObj("Data","Root of Data");
-                this.FileTreeStructure.children = [];
-            }else{
-
-                if(inventoryItem.forCollection !== null && inventoryItem.forCollection == forCol && inventoryItem.childCollection == null){
-                    //this.createTreenode from the file from components
-                    return;
-                }
-                //this.createTreeObj(inventoryItem.forCollection,inventoryItem.forCollection)
-                if(inventoryItem.childCollection !== null){
-                    for(let subCollection of inventoryItem.childCollection)
-                    {
-                        this.createInventoryHierarachy(subCollection);
-                    }
-                }
+// Create Files Structure to browse throw files
+ createDataHierarchy(){
+      
+        this.fileHierarchy = this.createTreeObj("Files","Files");
+        this.fileHierarchy.children =[];
+        for(let record of this.searchResults){
+            //console.log(record.dataHierarchy[0]);
+            //this.fileHierarchy.children.push(this.createChildrenTree(record.dataHierarchy[0].children, record.dataHierarchy[0].filepath);
+            for(let fields of record.dataHierarchy){
+                
+                    if( fields.downloadURL != null)
+                    this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
+                     else 
+                      if(fields.children != null)
+                      this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));
+                    
             }
-          }
         }
-      }
-  }
-
-
-  
-
-
-  checkifsubcollection(filepath:string){
-      if(filepath.indexOf("/")>0) return true
-  }
-  checkiffolderExists(foldername:string){
-      return foldername.split("/");
+        this.files.push(this.fileHierarchy);
+     }
+  createChildrenTree(children:any[], filepath:string){
+    let testObj:TreeNode = {};
+    testObj= this.createTreeObj(filepath,filepath);
+    testObj.children=[];
+    //console.log(children);
+    for(let child of children){
+        let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
+         if(child.downloadURL != null){
+              testObj.children.push(this.createFileNode(fname, child.filepath));
+         }else if(child.children != null){
+           testObj.children.push(this.createChildrenTree(child.children,fname));
+         }
+     }
+     return testObj;
   }
 
   createTreeObj(label :string, data:string){
@@ -334,6 +277,13 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      this.testObj.collapsedIcon =  "fa-folder";
      return this.testObj;
   }
+ createFileNode(label :string, data:string){
+     let endFileNode:TreeNode = {};
+     endFileNode.label = label;
+     endFileNode.data = data;
+     endFileNode.icon = "fa-file-o";
+     return endFileNode;
 
+ }
 
 }
