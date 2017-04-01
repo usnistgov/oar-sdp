@@ -1137,6 +1137,7 @@ body {
       display: inline-block;
       vertical-align: middle;
       margin-right: .5em;
+      position: absolute;
       font-size: 1.5em; }
     .layout-container .ultima-menu li a i:last-child {
       float: right;
@@ -1150,9 +1151,11 @@ body {
     .layout-container .ultima-menu li a:hover {
       background-color: #e8e8e8; }
     .layout-container .ultima-menu li a span {
-      display: inline;
+      display: inline-block;
       vertical-align: middle;
-      word-break: break-all; }
+      padding-left: .5em;
+      padding-right: 1em; /* OPTIONAL */
+    }
     .layout-container .ultima-menu li a.active-menuitem-routerlink {
       color: #1471AE; }
       .layout-container .ultima-menu li a.active-menuitem-routerlink > i {

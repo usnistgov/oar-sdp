@@ -45,9 +45,9 @@
                 <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em;">
                   <label style="font-size: 16px;">Filters</label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
                 </div>
-                <div style="border-bottom:1px solid #cccccc;width: 100%">
+                <div style="border-bottom:1px solid #cccccc;">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
-                        [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                        [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','height': '150px','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
                 </div>
                   <div style="border-bottom:1px solid #cccccc;width: 100%">
 
@@ -93,7 +93,13 @@
       <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:1px solid #CCCCCC;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
         <p-header style="border:0px solid #FFFFFF;">
-        <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 20px;"> {{filteredResults.length}} records found </span>
+        <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 20px;"> {{filteredResults.length}} records found</span>
+          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-top: 20px;"><p-dropdown
+            [options]="fields" [(ngModel)]="sortItemKey" (onChange) = "SortByFields()" [scrollHeight]="'400px'"
+            [style]="{'background-color': '#FFFFFF','width':'150px','font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}"
+          ></p-dropdown></span>
+
         </p-header>
         <template let-resultItem pTemplate="item">
           <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
