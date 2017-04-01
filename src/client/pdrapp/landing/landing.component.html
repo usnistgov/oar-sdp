@@ -1,0 +1,136 @@
+ <style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    //antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<div *ngFor="let record of searchResults"> 
+    <div class="ui-g">
+         <div class="ui-g-1"></div>
+         <div class="ui-g-10">
+            <span style="font-family: Arial, Helvetica, sans-serif; color: grey; font-size: 14;" [ngSwitch]="record['@type'][0]">
+                <b *ngSwitchCase="'nrd:SRD'">Standard Reference Data</b>
+                <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
+                <b *ngSwitchCase="'nrdp:PublicDataResource'">Public Data Resource</b>
+                <b *ngSwitchDefault></b>
+            </span>  
+             
+             <br><span class="title" style="text-align: left; vertical-align: middle; ">
+                <h2>{{record.title}}</h2>
+             </span>
+   
+             <div class="" *ngIf="record.authors">
+                <span *ngFor="let author of record.authors"> 
+                    {{ author.fn}},
+                </span>
+                 <i class="fa fa-plus-square-o" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent">...</i>
+            </div>
+          
+                <!--<hr>-->
+                <div [collapse]="!isCollapsedContent" class="card card-block card-header">
+                    <div class="" *ngIf="record.authors">
+                        <span><b>Authors:</b></span>
+                        <div *ngFor="let author of record.authors"> 
+                            <span>{{ author.fn}}</span>,
+                             <span *ngFor="let aff of author.affiliation">
+                                 <br>{{aff.title}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+             <br><!-- Contact point section-->
+             <div class="" *ngIf="record.contactPoint">
+                Contact: <strong> {{record.contactPoint.fn}}</strong>
+                <i class="fa fa-plus-square-o" aria-hidden="true" (click)="closeContent = !closeContent">...</i>
+         <!--<hr>-->
+                <div [collapse]="!closeContent" class="card card-block card-header">
+                     <span class="" *ngIf="record.contactPoint.fn">
+                        <strong> Contact Person:</strong><br>{{record.contactPoint.fn}}
+                    </span><br><strong>Email:</strong>
+                    <span class="" *ngIf="record.contactPoint.hasEmail">
+                        {{record.contactPoint.hasEmail}}
+                    </span>
+                    <div class="" *ngIf="record.contactPoint.address">
+                        
+                        <span><b>Address:</b></span>
+                        <div *ngFor="let address of record.contactPoint.address"> 
+                            {{address}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            Identifier: 
+                <span *ngIf="record.doi" ><i> {{record.doi}}</i></span> 
+                <span  *ngIf="record['@id']"><i>{{record["@id"]}}</i> </span>
+                <br>Discussed in article: 
+                <span *ngIf="record.references">
+                    <small *ngFor="let refs of record.references"> 
+                      <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>, 
+                     </small>
+                </span>
+            <br>
+         </div>
+         <div class="ui-g-1"></div>
+    </div>
+    <div class="ui-g">
+        <div class="ui-g-2" style="overflow-x: scroll;">
+           
+            <p-menu [model]="leftmenu" class="ultima-menu clearfix"></p-menu>    
+            <!--<h4>Files</h4>
+            <p-tree [value]="files"></p-tree>-->
+        </div>
+        <div class="ui-g-8" style="overflow-y: scroll; height:500px;">
+            <!--Metadata -->
+        <div *ngIf="metadata != true ">
+            <br><h3 id="description">Description</h3><br>
+            <div id="recordDescription" class="well" style="background-color: lightblue; text-align: left;">
+                {{ record.description }}
+            </div>  
+            <br>  
+            <strong>Research Topics:</strong> 
+            <span  *ngFor="let topic of record.topic">
+                {{ topic.tag }},
+            </span>
+            <br> <br>
+            <strong>Subject Keywords:</strong> 
+            <span  *ngFor="let keyword of record.keyword">
+                {{ keyword }},
+            </span>
+            <br>
+            <br><h3 id="reference" name="reference">References</h3>
+            This data is discussed in :
+                <span *ngIf="record.references">
+                    <span *ngFor="let refs of record.references"> 
+                      <br> <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>
+                     </span>
+                </span>
+            <br><br><h3 id="inventory" name="inventory">Inventory</h3><br>
+            This resource contains: 
+                <p-tree [value]="files"></p-tree>
+        </div>
+        <div *ngIf="metadata">
+            <metadata-detail [searchResults]="searchResults" ></metadata-detail>
+        </div>
+        </div>
+        <div   class="ui-g-2">
+           
+            <p-menu  [model]="rightmenu"></p-menu>
+            
+        </div>
+    </div>
+</div>
+
+
+
+<!---->

@@ -1,0 +1,53 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+ <div class="topbar clearfix background-black" >
+        <div class="marTop20">
+          <a href="/" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
+          <img class="Fleft" srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
+            </a>
+        </div>
+       
+    </div>
+<div class="layout-wrapper layout-compact">
+
+  <div #layoutContainer class="layout-container"
+       [ngClass]="{'menu-layout-static': !isOverlay(),
+            'menu-layout-overlay': isOverlay(),
+            'layout-menu-overlay-active': overlayMenuActive,
+            'menu-layout-horizontal': isHorizontal(),
+            'layout-menu-static-inactive': staticMenuDesktopInactive,
+            'layout-menu-static-active': staticMenuMobileActive}">
+
+    <router-outlet name="route1"></router-outlet>
+
+    <div class="layout-menu" [ngClass]="{'layout-menu-dark':darkMenu}" (click)="onMenuClick($event)">
+      <div #layoutMenuScroller class="nano">
+        <div class="nano-content menu-scroll-content">
+          <inline-profile *ngIf="profileMode=='inline'&&!isHorizontal()"></inline-profile>
+          <app-menu [reset]="resetMenu"></app-menu>
+        </div>
+      </div>
+    </div>
+
+    <!--<div class="layout-main">
+    </div>-->
+    <router-outlet></router-outlet>
+
+    <sdp-footbar></sdp-footbar>
+
+
+    <div class="layout-mask"></div>
+  </div>
+
+</div>
