@@ -648,13 +648,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let sortItems: SelectItem[] = [];
     //for (let field of fields) {
     console.log("hello" );
+    sortItems.push({label: 'Sort Field', value: ''});
     for (let field of fields) {
       if (_.includes(field.tags,'filterable')) {
         console.log("sort items" + field.label);
         sortItems.push({label: field.label, value: field.name});
       }
     };
-    sortItems = _.sortBy(sortItems, ['label','value']);
+    //sortItems = _.sortBy(sortItems, ['label','value']);
     return sortItems;
   }
 

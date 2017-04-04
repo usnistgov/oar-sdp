@@ -39,7 +39,7 @@
   </div>
   <div *ngIf="searching">
     <div class="ui-g " style="border:1px solid #CCCCCC"  >
-      <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " style="padding: 0px 0px 0px 0px;"  >
+      <div class="ui-g-12 ui-md-6 ui-lg-3 " style="padding: 0px 0px 0px 0px;"  >
             <div class="ui-g" style="padding: 0px;" >
               <div class="ui-g-12" style="padding: 0px;" >
                 <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em;">
@@ -102,11 +102,11 @@
 
         </p-header>
         <template let-resultItem pTemplate="item">
-          <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
+          <div class="ui-g ui-grid-responsive" style="padding:5px;border-bottom:1px solid #D5D5D5;">
             <div class="EmptyBox10"></div>
             <div class="ui-grid-row nowrap">
               <div class="ui-grid-col-12">
-                <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid ui-grid-responsive">
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
                       {{resultItem.title}}</a></b></div>
@@ -126,7 +126,7 @@
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
                       <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Home Page"
-                              type="button"  style="width:70%;font-size: small;background-color: #277E2F"></button>&nbsp;</a>
+                              type="button"  style="font-size: small;background-color: #277E2F"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>

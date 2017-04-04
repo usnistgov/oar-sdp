@@ -40,9 +40,8 @@
         <button style="height: 42px;font-weight: 400;font-style: italic;
           font-size: 18px;" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2" >
-        <button style="height: 42px;font-weight: 400;font-style: italic;
-          font-size: 18px;"  [routerLink] = "['/advanced']" pButton label="Advanced Search" type="submit" ></button>
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding-top: 15px;text-decoration: underline">
+        <a href="#!" [routerLink] = "['/advanced']" > Advanced Search </a>
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-8">
         <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Examples: </b></a>
@@ -72,9 +71,9 @@
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
       <a  href = "#!"  (click)="search('','Information Technology','')" onmouseover="background-color: #000000">
-      <div class="card overview cardDiv"  style="background-color: #ffffff;height: 70px;text-align:center;">
+      <div class="card overview cardDiv"  style="background-color: #ffffff;height: 70px;text-align:center">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small"><b>INFORMATION TECHNOLOGY</b></span>
+          <span class="overview-title" style="color:#1471AE;font-size: small;border: 1px solid white;"><b>INFORMATION TECHNOLOGY</b></span>
         </div>
       </div>
       </a>
