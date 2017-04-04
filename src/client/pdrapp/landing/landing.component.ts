@@ -53,6 +53,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private rmmApi : string = Config.RMMAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
+    
 
   /**
    * Creates an instance of the SearchPanel
@@ -269,13 +270,15 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      return testObj;
   }
 
+
   createTreeObj(label :string, data:string){
-     this.testObj = {};
-     this.testObj.label = label;
-     this.testObj.data = data;
-     this.testObj.expandedIcon = "fa-folder-open";
-     this.testObj.collapsedIcon =  "fa-folder";
-     return this.testObj;
+     let testObj : TreeNode = {}; 
+     testObj = {};
+     testObj.label = label;
+     testObj.data = data;
+     testObj.expandedIcon = "fa-folder-open";
+     testObj.collapsedIcon =  "fa-folder";
+     return testObj;
   }
  createFileNode(label :string, data:string){
      let endFileNode:TreeNode = {};
