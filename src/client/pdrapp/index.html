@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style id="antiClickjack">
+    body {
+      display: none !important;
+    }
+  </style>
+  <script type="text/javascript">
+    if (self === top) {
+      var antiClickjack = document.getElementById("antiClickjack");
+      antiClickjack.parentNode.removeChild(antiClickjack);
+    } else {
+      top.location = self.location;
+    }
+  </script>
+
+  <base href="<%= APP_BASE %>">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>NIST Data Repository</title>
+  <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- inject:css -->
+  <!-- endinject -->
+</head>
+<body>
+  <sdp-app>
+  </sdp-app>
+
+  <script>
+  // Fixes undefined module function in SystemJS bundle
+  function module() {}
+  </script>
+
+  <!-- shims:js -->
+  <!-- endinject -->
+
+  <% if (BUILD_TYPE === 'dev') { %>
+  <script src="<%= APP_BASE %>app/system-config.js"></script>
+  <% } %>
+
+  <!-- libs:js -->
+  <!-- endinject -->
+
+  <!-- inject:js -->
+  <!-- endinject -->
+
+  <% if (BUILD_TYPE === 'dev') { %>
+  <script>
+  System.import('<%= BOOTSTRAP_MODULE %>')
+    .catch(function (e) {
+      console.error(e,
+        'Report this error at https://github.com/mgechev/angular2-seed/issues');
+    });
+  </script>
+  <% } %>
+</body>
+</html>
