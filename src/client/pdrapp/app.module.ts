@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
-import { HomeHeadbarComponent , HeadbarComponent, FootbarComponent } from './shared/index';
+import { HeadbarComponent, FootbarComponent } from './shared/index';
 
 
 import { AboutModule } from './about/about.module';
