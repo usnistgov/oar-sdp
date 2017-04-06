@@ -4739,6 +4739,7 @@ body .ui-datagrid .ui-panel .ui-panel-titlebar {
   color: #212121;
   border-color: #bdbdbd; }
 body .ui-datalist .ui-datalist-header {
+  padding:0px;
    }
 body .ui-datatable .ui-datatable-header,
 body .ui-datatable .ui-datatable-footer {

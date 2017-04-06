@@ -23,25 +23,26 @@
   <div class="ui-g"  style="background-color: #EFEFEF">
     <div class="ui-g-12 ">
       <div class="EmptyBox40"></div>
-      <div class="ui-g-12 ui-md-6 ui-lg-1 ">
+      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2">
-        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
-        ,'font-weight': '400','font-style': 'italic',
-          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
-        </p-dropdown>
-      </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-5">
+      <div class="ui-g-12 ui-md-6 ui-lg-5" style="padding: 0em">
         <input type="text" style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
           font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
                (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)"  />
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-1">
-        <button style="height: 42px;font-weight: 400;font-style: italic;
-          font-size: 18px;" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
+        </p-dropdown>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding-top: 15px;text-decoration: underline">
-        <a href="#!" [routerLink] = "['/advanced']" > Advanced Search </a>
+
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
+        <button style="height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" icon="ui-icon-search" pButton label=" " type="submit" ></button>
+        <a href="#!" [routerLink] = "['/advanced']" style="vertical-align: 18px;text-decoration: underline"> Advanced Search </a>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding-top: 15px;float: left;text-decoration: underline">
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-8">
         <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Examples: </b></a>
@@ -51,7 +52,6 @@
         <a (click)="searchExample('XPDB');" href="#!" style="text-decoration: underline;">XPDB </a>&nbsp;
         <a (click)="searchExample('Interatomic Potentials');" href="#!" style="text-decoration: underline;">Interatomic Potentials </a>&nbsp;
         <a (click)="searchExample('Potentials');" href="#!" style="text-decoration: underline;">Potentials </a>&nbsp;
-        <a (click)="searchExample('Crystallization');" href="#!" style="text-decoration: underline;">Crystallization </a>
       </div>
     </div>
   <div class="ui-g-12">
