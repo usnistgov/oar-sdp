@@ -52,5 +52,5 @@ gulpfile.js.map
 
 # OS X trash files
 .DS_Store
-src/client/app/shared/config/env.config.js
-src/client/app/shared/config/env.config.js.map
+src/client/sdp/shared/config/env.config.js
+src/client/sdp/shared/config/env.config.js.map

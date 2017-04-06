@@ -54,7 +54,7 @@ module.exports = function (config) {
       { pattern: 'dist/dev/assets/**/*', watched: false, included: false, served: true },
 
       'test-config.js',
-      'dist/dev/app/system-config.js',
+      'dist/dev/sdp/system-config.js',
       'test-main.js'
     ],
 

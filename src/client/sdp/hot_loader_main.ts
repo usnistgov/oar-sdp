@@ -3,7 +3,7 @@
 // import { HashLocationStrategy, HashLocationStrategy } from '@angular/common';
 // import { provide } from '@angular/core';
 // import { ROUTER_PROVIDERS } from '@angular/router';
-// import { AppComponent } from './app.component';
+// import { AppComponent } from './sdp.component';
 
 // System.import('//localhost:<%= HOT_LOADER_PORT %>/ng2-hot-loader')
 //   .then(loader => {
