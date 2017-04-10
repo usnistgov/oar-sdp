@@ -20,7 +20,7 @@
       <div class="ui-g-12 ui-md-6 ui-lg-2 ">
       </div>
       <div class="ui-g-12 ui-md-6 ui-lg-5" style="padding: 0em">
-        <input type="text" style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
+        <input type="text" style="width: 99%;background-color: #FFFFFF;height: 37px;font-weight: 400;font-style: italic;
           font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
                (keyup.enter) = "search(searchValue,searchTaxonomyKey)"  />
       </div>
@@ -49,22 +49,32 @@
                 </div>
                 <div style="border-bottom:1px solid #cccccc;">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
-                        [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','height': '150px','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                        [style]="{'width':'auto','font-size': '12px','overflow':'hidden','padding-top': '.5em',
+                        'height': '130px','padding-right': '.5em','padding-bottom': '.5em',
+                        'background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode"
+                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" >
+                </p-tree>
+                  <div style="background-color: #FFFFFF">
+                  <!--<a href="www.google.com" style="background-color: #FFFFFF;padding-left: 45px;">Show More Research Topics</a>-->
+                </div>
                 </div>
                   <div style="border-bottom:1px solid #cccccc;width: 100%">
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
-                          [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                          [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','padding-right': '.5em',
+                          'padding-bottom': '.5em','background-color': '#FFFFFF'}"
+                          [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
+                          (onNodeSelect)="filterResults($event)" ></p-tree>
                 </div>
                 <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em">
                   <label style="font-size: 16px;"><b>Authors and Contributors</b></label>
                 </div>
 
-                <div *ngIf="selectedAuthorDropdown == false" style="background-color:#FFFFFF;padding: 1em;">
+                <div *ngIf="selectedAuthorDropdown == false" style="width: auto;background-color:#FFFFFF;padding: 1em;">
 
                   <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                                   (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                  (onSelect)="filterResults($event,'Author')" >
+                                  (onSelect)="filterResults($event,'Author')" [style]="{'width':'auto'}">
                   </p-autoComplete>
                 </div>
                 <div *ngIf="selectedAuthorDropdown == true">
@@ -92,7 +102,8 @@
 
       <!-- Section 1 -->
       <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:1px solid #CCCCCC;padding: 0px;background-color: #FFFFFF">
-      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
+      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
+                  [style]="{'padding': '.5em .5em .5em .5em'}">
         <p-header style="border:0px solid #FFFFFF;padding: 0px;">
         <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> {{filteredResults.length}} records found</span>
           <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-top: 10px;"><p-dropdown
