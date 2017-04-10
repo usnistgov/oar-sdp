@@ -272,6 +272,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
           this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
         }
+        //this.themesWithCount.push({label:'<a href="www.google.com">click here</a>',value:"<a href='www.google.com'>click here</a>"});
 
         this.themesTree = [{
           label: 'Research Topics',
