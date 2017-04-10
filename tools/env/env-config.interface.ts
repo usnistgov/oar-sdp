@@ -3,4 +3,6 @@
 export interface EnvConfig {
   API?: string;
   ENV?: string;
+  RMMAPI?: string;
+  SDPAPI?: string;
 }
