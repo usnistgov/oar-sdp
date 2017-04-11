@@ -9,7 +9,6 @@ import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import { Config } from '../shared/config/env.config';
-import { HeadbarComponent } from '../shared/index';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';
