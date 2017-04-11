@@ -120,7 +120,7 @@
               <div class="ui-grid-col-12">
                 <div class="ui-grid ui-grid-responsive">
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
+                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString(' http://129.6.153.24:5555/#/landing?id=',resultItem['@id'])" target="_blank">
                       {{resultItem.title}}</a></b></div>
                   </div>
                   <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
@@ -137,8 +137,8 @@
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
-                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Home Page"
-                              type="button"  style="font-size: small;background-color: #277E2F"></button>&nbsp;</a>
+                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Visit Home Page"
+                              type="button" icon="ui-icon-launch" style="font-size: small;background-color: #277E2F"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>

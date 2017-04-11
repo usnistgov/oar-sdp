@@ -7,5 +7,4 @@ const DevConfig: EnvConfig = {
   SDPAPI: 'http://10.200.222.250/'
 };
 
-
 export = DevConfig;
