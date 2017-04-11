@@ -1,0 +1,33 @@
+
+.style-horizontal {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+
+.background-white
+{
+  background-color:#ffffff;
+}
+
+.white
+{
+  color:#ffffff;
+}
+
+.title
+{
+  color:#1471AE;
+  font-size: 20px;
+}
+
+.ui-tree{
+  width: 500px;
+}
+
+.ui-treenode-label{
+  font-style: italic;
+  color: #1471AE;
+}
