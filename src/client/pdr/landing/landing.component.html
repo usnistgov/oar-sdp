@@ -1,8 +1,6 @@
- <style id="antiClickjack">
-  body {
-    display: none !important;
-  }
-</style>
+ <!--<style id="antiClickjack">
+ 
+</style>-->
 <script type="text/javascript">
   if (self === top) {
     var antiClickjack = document.getElementById("antiClickjack");
@@ -85,16 +83,16 @@
     </div>
     <div class="ui-g">
         <div class="ui-g-2" style="overflow-x: scroll;">
-           
-            <p-menu [model]="leftmenu" class="ultima-menu clearfix"></p-menu>    
-            <!--<h4>Files</h4>
-            <p-tree [value]="files"></p-tree>-->
+            <br>
+            <p-menu [model]="leftmenu" ></p-menu>    
         </div>
-        <div class="ui-g-8" style="overflow-y: scroll; height:500px;">
-            <!--Metadata -->
-        <div *ngIf="metadata != true ">
+        <div class="ui-g-8" style="overflow-y: scroll;">
+        
+        <div *ngIf="similarResources"><similar-resources [similarResourcesResults]="similarResourcesResults" [qcriteria]="qcriteria"></similar-resources></div>
+        <!--Metadata -->
+        <div *ngIf="metadata != true && similarResources != true ">
             <br><h3 id="description">Description</h3><br>
-            <div id="recordDescription" class="well" style="background-color: lightblue; text-align: left;">
+            <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
                 {{ record.description }}
             </div>  
             <br>  
@@ -107,6 +105,7 @@
             <span  *ngFor="let keyword of record.keyword">
                 {{ keyword }},
             </span>
+            
             <br>
             <br><h3 id="reference" name="reference">References</h3>
             This data is discussed in :
@@ -119,16 +118,16 @@
             This resource contains: 
                 <p-tree [value]="files"></p-tree>
         </div>
-        <div *ngIf="metadata">
+        <div *ngIf="metadata == true && similarResources != true ">
             <metadata-detail [searchResults]="searchResults" ></metadata-detail>
         </div>
         </div>
         <div   class="ui-g-2">
-           
-            <p-menu  [model]="rightmenu"></p-menu>
-            
+            <br>
+            <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>            
         </div>
     </div>
+   
 </div>
 
 

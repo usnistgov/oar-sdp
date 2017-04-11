@@ -27,15 +27,21 @@ export class SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchById(searchValue:string): Observable<string[]> {
-    //alert(this.rmmApi);
-        searchValue = '@id=' + searchValue;
-        //alert('http://10.200.222.250:8082/oar-rmm-service/records?' + searchValue);
-    //return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records?' + searchValue)
+    searchValue = '@id=' + searchValue;
     return this.http.get(this.rmmApi+'?' + searchValue)
-    //return this.http.get('http://localhost:8082/oar-rmm-service/records?')
     .map((res: Response) => res.json().ResultData)
     .catch((error: any) => Observable.throw(error.json()));
-    
+  }
+
+/**
+ * Returns the results from RMMAPI for any acceptable request params
+ * @param searchValue request params
+ */
+ searchRMMAny(searchValue:string): Observable<string[]> {
+   //alert(this.rmmApi+'?' + searchValue);
+    return this.http.get(this.rmmApi+'?' + searchValue)
+    .map((res: Response) => res.json().ResultData)
+    .catch((error: any) => Observable.throw(error.json()));    
   }
 }
 

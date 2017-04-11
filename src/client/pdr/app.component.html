@@ -11,14 +11,8 @@
     top.location = self.location;
   }
 </script>
- <div class="topbar clearfix background-black" >
-        <div class="marTop20">
-          <a href="/" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
-          <img class="Fleft" srcset="./assets/images/nist_logo_reverse.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
-            </a>
-        </div>
-       
-    </div>
+
+     <pdr-headbar></pdr-headbar>
 <div class="layout-wrapper layout-compact">
 
   <div #layoutContainer class="layout-container"
@@ -39,14 +33,8 @@
         </div>
       </div>
     </div>
-
-    <!--<div class="layout-main">
-    </div>-->
     <router-outlet></router-outlet>
-
-    <sdp-footbar></sdp-footbar>
-
-
+    <pdr-footbar></pdr-footbar>
     <div class="layout-mask"></div>
   </div>
 

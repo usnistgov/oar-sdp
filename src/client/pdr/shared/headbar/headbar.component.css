@@ -1,5 +1,5 @@
-.header__inner {
-    /*background-color: white;*/
+/*.header__inner {
+    
     background: white;
     color: black;
 }
@@ -30,9 +30,23 @@ img {
 .textTopCenter
 {
   color: white;text-align: center;font-size: xx-large;margin-top: 30px;
-}
+}*/
 
 .background-black
 {
   background-color: #000000;
+}
+.header-background{
+    background-color: #333333;
+}
+.header-div{
+  vertical-align: middle;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.header-links{
+   margin-right: 20px;
+   vertical-align: middle;
 }
