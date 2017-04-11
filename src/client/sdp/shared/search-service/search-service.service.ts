@@ -33,7 +33,7 @@ export class SearchService {
       //return this.http.get('http://10.200.222.250:8082/RMMApi/records/advancedsearch?' + searchValue)
       //return this.http.get('http://10.200.222.250:8082/oar-rmm-service/records')
       //return this.http.get('http://localhost:9090/RMMApi/records/advancedsearch?' + searchValue)
-      return this.http.get(this.RestAPIURL + 'oar-rmm-service/records?' + searchValue)
+      return this.http.get(this.RestAPIURL + 'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
         .catch((error: any) => Observable.throw(error.json()));
     } else {
@@ -41,7 +41,7 @@ export class SearchService {
         params.set('searchphrase', searchValue);
         params.set('topic.tag', searchTaxonomyKey);
 
-        return this.http.get(this.RestAPIURL + 'oar-rmm-service/records?',
+        return this.http.get(this.RestAPIURL + 'records?',
         {
             search: params
 

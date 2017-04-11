@@ -317,12 +317,12 @@ Forks of this project demonstrate how to extend and integrate with other librari
 │       │   ├── app.routes.ts
 │       │   ├── home
 │       │   │   ├── home.component.css
-│       │   │   ├── home.component.e2e-spec.ts
+│       │   │   ├── adv_search.component.e2e-spec.ts
 │       │   │   ├── home.component.html
-│       │   │   ├── home.component.spec.ts
-│       │   │   ├── home.component.ts
-│       │   │   ├── home.module.ts
-│       │   │   ├── home.routes.ts
+│       │   │   ├── adv_search.component.spec.ts
+│       │   │   ├── adv_search.component.ts
+│       │   │   ├── adv_search.module.ts
+│       │   │   ├── adv_search.routes.ts
 │       │   │   └── index.ts
 │       │   ├── i18n.providers.ts
 │       │   ├── main-prod.ts

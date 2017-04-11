@@ -5,6 +5,8 @@ import { FaqRoutes } from './faq/index';
 import { ApiRoutes } from './api/index';
 import { CodeRepoRoutes } from './code_repo/index';
 import { SearchRoutes } from './search/index';
+import { AdvSearchRoutes } from './adv_search/index';
+
 
 export const routes: Routes = [
 ...HomeRoutes,
@@ -12,5 +14,6 @@ export const routes: Routes = [
 ...FaqRoutes,
 ...ApiRoutes,
 ...CodeRepoRoutes,
-...SearchRoutes
+...SearchRoutes,
+...AdvSearchRoutes
 ];

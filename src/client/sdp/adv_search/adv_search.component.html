@@ -1,0 +1,91 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
+<div class="ui-g" style="background-color: #153971;color: #FFFFFF">
+  <div class="ui-g-12">
+    <div class="TexAlCenter homeSubTitle">Advanced Search Builder</div>
+    <div class="EmptyBox20"></div>
+  </div>
+</div>
+  <div class="ui-g"  style="background-color: #EFEFEF">
+    <div class="ui-g-12 ui-g-nopad">
+      <div class="EmptyBox40"></div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2">
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
+        </p-dropdown>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-6">
+        <input type="text" style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
+          font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
+               (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)"  />
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
+        <button style="height: 42px;font-weight: 400;font-style: italic;
+          font-size: 20px;" (click)="search(searchValue,searchTaxonomyKey,'yes')" pButton label="Search" type="submit" ></button>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
+      </div>
+    </div>
+
+    <div class="EmptyBox20"></div>
+      <div  class="ui-g-12 ui-g-nopad "  *ngFor='let row of rows; let rowIndex = index'>
+        <div class="ui-g-12 ui-md-6 ui-lg-1">
+        </div>
+        <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-6 ui-lg-1">
+          <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
+        </div>
+        <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-6 ui-lg-1">
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-2">
+          <p-dropdown [options]="fields" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}"  [(ngModel)]="row.column2" (click) = "saveSearch()" [style]="{'width':'100%'}"></p-dropdown>
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-6 ">
+          <input type="text" pInputText style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
+          font-size: 20px;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
+        </div>
+        <div class="ui-g-12 ui-md-6 ui-lg-1 " style="width: 3%;" *ngIf="showDeleteButton == true" >
+          <button type="button" (click)="deleteRow(rowIndex)" pButton icon="ui-icon-remove"></button>
+        </div>
+        <div *ngIf="rowIndex == rows.length -1 " class="ui-g-12 ui-md-6 ui-lg-1">
+          <button type="button" (click)="addRow()" pButton  icon="ui-icon-add"></button>
+        </div>
+      </div>
+    <div class="EmptyBox40"></div>
+  </div>
+
+<p-dialog header="Example Searches" [(visible)]="display">
+  <div class="card">
+    <button (click)="searchExample('&quot;Kinetics database&quot;');" class="button">"Kinetics database" </button><br>
+    <button (click)="searchExample('Gallium');" class="button">Gallium </button><br>
+    <button (click)="searchExample('&quot;SRD 69&quot;');" class="button">"SRD 69" </button><br>
+    <button (click)="searchExample('XPDB');" class="button">XPDB </button><br>
+    <button (click)="searchExample('Interatomic Potentials');" class="button">Interatomic Potentials </button><br>
+    <button (click)="searchExample('Potentials');" class="button">Potentials </button><br>
+    <button (click)="searchExample('Crystallization');" class="button">Crystallization </button><br>
+    <button (click)="searchExample('Infrared spectroscopy');" class="button">Infrared spectroscopy </button><br>
+  </div>
+</p-dialog>
+
+
+
+
+

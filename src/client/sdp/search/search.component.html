@@ -16,54 +16,65 @@
 <div *ngIf="summaryPageOpen != true">
   <div style="padding-left: 5%;padding-right: 5%;padding-bottom: 5%;" >
   <div class="ui-g " style="padding-top: 3%;padding-bottom: 3%" >
-    <div class="ui-g-12 ui-md-6 ui-lg-1 ">
-    </div>
-    <div class="ui-g-12 ui-md-6 ui-lg-2 ">
-      <p-dropdown
-        [options]="taxonomies" [(ngModel)]="searchTaxonomyKey" [scrollHeight]="'400px'"
-        [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '44px'
+    <div class="ui-g-12 ">
+      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-5" style="padding: 0em">
+        <input type="text" style="width: 99%;background-color: #FFFFFF;height: 37px;font-weight: 400;font-style: italic;
+          font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
+               (keyup.enter) = "search(searchValue,searchTaxonomyKey)"  />
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
         ,'font-weight': '400','font-style': 'italic',
-          'font-size': '14px'}"
-      ></p-dropdown>
-    </div>
-    <div class="ui-g-12 ui-md-6 ui-lg-6 ">
-      <input type="text" pInputText style="width: 100%;background-color: #FFFFFF;height: 38px;font-weight: 400;font-style: italic;
-          font-size: 20px;" [(ngModel)]="searchValue" (keyup.enter)="search(searchValue,searchTaxonomyKey)"
-             placeholder="Search..."
-      />
+          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
+        </p-dropdown>
+      </div>
+
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
+        <button style="height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;" (click)="search(searchValue,searchTaxonomyKey)" icon="ui-icon-search" pButton label=" " type="submit" ></button>
+      </div>
     </div>
     <div class="ui-g-12 ui-md-6 ui-lg-1 ">
-      <button style="height: 42px;font-weight: 400;font-style: italic;
-          font-size: 20px;" (click)="search(searchValue,searchTaxonomyKey)" pButton label="Search" type="submit" ></button>
     </div>
   </div>
   <div *ngIf="searching">
-    <div class="ui-g " style="border:1px solid #CCCCCC"  >
-      <div class="ui-g-12 ui-md-6 ui-lg-3 ui-fluid " style="padding: 0px 0px 0px 0px;"  >
+    <div class="ui-g " style="border:2px solid #FFFFFF"  >
+      <div class="ui-g-12 ui-md-6 ui-lg-3 " style="padding: 0px 0px 0px 0px;"  >
             <div class="ui-g" style="padding: 0px;" >
               <div class="ui-g-12" style="padding: 0px;" >
-                <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em;">
+                <div style="border-bottom:1px solid #cccccc;width: 100%;padding: .8em;">
                   <label style="font-size: 16px;">Filters</label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
                 </div>
-                <div style="border-bottom:1px solid #cccccc;width: 100%">
+                <div style="border-bottom:1px solid #cccccc;">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
-                        [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                        [style]="{'width':'auto','font-size': '12px','overflow':'hidden','padding-top': '.5em',
+                        'height': '130px','padding-right': '.5em','padding-bottom': '.5em',
+                        'background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode"
+                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" >
+                </p-tree>
+                  <div style="background-color: #FFFFFF">
+                  <!--<a href="www.google.com" style="background-color: #FFFFFF;padding-left: 45px;">Show More Research Topics</a>-->
+                </div>
                 </div>
                   <div style="border-bottom:1px solid #cccccc;width: 100%">
-
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
-                          [style]="{'padding-top': '.5em','padding-right': '.5em','padding-bottom': '.5em','background-color': '#FFFFFF'}" [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" ></p-tree>
+                          [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','padding-right': '.5em',
+                          'padding-bottom': '.5em','background-color': '#FFFFFF'}"
+                          [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
+                          (onNodeSelect)="filterResults($event)" ></p-tree>
                 </div>
                 <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em">
                   <label style="font-size: 16px;"><b>Authors and Contributors</b></label>
                 </div>
 
-                <div *ngIf="selectedAuthorDropdown == false" style="background-color:#FFFFFF;padding: 1em;">
+                <div *ngIf="selectedAuthorDropdown == false" style="width: auto;background-color:#FFFFFF;padding: 1em;">
 
                   <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                                   (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                  (onSelect)="filterResults($event,'Author')" >
+                                  (onSelect)="filterResults($event,'Author')" [style]="{'width':'auto'}">
                   </p-autoComplete>
                 </div>
                 <div *ngIf="selectedAuthorDropdown == true">
@@ -90,19 +101,26 @@
         </div>
 
       <!-- Section 1 -->
-      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:1px solid #CCCCCC;background-color: #FFFFFF">
-      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5">
-        <p-header style="border:0px solid #FFFFFF;">
-        <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 20px;"> {{filteredResults.length}} records found </span>
+      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:1px solid #CCCCCC;padding: 0px;background-color: #FFFFFF">
+      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
+                  [style]="{'padding': '.5em .5em .5em .5em'}">
+        <p-header style="border:0px solid #FFFFFF;padding: 0px;">
+        <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> {{filteredResults.length}} records found</span>
+          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-top: 10px;"><p-dropdown
+            [options]="fields" [(ngModel)]="sortItemKey" (onChange) = "SortByFields()" [scrollHeight]="'400px'"
+            [style]="{'background-color': '#FFFFFF','width':'150px','font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}"
+          ></p-dropdown></span>
+
         </p-header>
         <template let-resultItem pTemplate="item">
-          <div class="ui-g ui-grid-responsive ui-fluid" style="padding:5px;border-bottom:1px solid #D5D5D5;">
+          <div class="ui-g ui-grid-responsive" style="padding:5px;border-bottom:1px solid #D5D5D5;">
             <div class="EmptyBox10"></div>
             <div class="ui-grid-row nowrap">
               <div class="ui-grid-col-12">
-                <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid ui-grid-responsive">
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString('/#/search/',resultItem.resId)" target="_blank">
+                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString(' http://129.6.153.24:5555/#/landing?id=',resultItem['@id'])" target="_blank">
                       {{resultItem.title}}</a></b></div>
                   </div>
                   <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
@@ -119,8 +137,8 @@
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
-                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Home Page"
-                              type="button"  style="width:70%;font-size: small;background-color: #277E2F"></button>&nbsp;</a>
+                      <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Visit Home Page"
+                              type="button" icon="ui-icon-launch" style="font-size: small;background-color: #277E2F"></button>&nbsp;</a>
                   </div>
                   </div>
                 </div>

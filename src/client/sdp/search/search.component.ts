@@ -52,8 +52,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     componentsTree:any[];
     searchValue:string;
     taxonomies: SelectItem[];
+    sortItems: SelectItem[];
     fields: SelectItem[];
     searchTaxonomyKey: string;
+    sortItemKey:string;
     cols: any[];
     rows: number = 5;
     columnOptions: SelectItem[];
@@ -270,6 +272,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
           this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
         }
+        //this.themesWithCount.push({label:'<a href="www.google.com">click here</a>',value:"<a href='www.google.com'>click here</a>"});
 
         this.themesTree = [{
           label: 'Research Topics',
@@ -630,6 +633,39 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
        window.open(url);
     }
 
+  getSearchFields() {
+    this.searchFieldsListService.get()
+      .subscribe(
+        fields => this.fields = this.toSortItems(fields),
+        error =>  this.errorMessage = <any>error
+      );
+  }
+
+  /**
+   * Advanced Search fields dropdown
+   */
+  toSortItems(fields:any[]) {
+    let items :SelectItem[] = [];
+    let sortItems: SelectItem[] = [];
+    //for (let field of fields) {
+    console.log("hello" );
+    sortItems.push({label: 'Sort Field', value: ''});
+    for (let field of fields) {
+      if (_.includes(field.tags,'filterable')) {
+        console.log("sort items" + field.label);
+        sortItems.push({label: field.label, value: field.name});
+      }
+    };
+    //sortItems = _.sortBy(sortItems, ['label','value']);
+    return sortItems;
+  }
+
+  SortByFields() {
+    this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
+    console.log("inside sort fields" + this.sortItemKey);
+    return this.filteredResults;
+  }
+
 
   /**
      * Get the params OnInit
@@ -707,7 +743,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         ]
       }
     ];
-        this.columnOptions = [];
+    this.getSearchFields();
+    this.columnOptions = [];
         this.cols = [];
 
         this.cols.push({header:'DOI', field:'doi'});
@@ -733,7 +770,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             }
             this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
         });
-    }
+  }
 
     ngOnDestroy() {
           this._routeParamsSubscription.unsubscribe();
