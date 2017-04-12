@@ -50,13 +50,16 @@
                 <div style="border-bottom:1px solid #cccccc;">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
                         [style]="{'width':'auto','font-size': '12px','overflow':'hidden','padding-top': '.5em',
-                        'height': '130px','padding-right': '.5em','padding-bottom': '.5em',
+                        'height': 'auto','padding-right': '.5em','padding-bottom': '.5em',
                         'background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode"
                         (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" >
                 </p-tree>
-                  <div style="background-color: #FFFFFF">
-                  <!--<a href="www.google.com" style="background-color: #FFFFFF;padding-left: 45px;">Show More Research Topics</a>-->
+                  <div style="background-color: #FFFFFF" *ngIf="showMoreResearchTopics == false">
+                  <a href="#!" (click)="showMoreResTopics()" style="background-color: #FFFFFF;padding-left: 45px;">Show More Research Topics</a>
                 </div>
+                  <div style="background-color: #FFFFFF" *ngIf="showMoreResearchTopics == true">
+                    <a href="#!" (click)="showLessResTopics()" style="background-color: #FFFFFF;padding-left: 45px;">Show Less Research Topics</a>
+                  </div>
                 </div>
                   <div style="border-bottom:1px solid #cccccc;width: 100%">
                   <p-tree [value]="componentsTree" selectionMode="checkbox"

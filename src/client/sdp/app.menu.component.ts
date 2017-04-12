@@ -37,9 +37,14 @@ export class AppMenuComponent implements OnInit {
           {label: 'World Trade Center Disaster Investigation Material', url: 'http://wtcdata.nist.gov/'},
         ]
       },
-      {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov'},
-      {label: 'APIs', routerLink: ['/api']},
       {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd'},
+      {
+        label: 'Developer',
+        items: [
+          {label: 'APIs', routerLink: ['/api']},
+          {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov'},
+        ]
+      },
       {
         label: 'About',
         items: [

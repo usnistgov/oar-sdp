@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Config } from '../shared/index';
+
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -9,4 +11,8 @@ import { Component } from '@angular/core';
   templateUrl: 'api.component.html',
   styleUrls: ['api.component.css']
 })
-export class ApiComponent { }
+export class ApiComponent {
+
+  RestAPIURL: string = Config.API;
+
+}
