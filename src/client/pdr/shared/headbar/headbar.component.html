@@ -11,7 +11,7 @@
     top.location = self.location;
   }
 </script>
-
+<!--
 <div [ngClass]="{'layout-wrapper':true,'layout-compact':layoutCompact}">
 
   <div [ngClass]="{'layout-container':true,'menu-layout-static':(layoutMode=='static'||layoutMode=='horizontal'),
@@ -25,5 +25,22 @@
        
     </div>
    
+  </div>
+</div>-->
+<div [ngClass]="{'layout-wrapper':true,'layout-compact':layoutCompact}">
+
+  <div [ngClass]="{'layout-container':true,'menu-layout-static':(layoutMode=='static'||layoutMode=='horizontal'),
+            'menu-layout-overlay':(layoutMode=='overlay'),'menu-layout-horizontal':(layoutMode=='horizontal')}">
+   
+ <div class="topbar clearfix header-background" >
+        <div class="header-div">
+          <a href="/" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
+          <img class="Fleft" srcset="./assets/images/nist-pdr-rev.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
+            </a>
+            <div align="right" class="header-links"><a href="./about" target="_new"><b>About</b></a>
+             | <a target="_new" href=""><b>Search</b></a></div>
+        </div>
+       
+    </div>
   </div>
 </div>
