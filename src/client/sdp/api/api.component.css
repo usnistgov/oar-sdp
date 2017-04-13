@@ -24,3 +24,9 @@ h2 {
 {
   padding: 50px 100px 50px 100px;
 }
+
+
+.cardDiv:hover{
+  color: #1471AE;
+  border:1px solid;
+}

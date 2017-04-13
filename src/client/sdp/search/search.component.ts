@@ -91,6 +91,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     items: MenuItem[];
     uniqueComp : string[] = [];
     uniqueThemes : string[] = [];
+    sortable : any[] = [];
+    showMoreResearchTopics : boolean = false;
     private _routeParamsSubscription: Subscription;
 
 
@@ -245,25 +247,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.themes = this.collectThemes(searchResults);
         this.themesWithCount = [];
         this.componentsWithCount = [];
+
+        for (let theme in (_.countBy(this.themesAllArray))) {
+          this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
+        }
+
         if (this.unspecifiedCount > 0)
         {
-          this.themesWithCount.push({label:this.unspecified + ' (' + this.unspecifiedCount + ')',value:this.unspecified});
+          this.sortable.push(['Unspecified',this.unspecifiedCount]);
         }
-        for (let theme of this.themes)
-        {
-          let count:any;
+        this.sortable.sort(function(a, b) {
+          return b[1] - a[1];
+        });
 
-          count = _.countBy(this.themesAllArray, _.partial(_.isEqual, theme.label))['true'];
-          console.log("obj" + JSON.stringify(_.countBy(this.themesAllArray)));
+        console.log("obj sortable" + JSON.stringify(this.sortable));
 
-          this.themesWithCount.push({label:theme.label + ' (' + count + ')',value:theme.label});
-        }
-
-        for (let theme of this.themesAllArray)
-        {
-          console.log("theme--" + theme);
-        }
-
+      for (var key in this.sortable.slice(0,5)) {
+        this.themesWithCount.push({label:this.sortable[key][0] + ' (' + this.sortable[key][1] + ')',value:this.sortable[key][0]});
+      }
 
       this.components = this.collectComponents(searchResults);
         for (let comp of this.components)
@@ -272,7 +273,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
           this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
         }
-        //this.themesWithCount.push({label:'<a href="www.google.com">click here</a>',value:"<a href='www.google.com'>click here</a>"});
 
         this.themesTree = [{
           label: 'Research Topics',
@@ -306,6 +306,63 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
   }
 
+  showMoreResTopics () {
+    this.themesWithCount = [];
+    this.sortable = [];
+    this.themesTree = [];
+    for (let theme in (_.countBy(this.themesAllArray))) {
+      this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
+    }
+    if (this.unspecifiedCount > 0)
+    {
+      this.sortable.push(['Unspecified',this.unspecifiedCount]);
+    }
+    this.sortable.sort(function(a, b) {
+      return b[1] - a[1];
+    });
+    for (var key in this.sortable) {
+      this.themesWithCount.push({
+        label: this.sortable[key][0] + ' (' + this.sortable[key][1] + ')',
+        value: this.sortable[key][0]
+      });
+    }
+
+    this.themesTree = [{
+      label: 'Research Topics',
+      "expanded" : 'true',
+      children: this.themesWithCount
+    }];
+    this.showMoreResearchTopics = true;
+  }
+
+  showLessResTopics () {
+    this.themesWithCount = [];
+    this.sortable = [];
+    this.themesTree = [];
+    for (let theme in (_.countBy(this.themesAllArray))) {
+      this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
+    }
+    if (this.unspecifiedCount > 0)
+    {
+      this.sortable.push(['Unspecified',this.unspecifiedCount]);
+    }
+    this.sortable.sort(function(a, b) {
+      return b[1] - a[1];
+    });
+    for (var key in this.sortable.slice(0,5)) {
+      this.themesWithCount.push({
+        label: this.sortable[key][0] + ' (' + this.sortable[key][1] + ')',
+        value: this.sortable[key][0]
+      });
+    }
+
+    this.themesTree = [{
+      label: 'Research Topics',
+      "expanded" : 'true',
+      children: this.themesWithCount
+    }];
+    this.showMoreResearchTopics = false;
+  }
   /**
    * call the Search service with parameters
    */
