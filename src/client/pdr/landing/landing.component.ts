@@ -145,7 +145,7 @@ onSuccessAny(searchResults:any[]) {
                      window.open("./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"]));
                 }},
                 {label: 'References', icon:"Submenu", command: (event)=>{
-                    window.location.href="./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"]+"#reference";
+                    window.location.href="./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"])+"#reference";
                 }},
                 {label: 'Inventory', icon:"Submenu", command: (event)=>{
                     window.location.href="#inventory";
