@@ -4,7 +4,7 @@ os: linux
 # 1) Copy all the build files to the sdp html folder
 files:
   - source: dist/prod/
-    destination: /home/ubuntu/oar-docker/portal/sdp/html/
+    destination: /home/ubuntu/oar-docker/apps/sdp/html/
     
 hooks:
  BeforeInstall:
