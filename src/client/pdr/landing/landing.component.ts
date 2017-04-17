@@ -59,8 +59,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      similarResourcesResults: any[]=[];
      qcriteria:string ="";
      selectedFile: TreeNode;
+     isDOI = false;
 
-    
 
   /**
    * Creates an instance of the SearchPanel
@@ -77,6 +77,10 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   
         this.searchResults = searchResults;
         this.createDataHierarchy();
+        //alert(this.searchResults[0].doi);
+        if(this.searchResults[0].doi != "" ){
+            this.isDOI = true;
+        }
     }
 
 
@@ -169,7 +173,6 @@ onSuccessAny(searchResults:any[]) {
             items: [
                 {label: 'Related Resources',icon: "Submenu",  url:""},
                 {label: 'Metadata',  icon: "Submenu", command: (event)=>{this.metadata = true; this.similarResources =false;}},
-                {label: 'History', icon: "Submenu",url:""},
                 {label: 'Open Data Schema', icon: "Submenu",url:"https://project-open-data.cio.gov/v1.1/schema/"}
             ]
         }

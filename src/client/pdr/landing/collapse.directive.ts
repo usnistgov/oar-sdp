@@ -16,6 +16,7 @@ export class Collaspe {
   layoutMode: string = 'horizontal';
   darkMenu: boolean = false;
   profileMode: string = 'inline';
+  
 
   constructor( private el: ElementRef) {
   }
@@ -58,7 +59,7 @@ export class Collaspe {
     hide() {
         this.isCollapse = false;
         this.isCollapsing = true;
-
+      
         this.isExpanded = false;
         this.isCollapsed = true;
         setTimeout(() => {
@@ -74,6 +75,7 @@ export class Collaspe {
 
         this.isExpanded = true;
         this.isCollapsed = false;
+       
         setTimeout(() => {
             this.height = 'auto';
 

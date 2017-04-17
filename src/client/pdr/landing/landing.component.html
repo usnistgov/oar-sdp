@@ -12,7 +12,8 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
+<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">-->
 <div *ngFor="let record of searchResults"> 
     <div class="ui-g" style="padding-bottom: 3%">
          <div class="ui-g-1"></div>
@@ -32,7 +33,7 @@
                 <span *ngFor="let author of record.authors"> 
                     {{ author.fn}},
                 </span>
-                 <i class="fa fa-plus-square-o" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent">...</i>
+                 <i class ="fa fa-plus-square-o"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent">...</i>
             </div>
           
                 <!--<hr>-->
@@ -68,16 +69,27 @@
                     </div>
                 </div>
             </div>
+             
             Identifier: 
-                <span *ngIf="record.doi" ><i> {{record.doi}}</i></span> 
-                <span  *ngIf="record['@id']"><i>{{record["@id"]}}</i> </span>
-                <br>Discussed in article: 
+                <span *ngIf="isDOI" ><i>  {{record.doi}}</i></span> 
+                <span  *ngIf="!isDOI"><i> {{record["@id"]}}</i> </span>
+         <br>Discussed in article: 
                 <span *ngIf="record.references">
                     <small *ngFor="let refs of record.references"> 
                       <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>, 
                      </small>
                 </span>
             <br>
+        <div class="" *ngIf="record.modified">
+                History: <strong> {{record.modified}}</strong>
+                <i class="fa fa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory">...</i>
+         <!--<hr>-->
+                <div [collapse]="!closehistory" class="card card-block card-header">
+                     <span class="" *ngIf="record.modified"> 
+                        <strong> Last modified on:</strong><br>{{record.modified}}
+                    </span>
+                </div>
+            </div>
          </div>
          <div class="ui-g-1"></div>
     </div>
@@ -125,7 +137,14 @@
                 <div class="ui-g-6">
                     <span *ngIf="isFileDetails">Selected Content Metadata:</span>
                     <ul>
-                        <li *ngFor="let key of keys();"><b>{{key}}</b>:{{fileDetails[key]}}</li>
+                        <li *ngFor="let key of keys();">
+                            <span *ngIf=" key == 'downloadURL'">
+                                <b>{{key}}:</b> <a href={{fileDetails[key]}}>{{fileDetails[key]}}</a>
+                            </span> 
+                             <span *ngIf=" key != 'downloadURL'">
+                            <b>{{key}}</b>: {{fileDetails[key]}}
+                             </span>
+                        </li>
                     </ul>
                 </div>
             </div>

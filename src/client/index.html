@@ -28,9 +28,8 @@
   <!-- endinject -->
 </head>
 <body>
-  Test Application PDR!!
-  <!--<sdp-app>
-  </sdp-app>-->
+  <sdp-app>
+  </sdp-app>
 
   <script>
   // Fixes undefined module function in SystemJS bundle
@@ -41,7 +40,7 @@
   <!-- endinject -->
 
   <% if (BUILD_TYPE === 'dev') { %>
-  <script src="<%= APP_BASE %>app/system-config.js"></script>
+  <script src="<%= APP_BASE %>sdp/system-config.js"></script>
   <% } %>
 
   <!-- libs:js -->
