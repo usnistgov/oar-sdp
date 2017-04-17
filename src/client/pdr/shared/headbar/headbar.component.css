@@ -42,8 +42,10 @@ img {
 }
 .header-div{
   /*vertical-align: middle;*/
-    margin-top: 20px;
+     padding-top: 1%;
     /*margin-bottom: 10px;*/
+    padding-bottom: 1%;
+    padding-left: 1%;
     color: white;
 }
 
@@ -51,4 +53,8 @@ img {
    margin-right: 20px;
    margin-top: 20px;
    color:white;
+}
+
+.textlinks{
+    color:white;
 }

@@ -9,12 +9,10 @@ import { HeadbarComponent, FootbarComponent } from './shared/index';
 
 
 import { AboutModule } from './about/about.module';
-
 import { SharedModule } from './shared/shared.module';
 import { LandingModule} from './landing/landing.module';
+
 import { AppMenuComponent,AppSubMenuComponent }  from './app.menu.component';
-import { TopBarComponent }  from './app.topbar.component';
-import { SearchTopBarComponent }  from './app.searchtopbar.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
@@ -22,15 +20,13 @@ import { SearchTopBarComponent }  from './app.searchtopbar.component';
   ],
   declarations: [AppComponent,
     AppMenuComponent,
-    AppSubMenuComponent,
-    TopBarComponent,SearchTopBarComponent],
+    AppSubMenuComponent],
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
   }],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
-
 
 })
 

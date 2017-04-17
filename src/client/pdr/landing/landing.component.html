@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 <div *ngFor="let record of searchResults"> 
-    <div class="ui-g">
+    <div class="ui-g" style="padding-bottom: 3%">
          <div class="ui-g-1"></div>
          <div class="ui-g-10">
             <span style="font-family: Arial, Helvetica, sans-serif; color: grey; font-size: 14;" [ngSwitch]="record['@type'][0]">
@@ -114,9 +114,21 @@
                       <br> <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>
                      </span>
                 </span>
-            <br><br><h3 id="inventory" name="inventory">Inventory</h3><br>
+            <br>
+            <br><h3 id="inventory" name="inventory">Inventory</h3><br>
             This resource contains: 
-                <p-tree [value]="files"></p-tree>
+
+            <div class="ui-g">
+                <div class="ui-g-6">
+                    <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)"></p-tree>
+                </div>
+                <div class="ui-g-6">
+                    <span *ngIf="isFileDetails">Selected Content Metadata:</span>
+                    <ul>
+                        <li *ngFor="let key of keys();"><b>{{key}}</b>:{{fileDetails[key]}}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div *ngIf="metadata == true && similarResources != true ">
             <metadata-detail [searchResults]="searchResults" ></metadata-detail>
