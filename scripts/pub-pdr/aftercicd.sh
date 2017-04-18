@@ -11,5 +11,4 @@ if [[ $(sudo docker images pubpdr -aq) ]]; then
    sudo docker rmi -f $(sudo docker images pubpdr -aq)
 fi
 
-cd /home/ubuntu/oar-docker/apps/pub-pdr/
 sudo docker-compose up -d --build
