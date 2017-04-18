@@ -11,5 +11,4 @@ if [[ $(sudo docker images sdp -aq) ]]; then
    sudo docker rmi -f $(sudo docker images sdp -aq)
 fi
 
-cd /home/ubuntu/oar-docker/apps/sdp/
 sudo docker-compose up -d --build
