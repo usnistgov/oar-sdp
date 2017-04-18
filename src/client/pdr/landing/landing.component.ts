@@ -58,8 +58,9 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      similarResources: boolean = false;
      similarResourcesResults: any[]=[];
      qcriteria:string ="";
+     selectedFile: TreeNode;
+     isDOI = false;
 
-    
 
   /**
    * Creates an instance of the SearchPanel
@@ -76,6 +77,10 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   
         this.searchResults = searchResults;
         this.createDataHierarchy();
+        //alert(this.searchResults[0].doi);
+        if(this.searchResults[0].doi != "" ){
+            this.isDOI = true;
+        }
     }
 
 
@@ -155,8 +160,12 @@ onSuccessAny(searchResults:any[]) {
         {
             label: 'Tools',  icon: "Menu",
             items: [
-                {label: 'Searchpage', icon: "fa-search", url:""},
-                {label: 'API', icon: "fa-file-code-o",url:""}
+                {label: 'Searchpage', icon:"Submenu", command: (event)=>{
+                    window.location.href=encodeURIComponent(this.searchResults[0]["searchpage"]);}
+                },
+                {label: 'API', icon:"Submenu", command: (event)=>{
+                    window.location.href=encodeURIComponent(this.searchResults[0]["api"]);}
+                }
             ]
         },
         {
@@ -164,7 +173,7 @@ onSuccessAny(searchResults:any[]) {
             items: [
                 {label: 'Related Resources',icon: "Submenu",  url:""},
                 {label: 'Metadata',  icon: "Submenu", command: (event)=>{this.metadata = true; this.similarResources =false;}},
-                {label: 'History', icon: "Submenu",url:""}
+                {label: 'Open Data Schema', icon: "Submenu",url:"https://project-open-data.cio.gov/v1.1/schema/"}
             ]
         }
         ];
@@ -268,6 +277,7 @@ onSuccessAny(searchResults:any[]) {
 
         this.updateLeftMenu();
         this.updateRightMenu();
+      
         
     }
 
@@ -300,15 +310,16 @@ onSuccessAny(searchResults:any[]) {
      }
   createChildrenTree(children:any[], filepath:string){
     let testObj:TreeNode = {};
-    testObj= this.createTreeObj(filepath,filepath);
+    testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
     testObj.children=[];
     //console.log(children);
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
+        
          if(child.downloadURL != null){
               testObj.children.push(this.createFileNode(fname, child.filepath));
          }else if(child.children != null){
-           testObj.children.push(this.createChildrenTree(child.children,fname));
+           testObj.children.push(this.createChildrenTree(child.children,child.filepath));
          }
      }
      return testObj;
@@ -327,6 +338,32 @@ onSuccessAny(searchResults:any[]) {
      endFileNode.label = label;
      endFileNode.data = data;
      endFileNode.icon = "fa-file-o";
+     endFileNode.expandedIcon = "fa-folder-open";
+     endFileNode.collapsedIcon =  "fa-folder";
      return endFileNode;
  }
+ fileDetails:string="";
+ isFileDetails: boolean = false;
+ nodeSelect(event) {
+      for(let record of this.searchResults){
+        var test = this.getComponentDetails(record.components,event.node.data);
+        let i =0;
+        this.fileDetails ="";
+        for(let t of test){
+            this.isFileDetails = true;
+            this.fileDetails = t; 
+        }
+     }
+  }
+
+getComponentDetails(data,filepath) {
+  return data.filter(
+      function(data){return data.filepath == filepath }
+  );
+}
+keys() : Array<string> {
+    return Object.keys(this.fileDetails);
+  }
+
+
 }
