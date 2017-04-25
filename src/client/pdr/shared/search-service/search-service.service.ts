@@ -28,7 +28,7 @@ export class SearchService {
    */
   searchById(searchValue:string): Observable<string[]> {
     searchValue = '@id=' + searchValue;
-    return this.http.get(this.rmmApi+'?' + searchValue)
+    return this.http.get(this.rmmApi+'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
     .catch((error: any) => Observable.throw(error.json()));
   }
@@ -39,7 +39,7 @@ export class SearchService {
  */
  searchRMMAny(searchValue:string): Observable<string[]> {
    //alert(this.rmmApi+'?' + searchValue);
-    return this.http.get(this.rmmApi+'?' + searchValue)
+    return this.http.get(this.rmmApi+'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
     .catch((error: any) => Observable.throw(error.json()));    
   }

@@ -52,7 +52,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
     metadata: boolean = false;
-    private rmmApi : string = Config.RMMAPI;
+    private rmmApi : string = Config.RMMAPI+"records";
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
