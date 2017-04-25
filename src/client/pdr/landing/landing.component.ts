@@ -52,7 +52,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
     metadata: boolean = false;
-    private rmmApi : string = Config.RMMAPI+"records";
+    private rmmApi : string = Config.RMMAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -244,7 +244,7 @@ onSuccessAny(searchResults:any[]) {
                 {label: 'PDF',  icon: "fa-file-pdf-o",url:""},
                 {label: 'POD JSON', icon: "fa-file-o", command: (event)=>{ alert("Coming soon ...");}},
                 {label: 'Extended JSON', icon: "fa-file-o",command: (event)=>{
-                        window.open(this.rmmApi+"?@id="+this.searchResults[0]['@id']);
+                        window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
                     }
                 }
             ]            
