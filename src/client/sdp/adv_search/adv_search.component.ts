@@ -23,7 +23,10 @@ export class AdvSearchComponent implements OnInit {
     searchValue:string = '';
     advSearchValue:string[];
     taxonomies: SelectItem[];
-    searchTaxonomyKey: string;
+  suggestedTaxonomyList: string[];
+  suggestedTaxonomies: string[];
+
+  searchTaxonomyKey: string;
     display: boolean = false;
     queryAdvSearch:string= '';
     showAdvancedSearch: boolean = false;
@@ -102,6 +105,40 @@ export class AdvSearchComponent implements OnInit {
           error => this.errorMessage = <any>error
         );
    }
+
+  getTaxonomySuggestions() {
+    this.taxonomyListService.get()
+      .subscribe(
+        taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
+        error => this.errorMessage = <any>error
+      );
+  }
+
+  /**
+   * Filter keywords for suggestive search
+   */
+  filterTaxonomies(event:any) {
+    let suggTaxonomy = event.query;
+    this.suggestedTaxonomyList = [];
+    for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
+      let keyw = this.suggestedTaxonomies[i];
+      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+        this.suggestedTaxonomyList.push(keyw);
+      }
+    }
+  }
+
+
+  /**
+   * Taxonomy items list
+   */
+  toTaxonomySuggestedItems(taxonomies:any[]) {
+    let items: string[] = [];
+    for (let taxonomy of taxonomies) {
+      items.push(taxonomy.label);
+    }
+    return items;
+  }
 
   /**
    * Taxonomy items list

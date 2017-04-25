@@ -8,6 +8,7 @@ import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
+import { Config } from '../shared/config/env.config';
 
 
 declare var Ultima: any;
@@ -29,12 +30,8 @@ declare var jQuery: any;
 
 
 export class SearchPanelComponent implements OnInit, OnDestroy {
-
-
-  layoutCompact: boolean = true;
-
+   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
-
    darkMenu: boolean = false;
    selectedThemesNode: any[];
 
@@ -55,7 +52,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     sortItems: SelectItem[];
     fields: SelectItem[];
     searchTaxonomyKey: string;
+    suggestedTaxonomies: string[];
+    suggestedTaxonomyList: string[];
+    nodeExpanded:boolean = true;
     sortItemKey:string;
+    showMoreLink:boolean = false;
     cols: any[];
     rows: number = 5;
     columnOptions: SelectItem[];
@@ -94,6 +95,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     sortable : any[] = [];
     showMoreResearchTopics : boolean = false;
     private _routeParamsSubscription: Subscription;
+    private PDRAPIURL: string = Config.PDRAPI;
 
 
   /**
@@ -159,7 +161,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
         return themes;
     }
-
 
   /**
    * Populate list of themes from Search results
@@ -247,6 +248,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.themes = this.collectThemes(searchResults);
         this.themesWithCount = [];
         this.componentsWithCount = [];
+        this.sortable = [];
 
         for (let theme in (_.countBy(this.themesAllArray))) {
           this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
@@ -261,26 +263,34 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         });
 
         console.log("obj sortable" + JSON.stringify(this.sortable));
+        console.log("obj sortable length" + (this.sortable.length));
+
 
       for (var key in this.sortable.slice(0,5)) {
-        this.themesWithCount.push({label:this.sortable[key][0] + ' (' + this.sortable[key][1] + ')',value:this.sortable[key][0]});
+        this.themesWithCount.push({label:this.sortable[key][0] + "-" + this.sortable[key][1],value:this.sortable[key][0]});
+      }
+      if (this.sortable.length > 5) {
+        this.showMoreLink = true;
+
+      } else {
+        this.showMoreLink = false;
       }
 
-      this.components = this.collectComponents(searchResults);
+    this.components = this.collectComponents(searchResults);
         for (let comp of this.components)
         {
           let count:any;
           count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
-          this.componentsWithCount.push({label:comp.label + ' (' + count + ')',value:comp.value});
+          this.componentsWithCount.push({label:comp.label + "-" + count,value:comp.value});
         }
 
         this.themesTree = [{
-          label: 'Research Topics',
+          label: 'Research Topics -',
           "expanded" : 'true',
           children: this.themesWithCount
         }];
         this.componentsTree =   [{
-          label: 'Resource Features',
+          label: 'Resource Features -',
           "expanded" : 'true',
           children: this.componentsWithCount
         }];
@@ -322,13 +332,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     });
     for (var key in this.sortable) {
       this.themesWithCount.push({
-        label: this.sortable[key][0] + ' (' + this.sortable[key][1] + ')',
+        label: this.sortable[key][0] + "-" + this.sortable[key][1],
         value: this.sortable[key][0]
       });
     }
 
     this.themesTree = [{
-      label: 'Research Topics',
+      label: 'Research Topics -',
       "expanded" : 'true',
       children: this.themesWithCount
     }];
@@ -351,13 +361,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     });
     for (var key in this.sortable.slice(0,5)) {
       this.themesWithCount.push({
-        label: this.sortable[key][0] + ' (' + this.sortable[key][1] + ')',
+        label: this.sortable[key][0] + "-" + this.sortable[key][1],
         value: this.sortable[key][0]
       });
     }
 
     this.themesTree = [{
-      label: 'Research Topics',
+      label: 'Research Topics -',
       "expanded" : 'true',
       children: this.themesWithCount
     }];
@@ -377,7 +387,57 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             );
   }
 
+  getTaxonomySuggestions() {
+    this.taxonomyListService.get()
+      .subscribe(
+        taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
+        error => this.errorMessage = <any>error
+      );
+  }
+
   /**
+   * Taxonomy items list
+   */
+  toTaxonomySuggestedItems(taxonomies:any[]) {
+    let items: string[] = [];
+    for (let taxonomy of taxonomies) {
+      items.push(taxonomy.label);
+    }
+    return items;
+  }
+
+  /**
+   * Filter keywords for suggestive search
+   */
+  filterTaxonomies(event:any) {
+    let suggTaxonomy = event.query;
+    this.suggestedTaxonomyList = [];
+    for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
+      let keyw = this.suggestedTaxonomies[i];
+      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+        this.suggestedTaxonomyList.push(keyw);
+      }
+    }
+  }
+
+  /**
+   * Filter keywords for suggestive search
+   */
+  nodeExpand(event:any) {
+      this.nodeExpanded = true;
+
+  }
+
+  /**
+   * Filter keywords for suggestive search
+   */
+  nodeCollapse(event:any) {
+    this.nodeExpanded = false;
+
+  }
+
+
+/**
    * Filter keywords for suggestive search
    */
   filterKeywords(event:any) {
@@ -706,7 +766,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let sortItems: SelectItem[] = [];
     //for (let field of fields) {
     console.log("hello" );
-    sortItems.push({label: 'Sort Field', value: ''});
     for (let field of fields) {
       if (_.includes(field.tags,'filterable')) {
         console.log("sort items" + field.label);
@@ -729,78 +788,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
 
-    this.items = [
-      {
-        label: 'File',
-        icon: 'fa-file-o',
-        items: [{
-          label: 'New',
-          icon: 'fa-plus',
-          items: [
-            {label: 'Project'},
-            {label: 'Other'},
-          ]
-        },
-          {label: 'Open'},
-          {label: 'Quit'}
-        ]
-      },
-      {
-        label: 'Edit',
-        icon: 'fa-edit',
-        items: [
-          {label: 'Undo', icon: 'fa-mail-forward'},
-          {label: 'Redo', icon: 'fa-mail-reply'}
-        ]
-      },
-      {
-        label: 'Help',
-        icon: 'fa-question',
-        items: [
-          {
-            label: 'Contents'
-          },
-          {
-            label: 'Search',
-            icon: 'fa-search',
-            items: [
-              {
-                label: 'Text',
-                items: [
-                  {
-                    label: 'Workspace'
-                  }
-                ]
-              },
-              {
-                label: 'File'
-              }
-            ]}
-        ]
-      },
-      {
-        label: 'Actions',
-        icon: 'fa-gear',
-        items: [
-          {
-            label: 'Edit',
-            icon: 'fa-refresh',
-            items: [
-              {label: 'Save', icon: 'fa-save'},
-              {label: 'Update', icon: 'fa-save'},
-            ]
-          },
-          {
-            label: 'Other',
-            icon: 'fa-phone',
-            items: [
-              {label: 'Delete', icon: 'fa-minus'}
-            ]
-          }
-        ]
-      }
-    ];
     this.getSearchFields();
+    this.getTaxonomySuggestions();
     this.columnOptions = [];
         this.cols = [];
 

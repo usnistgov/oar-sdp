@@ -3,6 +3,7 @@
     display: none !important;
   }
 </style>
+
 <script type="text/javascript">
   if (self === top) {
     var antiClickjack = document.getElementById("antiClickjack");
@@ -14,6 +15,7 @@
 
   <div class="ui-g" style="background-color: #153971;color: #FFFFFF">
     <div class="ui-g-12">
+      <div class="EmptyBox20"></div>
       <div class="TexAlCenter homeTitle" > <b> NIST Data Discovery</b></div>
       <div class="EmptyBox20"></div>
       <div class="TexAlCenter homeSubTitle"><i>Explore data, tools, and resources for Science, Engineering, Technology and <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></div>
@@ -25,122 +27,132 @@
       <div class="EmptyBox40"></div>
       <div class="ui-g-12 ui-md-6 ui-lg-2 ">
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-5" style="padding: 0em">
-        <input type="text" style="width: 99%;background-color: #FFFFFF;height: 37px;font-weight: 400;font-style: italic;
-          font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
-               (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)"  />
+      <div class="ui-g-12 ui-md-6 ui-lg-4 well-sm inner-addon left-addon " [hidden]="!textRotate" (click) = "toggleTextRotate()" style="background-color: #FFFFFF;height: 42px;
+      font-weight: 400;font-style: italic;font-size: 16px;padding: .5em;margin-bottom: 0em;border-color: #bdbdbd;border-width: 1px 1px 1px 1px;border-radius: 0px;vertical-align: middle;"  >
+        <i class="glyphicon glyphicon-search"></i><span class="element" style="color: gray;vertical-align:middle;border-color: #bdbdbd;padding-left:40px;border-width: 1px 1px 1px 1px;">
+        Kinetics database |Gallium|"SRD 69" | XPDB | Interatomic Potentials
+      </span>
+     </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-4 inner-addon left-addon element " style="padding: 0em;background-color: #FFFFFF" [hidden]="textRotate" >
+        <i class="glyphicon glyphicon-search"></i><p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
+        'font-style': 'italic','font-size': '20px','border':'0px'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "30" [size] = "50" >
+        </p-autoComplete>
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
-        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
+      <div class="ui-g-12 ui-md-6 ui-lg-3" style="width: 220px;padding: 0em">
+        <p-dropdown [options]="taxonomies"  [style]="{'width':'220px','padding-top': '.5em',
+        'background-color': '#FFFFFF','height': '42px','border-top':'0px','border-bottom':'0px'
         ,'font-weight': '400','font-style': 'italic',
           'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
         </p-dropdown>
       </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-1" style="padding: 0em">
+        <button style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em;margin-top: 10px">
+        &nbsp;&nbsp;<a href="#!" [routerLink] = "['/advanced']" style="text-decoration: underline"> Advanced Search </a>
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-12 ui-md-6 ui-lg-2">
+      </div>
 
-      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
-        <button style="height: 42px;font-weight: 400;font-style: italic;
-          font-size: 18px;" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" icon="ui-icon-search" pButton label=" " type="submit" ></button>
-        <a href="#!" [routerLink] = "['/advanced']" style="vertical-align: 18px;text-decoration: underline"> Advanced Search </a>
-      </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding-top: 15px;float: left;text-decoration: underline">
-      </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-8">
-        <a id= "examples" class = "Blue" href = "#" (click) = "showDialog()" > <b> Examples: </b></a>
-        <a (click)="searchExample('&quot;Kinetics database&quot;');" href="#!" style="text-decoration: underline;">"Kinetics database" </a> &nbsp;
-        <a (click)="searchExample('Gallium');" href="#!" style="text-decoration: underline;">Gallium </a>&nbsp;
-        <a (click)="searchExample('&quot;SRD 69&quot;');" href="#!" style="text-decoration: underline;">"SRD 69" </a>&nbsp;
-        <a (click)="searchExample('XPDB');" href="#!" style="text-decoration: underline;">XPDB </a>&nbsp;
-        <a (click)="searchExample('Interatomic Potentials');" href="#!" style="text-decoration: underline;">Interatomic Potentials </a>&nbsp;
-        <a (click)="searchExample('Potentials');" href="#!" style="text-decoration: underline;">Potentials </a>&nbsp;
+      <div class="ui-g-12 ui-md-6 ui-lg-10">
+        <a id= "examples" style="color: #000;" href = "#" (click) = "showDialog()" > <b> Examples: </b></a>
+        <a (click)="searchExample('&quot;Kinetics database&quot;');" href="#!" style="color: #2fa9e0;text-decoration: underline;">"Kinetics database" </a> &nbsp;
+        <a (click)="searchExample('Gallium');" href="#!" style="color: #2fa9e0;text-decoration: underline;">Gallium </a>&nbsp;
+        <a (click)="searchExample('&quot;SRD 69&quot;');" href="#!" style="color: #2fa9e0;text-decoration: underline;">"SRD 69" </a>&nbsp;
+        <a (click)="searchExample('XPDB');" href="#!" style="color: #2fa9e0;text-decoration: underline;">XPDB </a>&nbsp;
+        <a (click)="searchExample('Interatomic Potentials');" href="#!" style="color: #2fa9e0;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
       </div>
     </div>
   <div class="ui-g-12">
-
     </div>
     <div class="EmptyBox20"></div>
-
   </div>
-<div class="ui-g">
-  <div class="ui-g-12 ui-md-3 ui-lg-5">
+<div class="ui-g" style="background-color: #ffffff;">
+  <div class="ui-g-12 ui-md-3 ui-lg-2">
   </div>
-  <div class="ui-g-12 ui-md-3 ui-lg-3" style="color:#1471AE;font-size: large"> <b>FEATURED RESEARCH</b>
+  <div class="ui-g-12 ui-md-3 ui-lg-8" style="color:#2fa9e0;margin-bottom:1em;border-bottom:1px solid #EEE; font-size: large;float: left;
+  display: block;"> <b>FEATURED RESEARCH</b>
   </div>
 </div>
-  <div class="ui-g">
+<div class="ui-grid" style="background-color: #FFFFFF">
+  <div class="ui-g"  style="background-color: #ffffff;">
     <div class="ui-g-12 ui-md-3 ui-lg-2">
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Information Technology','')" onmouseover="background-color: #000000">
-      <div class="card overview cardDiv"  style="background-color: #ffffff;height: 70px;text-align:center">
+      <a  href = "#!" (click)="search('','Information Technology','')" style="text-decoration: none">
+      <div class="card cardDiv"  style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small;border: 1px solid white;"><b>INFORMATION TECHNOLOGY</b></span>
+          <span class="overview-title" style="color:#FFFFFF;font-size: small;text-align: center;vertical-align: middle;"><b>INFORMATION TECHNOLOGY</b></span>
         </div>
       </div>
       </a>
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Mathematics and Statistics','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;">
+      <a  href = "#!"  (click)="search('','Mathematics and Statistics','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small;text-align: center"><b>MATHEMATICS AND STATISTICS</b></span>
+          <span class="overview-title" style="color:#FFFFFF;font-size: small;text-align: center;vertical-align: middle"><b>MATHEMATICS AND STATISTICS</b></span>
         </div>
       </div>
     </a>
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Manufacturing','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+      <a  href = "#!"  (click)="search('','Manufacturing','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small"><b>MANUFACTURING</b></span>
+          <span class="overview-title" style="color:#FFFFFF;font-size: small;vertical-align: middle"><b>MANUFACTURING</b></span>
         </div>
       </div>
       </a>
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Forensics','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+      <a  href = "#!"  (click)="search('','Forensics','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small"><b>FORENSICS</b></span>
+          <span class="overview-title" style="color:#FFFFFF;font-size: small;vertical-align: middle"><b>FORENSICS</b></span>
         </div>
       </div>
       </a>
     </div>
   </div>
-  <div class="ui-g">
+  <div class="ui-g" style="background-color: #FFFFFF">
     <div class="ui-g-12 ui-md-3 ui-lg-2">
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Materials','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+      <a  href = "#!"  (click)="search('','Materials','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-         <span class="overview-title" style="color:#1471AE;font-size: small"><b>MATERIALS</b></span>
+         <span class="overview-title" style="color:#FFFFFF;font-size: small;vertical-align: middle"><b>MATERIALS</b></span>
         </div>
       </div>
       </a>
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Physics Neutron','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+      <a  href = "#!"  (click)="search('','Physics Neutron','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small"><b>PHYSICS AND NEUTRON</b></span>
+          <span class="overview-title" style="color:#FFFFFF;font-size: small;vertical-align: middle"><b>PHYSICS AND NEUTRON</b></span>
         </div>
       </div>
       </a>
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2">
-      <a  href = "#!"  (click)="search('','Advanced Communications','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center">
+      <a  href = "#!"  (click)="search('','Advanced Communications','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center">
         <div class="overview-content clearfix">
-          <span class="overview-title" style="color:#1471AE;font-size: small"><b>ADVANCED COMMUNICATIONS</b></span>
+          <span class="overview-title" style="color:#FFFFFF;font-size: small;vertical-align: middle"><b>ADVANCED COMMUNICATIONS</b></span>
         </div>
       </div>
       </a>
     </div>
     <div class="ui-g-12 ui-md-3 ui-lg-2" >
-      <a  href = "#!"  (click)="search('','Chemistry','')">
-      <div class="card overview cardDiv" style="background-color: #ffffff;height: 70px;text-align:center;padding-top: 10%">
+      <a  href = "#!"  (click)="search('','Chemistry','')" style="text-decoration: none">
+      <div class="card overview cardDiv" style="height: 70px;text-align:center;">
         <div class="overview-content clearfix">
-         <span class="overview-title" style="color:#1471AE;font-size: small"><b>CHEMISTRY</b></span>
+         <span class="overview-title" style="color:#FFFFFF;font-size: small;vertical-align: middle"><b>CHEMISTRY</b></span>
         </div>
       </div>
       </a>
@@ -150,22 +162,6 @@
     <div class="ui-g-12 ui-md-1">
     </div>
   </div>
-
-
-<p-dialog header="Example Searches" [(visible)]="display">
-  <div class="card">
-    <button (click)="searchExample('&quot;Kinetics database&quot;');" class="button">"Kinetics database" </button><br>
-    <button (click)="searchExample('Gallium');" class="button">Gallium </button><br>
-    <button (click)="searchExample('&quot;SRD 69&quot;');" class="button">"SRD 69" </button><br>
-    <button (click)="searchExample('XPDB');" class="button">XPDB </button><br>
-    <button (click)="searchExample('Interatomic Potentials');" class="button">Interatomic Potentials </button><br>
-    <button (click)="searchExample('Potentials');" class="button">Potentials </button><br>
-    <button (click)="searchExample('Crystallization');" class="button">Crystallization </button><br>
-    <button (click)="searchExample('Infrared spectroscopy');" class="button">Infrared spectroscopy </button><br>
-  </div>
-</p-dialog>
-
-
 
 
 

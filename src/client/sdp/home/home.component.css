@@ -29,6 +29,40 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 }
 
 .cardDiv:hover{
-  color: #1471AE;
-  border:1px solid;
+  background-color: #1471AE;
 }
+
+.cardDiv
+{
+  background-color: #2fa9e0;
+}
+hr {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+  border: .2px solid #666;
+  padding-bottom: -1px;
+  margin: 1.25rem 0;
+}
+
+/* enable absolute positioning */
+.inner-addon {
+  position: relative;
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 25px;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }

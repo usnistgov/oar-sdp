@@ -45,6 +45,9 @@ export class ProjectConfig extends SeedConfig {
       {src: 'lodash/lodash.min.js', inject: 'libs'},
       { src: 'primeng/resources/primeng.min.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
+      {src: 'jquery.auto-text-rotating/jquery.auto-text-rotating.min.js', inject: 'libs'},
+      {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
+
       // inject into css section
 
   ];
@@ -68,7 +71,14 @@ export class ProjectConfig extends SeedConfig {
        name: 'lodash',
     //   // Path to the package's bundle
        path: 'node_modules/lodash/lodash.js'
-     }];
+     },
+       {
+         name: 'auto-text-rotating',
+         //   // Path to the package's bundle
+         path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
+       }
+     ];
+
     //
      this.addPackagesBundles(additionalPackages);
     /*

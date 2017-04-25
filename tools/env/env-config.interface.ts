@@ -5,4 +5,5 @@ export interface EnvConfig {
   ENV?: string;
   RMMAPI?: string;
   SDPAPI?: string;
+  PDRAPI?: string;
 }
