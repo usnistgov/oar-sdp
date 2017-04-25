@@ -5,7 +5,7 @@ import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
 import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
-
+declare var jQuery: any
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -23,10 +23,14 @@ export class HomeComponent implements OnInit {
     searchValue:string = '';
     advSearchValue:string[];
     taxonomies: SelectItem[];
+    suggestedTaxonomies: string[];
+    suggestedTaxonomyList: string[];
     searchTaxonomyKey: string;
     display: boolean = false;
     queryAdvSearch:string='';
     showAdvancedSearch: boolean = false;
+    textRotate: boolean = true;
+
     rows: any[] ;
     fields: SelectItem[];
     ALL:string='All Fields';
@@ -40,6 +44,7 @@ export class HomeComponent implements OnInit {
   constructor(public taxonomyListService: TaxonomyListService, public searchFieldsListService :
     SearchFieldsListService, public searchService:SearchService, private router:Router) {
              this.taxonomies = [];
+             this.suggestedTaxonomies = [];
              this.fields = [];
     }
 
@@ -47,10 +52,15 @@ export class HomeComponent implements OnInit {
    *
    */
   ngOnInit() {
+
+    jQuery('.element').atrotating();
       this.getTaxonomies();
+      this.getTaxonomySuggestions();
       this.getSearchFields();
       this.rows =  [{}];
       this.searchOperators();
+      console.log("taxonomy" + JSON.stringify(this.suggestedTaxonomies));
+
   }
 
   /**
@@ -59,6 +69,16 @@ export class HomeComponent implements OnInit {
    showDialog() {
         this.display = true;
     }
+
+  /**
+   * Set the display to show the examples dialog
+   */
+  toggleTextRotate() {
+    console.log("hello" + this.textRotate);
+    if (this.searchValue == "") {
+      this.textRotate = !this.textRotate;
+    }
+  }
 
   /**
    * Advanced Search builder string
@@ -102,6 +122,25 @@ export class HomeComponent implements OnInit {
         );
    }
 
+  getTaxonomySuggestions() {
+    this.taxonomyListService.get()
+      .subscribe(
+        taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
+        error => this.errorMessage = <any>error
+      );
+  }
+
+  /**
+   * Taxonomy items list
+   */
+  toTaxonomySuggestedItems(taxonomies:any[]) {
+    let items: string[] = [];
+    for (let taxonomy of taxonomies) {
+      items.push(taxonomy.label);
+    }
+    return items;
+  }
+
   /**
    * Taxonomy items list
    */
@@ -113,6 +152,22 @@ export class HomeComponent implements OnInit {
     }
     return items;
   }
+
+
+  /**
+   * Filter keywords for suggestive search
+   */
+  filterTaxonomies(event:any) {
+    let suggTaxonomy = event.query;
+    this.suggestedTaxonomyList = [];
+    for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
+      let keyw = this.suggestedTaxonomies[i];
+      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+        this.suggestedTaxonomyList.push(keyw);
+      }
+    }
+  }
+
 
   /**
    * Get database fields for Advanced Search builder
@@ -181,6 +236,7 @@ export class HomeComponent implements OnInit {
   searchExample (popupValue:string) {
       this.display = false;
       this.searchValue = popupValue;
+      this.textRotate = !this.textRotate;
   }
 
   /**

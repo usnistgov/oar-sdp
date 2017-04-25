@@ -48,7 +48,6 @@
   border-radius: 2px;
   background: #ffffff;
   padding: 1em;
-  margin-bottom: 1em;
   border: 1px solid #FFFFFF;
   box-sizing: border-box; }
   .card.card-w-title {
@@ -841,7 +840,7 @@ body {
   -webkit-font-smoothing: antialiased;
   padding: 0;
   margin: 0;
-  background-color: #f7f7f7;
+  background-color: #;
   height: 100%; }
   body a {
     text-decoration: none; }
@@ -861,7 +860,7 @@ body {
   position: fixed;
   z-index: 100;
   width: 100%;
-  height: 75px;
+  height: 55px;
   background-color: #1471AE;
   -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
@@ -875,8 +874,8 @@ body {
     background-size: 200px 30px; }
   .layout-container .topbar .topbar-left {
     box-sizing: border-box;
-    padding: 20px;
-    height: 75px;
+    padding: 10px;
+    height: 55px;
     width: 250px;
     background-color: #1471AE;
     float: left;
@@ -987,7 +986,7 @@ body {
   position: fixed;
   width: 250px;
   z-index: 99;
-  top: 75px;
+  top: 55px;
   height: 100%;
   background-color: #ffffff;
   -webkit-box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
@@ -1065,7 +1064,8 @@ body {
     .layout-container .layout-menu.layout-menu-dark .profile-menu {
       border-bottom: 1px solid #676767; }
     .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a {
-      color: #ffffff; }
+      color: #ffffff;
+      background-color: #1471AE;}
       .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a i {
         color: #ffffff; }
       .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a:hover {
@@ -1106,7 +1106,6 @@ body {
     -ms-transform: rotate(180deg);
     transform: rotate(180deg); }
 .layout-container .layout-main {
-  padding: 96px 16px 16px 16px;
   -moz-transition: margin-left 0.3s;
   -o-transition: margin-left 0.3s;
   -webkit-transition: margin-left 0.3s;
@@ -1120,8 +1119,8 @@ body {
   .layout-container .ultima-menu li a {
     font-size: 1em;
     display: block;
-    padding: .5em 1em;
-    color: #212121;
+    padding: .5em .5em;
+    color: #ffffff;
     width: 100%;
     box-sizing: border-box;
     -moz-transition: background-color 0.3s;
@@ -1147,15 +1146,15 @@ body {
       -webkit-transition: transform 0.3s;
       transition: transform 0.3s; }
     .layout-container .ultima-menu li a:hover {
-      background-color: #e8e8e8; }
+      background-color: #03A5EF; }
     .layout-container .ultima-menu li a span {
       display: inline-block;
       vertical-align: middle;
       padding-left: .5em;
-      padding-right: 1em; /* OPTIONAL */
+      padding-right: .5em; /* OPTIONAL */
     }
     .layout-container .ultima-menu li a.active-menuitem-routerlink {
-      color: #1471AE; }
+      color: #FFFFFF; }
       .layout-container .ultima-menu li a.active-menuitem-routerlink > i {
         color: #1471AE; }
       .layout-container .ultima-menu li a.active-menuitem-routerlink:hover {
@@ -1164,7 +1163,7 @@ body {
           color: #757575; }
   .layout-container .ultima-menu li.active-menuitem > a {
     color: #1471AE;
-    background-color: #e8e8e8; }
+    background-color: #03A5EF; }
     .layout-container .ultima-menu li.active-menuitem > a i:last-child {
       -webkit-transform: rotate(-180deg);
       -moz-transform: rotate(-180deg);
@@ -1244,7 +1243,7 @@ body {
         -webkit-transition: color 0.3s;
         transition: color 0.3s; }
         .layout-container .topbar-items > li .topbar-icon:hover {
-          color: #e8e8e8; }
+          color: #03A5EF; }
       .layout-container .topbar-items > li.profile-item .profile-image {
         width: 36px;
         height: 36px;
@@ -1256,7 +1255,7 @@ body {
         right: 5px;
         display: none;
         width: 250px;
-        background-color: #ffffff;
+        background-color: #FFFFFF;
         -webkit-box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
         -moz-box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
         box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
@@ -1300,7 +1299,7 @@ body {
     overflow: visible;
     position: fixed;
     width: 100%;
-    top: 75px;
+    top: 55px;
     height: auto;
     background-color: #1471AE;
     -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
@@ -1329,25 +1328,30 @@ body {
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a i {
           color: #ffffff; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a:hover {
-          background-color: #e8e8e8;
-          color: #212121; }
+          background-color: #03A5EF;
+          color: #FFFFFF; }
           .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a:hover i {
             color: #212121; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink {
+          height: 35px;
           color: #9fa8da; }
           .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink > i {
-            color: #9fa8da; }
+            color: #9fa8da;
+            height: 35px; }
           .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink:hover {
-            color: #212121; }
-            .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink:hover i {
-              color: #212121; }
+            color: #212121;
+            height: 35px; }
+          .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink:hover i {
+              color: #212121;
+              height: 35px;
+            }
       .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul {
         z-index: 100;
         position: absolute;
         top: 41px;
         left: 0px;
         width: 250px;
-        background-color: #ffffff;
+        background-color: #1471AE;
         -webkit-box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
         -moz-box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
         box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2); }
@@ -1367,7 +1371,7 @@ body {
             padding-left: 96px; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li.active-menuitem > a {
           color: #1471AE;
-          background-color: #e8e8e8; }
+          background-color: #03A5EF; }
         .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li.active-menuitem > ul {
           display: block; }
       .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a {
@@ -1434,7 +1438,7 @@ body {
     display: block; }
   .layout-container .topbar .topbar-right .topbar-items {
     position: absolute;
-    top: 75px;
+    top: 55px;
     right: 15px;
     width: 275px;
     -webkit-animation-duration: .5s;
@@ -1462,7 +1466,7 @@ body {
         margin-right: 12px;
         font-size: 24px; }
       .layout-container .topbar .topbar-right .topbar-items > li > a:hover {
-        background-color: #e8e8e8; }
+        background-color: #03A5EF; }
       .layout-container .topbar .topbar-right .topbar-items > li > a .topbar-item-name {
         display: inline-block;
         vertical-align: middle; }
@@ -1554,4 +1558,4 @@ body .layout-wrapper.layout-compact {
     .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li span {
       font-size: 14px; }
   .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
-    padding-top: 130px; } }
+    padding-top: 85px; } }
