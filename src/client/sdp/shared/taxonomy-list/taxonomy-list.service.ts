@@ -11,7 +11,7 @@ import { Config } from '../config/env.config';
  */
 @Injectable()
 export class TaxonomyListService {
-  private RestAPIURL: string = Config.API;
+  private RMMAPIURL: string = Config.RMMAPI;
 
   /**
    * Creates a new TaxonomyListService with the injected Http.
@@ -31,7 +31,7 @@ export class TaxonomyListService {
 
     //return this.http.get('http://10.200.222.250:8082/RMMApi/taxanomy?sort=researchCategory,asc')
     //return this.http.get('http://localhost:9090/RMMApi/taxanomy?sort=researchCategory,asc')
-    return this.http.get(this.RestAPIURL + 'taxonomy?level=1')
+    return this.http.get(this.RMMAPIURL + 'taxonomy?level=1')
      .map((res: Response) => res.json())
       .catch(this.handleError);
   }
