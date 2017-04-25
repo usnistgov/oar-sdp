@@ -9898,7 +9898,7 @@ body .ui-datepicker-buttonpane>button {
   color: #fff;
   font-size: 1em;
   height: 1.75em;
-  padding: 0 1em;
+  padding: 0 .3em;
   border: 0 none;
   box-shadow: 0 1px 2.5px 0 rgba(0,0,0,.26),0 1px 5px 0 rgba(0,0,0,.16);
   transition: background-color .3s;
@@ -11507,7 +11507,6 @@ body .ui-orderlist .ui-orderlist-controls .ui-button.ui-button-icon-only {
 body .ui-paginator {
   background-color: #f6f6f6;
   padding: .625em 1em;
-  text-align: right;
 }
 
 body .ui-paginator>a {
@@ -11673,6 +11672,10 @@ body .ui-datagrid .ui-panel .ui-panel-titlebar {
   background-color: #fff;
   color: #212121;
   border-color: #bdbdbd;
+}
+
+body .ui-datalist .ui-datalist-header {
+  padding: 0;
 }
 
 body .ui-datatable .ui-datatable-footer,
@@ -13170,13 +13173,11 @@ body .ui-terminal .ui-terminal-input {
 }
 
 .card {
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);
-  -webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);
-  -moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);
   border-radius: 2px;
   background: #fff;
   padding: 1em;
   margin-bottom: 1em;
+  border: 1px solid #fff;
   box-sizing: border-box;
 }
 
@@ -14688,6 +14689,7 @@ body a {
   display: inline-block;
   vertical-align: middle;
   margin-right: .5em;
+  position: absolute;
   font-size: 1.5em;
 }
 
@@ -14706,9 +14708,10 @@ body a {
 }
 
 .layout-container .ultima-menu li a span {
-  display: inline;
+  display: inline-block;
   vertical-align: middle;
-  word-break: break-all;
+  padding-left: .5em;
+  padding-right: 1em;
 }
 
 .layout-container .ultima-menu li a.active-menuitem-routerlink,
