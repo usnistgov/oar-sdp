@@ -14,89 +14,106 @@
 <p-messages [value]="msgs"></p-messages>
 
 <div *ngIf="summaryPageOpen != true">
-  <div style="padding-left: 5%;padding-right: 5%;padding-bottom: 5%;" >
-  <div class="ui-g " style="padding-top: 3%;padding-bottom: 3%" >
+  <div >
+  <div class="ui-g " style="background-color:#EFEFEF;padding-top: 2%;padding-bottom: 1%" >
     <div class="ui-g-12 ">
       <div class="ui-g-12 ui-md-6 ui-lg-2 ">
       </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-5" style="padding: 0em">
-        <input type="text" style="width: 99%;background-color: #FFFFFF;height: 37px;font-weight: 400;font-style: italic;
-          font-size: 20px;" pInputText [(ngModel)]="searchValue" placeholder="Search..."
-               (keyup.enter) = "search(searchValue,searchTaxonomyKey)"  />
-      </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
-        <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
+        <div class="ui-g-12 ui-md-6 ui-lg-5 inner-addon left-addon " style="padding: 0em;background: #FFFFFF;">
+      <i class="glyphicon glyphicon-search"></i><p-autoComplete [(ngModel)]="searchValue"  [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
+        'font-style': 'italic','font-size': '20px','border':'0px'}" (keyup.enter) = "search(searchValue,searchTaxonomyKey)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "30" [size] = "70" >
+    </p-autoComplete>
+    </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-3" style="width: 220px;padding: 0em;background-color: #FFFFFF;">
+        <p-dropdown [options]="taxonomies" [style]="{'width':'220px','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
         ,'font-weight': '400','font-style': 'italic',
-          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
+          'font-size': '14px','border-top':'0px','border-bottom':'0px'}" [(ngModel)]="searchTaxonomyKey" >
         </p-dropdown>
       </div>
 
       <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
-        <button style="height: 42px;font-weight: 400;font-style: italic;
-          font-size: 18px;" (click)="search(searchValue,searchTaxonomyKey)" icon="ui-icon-search" pButton label=" " type="submit" ></button>
+        <button style="width: 40%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
       </div>
-    </div>
-    <div class="ui-g-12 ui-md-6 ui-lg-1 ">
     </div>
   </div>
   <div *ngIf="searching">
-    <div class="ui-g " style="border:2px solid #FFFFFF"  >
-      <div class="ui-g-12 ui-md-6 ui-lg-3 " style="padding: 0px 0px 0px 0px;"  >
+    <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+      <div class="ui-g-12 ui-md-6 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
             <div class="ui-g" style="padding: 0px;" >
-              <div class="ui-g-12" style="padding: 0px;" >
-                <div style="border-bottom:1px solid #cccccc;width: 100%;padding: .8em;">
-                  <label style="font-size: 16px;">Filters</label> <a href="#!" style="float: right;padding-right: 2em;" (click)="clearFilters()" ><u>Clear All</u></a>
+              <div class="ui-g-12" style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+                <div style="background-color: #03A9F4;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
+                  <label style="font-size: 16px;background-color: #03A9F4;color: #FFFFFF;">Filter </label>
+                  <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
+                    <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
+                  </i>Clear All</a>
                 </div>
-                <div style="border-bottom:1px solid #cccccc;">
+                <div style="border-bottom:.5px solid #cccccc;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
                 <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
-                        [style]="{'width':'auto','font-size': '12px','overflow':'hidden','padding-top': '.5em',
-                        'height': 'auto','padding-right': '.5em','padding-bottom': '.5em',
-                        'background-color': '#FFFFFF'}" [(selection)]="selectedThemesNode"
-                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" >
+                        [style]="{'width':'100%','font-size': '12px','overflow':'hidden','padding-top': '.5em',
+                        'height': 'auto','padding-bottom': '.5em',
+                        'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
+                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
+                  <template let-node  pTemplate="default">
+                    <span> {{node.label.split("-")[0]}}&nbsp;</span>
+
+                    <span class="badge" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
+                  </template>
                 </p-tree>
-                  <div style="background-color: #FFFFFF" *ngIf="showMoreResearchTopics == false">
-                  <a href="#!" (click)="showMoreResTopics()" style="background-color: #FFFFFF;padding-left: 45px;">Show More Research Topics</a>
+                  <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
+                  <a href="#!" (click)="showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
                 </div>
-                  <div style="background-color: #FFFFFF" *ngIf="showMoreResearchTopics == true">
-                    <a href="#!" (click)="showLessResTopics()" style="background-color: #FFFFFF;padding-left: 45px;">Show Less Research Topics</a>
+                  <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
+                    <a href="#!" (click)="showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
                   </div>
-                </div>
-                  <div style="border-bottom:1px solid #cccccc;width: 100%">
+              </div>
+                  <div style="border-bottom:.5px solid #cccccc;width: 100%;'box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)'">
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
-                          [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','padding-right': '.5em',
-                          'padding-bottom': '.5em','background-color': '#FFFFFF'}"
+                          [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)','padding-right': '.5em',
+                          'padding-bottom': '.5em','background-color': '#F8F9F9'}"
                           [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
-                          (onNodeSelect)="filterResults($event)" ></p-tree>
-                </div>
-                <div style="border-bottom:1px solid #cccccc;width: 100%;padding: 1em">
-                  <label style="font-size: 16px;"><b>Authors and Contributors</b></label>
-                </div>
+                          (onNodeSelect)="filterResults($event)" >
+                    <template let-node  pTemplate="default">
+                      <span> {{node.label.split("-")[0]}}&nbsp;</span>
+                      <span class="badge" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
+                    </template>
 
-                <div *ngIf="selectedAuthorDropdown == false" style="width: auto;background-color:#FFFFFF;padding: 1em;">
-
+                  </p-tree>
+                </div>
+                <div style="background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);width: 100%;padding-left: 1em;padding-top: 1em">
+                  <label style="font-size: 14px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"><b>Authors and Contributors</b></label>
+                </div>
+                <div *ngIf="selectedAuthorDropdown == false" style="padding-left:.5em;padding-bottom: 3px;border-bottom:.5px solid #cccccc;
+                width: 100%;background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 1em">
                   <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                                   (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                  (onSelect)="filterResults($event,'Author')" [style]="{'width':'auto'}">
+                                  (onSelect)="filterResults($event,'Author')"
+                                  [inputStyle]="{'width':'100%','background-color': '#FFFFFF'
+        ,'font-weight': '400','font-style': 'italic','height': '25px',
+          'font-size': '14px'}"
+                  >
                   </p-autoComplete>
                 </div>
+
                 <div *ngIf="selectedAuthorDropdown == true">
                   <span>{{selectedAuthor}}</span>
                   <i style="vertical-align: middle" (click)="clearAuthorFilter()" class="material-icons"> clear
                   </i>
                 </div>
               </div>
-              <div class="ui-g-12" style="padding: 0px;">
-                <div style="border-bottom:1px solid #cccccc;border-top:1px solid #cccccc;width: 100%;padding: 1em;">
-                  <label style="font-size: 16px;"><b>Keyword</b></label>
+              <div class="ui-g-10" style="padding: 0px;" >
+                <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+                  <label style="font-size: 14px;"><b>Keyword</b></label>
                 </div>
-                <div style="padding: 1em;background-color:#FFFFFF">
+                <div style="background-color: #F8F9F9;padding-left:.7em;padding-right:.7em;">
                 <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
                                 (completeMethod)="filterKeywords($event)"
-                                [multiple]="true" [size]="30"
+                                [multiple] = "true"
                                 (onSelect)="filterResults($event)"
                                 (onUnselect)="filterResults($event)"
-                                [minLength]="1" [maxlength] = "30" >
+                                [minLength]="1" [maxlength] = "30" [size]="100"  [style]="{'width':'100%','border':'0px',
+                                'background-color': '#FFFFFF','font-weight': '400','font-style': 'italic','font-size': '14px'}">
                 </p-autoComplete>
                 </div>
               </div>
@@ -104,37 +121,36 @@
         </div>
 
       <!-- Section 1 -->
-      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="border-left:1px solid #CCCCCC;padding: 0px;background-color: #FFFFFF">
+      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
-                  [style]="{'padding': '.5em .5em .5em .5em'}">
-        <p-header style="border:0px solid #FFFFFF;padding: 0px;">
-        <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> {{filteredResults.length}} records found</span>
-          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-top: 10px;"><p-dropdown
-            [options]="fields" [(ngModel)]="sortItemKey" (onChange) = "SortByFields()" [scrollHeight]="'400px'"
-            [style]="{'background-color': '#FFFFFF','width':'150px','font-weight': '400','font-style': 'italic',
+                  [style]="{'padding-right': '.5em'}">
+        <p-header style="background-color:#FFFFFF;width:100%;border:0px solid #FFFFFF;padding: 0px;">
+        <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
+          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-right:10px;padding-top: 10px;"><p-dropdown
+            [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"  [style]="{'width':'200px','padding-top': '.2em','background-color': '#FFFFFF','height': '28px'
+        ,'font-weight': '400','font-style': 'italic',
           'font-size': '14px'}"
-          ></p-dropdown></span>
-
+          >
+          </p-dropdown>
+          </span>
         </p-header>
         <template let-resultItem pTemplate="item">
-          <div class="ui-g ui-grid-responsive" style="padding:5px;border-bottom:1px solid #D5D5D5;">
-            <div class="EmptyBox10"></div>
+          <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:1px solid #D5D5D5;">
             <div class="ui-grid-row nowrap">
               <div class="ui-grid-col-12">
-                <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid ui-grid-responsive" style="text-align: left;">
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString(' http://129.6.153.24:5555/#/landing?id=',resultItem['@id'])" target="_blank">
+                    <div class="ui-grid-col-12" ><b><a href="#" class="title" (click)="encodeString(PDRAPIURL + '#/landing?id=',resultItem['@id'])" target="_blank">
                       {{resultItem.title}}</a></b></div>
                   </div>
                   <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-1"><i>Keywords: </i></div>
-                    <div class="ui-grid-col-11"><i>
-                      <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
-                      </i></div>
+                    <div class="ui-grid-col-12"><b>Keywords: </b> <i style="color: gray;"> <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
+                    </i>
+                  </div>
                   </div>
                   <div class="ui-grid-row" *ngIf="resultItem.doi !=null">
-                    <div class="ui-grid-col-1">DOI: </div>
+                    <div class="ui-grid-col-1"><b>DOI: </b> </div>
                     <div class="ui-grid-col-11" style="color:#1471AE;">{{resultItem.doi}}</div>
                   </div>
                   <div class="ui-grid-row">

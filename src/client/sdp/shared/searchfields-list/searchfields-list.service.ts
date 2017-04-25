@@ -10,7 +10,7 @@ import { Config } from '../config/env.config';
  */
 @Injectable()
 export class SearchFieldsListService {
-  private RestAPIURL: string = Config.API;
+  private RMMAPIURL: string = Config.RMMAPI;
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -24,7 +24,7 @@ export class SearchFieldsListService {
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<string[]> {
-   return this.http.get(this.RestAPIURL + 'records/fields')
+   return this.http.get(this.RMMAPIURL + 'records/fields')
       .map((res: Response) => res.json())
                     .catch(this.handleError);
   }

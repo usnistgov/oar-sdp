@@ -21,7 +21,7 @@ export class AppMenuComponent implements OnInit {
 
   ngOnInit() {
     this.model = [
-      {label: '', icon: 'home', routerLink: ['/']},
+      {label: ' ', icon: 'home', routerLink: ['/']},
       {
         label: 'Key Datasets',
         items: [
@@ -75,7 +75,7 @@ export class AppMenuComponent implements OnInit {
                 *ngIf="!child.routerLink" [attr.tabindex]="!visible ? '-1' : null">
                     <i class="material-icons">{{child.icon}}</i>
                     <span>{{child.label}}</span>
-                    <i class="material-icons" *ngIf="child.items">keyboard_arrow_down</i>
+                    <i class="material-icons" *ngIf="child.items">arrow_drop_down</i>
                 </a>
 
                 <a (click)="itemClick($event,child,i)" class="ripplelink" *ngIf="child.routerLink"
@@ -83,7 +83,7 @@ export class AppMenuComponent implements OnInit {
                     [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null">
                     <i class="material-icons">{{child.icon}}</i>
                     <span>{{child.label}}</span>
-                    <i class="material-icons" *ngIf="child.items">keyboard_arrow_down</i>
+                    <i class="material-icons" *ngIf="child.items">arrow_drop_down</i>
                 </a>
                 <ul app-submenu [item]="child" *ngIf="child.items" [@children]="isActive(i) ? 'visible' : 'hidden'" 
                 [visible]="isActive(i)" [reset]="reset"></ul>

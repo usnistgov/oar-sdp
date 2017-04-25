@@ -28,6 +28,9 @@
   text-overflow: ellipsis;
 }
 
+.badge {
+  background-color: gray;
+}
 #search-page{
     padding-bottom:100px;
 }
@@ -132,7 +135,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 .title
 {
   color:#1471AE;
-  font-size: 20px;
+  font-size: 15px;
 }
 
 .ui-tree .ui-tree-container {
@@ -147,3 +150,37 @@ hyphens: auto;}
 padding: 0 .25em;
   vertical-align: middle;
 }
+
+
+/* enable absolute positioning */
+.inner-addon {
+  position: relative;
+}
+
+.glyphicon
+{
+  color: #1471AE;
+}
+
+  .custWhite {
+  color: #FFFFFF;
+  height:42px;
+  background-color: #FFFFFF;
+  margin-top: 0;
+  margin-left: 0; }
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 25px;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input p-autoComplete { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
