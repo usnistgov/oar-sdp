@@ -6,7 +6,6 @@
     background-image: linear-gradient(to right, #ccc, #333, #ccc);
 }
 
-
 .background-white
 {
   background-color:#ffffff;
@@ -23,11 +22,24 @@
   font-size: 20px;
 }
 
-.ui-tree{
-  width: 500px;
-}
-
-.ui-treenode-label{
+:host /deep/ .ui-treenode-label{
   font-style: italic;
   color: #1471AE;
 }
+
+
+:host /deep/ .ui-menuitem{
+  font-style: italic;
+
+}
+
+/*:host /deep/ .ui-menu{
+  background-color: #004e8e;
+}*/
+
+:host /deep/ .rightMenuStyle >.ui-menu {
+  font-style: italic;
+  
+  background-color: #e1dcdc;
+}
+

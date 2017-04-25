@@ -9,8 +9,10 @@ import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import { Config } from '../shared/config/env.config';
-import { HeadbarComponent } from '../shared/index';
 import * as _ from 'lodash';
+import { CommonModule } from '@angular/common';  
+import { BrowserModule } from '@angular/platform-browser';
+
 
 declare var Ultima: any;
 declare var jQuery: any;
@@ -53,7 +55,12 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private rmmApi : string = Config.RMMAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
-    
+     similarResources: boolean = false;
+     similarResourcesResults: any[]=[];
+     qcriteria:string ="";
+     selectedFile: TreeNode;
+     isDOI = false;
+
 
   /**
    * Creates an instance of the SearchPanel
@@ -70,11 +77,13 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   
         this.searchResults = searchResults;
         this.createDataHierarchy();
+        //alert(this.searchResults[0].doi);
+        if(this.searchResults[0].doi != "" ){
+            this.isDOI = true;
+        }
     }
 
- sortResults(){
 
- }
 
   /**
    * If search is unsuccessful push the error message
@@ -96,6 +105,28 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             error => that.onError(error)
             );
   }
+
+
+onSuccessAny(searchResults:any[]) {
+        this.similarResourcesResults = searchResults; }
+  /**
+   * If search is unsuccessful push the error message
+   */
+  onErrorAny(error:any[]) {
+        this.similarResourcesResults = [];
+        this.exception = (<any>error).ex;
+        this.errorMsg = (<any>error).message;
+        this.status = (<any>error).httpStatus;
+        this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
+  }
+    searchRMMAny(anyparam:string){
+        let that = this;
+        return this.searchService.searchRMMAny(anyparam)
+            .subscribe(
+            similarResourcesResults => that.onSuccessAny(similarResourcesResults),
+            error => that.onErrorAny(error)
+            );
+    }
   
     encodeString(url:string,param:string) {
       var urlString = url + encodeURIComponent(param);
@@ -112,32 +143,37 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     updateLeftMenu(){
         
       this.leftmenu = [{
-            label: 'Overview', icon: "Menu",
+            label: 'Overview', icon: "Menu",command: (event)=>{
+                    window.location.href="#";},
             items: [
-                {label: 'References', icon:"Submenu", command: (event)=>{alert("Test References");
-                    window.location.href="#reference";
-                   
+                {label: 'Record', icon:"Submenu", command: (event)=>{
+                     window.open("./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"]));
                 }},
-                {label: 'Inventory', icon:"Submenu", command: (event)=>{alert("Test References");
+                {label: 'References', icon:"Submenu", command: (event)=>{
+                    window.location.href="./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"])+"#reference";
+                }},
+                {label: 'Inventory', icon:"Submenu", command: (event)=>{
                     window.location.href="#inventory";
-                   
-                }
-                }
+                }}
             ]
         },
         {
             label: 'Tools',  icon: "Menu",
             items: [
-                {label: 'Searchpage', icon: "fa-search", url:""},
-                {label: 'API', icon: "fa-file-code-o",url:""}
+                {label: 'Searchpage', icon:"Submenu", command: (event)=>{
+                    window.location.href=encodeURIComponent(this.searchResults[0]["searchpage"]);}
+                },
+                {label: 'API', icon:"Submenu", command: (event)=>{
+                    window.location.href=encodeURIComponent(this.searchResults[0]["api"]);}
+                }
             ]
         },
         {
             label: 'Other',  icon: "Menu",
             items: [
                 {label: 'Related Resources',icon: "Submenu",  url:""},
-                {label: 'Metadata',  icon: "Submenu", command: (event)=>{this.metadata = true;}},
-                {label: 'History', icon: "Submenu",url:""}
+                {label: 'Metadata',  icon: "Submenu", command: (event)=>{this.metadata = true; this.similarResources =false;}},
+                {label: 'Open Data Schema', icon: "Submenu",url:"https://project-open-data.cio.gov/v1.1/schema/"}
             ]
         }
         ];
@@ -148,7 +184,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
  */
     updateRightMenu(){
       this.rightmenu = [{
-            label: 'Access', icon: "Menu",
+            label: 'Access', 
             items: [
                 {label: 'Visit Home Page',  icon: "fa-external-link",command: (event)=>{
                     window.open(this.searchResults[0].landingPage);
@@ -161,7 +197,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             ]
         },
         {
-            label: 'Use', icon: "Menu",
+            label: 'Use', 
             items: [
                 {label: 'Cite this resource',  icon: "fa-angle-double-right",url:""},
                 {label: 'Access Details', icon: "fa-angle-double-right",url:""},
@@ -171,28 +207,47 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             ]
         },
         {
-            label: 'Metrices',  icon: "Menu", items: [
+            label: 'Metrices',   items: [
                 {label: 'Google Analytics',  icon: "fa-external-link",url:""},
                 {label: 'Service Logs',icon: "fa-external-link",command: (event)=>{
                     alert("Coming soon ...");
-                  }}
-               
+                  }}              
             ]
         },
         {
-            label: 'Find',  icon: "Menu", items: [
-                {label: 'Similar Resources',  icon: "fa-external-link",url:this.rmmApi+"?searchphrase="},
-                {label: 'Resources by Authors',icon: "fa-external-link",url:""},
+            label: 'Find',   items: [
+                {label: 'Similar Resources',  icon: "fa-external-link",
+                        command: (event)=>{
+                             this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+                             this.searchRMMAny('keyword='+this.searchResults[0].keyword+"&include=title,@id");
+                           });
+                           this.qcriteria = "Similar Resources By Keyword";
+                            this.similarResources = true;
+                            this.metadata = false;
+                        //window.open(this.rmmApi+"?keyword="+this.searchResults[0].keyword);
+                  }},
+                {label: 'Resources by Authors',icon: "fa-external-link",command: (event)=>{
+                             this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+                             let authlist = "";
+                             for(let auth of this.searchResults[0].authors)
+                                authlist = authlist+auth.familyName+",";
+                             this.searchRMMAny('authors.familyName='+authlist+"&include=title,@id");
+                           });
+                        this.qcriteria = "Similar Resources By Author";   
+                        this.similarResources = true;
+                        this.metadata = false;}},
                 {label: 'Data,Sites,Tools', icon: "fa-external-link",url:""}
             ]
         },
         {
             label: 'Export Metadata', icon: "Menu", items: [
                 {label: 'PDF',  icon: "fa-file-pdf-o",url:""},
-                {label: 'POD JSON', icon: "fa-file-o",url:"https://www.nist.gov/sites/default/files/data.json"},
-                {label: 'Extended JSON', icon: "fa-file-o",url:this.rmmApi}
-            ]
-            
+                {label: 'POD JSON', icon: "fa-file-o", command: (event)=>{ alert("Coming soon ...");}},
+                {label: 'Extended JSON', icon: "fa-file-o",command: (event)=>{
+                        window.open(this.rmmApi+"?@id="+this.searchResults[0]['@id']);
+                    }
+                }
+            ]            
         }
         ];
     }
@@ -222,6 +277,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
 
         this.updateLeftMenu();
         this.updateRightMenu();
+      
         
     }
 
@@ -232,15 +288,13 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     isEmptyObject(obj) {
       return (Object.keys(obj).length === 0);
     }
-
-
 // Create Files Structure to browse throw files
  createDataHierarchy(){
       
         this.fileHierarchy = this.createTreeObj("Files","Files");
         this.fileHierarchy.children =[];
         for(let record of this.searchResults){
-            //console.log(record.dataHierarchy[0]);
+            console.log(record);
             //this.fileHierarchy.children.push(this.createChildrenTree(record.dataHierarchy[0].children, record.dataHierarchy[0].filepath);
             for(let fields of record.dataHierarchy){
                 
@@ -256,21 +310,20 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      }
   createChildrenTree(children:any[], filepath:string){
     let testObj:TreeNode = {};
-    testObj= this.createTreeObj(filepath,filepath);
+    testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
     testObj.children=[];
     //console.log(children);
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
+        
          if(child.downloadURL != null){
               testObj.children.push(this.createFileNode(fname, child.filepath));
          }else if(child.children != null){
-           testObj.children.push(this.createChildrenTree(child.children,fname));
+           testObj.children.push(this.createChildrenTree(child.children,child.filepath));
          }
      }
      return testObj;
   }
-
-
   createTreeObj(label :string, data:string){
      let testObj : TreeNode = {}; 
      testObj = {};
@@ -285,8 +338,32 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      endFileNode.label = label;
      endFileNode.data = data;
      endFileNode.icon = "fa-file-o";
+     endFileNode.expandedIcon = "fa-folder-open";
+     endFileNode.collapsedIcon =  "fa-folder";
      return endFileNode;
-
  }
+ fileDetails:string="";
+ isFileDetails: boolean = false;
+ nodeSelect(event) {
+      for(let record of this.searchResults){
+        var test = this.getComponentDetails(record.components,event.node.data);
+        let i =0;
+        this.fileDetails ="";
+        for(let t of test){
+            this.isFileDetails = true;
+            this.fileDetails = t; 
+        }
+     }
+  }
+
+getComponentDetails(data,filepath) {
+  return data.filter(
+      function(data){return data.filepath == filepath }
+  );
+}
+keys() : Array<string> {
+    return Object.keys(this.fileDetails);
+  }
+
 
 }
