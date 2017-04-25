@@ -6,4 +6,6 @@ export interface EnvConfig {
   RMMAPI?: string;
   SDPAPI?: string;
   PDRAPI?: string;
+  DISTAPI? : string;
+  METAPI? : string;
 }

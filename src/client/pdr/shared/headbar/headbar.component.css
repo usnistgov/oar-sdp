@@ -1,5 +1,5 @@
-.header__inner {
-    /*background-color: white;*/
+/*.header__inner {
+    
     background: white;
     color: black;
 }
@@ -9,9 +9,7 @@
     padding: 32px 0px 32px 32px;
 }
 
-.header__logo-link {
-    display: block;
-}
+
 
 .header__logo a img {
     width: 289px;
@@ -30,9 +28,33 @@ img {
 .textTopCenter
 {
   color: white;text-align: center;font-size: xx-large;margin-top: 30px;
-}
+}*/
 
+.header__logo-link {
+    display: block;
+}
 .background-black
 {
   background-color: #000000;
+}
+.header-background{
+    background-color: #333333;
+}
+.header-div{
+  /*vertical-align: middle;*/
+     padding-top: 1%;
+    /*margin-bottom: 10px;*/
+    padding-bottom: 1%;
+    padding-left: 1%;
+    color: white;
+}
+
+.header-links{
+   margin-right: 20px;
+   margin-top: 20px;
+   color:white;
+}
+
+.textlinks{
+    color:white;
 }

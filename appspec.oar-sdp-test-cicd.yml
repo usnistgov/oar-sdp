@@ -4,12 +4,12 @@ os: linux
 # 1) Copy all the build files to the sdp html folder
 files:
   - source: dist/prod/
-    destination: /home/ubuntu/oar-docker/portal/sdp/html/
+    destination: /home/ubuntu/oar-docker/apps/sdp/html/
     
 hooks:
  BeforeInstall:
-   - location: scripts/beforecicd.sh
+   - location: scripts/sdp/beforecicd.sh
      runas: root
  AfterInstall:
-   - location: scripts/aftercicd.sh
+   - location: scripts/sdp/aftercicd.sh
      runas: root
