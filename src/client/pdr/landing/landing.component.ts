@@ -17,15 +17,13 @@ import { BrowserModule } from '@angular/platform-browser';
 declare var Ultima: any;
 declare var jQuery: any;
 
-/**
- * This class represents the lazy loaded HomeComponent.
- */
 @Component ({
     moduleId: module.id,
     selector: 'pdr-landing',
     templateUrl: 'landing.component.html',
     styleUrls: ['landing.component.css'],
     providers:[SearchService]
+    
     
 })
 
@@ -77,7 +75,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   
         this.searchResults = searchResults;
         this.createDataHierarchy();
-        //alert(this.searchResults[0].doi);
+        //alert(this.searchResults);
         if(this.searchResults[0].doi != "" ){
             this.isDOI = true;
         }
@@ -150,7 +148,8 @@ onSuccessAny(searchResults:any[]) {
                      window.open("./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"]));
                 }},
                 {label: 'References', icon:"Submenu", command: (event)=>{
-                    window.location.href="./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"])+"#reference";
+                    //window.location.href="./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"])+"#reference";
+                     window.location.href="#reference";
                 }},
                 {label: 'Inventory', icon:"Submenu", command: (event)=>{
                     window.location.href="#inventory";
@@ -161,10 +160,14 @@ onSuccessAny(searchResults:any[]) {
             label: 'Tools',  icon: "Menu",
             items: [
                 {label: 'Searchpage', icon:"Submenu", command: (event)=>{
-                    window.location.href=encodeURIComponent(this.searchResults[0]["searchpage"]);}
+                        alert("Shows 'searchpage', if any associated with the record.");
+                    //window.location.href=encodeURIComponent(this.searchResults[0]["searchpage"]);
+                    }
                 },
                 {label: 'API', icon:"Submenu", command: (event)=>{
-                    window.location.href=encodeURIComponent(this.searchResults[0]["api"]);}
+                        alert("Shows 'API', if any associated with the record.");
+                      //window.location.href=encodeURIComponent(this.searchResults[0]["api"]);
+                    }
                 }
             ]
         },
@@ -199,8 +202,20 @@ onSuccessAny(searchResults:any[]) {
         {
             label: 'Use', 
             items: [
-                {label: 'Cite this resource',  icon: "fa-angle-double-right",url:""},
-                {label: 'Access Details', icon: "fa-angle-double-right",url:""},
+                {label: 'Cite this resource',  icon: "fa-angle-double-right",command: (event)=>{
+                    let citeString = "";
+                    for(let author of this.searchResults[0].authors)
+                    { citeString += author.fn +",";}
+                    citeString += this.searchResults[0].title +",";
+                    citeString += this.searchResults[0].doi;
+                    alert("Copy following to cite the resource: \n\n"+citeString);
+                    //window.open(this.searchResults[0].license);
+                  }},
+                {label: 'Access Details', icon: "fa-angle-double-right",command: (event)=>{
+                    let accessString = "Access level is:";
+                    accessString += this.searchResults[0].accessLevel;
+                    alert(accessString);
+                    ;}},
                 {label: 'License Statement', icon: "fa-copyright",command: (event)=>{
                     window.open(this.searchResults[0].license);
                   }}
@@ -236,12 +251,23 @@ onSuccessAny(searchResults:any[]) {
                         this.qcriteria = "Similar Resources By Author";   
                         this.similarResources = true;
                         this.metadata = false;}},
-                {label: 'Data,Sites,Tools', icon: "fa-external-link",url:""}
+                {label: 'Data,Sites,Tools', icon: "fa-external-link",command: (event)=>{
+                    alert("Coming soon ...");
+                  }}
             ]
         },
         {
             label: 'Export Metadata', icon: "Menu", items: [
-                {label: 'PDF',  icon: "fa-file-pdf-o",url:""},
+                // {   label: 'PDF',  icon: "fa-file-pdf-o",
+                //     command: (event)=>{ var doc = new jsPDF();
+                //         var i=0;
+                //         for(var key in this.searchResults){
+                //         doc.text(20, 10 + i, key + ": " + this.searchResults[key]);
+                //         i+=10;
+                //         }
+                //         doc.save('metadata.pdf');
+                //     }
+                // },
                 {label: 'POD JSON', icon: "fa-file-o", command: (event)=>{ alert("Coming soon ...");}},
                 {label: 'Extended JSON', icon: "fa-file-o",command: (event)=>{
                         window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
