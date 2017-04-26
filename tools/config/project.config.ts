@@ -18,6 +18,7 @@ export class ProjectConfig extends SeedConfig {
     FONTS_SRC = [
       `${this.APP_SRC}/libs/ultima-ng/layout/fonts/**`,
       `${this.APP_SRC}/libs/font-awesome/fonts/**`,
+      'node_modules/bootstrap/dist/fonts/**'
     ];
 
   constructor() {
@@ -46,6 +47,7 @@ export class ProjectConfig extends SeedConfig {
       { src: 'primeng/resources/primeng.min.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
       {src: 'jquery.auto-text-rotating/jquery.auto-text-rotating.min.js', inject: 'libs'},
+      {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
 
       // inject into css section

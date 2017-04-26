@@ -13,6 +13,6 @@ import { Config } from '../shared/index';
 })
 export class ApiComponent {
 
-  RestAPIURL: string = Config.API;
+  RestAPIURL: string = Config.RMMAPI;
 
 }
