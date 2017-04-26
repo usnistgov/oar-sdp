@@ -11,7 +11,7 @@ declare var jQuery: any;
 
 @Component({
   moduleId: module.id,
-  selector: 'sdp-app',
+  selector: 'pdr-app',
   templateUrl: './app.component.html',
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
