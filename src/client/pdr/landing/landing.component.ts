@@ -244,7 +244,7 @@ onSuccessAny(searchResults:any[]) {
                 {label: 'PDF',  icon: "fa-file-pdf-o",url:""},
                 {label: 'POD JSON', icon: "fa-file-o", command: (event)=>{ alert("Coming soon ...");}},
                 {label: 'Extended JSON', icon: "fa-file-o",command: (event)=>{
-                        window.open(this.rmmApi+"?@id="+this.searchResults[0]['@id']);
+                        window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
                     }
                 }
             ]            

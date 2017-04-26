@@ -8,5 +8,5 @@ const DevConfig: EnvConfig = {
   DISTAPI: 'http://localhost:8085/oar-rmm-service/records',
   METAPI:'http://localhost:8085/oar-rmm-service/records'
 };
-export = DevConfig;
 
+export = DevConfig;
