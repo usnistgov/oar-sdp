@@ -186,7 +186,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
               this.uniqueComp.push(_.startCase(_.split(compType, ':')[1]));
               if (componentsArray.indexOf(compType) < 0) {
                 components.push({
-                  label: _.startCase(_.split(compType, ':')[1]),
+                  label: 'with ' + _.startCase(_.split(compType, ':')[1]),
                   value: _.startCase(_.split(compType, ':')[1])
                 });
                 componentsArray.push(compType);
