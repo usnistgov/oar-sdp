@@ -71,7 +71,7 @@
 
 .fa-caret-down:before {
   content: "keyboard_arrow_down";
-  vertical-align: middle; }
+  }
 
 .fa-caret-right:before {
   content: "keyboard_arrow_right"; }
