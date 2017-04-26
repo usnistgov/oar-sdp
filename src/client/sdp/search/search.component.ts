@@ -39,6 +39,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    profileMode: string = 'inline';
     msgs: Message[] = [];
     exception : string;
+    noResults: boolean;
     errorMsg: string;
     status: string;
     errorMessage: string;
@@ -246,6 +247,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.filteredResults = searchResults;
         this.keywords = this.collectKeywords(searchResults);
         this.themes = this.collectThemes(searchResults);
+        this.noResults = false;
         this.themesWithCount = [];
         this.componentsWithCount = [];
         this.sortable = [];
@@ -310,6 +312,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.keywords = [];
         this.themes = [];
         this.msgs = [];
+        this.noResults = true;
         this.exception = (<any>error).ex;
         this.errorMsg = (<any>error).message;
         this.status = (<any>error).httpStatus;
