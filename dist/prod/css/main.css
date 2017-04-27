@@ -13718,7 +13718,6 @@ img {
 
 .fa-caret-down:before {
   content: "keyboard_arrow_down";
-  vertical-align: middle;
 }
 
 .fa-caret-right:before {
