@@ -10,8 +10,8 @@
   }
 </script>
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
+<!--<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 <div *ngFor="let record of searchResults"> 
     <div class="ui-g" style="padding-bottom: 3%">
          <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
@@ -31,7 +31,7 @@
                 <span *ngFor="let author of record.authors"> 
                     {{ author.fn}},
                 </span>
-                 <i class ="fa fa-plus-square-o"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent">...</i>
+                 <i class ="faa faa-plus-square-o"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent">...</i>
             </div>
           
                 <!--<hr>-->
@@ -49,7 +49,7 @@
              <br><!-- Contact point section-->
              <div class="" *ngIf="record.contactPoint">
                 Contact: <strong> {{record.contactPoint.fn}}</strong>
-                <i class="fa fa-plus-square-o" aria-hidden="true" (click)="closeContent = !closeContent">...</i>
+                <i class="faa faa-plus-square-o" aria-hidden="true" (click)="closeContent = !closeContent">...</i>
          <!--<hr>-->
                 <div [collapse]="!closeContent" class="card card-block card-header">
                      <span class="" *ngIf="record.contactPoint.fn">
@@ -78,9 +78,9 @@
                      </small>
                 </span>
             <br>
-          <div class="" *ngIf="record.modified">
+        <div class="" *ngIf="record.modified">
                 History: <strong> {{record.modified}}</strong>
-                <i class="fa fa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory">...</i>
+                <i class="faa faa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory">...</i>
          <!--<hr>-->
                 <div [collapse]="!closehistory" class="card card-block card-header">
                      <span class="" *ngIf="record.modified"> 
@@ -92,11 +92,11 @@
          <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
     </div>
     <div class="ui-g">
-        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10" style="overflow-x: scroll;">
+        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10">
             <br>
             <p-menu [model]="leftmenu" ></p-menu>    
         </div>
-        <div class="ui-g-8 ui-md-8 ui-lg-8 ui-sm-10" style="overflow-y: scroll;">
+        <div class="ui-g-8 ui-md-8 ui-lg-8 ui-sm-10">
         
         <div *ngIf="similarResources">
             <similar-resources [similarResourcesResults]="similarResourcesResults" [qcriteria]="qcriteria"></similar-resources></div>
