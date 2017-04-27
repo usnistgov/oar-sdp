@@ -204,8 +204,11 @@ onSuccessAny(searchResults:any[]) {
             items: [
                 {label: 'Cite this resource',  icon: "fa-angle-double-right",command: (event)=>{
                     let citeString = "";
-                    for(let author of this.searchResults[0].authors)
-                    { citeString += author.fn +",";}
+                    if(this.searchResults[0].authors !=  null){
+                        for(let author of this.searchResults[0].authors)
+                        { citeString += author.fn +",";}
+                    }
+                    
                     citeString += this.searchResults[0].title +",";
                     citeString += this.searchResults[0].doi;
                     alert("Copy following to cite the resource: \n\n"+citeString);
@@ -316,11 +319,12 @@ onSuccessAny(searchResults:any[]) {
     }
 // Create Files Structure to browse throw files
  createDataHierarchy(){
-      
+        if (this.searchResults[0].dataHierarchy == null )
+        return;
         this.fileHierarchy = this.createTreeObj("Files","Files");
         this.fileHierarchy.children =[];
         for(let record of this.searchResults){
-            console.log(record);
+            //console.log(record);
             //this.fileHierarchy.children.push(this.createChildrenTree(record.dataHierarchy[0].children, record.dataHierarchy[0].filepath);
             for(let fields of record.dataHierarchy){
                 
