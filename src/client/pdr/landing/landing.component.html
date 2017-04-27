@@ -12,12 +12,10 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
 <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">-->
 <div *ngFor="let record of searchResults"> 
     <div class="ui-g" style="padding-bottom: 3%">
-         <div class="ui-g-1"></div>
-         <div class="ui-g-10">
+         <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
+          <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10">
             <span style="font-family: Arial, Helvetica, sans-serif; color: grey; font-size: 14;" [ngSwitch]="record['@type'][0]">
                 <b *ngSwitchCase="'nrd:SRD'">Standard Reference Data</b>
                 <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
@@ -80,7 +78,7 @@
                      </small>
                 </span>
             <br>
-        <div class="" *ngIf="record.modified">
+          <div class="" *ngIf="record.modified">
                 History: <strong> {{record.modified}}</strong>
                 <i class="fa fa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory">...</i>
          <!--<hr>-->
@@ -91,16 +89,17 @@
                 </div>
             </div>
          </div>
-         <div class="ui-g-1"></div>
+         <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
     </div>
     <div class="ui-g">
-        <div class="ui-g-2" style="overflow-x: scroll;">
+        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10" style="overflow-x: scroll;">
             <br>
             <p-menu [model]="leftmenu" ></p-menu>    
         </div>
-        <div class="ui-g-8" style="overflow-y: scroll;">
+        <div class="ui-g-8 ui-md-8 ui-lg-8 ui-sm-10" style="overflow-y: scroll;">
         
-        <div *ngIf="similarResources"><similar-resources [similarResourcesResults]="similarResourcesResults" [qcriteria]="qcriteria"></similar-resources></div>
+        <div *ngIf="similarResources">
+            <similar-resources [similarResourcesResults]="similarResourcesResults" [qcriteria]="qcriteria"></similar-resources></div>
         <!--Metadata -->
         <div *ngIf="metadata != true && similarResources != true ">
             <br><h3 id="description">Description</h3><br>
@@ -153,7 +152,7 @@
             <metadata-detail [searchResults]="searchResults" ></metadata-detail>
         </div>
         </div>
-        <div   class="ui-g-2">
+        <div   class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10">
             <br>
             <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>            
         </div>
