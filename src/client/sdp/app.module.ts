@@ -13,6 +13,8 @@ import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
 import { FaqModule } from './faq/faq.module';
 import { ApiModule } from './api/api.module';
+import { PolicyModule } from './policy/policy.module';
+import { HelpModule } from './help/help.module';
 import { CodeRepoModule } from './code_repo/code_repo.module';
 import { SearchModule } from './search/search.module';
 import { AdvSearchModule } from './adv_search/adv_search.module';
@@ -22,7 +24,7 @@ import { SearchTopBarComponent }  from './app.searchtopbar.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
-  , AboutModule, HomeModule, FaqModule, ApiModule,CodeRepoModule, SearchModule, AdvSearchModule, SharedModule.forRoot()
+  , AboutModule, HomeModule, HelpModule, PolicyModule, FaqModule, ApiModule,CodeRepoModule, SearchModule, AdvSearchModule, SharedModule.forRoot()
   ],
   declarations: [AppComponent,
     AppMenuComponent,
