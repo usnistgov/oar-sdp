@@ -92,14 +92,13 @@
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
                                   (onSelect)="filterResults($event,'Author')"
                                   [inputStyle]="{'width':'100%','background-color': '#FFFFFF'
-        ,'font-weight': '400','font-style': 'italic','height': '30px',
-          'font-size': '14px'}"
+        ,'font-weight': '400','font-style': 'italic','font-size': '14px'}"
                   >
                   </p-autoComplete>
                 </div>
 
                 <div *ngIf="selectedAuthorDropdown == true">
-                  <span>{{selectedAuthor}}</span>
+                  <span style="padding-left: 15px;">{{selectedAuthor}}</span>
                   <i style="vertical-align: middle" (click)="clearAuthorFilter()" class="material-icons"> clear
                   </i>
                 </div>
@@ -108,7 +107,7 @@
                 <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
                   <label style="font-size: 14px;"><b>Keyword</b></label>
                 </div>
-                <div style="background-color: #F8F9F9;height: 30px;padding-left:.7em;padding-right:.7em;">
+                <div style="background-color: #F8F9F9;height: 30px;padding-left:15px;padding-right:.8em;">
                 <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
                                 (completeMethod)="filterKeywords($event)"
                                 [multiple] = "true"
@@ -125,12 +124,13 @@
       <!-- Section 1 -->
       <div class="ui-g-12 ui-md-8 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
-                  [style]="{'padding-right': '.5em'}">
+                  [style]="{'padding-right': '.5em','height':'650px'}">
         <p-header style="background-color:#FFFFFF;width:100%;border:0px solid #FFFFFF;padding: 0px;">
         <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
-          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-right:10px;padding-top: 10px;"><p-dropdown
-            [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"  [style]="{'width':'200px','padding-top': '.2em','background-color': '#FFFFFF','height': '28px'
-        ,'font-weight': '400','font-style': 'italic',
+          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
+          padding-right:10px;padding-top: 10px;"><p-dropdown
+            [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"
+            [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
           'font-size': '14px'}"
           >
           </p-dropdown>

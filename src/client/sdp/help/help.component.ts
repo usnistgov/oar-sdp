@@ -6,8 +6,8 @@ import { Config } from '../shared/index';
  */
 @Component({
   moduleId: module.id,
-  selector: 'sdp-faq',
-  templateUrl: 'faq.component.html',
-  styleUrls: ['faq.component.css']
+  selector: 'sdp-help',
+  templateUrl: 'help.component.html',
+  styleUrls: ['help.component.css']
 })
-export class FaqComponent { }
+export class HelpComponent { }
