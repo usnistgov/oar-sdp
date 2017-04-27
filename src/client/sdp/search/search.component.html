@@ -92,8 +92,7 @@
                                   [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
                                   (onSelect)="filterResults($event,'Author')"
                                   [inputStyle]="{'width':'100%','background-color': '#FFFFFF'
-        ,'font-weight': '400','font-style': 'italic','height': '30px',
-          'font-size': '14px'}"
+        ,'font-weight': '400','font-style': 'italic','font-size': '14px'}"
                   >
                   </p-autoComplete>
                 </div>
@@ -128,9 +127,10 @@
                   [style]="{'padding-right': '.5em'}">
         <p-header style="background-color:#FFFFFF;width:100%;border:0px solid #FFFFFF;padding: 0px;">
         <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
-          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;padding-right:10px;padding-top: 10px;"><p-dropdown
-            [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"  [style]="{'width':'200px','padding-top': '.2em','background-color': '#FFFFFF','height': '28px'
-        ,'font-weight': '400','font-style': 'italic',
+          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
+          padding-right:10px;padding-top: 10px;"><p-dropdown
+            [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"
+            [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
           'font-size': '14px'}"
           >
           </p-dropdown>

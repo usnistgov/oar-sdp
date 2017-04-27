@@ -1,16 +1,16 @@
 import { Route } from '@angular/router';
-import { FaqComponent } from './index';
+import { HelpComponent } from './index';
 import { HeadbarComponent } from '../shared/headbar/index';
 import { SearchTopBarComponent } from '../app.searchtopbar.component';
 
 
-export const FaqRoutes: Route[] = [
+export const HelpRoutes: Route[] = [
   {
-    path: 'faq',
+    path: 'help',
     children: [
       {
         path: '',
-        component: FaqComponent
+        component: HelpComponent,
       },
       {
         path: '',

@@ -48,10 +48,10 @@ export class AppMenuComponent implements OnInit {
       {
         label: 'About',
         items: [
-          {label: 'About NIST Data',routerLink: ['/about']},
-          {label: 'Policy', url: 'https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database'},
-          {label: 'FAQ',url: 'http://webbook.nist.gov/chemistry'},
-          {label: 'Help', url: 'http://dlmf.nist.gov/'},
+          {label: 'About NIST Data', routerLink: ['/about']},
+          {label: 'Policy', routerLink: ['/policy']},
+          {label: 'FAQ', routerLink: ['/faq']},
+          {label: 'Help', routerLink: ['/help']},
         ]
       },
       {

@@ -1151,7 +1151,7 @@ body {
       display: inline-block;
       vertical-align: middle;
       padding-left: .5em;
-      padding-right: .5em; /* OPTIONAL */
+      padding-right: .3em; /* OPTIONAL */
     }
     .layout-container .ultima-menu li a.active-menuitem-routerlink {
       color: #FFFFFF; }
