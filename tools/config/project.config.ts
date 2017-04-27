@@ -49,6 +49,7 @@ export class ProjectConfig extends SeedConfig {
       {src: 'jquery.auto-text-rotating/jquery.auto-text-rotating.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
+      {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
 
       // inject into css section
 
@@ -78,6 +79,12 @@ export class ProjectConfig extends SeedConfig {
          name: 'auto-text-rotating',
          //   // Path to the package's bundle
          path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
+       }
+       ,
+       {
+         name: 'jspdf',
+         //   // Path to the package's bundle
+         path: 'node_modules/jspdf/dist/jspdf.min.js'
        }
      ];
 
