@@ -12,7 +12,7 @@ import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';
-
+import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
 declare var jQuery: any;
@@ -189,12 +189,12 @@ onSuccessAny(searchResults:any[]) {
       this.rightmenu = [{
             label: 'Access', 
             items: [
-                {label: 'Visit Home Page',  icon: "fa-external-link",command: (event)=>{
+                {label: 'Visit Home Page',  icon: "faa faa-external-link",command: (event)=>{
                     window.open(this.searchResults[0].landingPage);
                   //alert("Test References"+this.searchResults[0].license);
                 }},
-                {label: 'Download all data', icon: "fa-download"},
-                {label: 'Add All to DataCart', icon: "fa-cart-arrow-down",command: (event)=>{
+                {label: 'Download all data', icon: "faa faa-download"},
+                {label: 'Add All to DataCart', icon: "faa faa-cart-arrow-down",command: (event)=>{
                    alert("Coming soon...");}
                 }
             ]
@@ -202,39 +202,39 @@ onSuccessAny(searchResults:any[]) {
         {
             label: 'Use', 
             items: [
-                {label: 'Cite this resource',  icon: "fa-angle-double-right",command: (event)=>{
+                {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     let citeString = "";
                     if(this.searchResults[0].authors !=  null){
                         for(let author of this.searchResults[0].authors)
                         { citeString += author.fn +",";}
                     }
-                    
+
                     citeString += this.searchResults[0].title +",";
                     citeString += this.searchResults[0].doi;
                     alert("Copy following to cite the resource: \n\n"+citeString);
                     //window.open(this.searchResults[0].license);
                   }},
-                {label: 'Access Details', icon: "fa-angle-double-right",command: (event)=>{
+                {label: 'Access Details', icon: "faa faa-angle-double-right",command: (event)=>{
                     let accessString = "Access level is:";
                     accessString += this.searchResults[0].accessLevel;
                     alert(accessString);
                     ;}},
-                {label: 'License Statement', icon: "fa-copyright",command: (event)=>{
+                {label: 'License Statement', icon: "faa faa-copyright",command: (event)=>{
                     window.open(this.searchResults[0].license);
                   }}
             ]
         },
         {
             label: 'Metrices',   items: [
-                {label: 'Google Analytics',  icon: "fa-external-link",url:""},
-                {label: 'Service Logs',icon: "fa-external-link",command: (event)=>{
+                {label: 'Google Analytics',  icon: "faa faa-external-link",url:""},
+                {label: 'Service Logs',icon: "faa faa-external-link",command: (event)=>{
                     alert("Coming soon ...");
                   }}              
             ]
         },
         {
             label: 'Find',   items: [
-                {label: 'Similar Resources',  icon: "fa-external-link",
+                {label: 'Similar Resources',  icon: "faa faa-external-link",
                         command: (event)=>{
                              this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
                              this.searchRMMAny('keyword='+this.searchResults[0].keyword+"&include=title,@id");
@@ -244,7 +244,7 @@ onSuccessAny(searchResults:any[]) {
                             this.metadata = false;
                         //window.open(this.rmmApi+"?keyword="+this.searchResults[0].keyword);
                   }},
-                {label: 'Resources by Authors',icon: "fa-external-link",command: (event)=>{
+                {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
                              this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
                              let authlist = "";
                              for(let auth of this.searchResults[0].authors)
@@ -254,25 +254,25 @@ onSuccessAny(searchResults:any[]) {
                         this.qcriteria = "Similar Resources By Author";   
                         this.similarResources = true;
                         this.metadata = false;}},
-                {label: 'Data,Sites,Tools', icon: "fa-external-link",command: (event)=>{
+                {label: 'Data,Sites,Tools', icon: "faa faa-external-link",command: (event)=>{
                     alert("Coming soon ...");
                   }}
             ]
         },
         {
             label: 'Export Metadata', icon: "Menu", items: [
-                // {   label: 'PDF',  icon: "fa-file-pdf-o",
-                //     command: (event)=>{ var doc = new jsPDF();
-                //         var i=0;
-                //         for(var key in this.searchResults){
-                //         doc.text(20, 10 + i, key + ": " + this.searchResults[key]);
-                //         i+=10;
-                //         }
-                //         doc.save('metadata.pdf');
-                //     }
-                // },
-                {label: 'POD JSON', icon: "fa-file-o", command: (event)=>{ alert("Coming soon ...");}},
-                {label: 'Extended JSON', icon: "fa-file-o",command: (event)=>{
+                {   label: 'PDF',  icon: "faa faa-file-pdf-o",
+                    command: (event)=>{ var doc = new jsPDF();
+                        var i=0;
+                        for(var key in this.searchResults[0]){
+                        doc.text(20, 10 + i, key + ": " + this.searchResults[0][key]);
+                        i+=10;
+                        }
+                        doc.save('metadata_'+this.searchResults[0].title+'.pdf');
+                    }
+                },
+                {label: 'POD JSON', icon: "faa faa-file-o", command: (event)=>{ alert("Coming soon ...");}},
+                {label: 'Extended JSON', icon: "faa faa-file-o",command: (event)=>{
                         window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
                     }
                 }
@@ -359,17 +359,17 @@ onSuccessAny(searchResults:any[]) {
      testObj = {};
      testObj.label = label;
      testObj.data = data;
-     testObj.expandedIcon = "fa-folder-open";
-     testObj.collapsedIcon =  "fa-folder";
+     testObj.expandedIcon = "faa faa-folder-open";
+     testObj.collapsedIcon =  "faa faa-folder";
      return testObj;
   }
  createFileNode(label :string, data:string){
      let endFileNode:TreeNode = {};
      endFileNode.label = label;
      endFileNode.data = data;
-     endFileNode.icon = "fa-file-o";
-     endFileNode.expandedIcon = "fa-folder-open";
-     endFileNode.collapsedIcon =  "fa-folder";
+     endFileNode.icon = "faa faa-file-o";
+     endFileNode.expandedIcon = "faa faa-folder-open";
+     endFileNode.collapsedIcon =  "faa fa-folder";
      return endFileNode;
  }
  fileDetails:string="";
