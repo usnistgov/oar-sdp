@@ -1,6 +1,5 @@
 import { Route } from '@angular/router';
 import { FaqComponent } from './index';
-import { HeadbarComponent } from '../shared/headbar/index';
 import { SearchTopBarComponent } from '../app.searchtopbar.component';
 
 
