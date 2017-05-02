@@ -3,11 +3,6 @@
     background-color: #f8f9f9;
     box-shadow: inset -4px 0 16px -9px rgba(0, 0, 0, 0.5);
 }
-
-.ellipsis {
-
-}
-
 .summary-content {
     text-align: left; max-height: 400px; overflow: auto;
     background-color: #f2f2f2;
@@ -150,7 +145,6 @@ hyphens: auto;}
 padding: 0 .25em;
   vertical-align: middle;
 }
-
 
 /* enable absolute positioning */
 .inner-addon {

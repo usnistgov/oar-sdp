@@ -42,97 +42,92 @@
   </div>
     <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
       <div class="ui-g-12 ui-md-6 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
-            <div class="ui-g" style="padding: 0px;" >
-              <div class="ui-g-12" style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
-                <div style="background-color: #03A9F4;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
-                  <label style="font-size: 16px;background-color: #03A9F4;color: #FFFFFF;">Filter </label>
-                  <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
-                    <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
-                  </i>Clear All</a>
-                </div>
-                <div style="border-bottom:.5px solid #cccccc;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
-                <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
-                        [style]="{'width':'100%','font-size': '12px','overflow':'hidden','padding-top': '.5em',
+        <div class="ui-g" style="padding: 0px;" >
+          <div class="ui-g-12" style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+            <div style="background-color: #03A9F4;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
+              <label style="font-size: 16px;background-color: #03A9F4;color: #FFFFFF;">Filter </label>
+              <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
+                <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
+                </i>Clear All</a>
+            </div>
+            <div style="border-bottom:.5px solid #cccccc;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
+              <p-tree header="test" [value]="themesTree" selectionMode="checkbox"
+                      [style]="{'width':'100%','font-size': '12px','overflow':'hidden','padding-top': '.5em',
                         'height': 'auto','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
-                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
-                  <template let-node  pTemplate="default">
-                    <span> {{node.label.split("-")[0]}}&nbsp;</span>
-
-                    <span class="badge" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
-                  </template>
-                </p-tree>
-                  <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                  <a href="#!" (click)="showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
-                </div>
-                  <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                    <a href="#!" (click)="showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
-                  </div>
+                      (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
+                <template let-node  pTemplate="default">
+                  <span> {{node.label.split("-")[0]}}&nbsp;</span>
+                  <span class="badge" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
+                </template>
+              </p-tree>
+              <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
+                <a href="#!" (click)="showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
               </div>
-                  <div style="border-bottom:.5px solid #cccccc;width: 100%;'box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)'">
-                  <p-tree [value]="componentsTree" selectionMode="checkbox"
-                          [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)','padding-right': '.5em',
-                          'padding-bottom': '.5em','background-color': '#F8F9F9'}"
-                          [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
-                          (onNodeSelect)="filterResults($event)" >
-                    <template let-node  pTemplate="default">
-                      <span> {{node.label.split("-")[0]}}&nbsp;</span>
-                      <span class="badge" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
-                    </template>
-
-                  </p-tree>
-                </div>
-                <div style="background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);width: 100%;padding-left: 1em;padding-top: 1em">
-                  <label style="font-size: 14px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"><b>Authors and Contributors</b></label>
-                </div>
-                <div *ngIf="selectedAuthorDropdown == false" style="padding-left:.5em;padding-bottom: 3px;border-bottom:.5px solid #cccccc;
-                width: 100%;background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 1em">
-                  <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
-                                  (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
-                                  [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)"
-                                  (onSelect)="filterResults($event,'Author')"
-                                  [inputStyle]="{'width':'100%','background-color': '#FFFFFF'
-        ,'font-weight': '400','font-style': 'italic','font-size': '14px'}"
-                  >
-                  </p-autoComplete>
-                </div>
-
-                <div *ngIf="selectedAuthorDropdown == true">
-                  <span style="padding-left: 15px;">{{selectedAuthor}}</span>
-                  <i style="vertical-align: middle" (click)="clearAuthorFilter()" class="material-icons"> clear
-                  </i>
-                </div>
-              </div>
-              <div class="ui-g-10" style="padding: 0px;" >
-                <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
-                  <label style="font-size: 14px;"><b>Keyword</b></label>
-                </div>
-                <div style="background-color: #F8F9F9;height: 30px;padding-left:15px;padding-right:.8em;">
-                <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
-                                (completeMethod)="filterKeywords($event)"
-                                [multiple] = "true"
-                                (onSelect)="filterResults($event)"
-                                (onUnselect)="filterResults($event)"
-                                [minLength]="1" [maxlength] = "30" [size]="100"  [style]="{'width':'100%',
-                                'background-color': '#FFFFFF','font-weight': '400','height':'30px','font-style': 'italic','font-size': '14px'}">
-                </p-autoComplete>
-                </div>
+              <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
+                <a href="#!" (click)="showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
               </div>
             </div>
+            <div style="border-bottom:.5px solid #cccccc;width: 100%;'box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)'">
+              <p-tree [value]="componentsTree" selectionMode="checkbox"
+                      [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)','padding-right': '.5em',
+                          'padding-bottom': '.5em','background-color': '#F8F9F9'}"
+                      [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
+                      (onNodeSelect)="filterResults($event)" >
+                <template let-node  pTemplate="default">
+                      <span> {{node.label.split("-")[0]}}&nbsp;</span>
+                      <span class="badge" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
+                </template>
+              </p-tree>
+            </div>
+            <div style="background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);width: 100%;padding-left: 1em;padding-top: 1em">
+              <label style="font-size: 14px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"><b>Authors and Contributors</b></label>
+            </div>
+            <div *ngIf="selectedAuthorDropdown == false" style="padding-left:.5em;padding-bottom: 3px;border-bottom:.5px solid #cccccc;
+                width: 100%;background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 1em">
+              <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
+                              (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
+                              [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)" (onSelect)="filterResults($event,'Author')"
+                              [inputStyle]="{'width':'100%','background-color': '#FFFFFF'
+                              ,'font-weight': '400','font-style': 'italic','font-size': '14px'}">
+              </p-autoComplete>
+            </div>
+            <div *ngIf="selectedAuthorDropdown == true">
+              <span style="padding-left: 15px;">{{selectedAuthor}}</span>
+              <i style="vertical-align: middle" (click)="clearAuthorFilter()" class="material-icons"> clear
+              </i>
+            </div>
+          </div>
+          <div class="ui-g-10" style="padding: 0px;" >
+            <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+              <label style="font-size: 14px;"><b>Keyword</b></label>
+            </div>
+            <div style="background-color: #F8F9F9;height: 30px;padding-left:15px;padding-right:1.0em;">
+              <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
+                              (completeMethod)="filterKeywords($event)"
+                              [multiple] = "true"
+                              (onSelect)="filterResults($event)"
+                              (onUnselect)="filterResults($event)"
+                              [minLength]="1" [maxlength] = "30" [style]="{'width':'100%',
+                              'background-color': '#FFFFFF','font-weight': '400','height':'30px',
+                              'font-style': 'italic','font-size': '14px'}">
+              </p-autoComplete>
+            </div>
+          </div>
         </div>
+      </div>
 
       <!-- Section 1 -->
       <div class="ui-g-12 ui-md-8 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
                   [style]="{'padding-right': '.5em','height':'650px'}">
         <p-header style="background-color:#FFFFFF;width:100%;border:0px solid #FFFFFF;padding: 0px;">
-        <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
+          <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
           <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
           padding-right:10px;padding-top: 10px;"><p-dropdown
             [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"
             [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
-          'font-size': '14px'}"
-          >
+            'font-size': '14px'}">
           </p-dropdown>
           </span>
         </p-header>
@@ -142,7 +137,7 @@
               <div class="ui-grid-col-12">
                 <div class="ui-grid ui-grid-responsive" style="text-align: left;">
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-12" ><b><a href="#!" class="title" (click)="encodeString(PDRAPIURL + '#/landing?id=',resultItem['@id'])" target="_blank">
+                    <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL + '#/landing?id=',resultItem['@id'])" target="_blank">
                       {{resultItem.title}}</a></b></div>
                   </div>
                   <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
@@ -159,7 +154,7 @@
                     <div class="ui-grid-col-2">
                       <a [(href)]="resultItem.landingPage" target="_blank">
                       <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Visit Home Page"
-                              type="button" icon="ui-icon-launch" style="font-size: small;background-color: #277E2F"></button>&nbsp;</a>
+                              type="button" icon="ui-icon-launch" style="font-size: small;background-color: #277E2F"></button></a>
                   </div>
                   </div>
                 </div>

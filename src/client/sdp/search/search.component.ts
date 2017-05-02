@@ -1,20 +1,15 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef,  ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { SearchService, TaxonomyListService, SearchFieldsListService } from '../shared/index';
-
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 
-
-declare var Ultima: any;
 declare var jQuery: any;
-
-
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -30,153 +25,149 @@ declare var jQuery: any;
 
 
 export class SearchPanelComponent implements OnInit, OnDestroy {
-   layoutCompact: boolean = true;
+  layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
-   darkMenu: boolean = false;
-   selectedThemesNode: any[];
-
-   selectedComponentsNode: any[];
-   profileMode: string = 'inline';
-    msgs: Message[] = [];
-    exception : string;
-    noResults: boolean;
-    errorMsg: string;
-    status: string;
-    errorMessage: string;
-    queryAdvSearch:string;
-    searchResults: any[] = [];
-    errorMessageArray: string[];
-    themesTree:any[];
-    componentsTree:any[];
-    searchValue:string;
-    taxonomies: SelectItem[];
-    sortItems: SelectItem[];
-    fields: SelectItem[];
-    searchTaxonomyKey: string;
-    suggestedTaxonomies: string[];
-    suggestedTaxonomyList: string[];
-    nodeExpanded:boolean = true;
-    sortItemKey:string;
-    showMoreLink:boolean = false;
-    cols: any[];
-    rows: number = 5;
-    columnOptions: SelectItem[];
-    searching:boolean = false;
-    keywords: string[];
-    themes:SelectItem[] = [];
-    themesWithCount:SelectItem[] = [];
-    componentsWithCount:SelectItem[] = [];
-    components:SelectItem[] = [];
-    authors:string[] = [];
-    themesAllArray:string[] = [];
-    componentsAllArray:string[] = [];
-    componentsAllDupArray:string[] = [];
-    filteredResults:any[] = [];
-    keyword:string;
-    Keywords:string[] = [];
-    selectedKeywords:string[] = [];
-    selectedThemes:string[] = [];
-    selectedComponents:string[] = [];
-    selectedAuthor:string;
-    suggestedKeywords:string[] = [];
-    suggestedThemes:string[] = [];
-    suggestedAuthors:string[] = [];
-    ALL:string='All';
-    unspecified:string='Unspecified';
-    unspecifiedCount:number = 0;
-    filteredKeywords:string[] = [];
-    filteredThemes:string[] = [];
-    filteredAuthors:string[] = [];
-    summaryPageOpen : boolean = false;
-    summaryCandidate: any[];
-    selectedAuthorDropdown: boolean = false;
-    items: MenuItem[];
-    uniqueComp : string[] = [];
-    uniqueThemes : string[] = [];
-    sortable : any[] = [];
-    showMoreResearchTopics : boolean = false;
-    private _routeParamsSubscription: Subscription;
-    private PDRAPIURL: string = Config.PDRAPI;
+  darkMenu: boolean = false;
+  selectedThemesNode: any[];
+  selectedComponentsNode: any[];
+  profileMode: string = 'inline';
+  msgs: Message[] = [];
+  exception: string;
+  noResults: boolean;
+  errorMsg: string;
+  status: string;
+  errorMessage: string;
+  queryAdvSearch: string;
+  searchResults: any[] = [];
+  errorMessageArray: string[];
+  themesTree: any[];
+  componentsTree: any[];
+  searchValue: string;
+  taxonomies: SelectItem[];
+  sortItems: SelectItem[];
+  fields: SelectItem[];
+  searchTaxonomyKey: string;
+  suggestedTaxonomies: string[];
+  suggestedTaxonomyList: string[];
+  nodeExpanded: boolean = true;
+  sortItemKey: string;
+  showMoreLink: boolean = false;
+  cols: any[];
+  rows: number = 5;
+  columnOptions: SelectItem[];
+  searching: boolean = false;
+  keywords: string[];
+  themes: SelectItem[] = [];
+  themesWithCount: SelectItem[] = [];
+  componentsWithCount: SelectItem[] = [];
+  components: SelectItem[] = [];
+  authors: string[] = [];
+  themesAllArray: string[] = [];
+  componentsAllArray: string[] = [];
+  componentsAllDupArray: string[] = [];
+  filteredResults: any[] = [];
+  keyword: string;
+  Keywords: string[] = [];
+  selectedKeywords: string[] = [];
+  selectedThemes: string[] = [];
+  selectedComponents: string[] = [];
+  selectedAuthor: string;
+  suggestedKeywords: string[] = [];
+  suggestedThemes: string[] = [];
+  suggestedAuthors: string[] = [];
+  ALL: string = 'All';
+  unspecified: string = 'Unspecified';
+  unspecifiedCount: number = 0;
+  filteredKeywords: string[] = [];
+  filteredThemes: string[] = [];
+  filteredAuthors: string[] = [];
+  selectedAuthorDropdown: boolean = false;
+  items: MenuItem[];
+  uniqueComp: string[] = [];
+  uniqueThemes: string[] = [];
+  sortable: any[] = [];
+  showMoreResearchTopics: boolean = false;
+  private _routeParamsSubscription: Subscription;
+  private PDRAPIURL: string = Config.PDRAPI;
 
 
   /**
    * Creates an instance of the SearchPanel
    *
    */
-    constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService:
-      TaxonomyListService, public searchService:SearchService, public searchFieldsListService: SearchFieldsListService) {
-    }
+  constructor(private route: ActivatedRoute, private el: ElementRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService) {
+  }
 
-   /**
-     * Handle the nameListService observable
-     */
-    getTaxonomies() {
-        this.taxonomyListService.get()
-            .subscribe(
-            taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
-            error =>  this.errorMessage = <any>error
-        );
-    }
+  /**
+   * Handle the nameListService observable
+   */
+  getTaxonomies() {
+    this.taxonomyListService.get()
+      .subscribe(
+        taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
+        error => this.errorMessage = <any>error
+      );
+  }
 
   /**
    * Populate taxonomy items
    */
-  toTaxonomiesItems(taxonomies:any[]) {
-        let items :SelectItem[] = [];
-        items.push({label:'All Research', value:''});
-        for (let taxonomy of taxonomies) {
-            items.push({label:taxonomy.label, value:taxonomy.label});
-        }
-        return items;
+  toTaxonomiesItems(taxonomies: any[]) {
+    let items: SelectItem[] = [];
+    items.push({label: 'All Research', value: ''});
+    for (let taxonomy of taxonomies) {
+      items.push({label: taxonomy.label, value: taxonomy.label});
     }
+    return items;
+  }
 
   /**
    * Populate list of themes from Search results
    */
 
-  collectThemes(searchResults:any[]) {
-        let themes :SelectItem[] = [];
-        let themesArray:string[] = [];
-        let uniqueThemes:string[] = [];
-        let themesAllArray:string[] = [];
-        let topics:string;
-        this.themesAllArray = [];
-        this.unspecifiedCount = 0;
-        for (let resultItem of searchResults) {
-          this.uniqueThemes = [];
-          if(typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
-                for (let topic of resultItem.topic) {
-                    topics = _.split(topic.tag, ':')[0];
-                    this.uniqueThemes.push(topics);
-                    if(themesArray.indexOf(topics) < 0) {
-                        themes.push({label:topics,value:topics});
-                        themesArray.push(topics);
-                    }
-
-                }
-              this.themesAllArray  =  this.themesAllArray.concat(this.uniqueThemes.filter(this.onlyUnique));
-            } else {
-              this.unspecifiedCount += 1;
-            }
+  collectThemes(searchResults: any[]) {
+    let themes: SelectItem[] = [];
+    let themesArray: string[] = [];
+    let uniqueThemes: string[] = [];
+    let themesAllArray: string[] = [];
+    let topics: string;
+    this.themesAllArray = [];
+    this.unspecifiedCount = 0;
+    for (let resultItem of searchResults) {
+      this.uniqueThemes = [];
+      if (typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
+        for (let topic of resultItem.topic) {
+          topics = _.split(topic.tag, ':')[0];
+          this.uniqueThemes.push(topics);
+          if (themesArray.indexOf(topics) < 0) {
+            themes.push({label: topics, value: topics});
+            themesArray.push(topics);
+          }
 
         }
-        return themes;
+        this.themesAllArray = this.themesAllArray.concat(this.uniqueThemes.filter(this.onlyUnique));
+      } else {
+        this.unspecifiedCount += 1;
+      }
+
     }
+    return themes;
+  }
 
   /**
    * Populate list of themes from Search results
    */
 
-  collectComponents(searchResults:any[]) {
-    let components :SelectItem[] = [];
-    let componentsArray:string[] = [];
-    let componentsAllArray:string[] = [];
-    let resultItemComp:string[] = [];
-    let comp:any[] = [];
-    let compType:string;
+  collectComponents(searchResults: any[]) {
+    let components: SelectItem[] = [];
+    let componentsArray: string[] = [];
+    let componentsAllArray: string[] = [];
+    let resultItemComp: string[] = [];
+    let comp: any[] = [];
+    let compType: string;
     this.componentsAllArray = [];
     for (let resultItem of searchResults) {
-      if(resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+      if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
         this.uniqueComp = [];
         for (let resultItemComponents of resultItem.inventory) {
           comp = resultItemComponents.byType;
@@ -208,129 +199,101 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Populate list of Authors from Search results
    */
 
-  collectAuthors(searchResults:any[]) {
-        let authors :string[] = [];
-        for (let resultItem of searchResults) {
-            if(resultItem.contactPoint && resultItem.contactPoint !== null && resultItem.contactPoint.fn !== null) {
-                if(authors.indexOf(resultItem.contactPoint.fn) < 0) {
-                    authors.push(resultItem.contactPoint.fn);
-                }
-            }
+  collectAuthors(searchResults: any[]) {
+    console.log("searchresults length" + searchResults.length);
+    let authors: string[] = [];
+    for (let resultItem of searchResults) {
+      if (resultItem.contactPoint && resultItem.contactPoint !== null && resultItem.contactPoint.fn !== null) {
+        if (authors.indexOf(resultItem.contactPoint.fn) < 0) {
+          authors.push(resultItem.contactPoint.fn);
         }
-        return authors;
+      }
     }
+    return authors;
+  }
 
   /**
    * Populate list of keywords from search results
    */
 
-  collectKeywords(searchResults:any[]) {
-        let kwords :string[] = [];
-        for (let resultItem of searchResults) {
-            if(resultItem.keyword && resultItem.keyword !== null && resultItem.keyword.length > 0) {
-                for (let keyword of resultItem.keyword) {
-                    if(kwords.indexOf(keyword) < 0) {
-                        kwords.push(keyword);
-                    }
-                }
-            }
+  collectKeywords(searchResults: any[]) {
+    let kwords: string[] = [];
+    for (let resultItem of searchResults) {
+      if (resultItem.keyword && resultItem.keyword !== null && resultItem.keyword.length > 0) {
+        for (let keyword of resultItem.keyword) {
+          if (kwords.indexOf(keyword) < 0) {
+            kwords.push(keyword);
+          }
         }
-        return kwords;
-     }
+      }
+    }
+    return kwords;
+  }
 
   /**
    * If Search is successful populate list of keywords themes and authors
    */
 
-  onSuccess(searchResults:any[]) {
-        this.searchResults = searchResults;
-        this.filteredResults = searchResults;
-        this.keywords = this.collectKeywords(searchResults);
-        this.themes = this.collectThemes(searchResults);
-        this.noResults = false;
-        this.themesWithCount = [];
-        this.componentsWithCount = [];
-        this.sortable = [];
+  onSuccess(searchResults: any[]) {
+    this.noResults = false;
+    this.themesWithCount = [];
+    this.componentsWithCount = [];
+    this.sortable = [];
+    this.searchResults = searchResults;
+    this.filteredResults = searchResults;
+    this.keywords = this.collectKeywords(searchResults);
+    this.themes = this.collectThemes(searchResults);
 
-        for (let theme in (_.countBy(this.themesAllArray))) {
-          this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
-        }
-
-        if (this.unspecifiedCount > 0)
-        {
-          this.sortable.push(['Unspecified',this.unspecifiedCount]);
-        }
-        this.sortable.sort(function(a, b) {
-          return b[1] - a[1];
-        });
-
-        console.log("obj sortable" + JSON.stringify(this.sortable));
-        console.log("obj sortable length" + (this.sortable.length));
-
-
-      for (var key in this.sortable.slice(0,5)) {
-        this.themesWithCount.push({label:this.sortable[key][0] + "-" + this.sortable[key][1],value:this.sortable[key][0]});
-      }
-      if (this.sortable.length > 5) {
-        this.showMoreLink = true;
-
-      } else {
-        this.showMoreLink = false;
-      }
-
+    // collect Research topics with count
+    this.collectThemesWithCount();
     this.components = this.collectComponents(searchResults);
-        for (let comp of this.components)
-        {
-          let count:any;
-          count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
-          this.componentsWithCount.push({label:comp.label + "-" + count,value:comp.value});
-        }
+    // collect Resource features with count
+    this.collectComponentsWithCount();
 
-        this.themesTree = [{
-          label: 'Research Topics -',
-          "expanded" : 'true',
-          children: this.themesWithCount
-        }];
-        this.componentsTree =   [{
-          label: 'Resource Features -',
-          "expanded" : 'true',
-          children: this.componentsWithCount
-        }];
-        this.authors = this.collectAuthors(searchResults);
-        this.clearFilters();
-        if (this.filteredResults.length < 5) {
-          this.rows = 20;
-        }
+    this.themesTree = [{
+      label: 'Research Topics -',
+      "expanded": 'true',
+      children: this.themesWithCount
+    }];
+    this.componentsTree = [{
+      label: 'Resource Features -',
+      "expanded": 'true',
+      children: this.componentsWithCount
+    }];
+    this.authors = this.collectAuthors(searchResults);
+    this.clearFilters();
+    if (this.filteredResults.length < 5) {
+      this.rows = 20;
     }
+  }
 
   /**
    * If search is unsuccessful push the error message
    */
-  onError(error:any[]) {
-        this.searchResults = [];
-        this.filteredResults = [];
-        this.keywords = [];
-        this.themes = [];
-        this.msgs = [];
-        this.noResults = true;
-        this.exception = (<any>error).ex;
-        this.errorMsg = (<any>error).message;
-        this.status = (<any>error).httpStatus;
-        this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
+  onError(error: any[]) {
+    this.searchResults = [];
+    this.filteredResults = [];
+    this.keywords = [];
+    this.themes = [];
+    this.msgs = [];
+    this.noResults = true;
+    this.exception = (<any>error).ex;
+    this.errorMsg = (<any>error).message;
+    this.status = (<any>error).httpStatus;
+    this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
   }
 
-  showMoreResTopics () {
+  showMoreResTopics() {
     this.themesWithCount = [];
     this.sortable = [];
     this.themesTree = [];
     for (let theme in (_.countBy(this.themesAllArray))) {
-      this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
+      this.sortable.push([theme, _.countBy(this.themesAllArray)[theme]]);
     }
-    if (this.unspecifiedCount > 0)
-    {
-      this.sortable.push(['Unspecified',this.unspecifiedCount]);
+    if (this.unspecifiedCount > 0) {
+      this.sortable.push(['Unspecified', this.unspecifiedCount]);
     }
-    this.sortable.sort(function(a, b) {
+    this.sortable.sort(function (a, b) {
       return b[1] - a[1];
     });
     for (var key in this.sortable) {
@@ -342,27 +305,26 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded" : 'true',
+      "expanded": 'true',
       children: this.themesWithCount
     }];
     this.showMoreResearchTopics = true;
   }
 
-  showLessResTopics () {
+  showLessResTopics() {
     this.themesWithCount = [];
     this.sortable = [];
     this.themesTree = [];
     for (let theme in (_.countBy(this.themesAllArray))) {
-      this.sortable.push([theme , _.countBy(this.themesAllArray)[theme]]);
+      this.sortable.push([theme, _.countBy(this.themesAllArray)[theme]]);
     }
-    if (this.unspecifiedCount > 0)
-    {
-      this.sortable.push(['Unspecified',this.unspecifiedCount]);
+    if (this.unspecifiedCount > 0) {
+      this.sortable.push(['Unspecified', this.unspecifiedCount]);
     }
-    this.sortable.sort(function(a, b) {
+    this.sortable.sort(function (a, b) {
       return b[1] - a[1];
     });
-    for (var key in this.sortable.slice(0,5)) {
+    for (var key in this.sortable.slice(0, 5)) {
       this.themesWithCount.push({
         label: this.sortable[key][0] + "-" + this.sortable[key][1],
         value: this.sortable[key][0]
@@ -371,23 +333,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded" : 'true',
+      "expanded": 'true',
       children: this.themesWithCount
     }];
     this.showMoreResearchTopics = false;
   }
+
   /**
    * call the Search service with parameters
    */
-  search(searchValue:string,searchTaxonomyKey:string,queryAdvSearch:string) {
-        this.searching = true;
-        this.keyword = '';
-        let that = this;
-        return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey,queryAdvSearch)
-            .subscribe(
-            searchResults => that.onSuccess(searchResults),
-            error => that.onError(error)
-            );
+  search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
+    this.searching = true;
+    this.keyword = '';
+    let that = this;
+    return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
+      .subscribe(
+        searchResults => that.onSuccess(searchResults),
+        error => that.onError(error)
+      );
   }
 
   getTaxonomySuggestions() {
@@ -401,7 +364,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Taxonomy items list
    */
-  toTaxonomySuggestedItems(taxonomies:any[]) {
+  toTaxonomySuggestedItems(taxonomies: any[]) {
     let items: string[] = [];
     for (let taxonomy of taxonomies) {
       items.push(taxonomy.label);
@@ -412,12 +375,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Filter keywords for suggestive search
    */
-  filterTaxonomies(event:any) {
+  filterTaxonomies(event: any) {
     let suggTaxonomy = event.query;
     this.suggestedTaxonomyList = [];
-    for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
+    for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
       let keyw = this.suggestedTaxonomies[i];
-      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+      if (keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
         this.suggestedTaxonomyList.push(keyw);
       }
     }
@@ -426,108 +389,140 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Filter keywords for suggestive search
    */
-  nodeExpand(event:any) {
-      this.nodeExpanded = true;
+  nodeExpand(event: any) {
+    this.nodeExpanded = true;
 
   }
 
   /**
    * Filter keywords for suggestive search
    */
-  nodeCollapse(event:any) {
+  nodeCollapse(event: any) {
     this.nodeExpanded = false;
 
   }
 
+  collectThemesWithCount() {
+    this.sortable = [];
+    this.themesWithCount = [];
+    for (let theme in (_.countBy(this.themesAllArray))) {
+      this.sortable.push([theme, _.countBy(this.themesAllArray)[theme]]);
+    }
+    if (this.unspecifiedCount > 0) {
+      this.sortable.push(['Unspecified', this.unspecifiedCount]);
+    }
+    this.sortable.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+    for (var key in this.sortable.slice(0, 5)) {
+      this.themesWithCount.push({
+        label: this.sortable[key][0] + "-" + this.sortable[key][1],
+        value: this.sortable[key][0]
+      });
+    }
+    if (this.sortable.length > 5) {
+      this.showMoreLink = true;
+    } else {
+      this.showMoreLink = false;
+    }
+  }
 
-/**
+  collectComponentsWithCount() {
+    this.componentsWithCount = [];
+    for (let comp of this.components) {
+      let count: any;
+      count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
+      this.componentsWithCount.push({label: comp.label + "-" + count, value: comp.value});
+    }
+  }
+
+  /**
    * Filter keywords for suggestive search
    */
-  filterKeywords(event:any) {
-        let keyword = event.query;
-        this.suggestedKeywords = [];
-        for(let i = 0; i < this.keywords.length; i++) {
-            let keyw = this.keywords[i];
-            if(keyw.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
-                this.suggestedKeywords.push(keyw);
-            }
-        }
+  filterKeywords(event: any) {
+    let keyword = event.query;
+    this.suggestedKeywords = [];
+    for (let i = 0; i < this.keywords.length; i++) {
+      let keyw = this.keywords[i];
+      if (keyw.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
+        this.suggestedKeywords.push(keyw);
+      }
+    }
 
-        this.suggestedKeywords = this.sortAlphabetically(this.suggestedKeywords);
+    this.suggestedKeywords = this.sortAlphabetically(this.suggestedKeywords);
   }
 
   /**
    * Filter authors for suggestive search
    */
 
-  filterAuthors(event:any) {
-        let author = event.query;
-        this.suggestedAuthors = [];
-        for(let i = 0; i < this.authors.length; i++) {
-            let autho = this.authors[i];
-            if(autho.toLowerCase().indexOf(author.toLowerCase()) >= 0) {
-                this.suggestedAuthors.push(autho);
-            }
-        }
-        this.suggestedAuthors = this.sortAlphabetically(this.suggestedAuthors);
-        //this.suggestedAuthors.splice(0, 0, 'All');
-
+  filterAuthors(event: any) {
+    let author = event.query;
+    this.suggestedAuthors = [];
+    for (let i = 0; i < this.authors.length; i++) {
+      let autho = this.authors[i];
+      if (autho.toLowerCase().indexOf(author.toLowerCase()) >= 0) {
+        this.suggestedAuthors.push(autho);
+      }
     }
+    this.suggestedAuthors = this.sortAlphabetically(this.suggestedAuthors);
+    //this.suggestedAuthors.splice(0, 0, 'All');
+
+  }
 
   /**
    * Sort arrays alphabetically
    */
-  sortAlphabetically(array:string[]) {
-        var sortedArray: string[] = array.sort((n1,n2) => {
-            if (n1 > n2) {
-                return 1;
-            }
-            if (n1 < n2) {
-                return -1;
-            }
-            return 0;
-        });
-        return sortedArray;
-    }
+  sortAlphabetically(array: string[]) {
+    var sortedArray: string[] = array.sort((n1, n2) => {
+      if (n1 > n2) {
+        return 1;
+      }
+      if (n1 < n2) {
+        return -1;
+      }
+      return 0;
+    });
+    return sortedArray;
+  }
 
   /**
    * Display suggested authors on dropdown click
    */
-  onAuthorDropdownClick(event:any) {
-        //var tmp = this.suggestedAuthors; // wierd, have to do this, otherwise nothing display
-        this.suggestedAuthors = [];
-        //mimic remote call
-        setTimeout(() => {
-            this.suggestedAuthors = this.authors;
-        }, 100);
+  onAuthorDropdownClick(event: any) {
+    //var tmp = this.suggestedAuthors; // wierd, have to do this, otherwise nothing display
+    this.suggestedAuthors = [];
+    //mimic remote call
+    setTimeout(() => {
+      this.suggestedAuthors = this.authors;
+    }, 100);
   }
 
   /**
    * Filter themes
    */
-  filterByTheme(searchResults:any[], selectedThemes:string[]) {
-     var filteredResults : any[] = [];
-       if(selectedThemes.length > 0 && selectedThemes.indexOf(this.ALL) < 0) {
-            if (searchResults !== null && searchResults.length > 0) {
-                for (let resultItem of searchResults)
-                {
-                    if (resultItem.topic !== null ) {
-                       if (this.containsAllThemes(resultItem.topic, selectedThemes)) {
-                        filteredResults.push(resultItem);
-                      }
-                    }
-                  }
-              }
-            return filteredResults;
-        }else {
-           return searchResults;
-       }
+  filterByTheme(searchResults: any[], selectedThemes: string[]) {
+    var filteredResults: any[] = [];
+    if (selectedThemes.length > 0 && selectedThemes.indexOf(this.ALL) < 0) {
+      if (searchResults !== null && searchResults.length > 0) {
+        for (let resultItem of searchResults) {
+          if (resultItem.topic !== null) {
+            if (this.containsAllThemes(resultItem.topic, selectedThemes)) {
+              filteredResults.push(resultItem);
+            }
+          }
+        }
+      }
+      return filteredResults;
+    } else {
+      return searchResults;
+    }
   }
 
   /**
    * Filter Components
    */
-  filterByComponents(searchResults:any[], selectedComponents:string[]) {
+  filterByComponents(searchResults: any[], selectedComponents: string[]) {
     var filteredResults: any[] = [];
 
     if (selectedComponents.length > 0) {
@@ -565,7 +560,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Filter Components
    */
-  filterByThemes(searchResults:any[], selectedThemes:string[]) {
+  filterByThemes(searchResults: any[], selectedThemes: string[]) {
     var filteredResults: any[] = [];
     console.log("selected theme" + selectedThemes);
     if (selectedThemes.length > 0) {
@@ -599,66 +594,160 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * filter authors
    */
-  filterByAuthor(searchResults:any[], selectedAuthor:string) {
-        if(selectedAuthor !== null  && selectedAuthor !== this.ALL  && selectedAuthor !== '') {
-            var filteredResults : any[] = [];
-            if (searchResults && searchResults.length > 0) {
-                for (let resultItem of searchResults)
-                {
-                    if (resultItem.contactPoint && resultItem.contactPoint !== null &&
-                        resultItem.contactPoint.fn !== null &&  selectedAuthor === resultItem.contactPoint.fn) {
-                        filteredResults.push(resultItem);
-                    }
-                }
-            }
-            return filteredResults;
-        } else {
-            return searchResults;
+  filterByAuthor(searchResults: any[], selectedAuthor: string) {
+    if (selectedAuthor !== null && selectedAuthor !== this.ALL && selectedAuthor !== '') {
+      var filteredResults: any[] = [];
+      if (searchResults && searchResults.length > 0) {
+        for (let resultItem of searchResults) {
+          if (resultItem.contactPoint && resultItem.contactPoint !== null &&
+            resultItem.contactPoint.fn !== null && selectedAuthor === resultItem.contactPoint.fn) {
+            filteredResults.push(resultItem);
+          }
         }
+      }
+      return filteredResults;
+    } else {
+      return searchResults;
     }
+  }
 
   /**
    * filter results
    */
-  filterResults(event:any,selectedDropdown:string) {
+  filterResults(event: any, selectedDropdown: string) {
+    this.selectedThemes = [];
+    this.selectedComponents = [];
+    let themeSelected:boolean = false;
+    let componentSelected:boolean = false;
+    let authorSelected:boolean = false;
+    let keywordSelected:boolean = false;
+
+    // Research Topics selected
+    if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+      themeSelected = true;
+      for (let theme of this.selectedThemesNode) {
+        this.selectedThemes.push(theme.value);
+      }
+      console.log("inside selectedcomponent" + this.selectedThemes);
+
+      this.filteredResults = this.filterByThemes(this.searchResults, this.selectedThemes);
+      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+      this.authors = this.collectAuthors(this.filteredResults);
+      if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+      } else {
+        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+      }
+      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+      } else {
+        this.components = this.collectComponents(this.filteredResults);
+        this.collectComponentsWithCount();
+      }
+    }
+    console.log("test" + this.filteredResults.length);
+    // Resource Features selected
+
+    if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+      componentSelected = true;
+      console.log("inside selectedcomponent" + this.selectedComponentsNode);
+      for (let comp of this.selectedComponentsNode) {
+        this.selectedComponents.push(comp.value);
+      }
+      this.filteredResults = this.filterByComponents(this.searchResults, this.selectedComponents);
+      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+      if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
+      } else {
+        this.authors = this.collectAuthors(this.filteredResults);
+      }
+      if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+      } else {
+        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+      }
+      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+      } else {
+        this.themes = this.collectThemes(this.filteredResults);
+        this.collectThemesWithCount();
+      }
+    }
+
+    // Author selected
+
     if (selectedDropdown !== null) {
       if (selectedDropdown === 'Author') {
         this.selectedAuthorDropdown = true;
       }
     }
-    if (this.selectedKeywords !== null) {
-      this.filteredResults = this.filterByKeyword(this.searchResults, this.selectedKeywords);
-    }
-
-    this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-    //this.suggestedThemes = this.collectThemes(this.filteredResults);
-    this.selectedThemes = [];
-    this.selectedComponents = [];
-
-    for (let theme of this.selectedThemesNode)
-    {
-      this.selectedThemes.push(theme.value);
-    }
-
-    if (this.selectedThemes !== null && this.selectedThemes.length > 0) {
-      this.filteredResults =this.filterByThemes(this.filteredResults, this.selectedThemes);
-      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-    }
-
-    for (let comp of this.selectedComponentsNode)
-    {
-      this.selectedComponents.push(comp.value);
-    }
-    if (this.selectedComponents !== null && this.selectedComponents.length > 0) {
-      this.filteredResults =this.filterByComponents(this.filteredResults, this.selectedComponents);
-      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-    }
-    this.suggestedAuthors = this.collectAuthors(this.filteredResults);
 
     if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
+      authorSelected = true;
       this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
+      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+      } else {
+        this.themes = this.collectThemes(this.filteredResults);
+        this.collectThemesWithCount();
+      }
+      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+      } else {
+        this.components = this.collectComponents(this.filteredResults);
+        this.collectComponentsWithCount();
+      }
+      if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+      } else {
+        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+      }
     }
+
+    if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
+      keywordSelected = true;
+      this.filteredResults = this.filterByKeyword(this.searchResults, this.selectedKeywords);
+      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+      } else {
+        this.themes = this.collectThemes(this.filteredResults);
+        this.collectThemesWithCount();
+      }
+      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+      } else {
+        this.components = this.collectComponents(this.filteredResults);
+        this.collectComponentsWithCount();
+      }
+      if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
+      } else {
+        this.authors = this.collectAuthors(this.filteredResults);
+      }
+    }
+
+    if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected)
+    {
+      this.filteredResults = this.searchResults;
+      this.suggestedThemes = [];
+      this.suggestedKeywords =[];
+      this.suggestedAuthors = [];
+      this.selectedAuthor = null;
+      this.selectedKeywords = [];
+      this.selectedThemes =[];
+      this.selectedThemesNode = [];
+      this.selectedComponents =[];
+      this.selectedComponentsNode = [];
+      this.selectedAuthorDropdown = false;
+      this.authors = this.collectAuthors(this.filteredResults);
+      this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+      this.components = this.collectComponents(this.filteredResults);
+      this.collectComponentsWithCount();
+      this.themes = this.collectThemes(this.filteredResults);
+      this.collectThemesWithCount();
+    }
+
+    this.themesTree = [{
+      label: 'Research Topics -',
+      "expanded": 'true',
+      children: this.themesWithCount
+    }];
+    this.componentsTree = [{
+      label: 'Resource Features -',
+      "expanded": 'true',
+      children: this.componentsWithCount
+    }];
   }
+
 
   onlyUnique(value, index, self) {
      return self.indexOf(value) === index;
@@ -669,27 +758,27 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * clear filters
    */
   clearFilters() {
-        this.filteredResults = this.searchResults;
-        this.suggestedThemes = [];
-        this.suggestedKeywords =[];
-        this.suggestedAuthors = [];
-        this.selectedAuthor = null;
-        this.selectedKeywords = [];
-        this.selectedThemes =[];
-        this.selectedThemesNode = [];
-        this.selectedComponents =[];
-        this.selectedComponentsNode = [];
-        this.selectedAuthorDropdown = false;
+    this.filteredResults = this.searchResults;
+    this.suggestedThemes = [];
+    this.suggestedKeywords =[];
+    this.suggestedAuthors = [];
+    this.selectedAuthor = null;
+    this.selectedKeywords = [];
+    this.selectedThemes =[];
+    this.selectedThemesNode = [];
+    this.selectedComponents =[];
+    this.selectedComponentsNode = [];
+    this.selectedAuthorDropdown = false;
   }
 
   /**
    * clear author filter
    */
   clearAuthorFilter() {
-        this.filteredResults = this.searchResults;
-        this.suggestedAuthors = [];
-        this.selectedAuthor = null;
-        this.selectedAuthorDropdown = false;
+    this.filteredResults = this.searchResults;
+    this.suggestedAuthors = [];
+    this.selectedAuthor = null;
+    this.selectedAuthorDropdown = false;
   }
 
     /**
@@ -699,59 +788,55 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
      * @returns {boolean}
      */
   containsAllKeywords(resultKeywords:string[], keywords:string[]) {
-        for (let keyw of keywords) {
-            if(resultKeywords.indexOf(keyw) === -1)
-                return false;
-        }
-        return true;
+    for (let keyw of keywords) {
+      if(resultKeywords.indexOf(keyw) === -1)
+        return false;
+    }
+      return true;
   }
 
 
   containsAllThemes(resultThemes:any[], themes:string[]) {
-          for (let theme of themes) {
-            if (resultThemes !== null) {
-              for (let result of resultThemes) {
-                if (result.tag !== null) {
-                  if ((result.tag).indexOf(theme)) {
-                    return false;
-                  }
-                }
-              }
+    for (let theme of themes) {
+      if (resultThemes !== null) {
+        for (let result of resultThemes) {
+          if (result.tag !== null) {
+            if ((result.tag).indexOf(theme)) {
+              return false;
             }
           }
-        return true;
+        }
+      }
+    }
+    return true;
   }
 
-    filterByKeyword(searchResults:any[], selectedKeywords:any[]) {
-        var filteredResults : any[] = [];
-        if(selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
-            if (searchResults !== null && searchResults.length > 0) {
-                for (let resultItem of searchResults)
-                {
-                    if (resultItem.keyword && resultItem.keyword !== null &&
-                        this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
-                        filteredResults.push(resultItem);
-                    }
-                }
-            }
-            return filteredResults;
-        }else {
-           return searchResults;
+  filterByKeyword(searchResults:any[], selectedKeywords:any[]) {
+    var filteredResults : any[] = [];
+    if(selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
+      if (searchResults !== null && searchResults.length > 0) {
+        for (let resultItem of searchResults)
+        {
+          if (resultItem.keyword && resultItem.keyword !== null &&
+            this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
+            filteredResults.push(resultItem);
+          }
         }
-     }
-
-    openSummaryPage() {
-        this.summaryPageOpen = true;
+      }
+      return filteredResults;
+    }else {
+      return searchResults;
     }
+  }
 
-    encodeString(url:string,param:string) {
-      var urlString = url + encodeURIComponent(param);
-      window.open(urlString);
-    }
+  encodeString(url:string,param:string) {
+    var urlString = url + encodeURIComponent(param);
+    window.open(urlString);
+  }
 
-    openURL(url:string) {
-       window.open(url);
-    }
+  openURL(url:string) {
+    window.open(url);
+  }
 
   getSearchFields() {
     this.searchFieldsListService.get()
@@ -789,39 +874,19 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
      * Get the params OnInit
      */
-    ngOnInit() {
-
+  ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
-    this.columnOptions = [];
-        this.cols = [];
-
-        this.cols.push({header:'DOI', field:'doi'});
-        this.cols.push({header:'Publisher', field:'publisher.name'});
-        this.cols.push({header:'Rights', field:'rights'});
-        this.cols.push({header:'Theme', field:'theme'});
-
-        this.columnOptions = [];
-        for(let i = 0; i < this.cols.length; i++) {
-            this.columnOptions.push({label: this.cols[i].header, value: this.cols[i]});
-        }
-        this.cols = [];
-        this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-          if (_.includes(window.location.href,'?')) {
-              this.searchValue =params['q'];
-              this.searchTaxonomyKey=params['key'];
-              this.queryAdvSearch = params['queryAdvSearch'];
-              this.getTaxonomies();
-            } else {
-              this.searchValue =_.split(window.location.href,'/')[5];
-              this.summaryPageOpen = true;
-              this.searchTaxonomyKey = '';
-            }
-            this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
-        });
+    this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+      this.searchValue =params['q'];
+      this.searchTaxonomyKey=params['key'];
+      this.queryAdvSearch = params['queryAdvSearch'];
+      this.getTaxonomies();
+      this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
+  });
   }
 
-    ngOnDestroy() {
-          this._routeParamsSubscription.unsubscribe();
+  ngOnDestroy() {
+      this._routeParamsSubscription.unsubscribe();
     }
 }

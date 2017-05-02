@@ -1,6 +1,5 @@
 import { Routes, RouterModule } from '@angular/router';
 import { AdvSearchComponent } from './index';
-import { HomeHeadbarComponent } from '../shared/homeheadbar/index';
 import { SearchTopBarComponent } from '../app.searchtopbar.component';
 
 

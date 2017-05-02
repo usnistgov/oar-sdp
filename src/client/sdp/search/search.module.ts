@@ -6,11 +6,8 @@ import { ReadMoreComponent } from './search.readmorecomponent';
 
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
-import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
+import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule, AutoCompleteModule,
   MessagesModule, MultiSelectModule, DataTableModule, DataListModule } from 'primeng/primeng';
-
-
-
 
 @NgModule({
     imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,

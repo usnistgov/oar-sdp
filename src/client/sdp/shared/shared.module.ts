@@ -6,8 +6,6 @@ import { SearchFieldsListService } from './searchfields-list/index';
 import { TaxonomyListService } from './taxonomy-list/index';
 import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
-import { HeadbarComponent } from './headbar/index';
-import { HomeHeadbarComponent } from './homeheadbar/index';
 
 import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
  PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
@@ -22,8 +20,8 @@ import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, Menub
   imports: [CommonModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
   SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
   MultiSelectModule,PaginatorModule,DialogModule,CalendarModule],
-  declarations: [HomeHeadbarComponent, HeadbarComponent, FootbarComponent],
-  exports: [HomeHeadbarComponent, HeadbarComponent, FootbarComponent,
+  declarations: [FootbarComponent],
+  exports: [FootbarComponent,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
     SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
     MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule]

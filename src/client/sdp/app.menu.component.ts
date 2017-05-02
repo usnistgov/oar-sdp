@@ -18,7 +18,6 @@ export class AppMenuComponent implements OnInit {
 
   constructor(@Inject(forwardRef(() => AppComponent)) public app:AppComponent) {}
 
-
   ngOnInit() {
     this.model = [
       {label: ' ', icon: 'home', routerLink: ['/']},
