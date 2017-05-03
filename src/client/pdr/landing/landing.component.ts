@@ -12,7 +12,7 @@ import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';
-import * as jsPDF  from 'jspdf';
+//import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
 declare var jQuery: any;
@@ -262,13 +262,15 @@ onSuccessAny(searchResults:any[]) {
         {
             label: 'Export Metadata', icon: "Menu", items: [
                 {   label: 'PDF',  icon: "faa faa-file-pdf-o",
-                    command: (event)=>{ var doc = new jsPDF();
-                        var i=0;
-                        for(var key in this.searchResults[0]){
-                        doc.text(20, 10 + i, key + ": " + this.searchResults[0][key]);
-                        i+=10;
-                        }
-                        doc.save('metadata_'+this.searchResults[0].title+'.pdf');
+                    command: (event)=>{ 
+                        alert("Coming soon");
+                        //var doc = new jsPDF();
+                        //var i=0;
+                        //for(var key in this.searchResults[0]){
+                        //doc.text(20, 10 + i, key + ": " + this.searchResults[0][key]);
+                        //i+=10;
+                       // }
+                        //doc.save('metadata_'+this.searchResults[0].title+'.pdf');
                     }
                 },
                 {label: 'POD JSON', icon: "faa faa-file-o", command: (event)=>{ alert("Coming soon ...");}},
