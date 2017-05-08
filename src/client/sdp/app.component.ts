@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ElementRef, Renderer, ViewChild, OnDestroy } from '@angular/core';
-import { Config, HeadbarComponent, FootbarComponent } from './shared/index';
+import { Config, FootbarComponent } from './shared/index';
 import './operators';
 enum MenuOrientation {
   STATIC,
