@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef,  ViewChildren } from '@angular/core';
 import { SearchService } from '../shared/index';
-
-
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
@@ -13,7 +11,7 @@ import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';
 import * as jsPDF  from 'jspdf';
-
+//let jsPDF = require('jspdf');
 declare var Ultima: any;
 declare var jQuery: any;
 
@@ -23,7 +21,6 @@ declare var jQuery: any;
     templateUrl: 'landing.component.html',
     styleUrls: ['landing.component.css'],
     providers:[SearchService]
-    
     
 })
 
@@ -72,13 +69,14 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
-  
+  console.log("On success");
         this.searchResults = searchResults;
         this.createDataHierarchy();
         //alert(this.searchResults);
         if(this.searchResults[0].doi != "" ){
             this.isDOI = true;
         }
+        console.log(this.searchResults[0]["@id"]);
     }
 
 

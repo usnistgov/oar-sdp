@@ -33,6 +33,9 @@ export class ProjectConfig extends SeedConfig {
           defaultExtension : 'js'
       };
 
+      this.SYSTEM_CONFIG_DEV.paths['jspdf'] =
+      `${this.APP_BASE}node_modules/jspdf/dist/jspdf.min.js`;
+
 
       /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;
@@ -50,9 +53,7 @@ export class ProjectConfig extends SeedConfig {
       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
       {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
-
       // inject into css section
-
   ];
 
 
@@ -76,16 +77,17 @@ export class ProjectConfig extends SeedConfig {
        path: 'node_modules/lodash/lodash.js'
      },
        {
-         name: 'auto-text-rotating',
-         //   // Path to the package's bundle
-         path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
-       }
-       ,
-       {
          name: 'jspdf',
          //   // Path to the package's bundle
          path: 'node_modules/jspdf/dist/jspdf.min.js'
        }
+     ,
+       {
+         name: 'auto-text-rotating',
+         //   // Path to the package's bundle
+         path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
+       }
+       
      ];
 
     //

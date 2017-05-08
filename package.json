@@ -59,6 +59,7 @@
     "@types/gulp-util": "^3.0.29",
     "@types/jasmine": "2.5.41",
     "@types/jquery": "^2.0.41",
+    "@types/jspdf": "^1.1.31",
     "@types/lodash": "ts2.0",
     "@types/node": "^6.0.45",
     "@types/rimraf": "0.0.28",

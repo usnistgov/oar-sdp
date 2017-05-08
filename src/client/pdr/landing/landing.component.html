@@ -70,7 +70,7 @@
              
             Identifier: 
                 <span *ngIf="isDOI" ><i>  {{record.doi}}</i></span> 
-                <span  *ngIf="!isDOI"><i> {{record["@id"]}}</i> </span>
+                <span  *ngIf="!isDOI"><i> {{console.log("test");}}{{record["@id"]}}</i> </span>
          <br>Discussed in article: 
                 <span *ngIf="record.references">
                     <small *ngFor="let refs of record.references"> 
