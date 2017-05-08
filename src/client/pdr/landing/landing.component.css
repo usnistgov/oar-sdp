@@ -25,8 +25,11 @@
 :host /deep/ .ui-treenode-label{
   font-style: italic;
   color: #1471AE;
+  
 }
-
+:host /deep/ .ui-treenode{
+ background-color:#ffffff;
+}
 
 :host /deep/ .ui-menuitem{
   font-style: italic;

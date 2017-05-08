@@ -28,17 +28,21 @@
              </span>
    
              <div class="" *ngIf="record.authors">
-                <span *ngFor="let author of record.authors"> 
-                    {{ author.fn}},
+                <span *ngFor="let author of record.authors; let i = index"> 
+                    {{ author.fn}}
+                   <span *ngIf="i < record.authors.length-1 "> ,</span>
                 </span>
-                 <i class ="faa faa-plus-square-o"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent">...</i>
+                <span *ngIf="isCollapsedContent">
+                 <i class ="faa faa-plus-square-o"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent"></i>
+                 </span>
             </div>
           
                 <!--<hr>-->
                 <div [collapse]="!isCollapsedContent" class="card card-block card-header">
                     <div class="" *ngIf="record.authors">
                         <span><b>Authors:</b></span>
-                        <div *ngFor="let author of record.authors"> 
+                        <div *ngFor="let author of record.authors; let i = index"> 
+
                             <span>{{ author.fn}}</span>,
                              <span *ngFor="let aff of author.affiliation">
                                  <br>{{aff.title}}
@@ -49,17 +53,18 @@
              <br><!-- Contact point section-->
              <div class="" *ngIf="record.contactPoint">
                 Contact: <strong> {{record.contactPoint.fn}}</strong>
-                <i class="faa faa-plus-square-o" aria-hidden="true" (click)="closeContent = !closeContent">...</i>
+                ..<i class="faa faa-plus-square-o" aria-hidden="true" (click)="closeContent = !closeContent"></i>
          <!--<hr>-->
                 <div [collapse]="!closeContent" class="card card-block card-header">
                      <span class="" *ngIf="record.contactPoint.fn">
-                        <strong> Contact Person:</strong><br>{{record.contactPoint.fn}}
-                    </span><br><strong>Email:</strong>
-                    <span class="" *ngIf="record.contactPoint.hasEmail">
-                        {{record.contactPoint.hasEmail}}
+                        <strong> Contact Person:</strong>
+                         <br>
+                         <a *ngIf="isEmail" href="{{record.contactPoint.hasEmail}}" target="_top">{{record.contactPoint.fn}}</a>
+                        <span *ngIf="!isEmail">{{record.contactPoint.fn}}</span>
                     </span>
+                    <br><strong>Email:</strong>
+                    <span class="" *ngIf="isEmail">{{record.contactPoint.hasEmail}}</span>
                     <div class="" *ngIf="record.contactPoint.address">
-                        
                         <span><b>Address:</b></span>
                         <div *ngFor="let address of record.contactPoint.address"> 
                             {{address}}
@@ -69,23 +74,23 @@
             </div>
              
             Identifier: 
-                <span *ngIf="isDOI" ><i>  {{record.doi}}</i></span> 
-                <span  *ngIf="!isDOI"><i> {{console.log("test");}}{{record["@id"]}}</i> </span>
-         <br>Discussed in article: 
+                <span *ngIf="isDOI" ><i>  <a href="javascript:window.location.reload(true)">{{record.doi}}</a></i></span> 
+                <span  *ngIf="!isDOI"><i> <a href="javascript:window.location.reload(true)">{{record["@id"]}}</a></i> </span>
+         <br>Described in article: 
                 <span *ngIf="record.references">
-                    <small *ngFor="let refs of record.references"> 
-                      <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>, 
-                     </small>
+                    <small *ngFor="let refs of record.references; let i =index"> 
+                      <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a> 
+                      <span *ngIf="i < record.references.length-1 "> ,</span>
+                    </small>
                 </span>
             <br>
         <div class="" *ngIf="record.modified">
                 History: <strong> {{record.modified}}</strong>
-                <i class="faa faa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory">...</i>
+                <i class="faa faa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory"></i>
          <!--<hr>-->
-                <div [collapse]="!closehistory" class="card card-block card-header">
-                     <span class="" *ngIf="record.modified"> 
-                        <strong> Last modified on:</strong><br>{{record.modified}}
-                    </span>
+                <div [collapse]="!closehistory" class="card">
+                    <span class="" *ngIf="record.issued"> <strong> First Released:</strong>{{record.issued}}</span>
+                    <span class="" *ngIf="record.modified"> <strong> Last modified:</strong>{{record.modified}}</span>
                 </div>
             </div>
          </div>
@@ -106,15 +111,17 @@
             <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
                 {{ record.description }}
             </div>  
-            <br>  
+              
             <strong>Research Topics:</strong> 
-            <span  *ngFor="let topic of record.topic">
-                {{ topic.tag }},
+            <span  *ngFor="let topic of record.topic; let i =index">
+                {{ topic.tag }}
+                <span *ngIf="i < record.references.length-1 "> ,</span>
             </span>
-            <br> <br>
+            <br> 
             <strong>Subject Keywords:</strong> 
-            <span  *ngFor="let keyword of record.keyword">
-                {{ keyword }},
+            <span  *ngFor="let keyword of record.keyword; let i =index">
+                {{ keyword }}
+                <span *ngIf="i < record.references.length-1 "> ,</span>
             </span>
             
             <br>
@@ -126,7 +133,7 @@
                      </span>
                 </span>
             <br>
-            <br><h3 id="inventory" name="inventory">Inventory</h3><br>
+            <br><h3 id="inventory" name="inventory">Inventory/Files</h3><br>
             This resource contains: 
 
             <div class="ui-g">
