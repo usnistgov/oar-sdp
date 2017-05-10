@@ -769,6 +769,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.selectedComponents =[];
     this.selectedComponentsNode = [];
     this.selectedAuthorDropdown = false;
+    this.authors = this.collectAuthors(this.filteredResults);
+    this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+    this.components = this.collectComponents(this.filteredResults);
+    this.collectComponentsWithCount();
+    this.themes = this.collectThemes(this.filteredResults);
+    this.collectThemesWithCount();
+    this.themesTree = [{
+      label: 'Research Topics -',
+      "expanded": 'true',
+      children: this.themesWithCount
+    }];
+    this.componentsTree = [{
+      label: 'Resource Features -',
+      "expanded": 'true',
+      children: this.componentsWithCount
+    }];
   }
 
   /**
@@ -779,6 +795,31 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.suggestedAuthors = [];
     this.selectedAuthor = null;
     this.selectedAuthorDropdown = false;
+
+    this.suggestedThemes = [];
+    this.suggestedKeywords =[];
+    this.selectedKeywords = [];
+    this.selectedThemes =[];
+    this.selectedThemesNode = [];
+    this.selectedComponents =[];
+    this.selectedComponentsNode = [];
+    this.selectedAuthorDropdown = false;
+    this.authors = this.collectAuthors(this.filteredResults);
+    this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+    this.components = this.collectComponents(this.filteredResults);
+    this.collectComponentsWithCount();
+    this.themes = this.collectThemes(this.filteredResults);
+    this.collectThemesWithCount();
+    this.themesTree = [{
+      label: 'Research Topics -',
+      "expanded": 'true',
+      children: this.themesWithCount
+    }];
+    this.componentsTree = [{
+      label: 'Resource Features -',
+      "expanded": 'true',
+      children: this.componentsWithCount
+    }];
   }
 
     /**
