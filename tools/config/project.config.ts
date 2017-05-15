@@ -24,6 +24,8 @@ export class ProjectConfig extends SeedConfig {
   constructor() {
     super();
     this.APP_TITLE = '';
+    this.GOOGLE_ANALYTICS_ID = 'UA-98270028-1';
+
 
       this.SYSTEM_CONFIG_DEV.paths['primeng'] =
       `${this.APP_BASE}node_modules/primeng/primeng`;
