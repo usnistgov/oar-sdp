@@ -1,17 +1,10 @@
- <!--<style id="antiClickjack">
- 
-</style>-->
 <script type="text/javascript">
   if (self === top) {
     var antiClickjack = document.getElementById("antiClickjack");
-    //antiClickjack.parentNode.removeChild(antiClickjack);
   } else {
     top.location = self.location;
   }
 </script>
-<!-- Latest compiled and minified CSS -->
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
-<!--<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 <div *ngFor="let record of searchResults"> 
     <div class="ui-g" style="padding-bottom: 3%">
          <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
@@ -21,28 +14,21 @@
                 <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
                 <b *ngSwitchCase="'nrdp:PublicDataResource'">Public Data Resource</b>
                 <b *ngSwitchDefault></b>
-            </span>  
-             
+            </span>              
              <br><span class="title" style="text-align: left; vertical-align: middle; ">
                 <h2>{{record.title}}</h2>
              </span>
    
              <div class="" *ngIf="record.authors">
                 <span *ngFor="let author of record.authors; let i = index"> 
-                    {{ author.fn}}
-                   <span *ngIf="i < record.authors.length-1 "> ,</span>
+                    {{ author.fn}}<span *ngIf="i < record.authors.length-1 ">,</span>
                 </span>
-                <span *ngIf="isCollapsedContent">
-                 <i class ="faa faa-plus-square-o"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent"></i>
-                 </span>
+                <i style="cursor: pointer;" class ="faa" [ngClass]="{'faa-plus-square-o': !clickAuthors, 'faa-minus-square-o': clickAuthors}" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent; clickAuthors = expandClick();"></i>
             </div>
-          
-                <!--<hr>-->
-                <div [collapse]="!isCollapsedContent" class="card card-block card-header">
+             <div [collapse]="!isCollapsedContent" class="card card-block card-header">
                     <div class="" *ngIf="record.authors">
                         <span><b>Authors:</b></span>
                         <div *ngFor="let author of record.authors; let i = index"> 
-
                             <span>{{ author.fn}}</span>,
                              <span *ngFor="let aff of author.affiliation">
                                  <br>{{aff.title}}
@@ -52,13 +38,10 @@
                 </div>
              <br><!-- Contact point section-->
              <div class="" *ngIf="record.contactPoint">
-                Contact: <strong> {{record.contactPoint.fn}}</strong>
-                ..<i class="faa faa-plus-square-o" aria-hidden="true" (click)="closeContent = !closeContent"></i>
-         <!--<hr>-->
+                Contact: <strong> {{record.contactPoint.fn}}</strong>..
+                <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}"aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandClick();"></i>
                 <div [collapse]="!closeContent" class="card card-block card-header">
                      <span class="" *ngIf="record.contactPoint.fn">
-                        <strong> Contact Person:</strong>
-                         <br>
                          <a *ngIf="isEmail" href="{{record.contactPoint.hasEmail}}" target="_top">{{record.contactPoint.fn}}</a>
                         <span *ngIf="!isEmail">{{record.contactPoint.fn}}</span>
                     </span>
@@ -76,23 +59,16 @@
             Identifier: 
                 <span *ngIf="isDOI" ><i>  <a href="javascript:window.location.reload(true)">{{record.doi}}</a></i></span> 
                 <span  *ngIf="!isDOI"><i> <a href="javascript:window.location.reload(true)">{{record["@id"]}}</a></i> </span>
-         <br>Described in article: 
-                <span *ngIf="record.references">
-                    <small *ngFor="let refs of record.references; let i =index"> 
-                      <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a> 
-                      <span *ngIf="i < record.references.length-1 "> ,</span>
-                    </small>
-                </span>
-            <br>
-        <div class="" *ngIf="record.modified">
-                History: <strong> {{record.modified}}</strong>
-                <i class="faa faa-plus-square-o" aria-hidden="true" (click)="closehistory = !closehistory"></i>
-         <!--<hr>-->
-                <div [collapse]="!closehistory" class="card">
-                    <span class="" *ngIf="record.issued"> <strong> First Released:</strong>{{record.issued}}</span>
-                    <span class="" *ngIf="record.modified"> <strong> Last modified:</strong>{{record.modified}}</span>
-                </div>
-            </div>
+         <br><span>Described in article: </span>
+            <span *ngIf="record.references">
+                <small *ngFor="let refs of record.references; let i =index"> 
+                    <br><a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a> 
+                    <span *ngIf="i < record.references.length-1 ">,</span>
+                </small>
+            </span><br> 
+            <span class="" *ngIf="record.issued">  First Released: <strong>{{record.issued}}</strong></span>
+            <span class="" *ngIf="record.modified"> Last modified: <strong>{{record.modified}}</strong></span>
+         
          </div>
          <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
     </div>
@@ -104,38 +80,39 @@
         <div class="ui-g-8 ui-md-8 ui-lg-8 ui-sm-10">
         
         <div *ngIf="similarResources">
-            <similar-resources [similarResourcesResults]="similarResourcesResults" [qcriteria]="qcriteria"></similar-resources></div>
+            <similar-resources [similarResourcesResults]="similarResourcesResults" [qcriteria]="qcriteria"></similar-resources>
+        </div>
         <!--Metadata -->
         <div *ngIf="metadata != true && similarResources != true ">
             <br><h3 id="description">Description</h3><br>
             <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
                 {{ record.description }}
-            </div>  
-              
+            </div>     
             <strong>Research Topics:</strong> 
             <span  *ngFor="let topic of record.topic; let i =index">
                 {{ topic.tag }}
-                <span *ngIf="i < record.references.length-1 "> ,</span>
+                <span *ngIf="i < record.references.length-1 ">,</span>
             </span>
             <br> 
-            <strong>Subject Keywords:</strong> 
-            <span  *ngFor="let keyword of record.keyword; let i =index">
-                {{ keyword }}
-                <span *ngIf="i < record.references.length-1 "> ,</span>
+            <b>Subject Keywords:</b>
+            <span *ngFor="let keyword of record.keyword; let i =index">
+                {{ keyword }}<span *ngIf="i < record.keyword.length-1 ">,</span>
             </span>
-            
             <br>
-            <br><h3 id="reference" name="reference">References</h3>
+            <br>
+            <div id="reference" name="reference">
+            <h3>References</h3>
             This data is discussed in :
                 <span *ngIf="record.references">
                     <span *ngFor="let refs of record.references"> 
                       <br> <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>
                      </span>
                 </span>
+            </div>
             <br>
-            <br><h3 id="inventory" name="inventory">Inventory/Files</h3><br>
+            <br>
+            <h3 id="inventory" name="inventory">Files</h3><br>
             This resource contains: 
-
             <div class="ui-g">
                 <div class="ui-g-6">
                     <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)"></p-tree>
@@ -154,6 +131,8 @@
                     </ul>
                 </div>
             </div>
+
+
         </div>
         <div *ngIf="metadata == true && similarResources != true ">
             <metadata-detail [searchResults]="searchResults" ></metadata-detail>
@@ -163,10 +142,13 @@
             <br>
             <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>            
         </div>
+        <p-dialog header="Citation" [(visible)]="display" modal="modal" width="300" responsive="true">
+              <span style="font-family:  Helvetica; font-style:italic; color:#484646; font-size: 12;">
+                   {{ citeString }}
+              </span>     
+        </p-dialog>
+
+        
     </div>
-   
 </div>
-
-
-
 <!---->

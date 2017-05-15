@@ -8,7 +8,8 @@ import { SimilarsComponent } from './similars.component';
 import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
   MessagesModule, MultiSelectModule, DataTableModule, DataListModule,MenuModule } from 'primeng/primeng';
 
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule,Title } from '@angular/platform-browser';
+
 
 
 @NgModule({
@@ -16,7 +17,7 @@ import { BrowserModule } from '@angular/platform-browser';
       DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule],
     declarations: [LandingPanelComponent,Collaspe,MetadataComponent,SimilarsComponent ],
     exports: [LandingPanelComponent],
-    providers: []
+    providers: [Title]
     
 })
 

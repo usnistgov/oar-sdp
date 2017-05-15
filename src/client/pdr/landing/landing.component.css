@@ -29,6 +29,9 @@
 }
 :host /deep/ .ui-treenode{
  background-color:#ffffff;
+} 
+:host /deep/ .ui-tree .ui-treenode-children{
+ background-color:#ffffff;
 }
 
 :host /deep/ .ui-menuitem{
@@ -40,9 +43,11 @@
   background-color: #004e8e;
 }*/
 
-:host /deep/ .rightMenuStyle >.ui-menu {
+:host /deep/ .rightMenuStyle >.ui-menu  {
   font-style: italic;
-  
   background-color: #e1dcdc;
 }
 
+:host /deep/ .rightMenuStyle > .ui-menu  .ui-menu-list li.ui-widget-header{
+    background-color: #B4B0B0;
+}
