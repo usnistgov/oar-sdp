@@ -102,7 +102,7 @@
             <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
               <label style="font-size: 14px;"><b>Keyword</b></label>
             </div>
-            <div style="background-color: #F8F9F9;height: 30px;padding-left:15px;padding-right:1.0em;">
+            <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
               <p-autoComplete id="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
                               (completeMethod)="filterKeywords($event)"
                               [multiple] = "true"
@@ -120,7 +120,7 @@
       <!-- Section 1 -->
       <div class="ui-g-12 ui-md-8 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
-                  [style]="{'padding-right': '.5em','height':'650px'}">
+                  [style]="{'padding-right': '.5em','height':'auto'}">
         <p-header style="background-color:#FFFFFF;width:100%;border:0px solid #FFFFFF;padding: 0px;">
           <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
           <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
@@ -137,7 +137,7 @@
               <div class="ui-grid-col-12">
                 <div class="ui-grid ui-grid-responsive" style="text-align: left;">
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL + '#/landing?id=',resultItem['@id'])" target="_blank">
+                    <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL + '#/landing?id=',resultItem['@id'])" >
                       {{resultItem.title}}</a></b></div>
                   </div>
                   <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
