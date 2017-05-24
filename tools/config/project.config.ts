@@ -75,19 +75,20 @@ export class ProjectConfig extends SeedConfig {
     // Add packages (e.g. ng2-translate)
      let additionalPackages: ExtendPackages[] = [{
        name: 'lodash',
-    //   // Path to the package's bundle
        path: 'node_modules/lodash/lodash.js'
      },
        {
          name: 'jspdf',
-         //   // Path to the package's bundle
          path: 'node_modules/jspdf/dist/jspdf.min.js'
        }
      ,
        {
          name: 'auto-text-rotating',
-         //   // Path to the package's bundle
          path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
+       },
+       {
+         name: 'ng2-sticky',
+         path: 'node_modules/ng2-sticky/dist/ng2-sticky.umd.js'
        }
        
      ];

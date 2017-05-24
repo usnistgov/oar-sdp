@@ -3,8 +3,9 @@ import {LandingPanelComponent} from './landing.component';
 @Component({
   selector: 'metadata-detail',
   template: `
-      <h2> Metadata:</h2>
+      <h3> Metadata:</h3>
       <div *ngFor="let fields of searchResults"> 
+      <br>
       Title: <div class="well">{{fields.title}}</div>
       <br>Issed: <div class="well">{{fields.issued}}</div>
       <br>References:<div class="well"> <span *ngFor="let ref of fields.references">

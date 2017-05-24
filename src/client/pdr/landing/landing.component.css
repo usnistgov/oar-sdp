@@ -34,20 +34,56 @@
  background-color:#ffffff;
 }
 
-:host /deep/ .ui-menuitem{
+/*:host /deep/ .ui-menuitem{
   font-style: italic;
 
-}
+}*/
 
 /*:host /deep/ .ui-menu{
   background-color: #004e8e;
 }*/
 
-:host /deep/ .rightMenuStyle >.ui-menu  {
+/*:host /deep/ .rightMenuStyle >.ui-menu  {
   font-style: italic;
   background-color: #e1dcdc;
-}
+}*/
 
 :host /deep/ .rightMenuStyle > .ui-menu  .ui-menu-list li.ui-widget-header{
+    background-color: #B8D4E6;
+    padding: 0; 
+}
+
+:host /deep/ .leftMenuStyle > .ui-menu  .ui-menu-list li.ui-widget-header{
     background-color: #B4B0B0;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Urw Cond';
+    padding: 0; 
+}
+:host /deep/ .leftMenuStyle > .ui-menu .ui-menu-list li.ui-menuitem .ui-menuitem-link{
+  line-height: 0;
+  min-height: 1em;
+  font-family: 'Franklin Gothic Urw Cond';
+  background-color: #e8e7e7;
+}
+
+:host /deep/ .leftMenuStyle > .ui-menu .ui-menu-list li.ui-menuitem .ui-menuitem-link:hover {
+          background-color: #ffffff;
+          color: #000000; }
+
+:host /deep/ .rightMenuStyle > .ui-menu .ui-menu-list li.ui-menuitem .ui-menuitem-link{
+  line-height: 0;
+   min-height: 0;
+   padding: 2px; 
+   font-family: 'Franklin Gothic Medium';
+   /*font-style: italic; font-size: 10pt;*/
+   
+}
+:host /deep/ .rightMenuStyle > .ui-menu .ui-menu-list li.ui-menuitem{
+  background-color:#E7F0F6;
+}
+
+:host /deep/ .ui-button-success {
+  padding:0;
+  line-height: 0;
+   min-height: 0;
 }
