@@ -58,6 +58,7 @@ export class AppMenuComponent implements OnInit {
         items: [
           {label: 'Search All Papers',url: ['https://www.nist.gov/publications']},
           {label: 'JRes NIST', url: 'https://www.nist.gov/nist-research-library/journal-research-nist'},
+          {label: 'NIST PubMed Central', url: 'https://www.ncbi.nlm.nih.gov/pmc/funder/nist/'},
         ]
       },
     ];
