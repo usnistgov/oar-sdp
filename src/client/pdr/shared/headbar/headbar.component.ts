@@ -30,5 +30,8 @@ export class HeadbarComponent {
     //alert("Test");
     window.open(this.SDPAPI);
   }
+  onClickAbout(){
+    window.open("../#/about");
+  }
 
 }
