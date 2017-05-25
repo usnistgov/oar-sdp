@@ -20,17 +20,16 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
             </span>
             <br>
             <br>
-           
+            <div *ngIf="record['references']"> 
             <h3 id="reference" name="reference">References</h3>
-            This data is discussed in :
-                <span *ngIf="record['references']">
-                    <span *ngFor="let refs of record['references']"> 
-                      <br> <a href={{refs.location}} target="blank" *ngIf="refs['refType'] == 'IsDocumentedBy'">{{ refs.label }}</a>
-                     </span>
+               This data is discussed in :
+                <span *ngFor="let refs of record['references']"> 
+                   <br> <a href={{refs.location}} target="blank" *ngIf="refs['refType'] == 'IsDocumentedBy'">{{ refs.label }}</a>
                 </span>
-            
+            </div>
             <br>
              <br>
+            <div *ngIf="record['dataHierarchy']">
             <h3 id="files" name="files">Files</h3><br>
             This resource contains: 
             <div class="ui-g">
@@ -48,6 +47,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                         </div>   
                     </div>
                 </div>
+            </div>
             </div>
             
   `

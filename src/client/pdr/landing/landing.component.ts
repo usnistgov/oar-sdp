@@ -164,14 +164,14 @@ onSuccessAny(searchResults:any[]) {
                      this.metadata = false;
                       window.location.href="#files";
                 }},
-                {label: 'Searchpage',  command: (event)=>{
-                        alert("Shows 'searchpage', if any associated with the record.");
-                   }
-                },
-                {label: 'API', command: (event)=>{
-                        alert("Shows 'API', if any associated with the record.");
-                     }
-                },
+                // {label: 'Searchpage',  command: (event)=>{
+                //         alert("Shows 'searchpage', if any associated with the record.");
+                //    }
+                // },
+                // {label: 'API', command: (event)=>{
+                //         alert("Shows 'API', if any associated with the record.");
+                //      }
+                // },
                 {label: 'Metadata',  command: (event)=>{this.metadata = true; this.similarResources =false;}}
             ]
         }
@@ -193,7 +193,7 @@ onSuccessAny(searchResults:any[]) {
                     if (this.searchResults[0].dataHierarchy == null )
                         alert("No data available for given record");
                     else
-                        window.open(this.distApi+"od/ds/zip?id="+this.searchResults[0]['@id']);
+                        window.open(this.distApi+"ds/zip?id="+this.searchResults[0]['@id']);
                 }}
                 ,{label: 'Export Metadata', icon: "faa faa-file-o",command: (event)=>{
                         window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
@@ -210,13 +210,25 @@ onSuccessAny(searchResults:any[]) {
             items: [
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     this.citeString = "";
+                    let date =  new Date(); 
                     if(this.searchResults[0].authors !=  null){
                         for(let author of this.searchResults[0].authors)
-                        { this.citeString += author.fn +",";}
+                        { if(author.familyName != null && author.familyName != undefined) 
+                         this.citeString += author.familyName +" ";
+                         if(author.givenName != null && author.givenName != undefined) 
+                         this.citeString +=  author.givenName+" ";
+                         if(author.middleName != null && author.middleName != undefined) 
+                         this.citeString += author.middleName;
+
+                         this.citeString +=","
+                        }
+                    }else{
+                        this.citeString += this.searchResults[0].contactPoint.fn+ ",";
                     }
 
                     this.citeString += this.searchResults[0].title +",";
                     this.citeString += this.searchResults[0].doi;
+                    this.citeString += ", access:"+date;
                     this.showDialog();
                     //alert("Copy following to cite the resource: \n\n"+citeString);
                     //window.open(this.searchResults[0].license);
@@ -377,6 +389,8 @@ onSuccessAny(searchResults:any[]) {
      testObj = {};
      testObj.label = label;
      testObj.data = data;
+     if(label == "Files") 
+     testObj.expanded = true;
      testObj.expandedIcon = "faa faa-folder-open";
      testObj.collapsedIcon =  "faa faa-folder";
      return testObj;
