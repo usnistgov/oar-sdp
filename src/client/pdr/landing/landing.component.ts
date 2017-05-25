@@ -50,6 +50,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     metadata: boolean = false;
     private rmmApi : string = Config.RMMAPI;
     private sdpLink : string = Config.SDPAPI;
+    private distApi : string = Config.DISTAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -59,6 +60,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      isDOI = false;
      isEmail = false;
      citeString:string = "";
+     
      
      
   /**
@@ -187,7 +189,12 @@ onSuccessAny(searchResults:any[]) {
                     window.open(this.searchResults[0].landingPage);
                   //alert("Test References"+this.searchResults[0].license);
                 }},
-                {label: 'Download all data', icon: "faa faa-download",command: (event)=>{alert("Coming soon!");}}
+                {label: 'Download all data', icon: "faa faa-download",command: (event)=>{
+                    if (this.searchResults[0].dataHierarchy == null )
+                        alert("No data available for given record");
+                    else
+                        window.open(this.distApi+"od/ds/zip?id="+this.searchResults[0]['@id']);
+                }}
                 ,{label: 'Export Metadata', icon: "faa faa-file-o",command: (event)=>{
                         window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
                     }
@@ -202,7 +209,7 @@ onSuccessAny(searchResults:any[]) {
             label: 'Use', 
             items: [
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
-                    
+                    this.citeString = "";
                     if(this.searchResults[0].authors !=  null){
                         for(let author of this.searchResults[0].authors)
                         { this.citeString += author.fn +",";}
@@ -339,10 +346,10 @@ onSuccessAny(searchResults:any[]) {
             //this.fileHierarchy.children.push(this.createChildrenTree(record.dataHierarchy[0].children, record.dataHierarchy[0].filepath);
             for(let fields of record.dataHierarchy){
                 
-                    if( fields.downloadURL != null)
+                if( fields.downloadURL != null)
                     this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
-                     else 
-                      if(fields.children != null)
+                else 
+                    if(fields.children != null)
                       this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));
                     
             }

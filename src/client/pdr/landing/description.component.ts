@@ -1,31 +1,31 @@
 import { Component, Input } from '@angular/core';
 import {LandingPanelComponent} from './landing.component'; 
-
+import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 @Component({
   selector: 'description-resources',
   template: `
    <h3 id="description" name="desscription">Description</h3><br>
             <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
-                {{ record.description }}
+                {{ record["description"] }}
             </div>     
             <strong>Research Topics:</strong> 
-            <span  *ngFor="let topic of record.topic; let i =index">
+            <span  *ngFor="let topic of record['topic']; let i =index">
                 {{ topic.tag }}
-                <span *ngIf="i < record.references.length-1 ">,</span>
+                <span *ngIf="i < record['references'].length-1 ">,</span>
             </span>
             <br> 
             <b>Subject Keywords:</b>
-            <span *ngFor="let keyword of record.keyword; let i =index">
-                {{ keyword }}<span *ngIf="i < record.keyword.length-1 ">,</span>
+            <span *ngFor="let keyword of record['keyword']; let i =index">
+                {{ keyword }}<span *ngIf="i < record['keyword'].length-1 ">,</span>
             </span>
             <br>
             <br>
            
             <h3 id="reference" name="reference">References</h3>
             This data is discussed in :
-                <span *ngIf="record.references">
-                    <span *ngFor="let refs of record.references"> 
-                      <br> <a href={{refs.location}} target="blank" *ngIf="refs.refType == 'IsDocumentedBy'">{{ refs.label }}</a>
+                <span *ngIf="record['references']">
+                    <span *ngFor="let refs of record['references']"> 
+                      <br> <a href={{refs.location}} target="blank" *ngIf="refs['refType'] == 'IsDocumentedBy'">{{ refs.label }}</a>
                      </span>
                 </span>
             
@@ -59,6 +59,7 @@ export class DescriptionComponent {
 
  fileDetails:string="";
  isFileDetails: boolean = false;
+   selectedFile: TreeNode;
  nodeSelect(event) {
       
         var test = this.getComponentDetails(this.record["components"],event.node.data);

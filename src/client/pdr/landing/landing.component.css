@@ -87,3 +87,10 @@
   line-height: 0;
    min-height: 0;
 }
+
+.textstyle1
+{
+  font-family: Arial, Helvetica, sans-serif; 
+  color: grey; 
+  font-size: 12;
+}

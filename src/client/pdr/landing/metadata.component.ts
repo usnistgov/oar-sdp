@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import {LandingPanelComponent} from './landing.component'; 
+import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 @Component({
   selector: 'metadata-detail',
   template: `
@@ -63,4 +64,21 @@ import {LandingPanelComponent} from './landing.component';
 })
 export class MetadataComponent {
    @Input() searchResults: any[];
+
+    private metadataTree: TreeNode[] = [];
+   
+   createTree(){
+
+   }
+
+   createTreeObj(label :string, data:string){
+     let testObj : TreeNode = {}; 
+     testObj = {};
+     testObj.label = label;
+     testObj.data = data;
+     testObj.expanded =true;
+     testObj.expandedIcon = "faa faa-folder-open";
+     testObj.collapsedIcon =  "faa faa-folder";
+     return testObj;
+  }
 }
