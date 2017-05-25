@@ -5,7 +5,7 @@ const DevConfig: EnvConfig = {
   RMMAPI: 'http://testdata.nist.gov/rmm/',
   SDPAPI: 'http://testdata.nist.gov/sdp/',
   PDRAPI: 'http://testdata.nist.gov/pdr/',
-  DISTAPI: 'http://testdata.nist.gov/oar-dist-service/',
+  DISTAPI: 'http://testdata.nist.gov/ds/',
   METAPI: 'http://testdata.nist.gov/meta/'
 };
 
