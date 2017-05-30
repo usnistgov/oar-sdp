@@ -64,6 +64,7 @@ export class Collaspe {
         this.isCollapsed = true;
         setTimeout(() => {
             this.height = '0';
+        
             this.isCollapse = true;
             this.isCollapsing = false;
         }, 4);

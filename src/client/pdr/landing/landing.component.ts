@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef,  ViewChildren } from '@angular/core';
 import { SearchService } from '../shared/index';
-
-
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
@@ -11,7 +9,9 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule ,Title} from '@angular/platform-browser';
+import {OverlayPanelModule} from 'primeng/primeng';
+import { Ng2StickyModule } from 'ng2-sticky';
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -23,8 +23,6 @@ declare var jQuery: any;
     templateUrl: 'landing.component.html',
     styleUrls: ['landing.component.css'],
     providers:[SearchService]
-    
-    
 })
 
 
@@ -51,6 +49,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private fileHierarchy : TreeNode;
     metadata: boolean = false;
     private rmmApi : string = Config.RMMAPI;
+    private sdpLink : string = Config.SDPAPI;
+    private distApi : string = Config.DISTAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -58,13 +58,16 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      qcriteria:string ="";
      selectedFile: TreeNode;
      isDOI = false;
-
-
+     isEmail = false;
+     citeString:string = "";
+     
+     
+     
   /**
    * Creates an instance of the SearchPanel
    *
    */
-    constructor(private route: ActivatedRoute, private el: ElementRef,public searchService:SearchService) {
+    constructor(private route: ActivatedRoute, private el: ElementRef,public searchService:SearchService, private titleService: Title) {
     }
 
   /**
@@ -72,13 +75,16 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
-  
+ 
         this.searchResults = searchResults;
+        this.titleService.setTitle(this.searchResults[0].title);
         this.createDataHierarchy();
-        //alert(this.searchResults);
-        if(this.searchResults[0].doi != "" ){
-            this.isDOI = true;
+        if(this.searchResults[0].doi != undefined && this.searchResults[0].doi != "" ){
+             this.isDOI = true;
         }
+        if(this.searchResults[0].contactPoint.hasEmail!= undefined && this.searchResults[0].contactPoint.hasEmail != "")
+            this.isEmail = true;
+            //console.log('Test:'+this.searchResults[0].references[0]);    
     }
 
 
@@ -141,42 +147,32 @@ onSuccessAny(searchResults:any[]) {
     updateLeftMenu(){
         
       this.leftmenu = [{
-            label: 'Overview', icon: "Menu",command: (event)=>{
+            label: 'Table of Contents', command: (event)=>{
                     window.location.href="#";},
             items: [
-                {label: 'Record', icon:"Submenu", command: (event)=>{
-                     window.open("./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"]));
+                {label: 'Description', command: (event)=>{
+                 
+                   this.metadata = false; this.similarResources =false;
+                   window.location.href="#description";
+                 }},
+                {label: 'References',  command: (event)=>{
+                      this.metadata = false;
+                      window.location.href="#reference";
                 }},
-                {label: 'References', icon:"Submenu", command: (event)=>{
-                    //window.location.href="./#/landing?id="+encodeURIComponent(this.searchResults[0]["@id"])+"#reference";
-                     window.location.href="#reference";
+                {label: 'Files',  command: (event)=>{
+                    
+                     this.metadata = false;
+                      window.location.href="#files";
                 }},
-                {label: 'Inventory', icon:"Submenu", command: (event)=>{
-                    window.location.href="#inventory";
-                }}
-            ]
-        },
-        {
-            label: 'Tools',  icon: "Menu",
-            items: [
-                {label: 'Searchpage', icon:"Submenu", command: (event)=>{
-                        alert("Shows 'searchpage', if any associated with the record.");
-                    //window.location.href=encodeURIComponent(this.searchResults[0]["searchpage"]);
-                    }
-                },
-                {label: 'API', icon:"Submenu", command: (event)=>{
-                        alert("Shows 'API', if any associated with the record.");
-                      //window.location.href=encodeURIComponent(this.searchResults[0]["api"]);
-                    }
-                }
-            ]
-        },
-        {
-            label: 'Other',  icon: "Menu",
-            items: [
-                {label: 'Related Resources',icon: "Submenu",  url:""},
-                {label: 'Metadata',  icon: "Submenu", command: (event)=>{this.metadata = true; this.similarResources =false;}},
-                {label: 'Open Data Schema', icon: "Submenu",url:"https://project-open-data.cio.gov/v1.1/schema/"}
+                // {label: 'Searchpage',  command: (event)=>{
+                //         alert("Shows 'searchpage', if any associated with the record.");
+                //    }
+                // },
+                // {label: 'API', command: (event)=>{
+                //         alert("Shows 'API', if any associated with the record.");
+                //      }
+                // },
+                {label: 'Metadata',  command: (event)=>{this.metadata = true; this.similarResources =false;}}
             ]
         }
         ];
@@ -187,99 +183,131 @@ onSuccessAny(searchResults:any[]) {
  */
     updateRightMenu(){
       this.rightmenu = [{
-            label: 'Access', 
+            label: 'Access ', 
             items: [
                 {label: 'Visit Home Page',  icon: "faa faa-external-link",command: (event)=>{
                     window.open(this.searchResults[0].landingPage);
                   //alert("Test References"+this.searchResults[0].license);
                 }},
-                {label: 'Download all data', icon: "faa faa-download"},
-                {label: 'Add All to DataCart', icon: "faa faa-cart-arrow-down",command: (event)=>{
-                   alert("Coming soon...");}
+                {label: 'Download all data', icon: "faa faa-download",command: (event)=>{
+                    if (this.searchResults[0].dataHierarchy == null )
+                        alert("No data available for given record");
+                    else
+                        window.open(this.distApi+"ds/zip?id="+this.searchResults[0]['@id']);
+                }}
+                ,{label: 'Export Metadata', icon: "faa faa-file-o",command: (event)=>{
+                        window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
+                    }
                 }
+                // ,
+                // {label: 'Add All to DataCart', icon: "faa faa-cart-arrow-down",command: (event)=>{
+                //    alert("Coming soon...");}
+                // }
             ]
         },
         {
             label: 'Use', 
             items: [
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
-                    let citeString = "";
+                    this.citeString = "";
+                    let date =  new Date(); 
                     if(this.searchResults[0].authors !=  null){
                         for(let author of this.searchResults[0].authors)
-                        { citeString += author.fn +",";}
+                        { if(author.familyName != null && author.familyName != undefined) 
+                         this.citeString += author.familyName +" ";
+                         if(author.givenName != null && author.givenName != undefined) 
+                         this.citeString +=  author.givenName+" ";
+                         if(author.middleName != null && author.middleName != undefined) 
+                         this.citeString += author.middleName;
+
+                         this.citeString +=","
+                        }
+                    }else{
+                        this.citeString += this.searchResults[0].contactPoint.fn+ ",";
                     }
 
-                    citeString += this.searchResults[0].title +",";
-                    citeString += this.searchResults[0].doi;
-                    alert("Copy following to cite the resource: \n\n"+citeString);
+                    this.citeString += this.searchResults[0].title +",";
+                    this.citeString += this.searchResults[0].doi;
+                    this.citeString += ", access:"+date;
+                    this.showDialog();
+                    //alert("Copy following to cite the resource: \n\n"+citeString);
                     //window.open(this.searchResults[0].license);
                   }},
-                {label: 'Access Details', icon: "faa faa-angle-double-right",command: (event)=>{
-                    let accessString = "Access level is:";
-                    accessString += this.searchResults[0].accessLevel;
-                    alert(accessString);
-                    ;}},
-                {label: 'License Statement', icon: "faa faa-copyright",command: (event)=>{
+                // {label: 'Access Rights', icon: "faa faa-angle-double-right",command: (event)=>{
+                //     let accessString = "Access level is:";
+                //     accessString += this.searchResults[0].accessLevel;
+                    
+                //     alert(accessString);
+                //     ;}},
+                {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
                     window.open(this.searchResults[0].license);
                   }}
             ]
         },
-        {
-            label: 'Metrices',   items: [
-                {label: 'Google Analytics',  icon: "faa faa-external-link",url:""},
-                {label: 'Service Logs',icon: "faa faa-external-link",command: (event)=>{
-                    alert("Coming soon ...");
-                  }}              
-            ]
-        },
+        // {
+        //     label: 'Metrics',   items: [
+        //         {label: 'Google Analytics',  icon: "faa faa-external-link",command: (event)=>{
+        //             alert("Coming soon ...");
+        //           }},
+        //         {label: 'Service Logs',icon: "faa faa-external-link",command: (event)=>{
+        //             alert("Coming soon ...");
+        //           }}              
+        //     ]
+        // },
         {
             label: 'Find',   items: [
                 {label: 'Similar Resources',  icon: "faa faa-external-link",
                         command: (event)=>{
-                             this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-                             this.searchRMMAny('keyword='+this.searchResults[0].keyword+"&include=title,@id");
-                           });
-                           this.qcriteria = "Similar Resources By Keyword";
-                            this.similarResources = true;
-                            this.metadata = false;
-                        //window.open(this.rmmApi+"?keyword="+this.searchResults[0].keyword);
+                        //      this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+                        //      this.searchRMMAny('keyword='+this.searchResults[0].keyword+"&include=title,@id");
+                        //    });
+                        //    this.qcriteria = "Similar Resources By Keyword";
+                        //     this.similarResources = true;
+                        //     this.metadata = false;
+                        window.open(this.sdpLink+"/#/search?q=keyword="+this.searchResults[0].keyword+"&key=&queryAdvSearch=yes");
                   }},
                 {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
-                             this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-                             let authlist = "";
-                             for(let auth of this.searchResults[0].authors)
+                      let authlist = "";
+                      for(let auth of this.searchResults[0].authors)
                                 authlist = authlist+auth.familyName+",";
-                             this.searchRMMAny('authors.familyName='+authlist+"&include=title,@id");
-                           });
-                        this.qcriteria = "Similar Resources By Author";   
-                        this.similarResources = true;
-                        this.metadata = false;}},
-                {label: 'Data,Sites,Tools', icon: "faa faa-external-link",command: (event)=>{
-                    alert("Coming soon ...");
-                  }}
+                            
+                        //      this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+                           
+                        //       this.searchRMMAny('authors.familyName='+authlist+"&include=title,@id");
+                        //    });
+                        //this.qcriteria = "Similar Resources By Author";   
+                        //this.similarResources = true;
+                        //this.metadata = false;
+                        window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
+                        }
+                    }
+                        //,
+                // {label: 'Data,Sites,Tools', icon: "faa faa-external-link",command: (event)=>{
+                //     alert("Coming soon ...");
+                //   }}
             ]
-        },
-        {
-            label: 'Export Metadata', icon: "Menu", items: [
-                {   label: 'PDF',  icon: "faa faa-file-pdf-o",
-                    command: (event)=>{ 
-                        alert("Coming soon");
-                        //var doc = new jsPDF();
-                        //var i=0;
-                        //for(var key in this.searchResults[0]){
-                        //doc.text(20, 10 + i, key + ": " + this.searchResults[0][key]);
-                        //i+=10;
-                       // }
-                        //doc.save('metadata_'+this.searchResults[0].title+'.pdf');
-                    }
-                },
-                {label: 'POD JSON', icon: "faa faa-file-o", command: (event)=>{ alert("Coming soon ...");}},
-                {label: 'Extended JSON', icon: "faa faa-file-o",command: (event)=>{
-                        window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
-                    }
-                }
-            ]            
-        }
+        // },
+        // {
+        //     label: 'Export Metadata', icon: "Menu", items: [
+        //         // {   label: 'PDF',  icon: "faa faa-file-pdf-o",
+        //         //     command: (event)=>{ 
+        //         //         alert("Coming soon");
+        //         //         // var doc = new jsPDF();
+        //         //         // var i=0;
+        //         //         // for(var key in this.searchResults[0]){
+        //         //         // doc.text(20, 10 + i, key + ": " + this.searchResults[0][key]);
+        //         //         // i+=10;
+        //         //         // }
+        //         //         // doc.save('metadata_'+this.searchResults[0].title+'.pdf');
+        //         //     }
+        //         // },
+        //         {label: 'POD JSON', icon: "faa faa-file-o", command: (event)=>{ alert("Coming soon ...");}},
+        //         {label: 'Extended JSON', icon: "faa faa-file-o",command: (event)=>{
+        //                 window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
+        //             }
+        //         }
+        //     ]            
+         }
         ];
     }
 
@@ -330,10 +358,10 @@ onSuccessAny(searchResults:any[]) {
             //this.fileHierarchy.children.push(this.createChildrenTree(record.dataHierarchy[0].children, record.dataHierarchy[0].filepath);
             for(let fields of record.dataHierarchy){
                 
-                    if( fields.downloadURL != null)
+                if( fields.downloadURL != null)
                     this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
-                     else 
-                      if(fields.children != null)
+                else 
+                    if(fields.children != null)
                       this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));
                     
             }
@@ -361,6 +389,8 @@ onSuccessAny(searchResults:any[]) {
      testObj = {};
      testObj.label = label;
      testObj.data = data;
+     if(label == "Files") 
+     testObj.expanded = true;
      testObj.expandedIcon = "faa faa-folder-open";
      testObj.collapsedIcon =  "faa faa-folder";
      return testObj;
@@ -374,28 +404,26 @@ onSuccessAny(searchResults:any[]) {
      endFileNode.collapsedIcon =  "faa fa-folder";
      return endFileNode;
  }
- fileDetails:string="";
- isFileDetails: boolean = false;
- nodeSelect(event) {
-      for(let record of this.searchResults){
-        var test = this.getComponentDetails(record.components,event.node.data);
-        let i =0;
-        this.fileDetails ="";
-        for(let t of test){
-            this.isFileDetails = true;
-            this.fileDetails = t; 
-        }
-     }
-  }
 
-getComponentDetails(data,filepath) {
-  return data.filter(
-      function(data){return data.filepath == filepath }
-  );
+clicked = false;
+expandClick(){
+    this.clicked = !this.clicked;
+    return this.clicked;
 }
-keys() : Array<string> {
-    return Object.keys(this.fileDetails);
-  }
 
+clickContact = false;
+expandContact(){
+    this.clickContact = !this.clickContact;
+    return this.clickContact;
+}
+ display: boolean = false;
+
+    showDialog() {
+        this.display = true;
+    }
+
+  public setTitle( newTitle: string) {
+    this.titleService.setTitle( newTitle );
+  }
 
 }

@@ -22627,6 +22627,7 @@ body a {
   position: relative;
   overflow: scroll;
   overflow-x: hidden;
+  background-color: #1471ae;
 }
 
 .layout-container .layout-menu>.nano>.nano-content ul.ultima-menu.ultima-main-menu {
@@ -22799,7 +22800,7 @@ body a {
 }
 
 .layout-container .ultima-menu li a i {
-  color: #757575;
+  color: #fff;
 }
 
 .layout-container .ultima-menu li a i:first-child {
@@ -22828,15 +22829,12 @@ body a {
   display: inline-block;
   vertical-align: middle;
   padding-left: .5em;
-  padding-right: .5em;
+  padding-right: .3em;
 }
 
-.layout-container .ultima-menu li a.active-menuitem-routerlink {
-  color: #fff;
-}
-
+.layout-container .ultima-menu li a.active-menuitem-routerlink,
 .layout-container .ultima-menu li a.active-menuitem-routerlink>i {
-  color: #1471ae;
+  color: #fff;
 }
 
 .layout-container .ultima-menu li a.active-menuitem-routerlink:hover {

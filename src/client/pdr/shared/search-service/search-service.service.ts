@@ -29,7 +29,7 @@ export class SearchService {
   searchById(searchValue:string): Observable<string[]> {
 
     searchValue = '@id=' + searchValue;
-    //alert(this.rmmApi+'records?' + searchValue);
+    
     return this.http.get(this.rmmApi+'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
     .catch((error: any) => Observable.throw(error.json()));
