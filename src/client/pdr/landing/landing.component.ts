@@ -10,7 +10,7 @@ import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule ,Title} from '@angular/platform-browser';
-import {OverlayPanelModule} from 'primeng/primeng';
+import {OverlayPanelModule, FieldsetModule} from 'primeng/primeng';
 import { Ng2StickyModule } from 'ng2-sticky';
 //import * as jsPDF  from 'jspdf';
 

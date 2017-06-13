@@ -1,15 +1,19 @@
 import { Component, Input } from '@angular/core';
 import {LandingPanelComponent} from './landing.component'; 
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
+import {AccordionModule} from 'primeng/primeng';
+import {DomSanitizer} from '@angular/platform-browser';
+import {FieldsetModule} from 'primeng/primeng';
+
 @Component({
   selector: 'metadata-detail',
   template: `
-      <h3> Metadata:</h3>
-      <div *ngFor="let fields of searchResults"> 
-      <br>
-      Title: <div class="well">{{fields.title}}</div>
+     <div innerHtml='{{ testString }}'></div> 
+     <br>
+     
+       Title: <div class="">{{fields.title}}</div>
       <br>Issed: <div class="well">{{fields.issued}}</div>
-      <br>References:<div class="well"> <span *ngFor="let ref of fields.references">
+      <br>References:<div class="well-sm"> <span *ngFor="let ref of fields.references">
                              refType: <span>{{ref.refType}}</span>
                         <br> location: <span>{{ref.location}}</span>
                         <br> @type: <span>{{ref["@type"]}}</span>
@@ -59,26 +63,55 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
         <br> components: <div class="well"></div>
         <br> inventory: <div class="well"></div>
         <br> dataHierarchy:<div class="well"></div>
-     </div>
+   
   `
 })
 export class MetadataComponent {
    @Input() searchResults: any[];
-
-    private metadataTree: TreeNode[] = [];
-   
-   createTree(){
-
+    private mTrees : TreeNode[] = [];
+    private metadataTree: TreeNode;
+    private recordToDisplay : Object;  
+    private testString : String;
+    private fields :Object;
+   ngOnInit() {
+      this.testString = "";
+      this.recordToDisplay = this.searchResults[0];
+      this.fields = this.searchResults[0];
+      this.createTree();
    }
-
-   createTreeObj(label :string, data:string){
-     let testObj : TreeNode = {}; 
-     testObj = {};
-     testObj.label = label;
-     testObj.data = data;
-     testObj.expanded =true;
-     testObj.expandedIcon = "faa faa-folder-open";
-     testObj.collapsedIcon =  "faa faa-folder";
-     return testObj;
+   createTree(){
+      var recordArray = this.generateArray(this.recordToDisplay);
+      let fieldsKeys = Object.keys(this.recordToDisplay);
+      recordArray.forEach((item, index) => {
+          this.testString += '<div class="ui-g"> <div class="ui-g-2">'+fieldsKeys[index]+'</div>'
+          if(recordArray[index] instanceof Array ) {
+             this.testString += '<div class="ui-g-8">'+this.createKeyVal(recordArray[index])+'</div>';
+             //console.log();
+          }else{
+          this.testString += '<div class="ui-g-8">'+recordArray[index]+'</div>';
+          }
+        this.testString += '</div>';
+        
+      });   
+   }
+  generateArray(obj){
+     return Object.keys(obj).map((key)=>{ return obj[key]});
   }
+
+  private testKeys: Object;
+  private testVals;
+   
+   createKeyVal(objArray){
+     this.testKeys = Object.keys(objArray);
+     this.testVals = this.generateArray(objArray);
+     let tempString ="";
+     for(let v of this.testVals)
+      tempString += v +",";
+    //  this.testVals.forEach((item, index) => {
+    //   tempString += '<div class="ui-g"> <div class="ui-g-2">'+this.testKeys[index]+'</div>';
+    //  tempString += '<div class="ui-g-8">'+this.testVals[index]+'</div></div>';
+    // });
+    return tempString;
+  }
+
 }
