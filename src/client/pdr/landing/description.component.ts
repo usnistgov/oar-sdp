@@ -4,6 +4,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 @Component({
   selector: 'description-resources',
   template: `
+ 
    <h3 id="description" name="desscription">Description</h3><br>
             <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
                 {{ record["description"] }}
@@ -19,47 +20,52 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                 {{ keyword }}<span *ngIf="i < record['keyword'].length-1 ">,</span>
             </span>
             <br>
-            <br>
-            <div *ngIf="record['references']"> 
-            <h3 id="reference" name="reference">References</h3>
+            <div *ngIf="checkReferences()"> 
+             <h3 id="reference" name="reference">References</h3>
                This data is discussed in :
                 <span *ngFor="let refs of record['references']"> 
-                   <br> <a href={{refs.location}} target="blank" *ngIf="refs['refType'] == 'IsDocumentedBy'">{{ refs.label }}</a>
+                  <span *ngIf="refs['refType'] == 'IsDocumentedBy'">
+                    <br> <a href={{refs.location}} target="blank">{{ refs.label }}</a>
+                  </span>   
                 </span>
             </div>
-            <br>
+             <b>Data Access:</b> {{ record['accessLevel'] }} 
+                <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
              <br>
-            <div *ngIf="record['dataHierarchy']">
-            <h3 id="files" name="files">Files</h3><br>
-            This resource contains: 
-            <div class="ui-g">
-                <div class="ui-g-6">
-                    <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
-                        <template let-node  pTemplate="default">
-                            <span>{{node.label}}</span>
-                        </template>
-                    </p-tree>
-                </div>
-                <div class="ui-g-6">
-                    <div ng2-sticky>
-                        <div *ngIf="isFileDetails">
-                            <filedetails-resources [fileDetails]="fileDetails"></filedetails-resources>
-                        </div>   
+             <br>
+            <div *ngIf="files.length != 0">              
+                <h3 id="files" name="files">Files</h3>   
+                <div class="ui-g">
+                    <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-10">
+                        <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
+                            <template let-node  pTemplate="default">
+                                <span>{{node.label}}</span>
+                            </template>
+                        </p-tree>
+                    </div>
+                    <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-10">
+                        <div ng2-sticky>
+                            <div *ngIf="isFileDetails">
+                                <filedetails-resources [fileDetails]="fileDetails"></filedetails-resources>
+                            </div>   
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
             
   `
 })
 
 export class DescriptionComponent {
-   @Input() record: any[];
-   @Input() files: any[];
+ 
+ @Input() record: any[];
+ @Input() files: any[];
 
  fileDetails:string="";
  isFileDetails: boolean = false;
-   selectedFile: TreeNode;
+ isReference: boolean = false;
+ selectedFile: TreeNode;
+ 
  nodeSelect(event) {
       
         var test = this.getComponentDetails(this.record["components"],event.node.data);
@@ -72,7 +78,7 @@ export class DescriptionComponent {
         }
      
   }
-  getComponentDetails(data,filepath) {
+getComponentDetails(data,filepath) {
   return data.filter(
       function(data){return data.filepath == filepath }
   );
@@ -80,4 +86,13 @@ export class DescriptionComponent {
 keys() : Array<string> {
     return Object.keys(this.fileDetails);
   }
+ 
+ checkReferences(){
+      if(Array.isArray(this.record['references']) ){
+          for(let ref of this.record['references'] ){
+              if(ref.refType == "isDocumentedBy") return true;
+          }
+      }
  }
+
+}

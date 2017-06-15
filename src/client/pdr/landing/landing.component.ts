@@ -5,12 +5,11 @@ import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
+import { TreeModule,TreeNode, Tree, MenuItem,OverlayPanelModule, FieldsetModule,PanelModule } from 'primeng/primeng';
 import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule ,Title} from '@angular/platform-browser';
-import {OverlayPanelModule, FieldsetModule} from 'primeng/primeng';
 import { Ng2StickyModule } from 'ng2-sticky';
 //import * as jsPDF  from 'jspdf';
 
@@ -37,20 +36,22 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     status: string;
     errorMessage: string;
     errorMessageArray: string[];
-    searchResults: any[] = [];
+    //searchResults: any[] = [];
     searchValue:string;
+    recordDisplay:any[] = [];
     keyword:string;
     summaryCandidate: any[];
     private _routeParamsSubscription: Subscription;
     findId: string;
-    private leftmenu: MenuItem[];
-    private rightmenu: MenuItem[];
+    leftmenu: MenuItem[];
+    rightmenu: MenuItem[];
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
     metadata: boolean = false;
     private rmmApi : string = Config.RMMAPI;
     private sdpLink : string = Config.SDPAPI;
     private distApi : string = Config.DISTAPI;
+    
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -60,9 +61,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      isDOI = false;
      isEmail = false;
      citeString:string = "";
-     
-     
-     
+     type: string = "";     
   /**
    * Creates an instance of the SearchPanel
    *
@@ -75,25 +74,25 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
- 
-        this.searchResults = searchResults;
-        this.titleService.setTitle(this.searchResults[0].title);
+        
+        this.recordDisplay = searchResults;
+        this.type = this.recordDisplay['@type'];
+        this.titleService.setTitle(this.recordDisplay['title']);
         this.createDataHierarchy();
-        if(this.searchResults[0].doi != undefined && this.searchResults[0].doi != "" ){
+        if(this.recordDisplay['doi'] != undefined && this.recordDisplay['doi'] != "" ){
              this.isDOI = true;
         }
-        if(this.searchResults[0].contactPoint.hasEmail!= undefined && this.searchResults[0].contactPoint.hasEmail != "")
-            this.isEmail = true;
-            //console.log('Test:'+this.searchResults[0].references[0]);    
+        if(this.recordDisplay['contactPoint'].hasEmail!= undefined && this.recordDisplay['contactPoint'].hasEmail != "")
+       this.isEmail = true;
+                
+        this.updateLeftMenu();
+        this.updateRightMenu();
     }
-
-
 
   /**
    * If search is unsuccessful push the error message
    */
-  onError(error:any[]) {
-        this.searchResults = [];
+  onError(error:any) {
         this.exception = (<any>error).ex;
         this.errorMsg = (<any>error).message;
         this.status = (<any>error).httpStatus;
@@ -101,6 +100,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   }
 
   searchbyid(searchId:string){
+      console.log(searchId);
         this.keyword = '';
         let that = this;
         return this.searchService.searchById(searchId)
@@ -110,32 +110,11 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             );
   }
 
-
-onSuccessAny(searchResults:any[]) {
-        this.similarResourcesResults = searchResults; }
-  /**
-   * If search is unsuccessful push the error message
-   */
-  onErrorAny(error:any[]) {
-        this.similarResourcesResults = [];
-        this.exception = (<any>error).ex;
-        this.errorMsg = (<any>error).message;
-        this.status = (<any>error).httpStatus;
-        this.msgs.push({severity:'error', summary:this.errorMsg + ':', detail:this.status + ' - ' + this.exception});
-  }
-    searchRMMAny(anyparam:string){
-        let that = this;
-        return this.searchService.searchRMMAny(anyparam)
-            .subscribe(
-            similarResourcesResults => that.onSuccessAny(similarResourcesResults),
-            error => that.onErrorAny(error)
-            );
-    }
   
-    encodeString(url:string,param:string) {
+  encodeString(url:string,param:string) {
       var urlString = url + encodeURIComponent(param);
       window.open(urlString);
-    }
+  }
 
     openURL(url:string) {
        window.open(url);
@@ -145,65 +124,74 @@ onSuccessAny(searchResults:any[]) {
  * Update Leftside menu on landing page
  */
     updateLeftMenu(){
-        
+     var itemsMenu: any[] = []; 
+      var descItem = this.createMenuItem ("Description","",(event)=>{ 
+                   this.metadata = false; this.similarResources =false;
+                   window.location.href="#description";
+                 }); 
+
+      var refItem = this.createMenuItem ("References","",(event)=>{
+                      this.metadata = false;
+                      window.location.href="#reference";
+                });           
+
+      var filesItem = this.createMenuItem("Files","", (event)=>{    
+                     this.metadata = false;
+                      window.location.href="#files";
+                });
+
+      var metaItem = this.createMenuItem("Metadata","",(event)=>{
+                    this.metadata = true; this.similarResources =false;});    
+    
+      itemsMenu.push(descItem);
+      if(this.checkReferences())
+        itemsMenu.push(refItem);
+      if(this.files.length != 0)
+        itemsMenu.push(filesItem);
+      itemsMenu.push(metaItem); 
+
       this.leftmenu = [{
             label: 'Table of Contents', command: (event)=>{
                     window.location.href="#";},
-            items: [
-                {label: 'Description', command: (event)=>{
-                 
-                   this.metadata = false; this.similarResources =false;
-                   window.location.href="#description";
-                 }},
-                {label: 'References',  command: (event)=>{
-                      this.metadata = false;
-                      window.location.href="#reference";
-                }},
-                {label: 'Files',  command: (event)=>{
-                    
-                     this.metadata = false;
-                      window.location.href="#files";
-                }},
-                // {label: 'Searchpage',  command: (event)=>{
-                //         alert("Shows 'searchpage', if any associated with the record.");
-                //    }
-                // },
-                // {label: 'API', command: (event)=>{
-                //         alert("Shows 'API', if any associated with the record.");
-                //      }
-                // },
-                {label: 'Metadata',  command: (event)=>{this.metadata = true; this.similarResources =false;}}
-            ]
-        }
-        ];
+            items: itemsMenu
+        }];
     }
     
+
+createMenuItem(label :string, icon:string, command: any ){
+     let testItem : any = {};
+     testItem.label = label;
+     testItem.icon = icon;
+     testItem.command = command;
+     return testItem;
+}
+
 /**
  * Update right side panel on landing page
  */
     updateRightMenu(){
+
+       var itemsMenu: any[] = [];
+       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", (event)=>{
+                         window.open(this.recordDisplay['landingPage']);
+                      });
+       var download = this.createMenuItem("Download all data","faa faa-download", (event)=>{
+                        window.open(this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
+                    });
+
+       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o",(event)=>{
+                        window.open(this.rmmApi+"records?@id="+this.recordDisplay['@id']);
+                    });
+        
+            
+        itemsMenu.push(homepage);
+        if (this.files.length != 0)
+            itemsMenu.push(download);
+        itemsMenu.push(metadata);   
+         
       this.rightmenu = [{
             label: 'Access ', 
-            items: [
-                {label: 'Visit Home Page',  icon: "faa faa-external-link",command: (event)=>{
-                    window.open(this.searchResults[0].landingPage);
-                  //alert("Test References"+this.searchResults[0].license);
-                }},
-                {label: 'Download all data', icon: "faa faa-download",command: (event)=>{
-                    if (this.searchResults[0].dataHierarchy == null )
-                        alert("No data available for given record");
-                    else
-                        window.open(this.distApi+"ds/zip?id="+this.searchResults[0]['@id']);
-                }}
-                ,{label: 'Export Metadata', icon: "faa faa-file-o",command: (event)=>{
-                        window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
-                    }
-                }
-                // ,
-                // {label: 'Add All to DataCart', icon: "faa faa-cart-arrow-down",command: (event)=>{
-                //    alert("Coming soon...");}
-                // }
-            ]
+            items: itemsMenu
         },
         {
             label: 'Use', 
@@ -211,8 +199,8 @@ onSuccessAny(searchResults:any[]) {
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     this.citeString = "";
                     let date =  new Date(); 
-                    if(this.searchResults[0].authors !=  null){
-                        for(let author of this.searchResults[0].authors)
+                    if(this.recordDisplay['authors'] !=  null){
+                        for(let author of this.recordDisplay['authors'])
                         { if(author.familyName != null && author.familyName != undefined) 
                          this.citeString += author.familyName +" ";
                          if(author.givenName != null && author.givenName != undefined) 
@@ -223,71 +211,34 @@ onSuccessAny(searchResults:any[]) {
                          this.citeString +=","
                         }
                     }else{
-                        this.citeString += this.searchResults[0].contactPoint.fn+ ",";
+                        this.citeString += this.recordDisplay['contactPoint'].fn+ ",";
                     }
 
-                    this.citeString += this.searchResults[0].title +",";
-                    this.citeString += this.searchResults[0].doi;
+                    this.citeString += this.recordDisplay['title'] +",";
+                    this.citeString += this.recordDisplay['doi'];
                     this.citeString += ", access:"+date;
                     this.showDialog();
-                    //alert("Copy following to cite the resource: \n\n"+citeString);
-                    //window.open(this.searchResults[0].license);
-                  }},
-                // {label: 'Access Rights', icon: "faa faa-angle-double-right",command: (event)=>{
-                //     let accessString = "Access level is:";
-                //     accessString += this.searchResults[0].accessLevel;
-                    
-                //     alert(accessString);
-                //     ;}},
-                {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
-                    window.open(this.searchResults[0].license);
-                  }}
-            ]
-        },
-        // {
-        //     label: 'Metrics',   items: [
-        //         {label: 'Google Analytics',  icon: "faa faa-external-link",command: (event)=>{
-        //             alert("Coming soon ...");
-        //           }},
-        //         {label: 'Service Logs',icon: "faa faa-external-link",command: (event)=>{
-        //             alert("Coming soon ...");
-        //           }}              
-        //     ]
-        // },
-        {
+              }},
+             {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
+                    window.open(this.recordDisplay['license']);
+             }}
+           ]
+        },{
             label: 'Find',   items: [
                 {label: 'Similar Resources',  icon: "faa faa-external-link",
                         command: (event)=>{
-                        //      this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-                        //      this.searchRMMAny('keyword='+this.searchResults[0].keyword+"&include=title,@id");
-                        //    });
-                        //    this.qcriteria = "Similar Resources By Keyword";
-                        //     this.similarResources = true;
-                        //     this.metadata = false;
-                        window.open(this.sdpLink+"/#/search?q=keyword="+this.searchResults[0].keyword+"&key=&queryAdvSearch=yes");
+                              window.open(this.sdpLink+"/#/search?q=keyword="+this.recordDisplay['keyword']+"&key=&queryAdvSearch=yes");
                   }},
                 {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
                       let authlist = "";
-                      for(let auth of this.searchResults[0].authors)
+                      for(let auth of this.recordDisplay['authors'])
                                 authlist = authlist+auth.familyName+",";
                             
-                        //      this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-                           
-                        //       this.searchRMMAny('authors.familyName='+authlist+"&include=title,@id");
-                        //    });
-                        //this.qcriteria = "Similar Resources By Author";   
-                        //this.similarResources = true;
-                        //this.metadata = false;
-                        window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
+                            window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
                         }
                     }
-                        //,
-                // {label: 'Data,Sites,Tools', icon: "faa faa-external-link",command: (event)=>{
-                //     alert("Coming soon ...");
-                //   }}
+                        
             ]
-        // },
-        // {
         //     label: 'Export Metadata', icon: "Menu", items: [
         //         // {   label: 'PDF',  icon: "faa faa-file-pdf-o",
         //         //     command: (event)=>{ 
@@ -301,12 +252,7 @@ onSuccessAny(searchResults:any[]) {
         //         //         // doc.save('metadata_'+this.searchResults[0].title+'.pdf');
         //         //     }
         //         // },
-        //         {label: 'POD JSON', icon: "faa faa-file-o", command: (event)=>{ alert("Coming soon ...");}},
-        //         {label: 'Extended JSON', icon: "faa faa-file-o",command: (event)=>{
-        //                 window.open(this.rmmApi+"records?@id="+this.searchResults[0]['@id']);
-        //             }
-        //         }
-        //     ]            
+       
          }
         ];
     }
@@ -319,13 +265,11 @@ onSuccessAny(searchResults:any[]) {
        
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
           if (_.includes(window.location.href,'?')) {
-               
-              // this.searchValue =params['q'];
-              // this.searchTaxonomyKey=params['key'];
-              // this.queryAdvSearch = params['queryAdvSearch'];
-              // this.getTaxonomies();
+              
+              //console.log("*** test input ? **"+_.split(window.location.href,'/'));
             } else {
               this.searchValue =_.split(window.location.href,'/')[5];
+              console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
             
             }
             this.findId = params['id'];
@@ -334,8 +278,7 @@ onSuccessAny(searchResults:any[]) {
            
         });
 
-        this.updateLeftMenu();
-        this.updateRightMenu();
+        
       
         
     }
@@ -349,23 +292,18 @@ onSuccessAny(searchResults:any[]) {
     }
 // Create Files Structure to browse throw files
  createDataHierarchy(){
-        if (this.searchResults[0].dataHierarchy == null )
-        return;
+        if (this.recordDisplay['dataHierarchy'] == null )
+            return; 
         this.fileHierarchy = this.createTreeObj("Files","Files");
         this.fileHierarchy.children =[];
-        for(let record of this.searchResults){
-            //console.log(record);
-            //this.fileHierarchy.children.push(this.createChildrenTree(record.dataHierarchy[0].children, record.dataHierarchy[0].filepath);
-            for(let fields of record.dataHierarchy){
-                
+         for(let fields of this.recordDisplay['dataHierarchy']){
                 if( fields.downloadURL != null)
                     this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
                 else 
                     if(fields.children != null)
-                      this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));
-                    
+                      this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));       
             }
-        }
+        
         this.files.push(this.fileHierarchy);
      }
   createChildrenTree(children:any[], filepath:string){
@@ -426,4 +364,11 @@ expandContact(){
     this.titleService.setTitle( newTitle );
   }
 
+ checkReferences(){
+      if(Array.isArray(this.recordDisplay['references']) ){
+          for(let ref of this.recordDisplay['references'] ){
+              if(ref.refType == "isDocumentedBy") return true;
+          }
+      }
+ }
 }

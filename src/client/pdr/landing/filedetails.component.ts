@@ -5,7 +5,7 @@ import {LandingPanelComponent} from './landing.component';
   selector: 'filedetails-resources',
   template: `
     <br>
-    <div class="ui-g">
+    <div class="ui-g" style="background-color:#F3F3F3; padding-left:1%">
     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-10">
         <span class="textstyle1" style="font-family: Arial, Helvetica, sans-serif; color: grey;font-size: 12;">
          <span *ngIf="fileDetails['downloadURL']"> File </span>    
