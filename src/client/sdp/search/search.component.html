@@ -17,7 +17,6 @@
   <div class="EmptyBox100"></div>
 </div>
 <div *ngIf="!noResults">
-  <div >
   <div class="ui-g " style="background-color:#EFEFEF;padding-top: 2%;padding-bottom: 1%" >
     <div class="ui-g-12 ">
       <div class="ui-g-12 ui-md-6 ui-lg-2 ">
@@ -40,6 +39,7 @@
       </div>
     </div>
   </div>
+    <div *ngIf="filteredResults.length > 0">
     <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
       <div class="ui-g-12 ui-md-6 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
         <div class="ui-g" style="padding: 0px;" >
@@ -165,5 +165,6 @@
       </p-dataList>
       </div>
     </div>
-   </div>
-  </div>
+    </div>
+
+</div>
