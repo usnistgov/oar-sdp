@@ -24,7 +24,6 @@ declare var jQuery: any;
     providers:[SearchService]
 })
 
-
 export class LandingPanelComponent implements OnInit, OnDestroy {
    
   layoutCompact: boolean = true;
@@ -128,20 +127,20 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       var descItem = this.createMenuItem ("Description","",(event)=>{ 
                    this.metadata = false; this.similarResources =false;
                    window.location.href="#description";
-                 }); 
+                 },""); 
 
       var refItem = this.createMenuItem ("References","",(event)=>{
                       this.metadata = false;
                       window.location.href="#reference";
-                });           
+                },"");           
 
       var filesItem = this.createMenuItem("Files","", (event)=>{    
                      this.metadata = false;
                       window.location.href="#files";
-                });
+                },"");
 
       var metaItem = this.createMenuItem("Metadata","",(event)=>{
-                    this.metadata = true; this.similarResources =false;});    
+                    this.metadata = true; this.similarResources =false;},"");    
     
       itemsMenu.push(descItem);
       if(this.checkReferences())
@@ -158,11 +157,14 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     }
     
 
-createMenuItem(label :string, icon:string, command: any ){
+createMenuItem(label :string, icon:string, command: any, url : string ){
      let testItem : any = {};
      testItem.label = label;
      testItem.icon = icon;
+     if(command != "")
      testItem.command = command;
+     if(url != "")
+     testItem.url = url;
      return testItem;
 }
 
@@ -172,16 +174,10 @@ createMenuItem(label :string, icon:string, command: any ){
     updateRightMenu(){
 
        var itemsMenu: any[] = [];
-       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", (event)=>{
-                         window.open(this.recordDisplay['landingPage']);
-                      });
-       var download = this.createMenuItem("Download all data","faa faa-download", (event)=>{
-                        window.open(this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
-                    });
+       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
+       var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
 
-       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o",(event)=>{
-                        window.open(this.rmmApi+"records?@id="+this.recordDisplay['@id']);
-                    });
+       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",this.rmmApi+"records?@id="+this.recordDisplay['@id']);
         
             
         itemsMenu.push(homepage);
@@ -261,26 +257,19 @@ createMenuItem(label :string, icon:string, command: any ){
      * Get the params OnInit
      */
     ngOnInit() {
-
-       
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
           if (_.includes(window.location.href,'?')) {
-              
-              //console.log("*** test input ? **"+_.split(window.location.href,'/'));
+              this.searchValue = params['id'];
+              console.log("*** test input ? **"+_.split(window.location.href,'/'));
             } else {
-              this.searchValue =_.split(window.location.href,'/')[5];
+                var alength = _.split(window.location.href,'/').length;
+              this.searchValue =_.split(window.location.href,'/')[alength-1];
               console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
-            
             }
-            this.findId = params['id'];
+            this.findId = this.searchValue;//params['id'];
             this.searchbyid(this.findId);
              this.files =[];
-           
-        });
-
-        
-      
-        
+        });    
     }
 
     ngOnDestroy() {

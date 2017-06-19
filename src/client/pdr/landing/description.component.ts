@@ -12,7 +12,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
             <strong>Research Topics:</strong> 
             <span  *ngFor="let topic of record['topic']; let i =index">
                 {{ topic.tag }}
-                <span *ngIf="i < record['references'].length-1 ">,</span>
+                <span *ngIf="i < record['topic'].length-1 ">,</span>
             </span>
             <br> 
             <b>Subject Keywords:</b>

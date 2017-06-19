@@ -45,13 +45,14 @@
              <div class="" *ngIf="recordDisplay.contactPoint">
                 Contact: 
                 <strong>  
-                    <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">{{recordDisplay.contactPoint.fn}}</a>
+                    <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
+                        {{recordDisplay.contactPoint.fn}}</a>
                     <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
                 </strong>..
-                <i style="cursor: pointer;" class="faa" 
-                    [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}" 
-                    aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
-                <div [collapse]="!closeContent" class="card card-block card-header">
+                <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}" 
+                   aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
+                
+                <div [collapse]="!closeContent"> 
                      <span class="" *ngIf="recordDisplay.contactPoint.fn">
                          <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">{{recordDisplay.contactPoint.fn}}</a>
                         <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
@@ -91,7 +92,7 @@
     <div class="ui-g" style="padding-top: 0%">
         
         <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10">
-            <!--Metadata -->
+            
             <div *ngIf="metadata != true && similarResources != true ">
                  <description-resources [record]="recordDisplay" [files]="files" ></description-resources>
             </div>

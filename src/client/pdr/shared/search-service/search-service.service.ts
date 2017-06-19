@@ -48,7 +48,7 @@ export class SearchService {
      else 
        this.serviceApi = this.metaApi;
 
-       //console.log(this.serviceApi+ searchValue);
+      //console.log(this.serviceApi+ searchValue);
 
     return this.http.get(this.serviceApi+ searchValue)
     .map((res: Response) => res.json())
