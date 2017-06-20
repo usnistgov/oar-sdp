@@ -4,8 +4,10 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 @Component({
   selector: 'description-resources',
   template: `
- 
-   <h3 id="description" name="desscription">Description</h3><br>
+          <div class="ui-g">
+          <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-10" style="padding:2%">
+
+          <h3 id="description" name="desscription">Description</h3><br>
             <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
                 {{ record["description"] }}
             </div>     
@@ -52,7 +54,8 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                     </div>
                 </div>
             </div>
-            
+        </div>
+     </div>
   `
 })
 
