@@ -204,15 +204,19 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                          if(author.middleName != null && author.middleName != undefined) 
                          this.citeString += author.middleName;
 
-                         this.citeString +=","
+                         this.citeString +=", "
                         }
-                    }else{
-                        this.citeString += this.recordDisplay['contactPoint'].fn+ ",";
+                    }else if(this.recordDisplay['contactPoint']){
+                        if(this.recordDisplay['contactPoint'].fn != null && this.recordDisplay['contactPoint'].fn != undefined)
+                        this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
                     }
-
-                    this.citeString += this.recordDisplay['title'] +",";
-                    this.citeString += this.recordDisplay['doi'];
+                    if(this.recordDisplay['title']!= null && this.recordDisplay['title']!= 'undefined' )
+                        this.citeString += this.recordDisplay['title'] +", ";
+                    if(this.recordDisplay['doi']!= null && this.recordDisplay['doi']!= 'undefined' )
+                        this.citeString += this.recordDisplay['doi'];
+        
                     this.citeString += ", access:"+date;
+
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
