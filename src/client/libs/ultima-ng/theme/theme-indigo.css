@@ -4344,7 +4344,8 @@ body .ui-panel {
     border-top: 1px solid #bdbdbd;
     margin: 0; }
 body .ui-fieldset {
-  padding: 0.625em 1em; }
+  padding: 0.625em 1em;
+   }
   body .ui-fieldset .ui-fieldset-legend {
     padding: 0.625em 1em;
     padding-left: .125em;
