@@ -23,6 +23,10 @@ export class HeadbarComponent {
   darkMenu: boolean = false;
   profileMode: string = 'inline';
   private SDPAPI : string = Config.SDPAPI;
+  private landingService : string = Config.LANDING;
+  internalBadge: boolean = false;
+
+   
   constructor( private el: ElementRef) {
   }
 
@@ -33,5 +37,9 @@ export class HeadbarComponent {
   onClickAbout(){
     window.open("../#/about");
   }
-
+  checkinternal() {
+    if(this.landingService == "internal")
+      this.internalBadge = true;
+      return this.internalBadge;
+  }
 }

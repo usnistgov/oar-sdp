@@ -5,16 +5,15 @@ import { LandingPanelComponent } from './index';
 
 export const LandingRoutes: Routes = [
   {
-    path: 'landing',
+    path: 'landing/:id',
     children: [
       {
         path: '',
         component: LandingPanelComponent
       }
     ]
-  },
-  {
-    path: 'landing/:id',
+  },{
+    path: 'landing',
     children: [
       {
         path: '',
