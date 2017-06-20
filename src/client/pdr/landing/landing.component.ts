@@ -50,7 +50,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private rmmApi : string = Config.RMMAPI;
     private sdpLink : string = Config.SDPAPI;
     private distApi : string = Config.DISTAPI;
-    
+    private metaApi : string = Config.METAPI;
+    private landing : string = Config.LANDING;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -172,14 +173,14 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
  * Update right side panel on landing page
  */
     updateRightMenu(){
-
+      var serviceApi = this.rmmApi+"records?@id="+this.recordDisplay['@id'];  
+      if(this.landing == "internal")
+        serviceApi = this.metaApi+this.recordDisplay['ediid'];
        var itemsMenu: any[] = [];
        var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
        var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
-
-       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",this.rmmApi+"records?@id="+this.recordDisplay['@id']);
-        
-            
+       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",serviceApi);
+    
         itemsMenu.push(homepage);
         if (this.files.length != 0)
             itemsMenu.push(download);
