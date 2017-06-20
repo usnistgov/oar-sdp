@@ -4,5 +4,5 @@ os: linux
 # 1) Copy all the build files to the sdp html folder
 hooks:
  AfterInstall:
-   - location: scripts/pub-pdr/dev/aftercicd.sh
+   - location: scripts/sdp/dev/aftercicd.sh
      runas: root
