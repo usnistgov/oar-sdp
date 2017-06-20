@@ -8,8 +8,8 @@ files:
     
 hooks:
  BeforeInstall:
-   - location: scripts/pub-pdr/beforecicd.sh
+   - location: scripts/pub-pdr/test/beforecicd.sh
      runas: root
  AfterInstall:
-   - location: scripts/pub-pdr/aftercicd.sh
+   - location: scripts/pub-pdr/test/aftercicd.sh
      runas: root
