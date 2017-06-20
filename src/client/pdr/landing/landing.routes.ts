@@ -5,7 +5,7 @@ import { LandingPanelComponent } from './index';
 
 export const LandingRoutes: Routes = [
   {
-    path: 'landing/:id',
+    path: ':id',
     children: [
       {
         path: '',
@@ -13,7 +13,7 @@ export const LandingRoutes: Routes = [
       }
     ]
   },{
-    path: 'landing',
+    path: '',
     children: [
       {
         path: '',
