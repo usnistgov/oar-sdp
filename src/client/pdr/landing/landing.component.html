@@ -7,8 +7,12 @@
 </script>
 
 <div class="" *ngIf="recordDisplay.length == 0">
-    <b>No Landing page available</b>
-    <p>The requested record id {{ findId }}  does not match with any records in the system</p>
+    <div class="ui-g" style="padding-bottom: 1%">
+       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10" style="padding-left: 1%"> 
+            <b>No Landing page available</b>
+            <p>The requested record id {{ findId }}  does not match with any records in the system</p>
+       </div> 
+    </div>
 </div>
  <div *ngIf="recordDisplay.length != 0">
     <div class="ui-g" style="padding-bottom: 1%">
