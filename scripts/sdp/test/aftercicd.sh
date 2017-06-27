@@ -13,4 +13,4 @@ fi
 
 sudo docker-compose rm -f
 sudo docker-compose build --no-cache
-sudo docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+sudo docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
