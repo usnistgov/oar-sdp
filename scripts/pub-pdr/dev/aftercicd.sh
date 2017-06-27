@@ -1,3 +1,3 @@
 #!/bin/bash
-sudo /home/ubuntu/oar-docker/apps/pub-pdr/deploy-pubpdr-dev.sh
+sudo /home/ubuntu/oar-docker/apps/pub-pdr/deploy-dev.sh
 
