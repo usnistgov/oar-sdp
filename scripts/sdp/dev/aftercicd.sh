@@ -1,6 +1,4 @@
-#!/bin/bash
-
-cd /home/ubuntu/oar-docker/apps/sdp/
-sudo ./deploy-sdp-dev.sh
+#! /bin/bash
+sudo /home/ubuntu/oar-docker/apps/sdp/deploy-sdp-dev.sh
 
 
