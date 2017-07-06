@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
+
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -62,6 +63,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      isEmail = false;
      citeString:string = "";
      type: string = "";     
+     process : any[];
   /**
    * Creates an instance of the SearchPanel
    *
@@ -74,7 +76,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
-        
+    //    console.log({ myVar: process.env.npm_config_myVar });
         this.recordDisplay = searchResults;
         this.type = this.recordDisplay['@type'];
         this.titleService.setTitle(this.recordDisplay['title']);
@@ -285,20 +287,35 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
       return (Object.keys(obj).length === 0);
     }
 // Create Files Structure to browse throw files
- createDataHierarchy(){
+//  createDataHierarchy(){
+//         if (this.recordDisplay['dataHierarchy'] == null )
+//             return; 
+//         this.fileHierarchy = this.createTreeObj("Files","Files");
+//         this.fileHierarchy.children =[];
+//          for(let fields of this.recordDisplay['dataHierarchy']){
+//                 if( fields.downloadURL != null)
+//                     this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
+//                 else 
+//                     if(fields.children != null)
+//                       this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));       
+//             }
+        
+//         this.files.push(this.fileHierarchy);
+//      }
+createDataHierarchy(){
         if (this.recordDisplay['dataHierarchy'] == null )
             return; 
-        this.fileHierarchy = this.createTreeObj("Files","Files");
-        this.fileHierarchy.children =[];
+        // this.fileHierarchy = this.createTreeObj("Files","Files");
+        // this.fileHierarchy.children =[];
          for(let fields of this.recordDisplay['dataHierarchy']){
                 if( fields.downloadURL != null)
-                    this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
+                    this.files.push(this.createFileNode(fields.filepath, fields.filepath));
                 else 
                     if(fields.children != null)
-                      this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));       
+                      this.files.push(this.createChildrenTree(fields.children,fields.filepath));       
             }
         
-        this.files.push(this.fileHierarchy);
+        //this.files.push(this.fileHierarchy);
      }
   createChildrenTree(children:any[], filepath:string){
     let testObj:TreeNode = {};

@@ -35,7 +35,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                 <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
              <br>
              <br>
-            <div *ngIf="files.length != 0">              
+            <!-- div *ngIf="files.length != 0" -->              
                 <h3 id="files" name="files">Files</h3>   
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-10">
@@ -53,7 +53,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                         </div>
                     </div>
                 </div>
-            </div>
+            <!-- /div -->
         </div>
      </div>
   `
