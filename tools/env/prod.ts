@@ -7,7 +7,7 @@ const ProdConfig: EnvConfig = {
   PDRAPI: 'https://testdata.nist.gov/pdr/',
   DISTAPI: 'https://testdata.nist.gov/od/',
   METAPI: 'http://datapubtest.nist.gov/midas/',
-  LANDING: 'external'
+  LANDING: 'internal'
 };
 
 export = ProdConfig;

@@ -15,7 +15,7 @@ import {AccordionModule} from 'primeng/primeng';
     </p-accordion -->
     <div *ngFor="let node of (entry | keyvalues)" >
       <div *ngIf="!isArray(node.value) &&  !isObject(node.value)" class="ui-g break-long-words">
-        <div class="ui-g-2 ui-md-3 ui-lg-3 ui-sm-3"><span style="color:#1471AE; word-wrap: break-word;">{{node.key}}</span></div>
+        <div class="ui-g-2 ui-md-3 ui-lg-2 ui-sm-3"><span style="color:#1471AE; word-wrap: break-word;">{{node.key}}</span></div>
         <div class="ui-g-10 ui-md-9 ui-lg-10 ui-sm-9"><span class="font10"> {{node.value}}</span></div>
       </div>
       <br *ngIf="isArray(node.value) || isObject(node.value)"/>

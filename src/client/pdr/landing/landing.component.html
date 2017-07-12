@@ -11,7 +11,7 @@
 
 <div class="" *ngIf="recordDisplay.length == 0">
     <div class="ui-g">
-       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10" style="padding-left: 1%"> 
+       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%"> 
             <b>No Landing page available</b>
             <p>The requested record id {{ findId }}  does not match with any records in the system</p>
        </div> 
@@ -93,14 +93,14 @@
             <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
          
          </div>
-         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10">
+         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
              <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>  
          </div>
     </div>
   
     <div class="ui-g" style="padding-top: 0%; padding-right: 1%;">
         
-        <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10">
+        <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
             
             <div *ngIf="metadata != true && similarResources != true ">
                 <description-resources [record]="recordDisplay" [files]="files" ></description-resources>
@@ -109,7 +109,7 @@
                 <metadata-detail [recordDisplay]="recordDisplay" ></metadata-detail>
             </div>
         </div>
-        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10">
+        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
             <div ng2-sticky><p-menu class="leftMenuStyle" [model]="leftmenu" ></p-menu> </div>
         </div>
         
