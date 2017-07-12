@@ -50,10 +50,12 @@ img {
 }
 
 .header-links{
-   margin-right: 20px;
-   margin-top: 20px;
+   margin-right: 0px;
+   margin-top: 0px;
    color:white;
+    padding-right: 2%;
 }
+
 
 .textlinks{
     color:white;

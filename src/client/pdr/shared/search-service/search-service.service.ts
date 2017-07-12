@@ -32,9 +32,8 @@ export class SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchByIdOld(searchValue:string): Observable<string[]> {
-
-    searchValue = '@id=' + searchValue;
     
+    searchValue = '@id=' + searchValue;  
     return this.http.get(this.rmmApi+'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
     .catch((error: any) => Observable.throw(error.json()));
@@ -42,13 +41,10 @@ export class SearchService {
 
   searchById(searchValue:string): Observable<string[]> {
   
-     
-     if(this.landingAccess != "internal")
+    if(this.landingAccess != "internal")
       this.serviceApi = this.rmmApi+"records/";
-     else 
-       this.serviceApi = this.metaApi;
-
-      //console.log(this.serviceApi+ searchValue);
+    else 
+      this.serviceApi = this.metaApi;
 
     return this.http.get(this.serviceApi+ searchValue)
     .map((res: Response) => res.json())

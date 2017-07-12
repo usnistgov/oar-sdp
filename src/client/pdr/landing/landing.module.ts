@@ -10,7 +10,7 @@ import { Ng2StickyModule } from 'ng2-sticky';
 import {Collaspe} from './collapse.directive';
 import {SanitizeHtmlDirective} from './sanitizeHtml.directive';
 import {KeyValuePipe} from './keyvalue.pipe';
-import {FieldSetView} from './fieldsetview.component';
+import {MetadataView} from './metadataview.component';
 
 
 import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
@@ -24,7 +24,7 @@ import { BrowserModule,Title,DomSanitizer } from '@angular/platform-browser';
       DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule,OverlayPanelModule,
       Ng2StickyModule, FieldsetModule, PanelModule],
     declarations: [LandingPanelComponent,Collaspe,MetadataComponent,SimilarsComponent,FileDetailsComponent,
-                   DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, FieldSetView ],
+                   DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView ],
     exports: [LandingPanelComponent],
     providers: [Title]
     

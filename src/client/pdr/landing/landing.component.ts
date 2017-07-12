@@ -129,17 +129,16 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      var itemsMenu: any[] = []; 
       var descItem = this.createMenuItem ("Description","",(event)=>{ 
                    this.metadata = false; this.similarResources =false;
-                   window.location.href="#description";
                  },""); 
 
       var refItem = this.createMenuItem ("References","",(event)=>{
-                      this.metadata = false;
-                      window.location.href="#reference";
+                      this.metadata = false; this.similarResources =false;
+                      
                 },"");           
 
       var filesItem = this.createMenuItem("Files","", (event)=>{    
                      this.metadata = false;
-                      window.location.href="#files";
+                     this.similarResources =false; 
                 },"");
 
       var metaItem = this.createMenuItem("Metadata","",(event)=>{

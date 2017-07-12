@@ -7,7 +7,7 @@ const DevConfig: EnvConfig = {
   PDRAPI: 'https://testdata.nist.gov/pdr/',
   DISTAPI: 'https://testdata.nist.gov/od/',
   METAPI: 'http://datapubtest.nist.gov/midas/',
-  LANDING: 'internal'
+  LANDING: 'external'
 };
 
 export = DevConfig;
