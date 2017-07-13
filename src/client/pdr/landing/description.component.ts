@@ -5,8 +5,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
   selector: 'description-resources',
   template: `
           <div class="ui-g">
-          <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-10" style="padding:2%">
-
+          <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
           <h3 id="description" name="desscription">Description</h3><br>
             <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
                 {{ record["description"] }}
@@ -35,17 +34,17 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                 <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
              <br>
              <br>
-            <div *ngIf="files.length != 0">              
+            <!-- div *ngIf="files.length != 0" -->              
                 <h3 id="files" name="files">Files</h3>   
                 <div class="ui-g">
-                    <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-10">
+                    <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
                             <template let-node  pTemplate="default">
                                 <span>{{node.label}}</span>
                             </template>
                         </p-tree>
                     </div>
-                    <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-10">
+                    <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <div ng2-sticky>
                             <div *ngIf="isFileDetails">
                                 <filedetails-resources [fileDetails]="fileDetails"></filedetails-resources>
@@ -53,7 +52,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                         </div>
                     </div>
                 </div>
-            </div>
+            <!-- /div -->
         </div>
      </div>
   `

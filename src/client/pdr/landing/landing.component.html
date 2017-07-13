@@ -6,16 +6,19 @@
   }
 </script>
 
+<div class="ui-grid ui-grid-responsive ui-grid-pad center">
+  <div class="card" style="padding: 2.5rem 2.5rem 2.5rem 2.5rem">
+
 <div class="" *ngIf="recordDisplay.length == 0">
-    <div class="ui-g" style="padding-bottom: 1%">
-       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10" style="padding-left: 1%"> 
+    <div class="ui-g">
+       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%"> 
             <b>No Landing page available</b>
             <p>The requested record id {{ findId }}  does not match with any records in the system</p>
        </div> 
     </div>
 </div>
  <div *ngIf="recordDisplay.length != 0">
-    <div class="ui-g" style="padding-bottom: 1%">
+    <div class="ui-g" style="padding-bottom: 1%; padding-right:1%;">
          <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
           <div class="ui-g-9 ui-md-9 ui-lg-9 ui-sm-10">
             <span style="font-family: Arial, Helvetica, sans-serif; color: grey; font-size: 14;" [ngSwitch]="recordDisplay['@type']">
@@ -24,7 +27,7 @@
                 <b *ngSwitchCase="'nrdp:PublicDataResource'">Public Data Resource</b>
                 <b *ngSwitchDefault></b>
             </span>              
-             <br><span class="title" style="text-align: left; vertical-align: middle; ">
+             <br><span class="title" style="text-align: left; vertical-align: top; ">
                 <h2>{{recordDisplay.title}}</h2>
              </span>
    
@@ -57,6 +60,7 @@
                    aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
                 
                 <div [collapse]="!closeContent"> 
+                  <div class="card"> 
                      <span class="" *ngIf="recordDisplay.contactPoint.fn">
                          <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">{{recordDisplay.contactPoint.fn}}</a>
                         <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
@@ -69,6 +73,7 @@
                             {{address}}
                         </div>
                     </div>
+                  </div>
                 </div>
             </div>
             Identifier: 
@@ -88,31 +93,36 @@
             <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
          
          </div>
-         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10">
+         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
              <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>  
          </div>
     </div>
   
-    <div class="ui-g" style="padding-top: 0%">
+    <div class="ui-g" style="padding-top: 0%; padding-right: 1%;">
         
-        <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-10">
+        <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
             
             <div *ngIf="metadata != true && similarResources != true ">
-                 <description-resources [record]="recordDisplay" [files]="files" ></description-resources>
+                <description-resources [record]="recordDisplay" [files]="files" ></description-resources>
             </div>
             <div *ngIf="metadata == true && similarResources != true ">
                 <metadata-detail [recordDisplay]="recordDisplay" ></metadata-detail>
             </div>
         </div>
-        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-10">
+        <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
             <div ng2-sticky><p-menu class="leftMenuStyle" [model]="leftmenu" ></p-menu> </div>
         </div>
         
         <p-dialog header="Citation" [(visible)]="display" modal="modal" width="300" responsive="true">
-              Copy the recommended text to cite this resource: <br>
+              Copy the recommended text to cite this resource: <br><br>
               <span style="font-family:  Franklin Gothic Urw; font-style:italic; color:#484646; font-size: 12;">
-                   {{ citeString }}
-              </span>     
+                   {{ citeString }}                    
+              </span>     <br><br>
+               <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
+              
         </p-dialog>
     </div>
 </div>
+
+
+  </div></div>
