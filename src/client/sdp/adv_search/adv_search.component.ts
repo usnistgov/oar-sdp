@@ -5,6 +5,7 @@ import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
 import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
+declare var jQuery: any
 
 
 /**
@@ -23,10 +24,10 @@ export class AdvSearchComponent implements OnInit {
     searchValue:string = '';
     advSearchValue:string[];
     taxonomies: SelectItem[];
-  suggestedTaxonomyList: string[];
-  suggestedTaxonomies: string[];
-
-  searchTaxonomyKey: string;
+    suggestedTaxonomyList: string[];
+    suggestedTaxonomies: string[];
+    textRotate: boolean = true;
+    searchTaxonomyKey: string;
     display: boolean = false;
     queryAdvSearch:string= '';
     showAdvancedSearch: boolean = false;
@@ -50,7 +51,8 @@ export class AdvSearchComponent implements OnInit {
    *
    */
   ngOnInit() {
-      this.getTaxonomies();
+    jQuery('.element').atrotating();
+    this.getTaxonomies();
       this.getSearchFields();
       this.rows =  [{}];
       this.searchOperators();
@@ -112,6 +114,16 @@ export class AdvSearchComponent implements OnInit {
         taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
         error => this.errorMessage = <any>error
       );
+  }
+
+  /**
+   * Set the display to show the examples dialog
+   */
+  toggleTextRotate() {
+    console.log("hello" + this.textRotate);
+    if (this.searchValue == "") {
+      this.textRotate = !this.textRotate;
+    }
   }
 
   /**

@@ -490,7 +490,7 @@ img {
 
 .homeTitle
 {
-  font-size: 36.0px;font-family: 'Lato',Arial,sans-serif;
+  font-size: 30.0px;font-family: 'Lato',Arial,sans-serif;
 }
 
 .homeSubTitle
@@ -507,3 +507,25 @@ img {
 {
   color: #1471AE;
 }
+
+
+/* enable absolute positioning */
+.inner-addon {
+  position: relative;
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 25px;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }

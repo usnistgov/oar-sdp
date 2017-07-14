@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 @Component({
     selector: 'app-searchtopbar',
     template: `
-    <div class="topbar clearfix" style="background-color: #000000">
+    <div class="topbar" style="background-color: #000000">
       <span class="topbar-left" style="background-color: #000000;">
           <a href="/" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
           <img class="Fleft" srcset="./assets/images/nist_logo_reverse.png" 
