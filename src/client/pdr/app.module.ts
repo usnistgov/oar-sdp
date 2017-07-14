@@ -15,7 +15,7 @@ import { LandingModule} from './landing/landing.module';
 import { AppMenuComponent,AppSubMenuComponent }  from './app.menu.component';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: false })
+  imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
   , AboutModule, LandingModule, SharedModule.forRoot()
   ],
   declarations: [AppComponent,
