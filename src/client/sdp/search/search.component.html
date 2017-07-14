@@ -11,37 +11,78 @@
     top.location = self.location;
   }
 </script>
+<head>
+  <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NIST&pua=UA-66610693-14&yt=true&exts=ppsx,pps,f90,sch,rtf,wrl,txz,m1v,xlsm,msi,xsd,f,tif,eps,mpg,xml,pl,xlt,c"></script>
+</head>
+
 <p-messages [value]="msgs"></p-messages>
 <div *ngIf="noResults">
   <div class="EmptyBox100"></div>
   <div class="EmptyBox100"></div>
 </div>
-<div *ngIf="!noResults">
-  <div class="ui-g " style="background-color:#EFEFEF;padding-top: 2%;padding-bottom: 1%" >
-    <div class="ui-g-12 ">
-      <div class="ui-g-12 ui-md-6 ui-lg-2 ">
-      </div>
-        <div class="ui-g-12 ui-md-6 ui-lg-5 inner-addon left-addon " style="padding: 0em;background: #FFFFFF;">
-      <i class="glyphicon glyphicon-search"></i><p-autoComplete [(ngModel)]="searchValue"  [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic','font-size': '20px','border':'0px'}" (keyup.enter) = "search(searchValue,searchTaxonomyKey)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "30" [size] = "70" >
-    </p-autoComplete>
-    </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-3" style="width: 220px;padding: 0em;background-color: #FFFFFF;">
-        <p-dropdown [options]="taxonomies" [style]="{'width':'220px','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
-        ,'font-weight': '400','font-style': 'italic',
-          'font-size': '14px','border-top':'0px','border-bottom':'0px'}" [(ngModel)]="searchTaxonomyKey" >
-        </p-dropdown>
-      </div>
 
-      <div class="ui-g-12 ui-md-6 ui-lg-2" style="padding: 0em">
-        <button style="width: 40%;height: 42px;font-weight: 400;font-style: italic;
-          font-size: 18px;border-radius: 0px" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>
+<div class="ui-g" style="background-color: #153971;color: #FFFFFF;padding: 0em;">
+  <div class="ui-g-2">
+  </div>
+  <div class="ui-g-10" style="padding: 0em;">
+    <label style="font-size: x-large;float: left;display: block;"><i class="faa faa-cogs faa-lg"></i> Search Results</label>
+    <ol class="breadcrumb" style="float: right;">
+      <li><a href="#">Home</a></li>
+      <li class="active">Search Results</li>
+    </ol>
+  </div>
+</div>
+
+<div *ngIf="!noResults">
+  <div class="ui-fluid"  style="background-color: #EFEFEF">
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <div class="ui-g form-group">
+          <div class="ui-g-12 ui-md-2">
+          </div>
+          <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
+            <div class="well-sm inner-addon left-addon " [hidden]="!textRotate" (click) = "toggleTextRotate()" style="background-color: #FFFFFF;border:1px solid;height: 42px;
+      font-weight: 400;font-style: italic;font-size: 16px;padding: .5em;border-color: #bdbdbd;border-width: 1px 1px 1px 1px;border-radius: 0px;vertical-align: middle;"  >
+              <i class="glyphicon glyphicon-search"></i><span class="element" style="color: gray;vertical-align:middle;border-color: #bdbdbd;padding-left:40px;border-width: 1px 1px 1px 1px;">
+        Kinetics database |Gallium|"SRD 69" | XPDB | Interatomic Potentials
+            </span>
+            </div>
+            <div class="inner-addon left-addon element " style="background-color: #FFFFFF" [hidden]="textRotate" >
+              <i class="glyphicon glyphicon-search"></i><p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
+        'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "30" [size] = "50" >
+            </p-autoComplete>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-2" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
+            <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em',
+        'background-color': '#FFFFFF','height': '42px'
+        ,'font-weight': '400','font-style': 'italic',
+          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
+            </p-dropdown>
+          </div>
+          <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
+            <button style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>          </div>
+          <div class="ui-g-12 ui-md-2">
+            &nbsp;&nbsp;<a href="#!" [routerLink] = "['/advanced']" style="text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search </a>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <a id= "examples" style="color: #000;" href = "#" (click) = "showDialog()" > <b> Examples: </b></a>
+          <a (click)="searchExample('&quot;Kinetics database&quot;');" href="#!" style="color: #2fa9e0;text-decoration: underline;">"Kinetics database" </a> &nbsp;
+          <a (click)="searchExample('Gallium');" href="#!" style="color: #2fa9e0;text-decoration: underline;">Gallium </a>&nbsp;
+          <a (click)="searchExample('&quot;SRD 69&quot;');" href="#!" style="color: #2fa9e0;text-decoration: underline;">"SRD 69" </a>&nbsp;
+          <a (click)="searchExample('XPDB');" href="#!" style="color: #2fa9e0;text-decoration: underline;">XPDB </a>&nbsp;
+          <a (click)="searchExample('Interatomic Potentials');" href="#!" style="color: #2fa9e0;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
+        </div>
       </div>
     </div>
-  </div>
+
     <div *ngIf="filteredResults.length > 0">
     <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
-      <div class="ui-g-12 ui-md-6 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
+      <div class="ui-g-12 ui-md-4 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
         <div class="ui-g" style="padding: 0px;" >
           <div class="ui-g-12" style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
             <div style="background-color: #03A9F4;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
@@ -83,8 +124,10 @@
             <div style="background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);width: 100%;padding-left: 1em;padding-top: 1em">
               <label style="font-size: 14px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"><b>Authors and Contributors</b></label>
             </div>
-            <div *ngIf="selectedAuthorDropdown == false" style="padding-left:.5em;padding-bottom: 3px;border-bottom:.5px solid #cccccc;
-                width: 100%;background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 1em">
+            <div *ngIf="selectedAuthorDropdown == false" style="padding-left:1.0em;padding-bottom: 3px;
+            border-bottom:.5px solid #cccccc;
+                width: 100%;padding-right: 5em;background-color:#F8F9F9;
+                box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
               <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
                               (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
                               [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)" (onSelect)="filterResults($event,'Author')"
@@ -118,18 +161,27 @@
       </div>
 
       <!-- Section 1 -->
-      <div class="ui-g-12 ui-md-8 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
-      <p-dataList [value]="filteredResults" #results [paginator]="true" paginatorPosition = "top" [rows]="5"
+      <div class="ui-g-12 ui-md-6 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
+      <p-dataList [value]="filteredResults" #results responsive = "true" [paginator]="true" paginatorPosition = "top" [rows]="5"
                   [style]="{'padding-right': '.5em','height':'auto'}">
-        <p-header style="background-color:#FFFFFF;width:100%;border:0px solid #FFFFFF;padding: 0px;">
-          <span style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</span>
-          <span style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
-          padding-right:10px;padding-top: 10px;"><p-dropdown
-            [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"
-            [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
-            'font-size': '14px'}">
-          </p-dropdown>
-          </span>
+        <p-header >
+          <div class="ui-g ui-grid-responsive" style="padding: 0em;">
+            <div class="ui-g-12" style="padding: 0em">
+              <div class="ui-g-12 ui-md-6">
+                <div style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</div>
+              </div>
+              <div class="ui-g-12 ui-md-6">
+                <div style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
+          padding-right:10px;padding-top: 10px">
+                      <p-dropdown
+                      [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"
+                      [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
+            'font-size': '14px','float':'right'}">
+                      </p-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
         </p-header>
         <template let-resultItem pTemplate="item">
           <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:1px solid #D5D5D5;">
@@ -166,5 +218,4 @@
       </div>
     </div>
     </div>
-
 </div>
