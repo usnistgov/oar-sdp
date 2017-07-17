@@ -8,7 +8,7 @@ import { Component, Input, Pipe,PipeTransform } from '@angular/core';
   template: `
     <div class="ui-g">
      <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-12" >
-       <h3 id="description" name="desscription">Description</h3><br>
+       <h3 id="description" name="desscription">Metadata</h3><br>
        <fieldset-view [entry]="recordDisplay"></fieldset-view>
       </div>
     </div>
