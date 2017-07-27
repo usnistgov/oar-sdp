@@ -126,7 +126,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
  * Update Leftside menu on landing page
  */
     updateLeftMenu(){
-     var itemsMenu: any[] = []; 
+      var itemsMenu: any[] = []; 
       var descItem = this.createMenuItem ("Description","",(event)=>{ 
                    this.metadata = false; this.similarResources =false;
                  },""); 
@@ -152,8 +152,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       itemsMenu.push(metaItem); 
 
       this.leftmenu = [{
-            label: 'Table of Contents', command: (event)=>{
-                    window.location.href="#";},
+            label: 'Table of Contents', 
+            command: (event)=>{ window.location.href="#";},
             items: itemsMenu
         }];
     }
@@ -174,6 +174,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
  * Update right side panel on landing page
  */
     updateRightMenu(){
+      
       var serviceApi = this.rmmApi+"records?@id="+this.recordDisplay['@id'];  
       if(this.landing == "internal")
         serviceApi = this.metaApi+this.recordDisplay['ediid'];
