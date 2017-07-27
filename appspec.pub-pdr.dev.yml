@@ -1,0 +1,15 @@
+version: 0.0
+
+os: linux
+# 1) Copy all the build files to the sdp html folder
+files:
+  - source: dist/prod/
+    destination: /home/ubuntu/oar-docker/apps/pub-pdr/html/
+    
+hooks:
+ BeforeInstall:
+   - location: scripts/pub-pdr/dev/beforecicd.sh
+     runas: root
+ AfterInstall:
+   - location: scripts/pub-pdr/dev/aftercicd.sh
+     runas: root
