@@ -29,10 +29,13 @@
 
 :host /deep/ .ui-fieldset-content
 {
-    color: grey;
+    /*color: grey;*/
     font-size:10pt;
-    padding-left: .125em;
-    padding-right: .5em;
+    padding: 0;
+    /*padding-left: .125em;*/
+    /*padding-right: .5em;*/
+    /*padding-top: .1em;*/
+    /*padding-bottom: .1em; */
    
 }
 
@@ -64,12 +67,12 @@
       -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); 
   }
 
-:host /deep/ .ui-g{
+/*:host /deep/ .ui-g{
     padding: 0;
-    /*line-height: 0;*/
+    line-height: 10px;
    min-height: 0;
-   /*height: 0;*/
-}
+   height: 0;
+}*/
 
 .font10{
   font-size:10pt; 
