@@ -16,7 +16,7 @@ export class SearchService {
   //private RestAPIURL: string = Config.API;
   private rmmApi : string = Config.RMMAPI;
   private metaApi : string = Config.METAPI;
-  private landingAccess : string = Config.LANDING;
+  private landingBackend : string = Config.LANDING;
   private serviceApi : string;
   /**
    * Creates a new SearchService with the injected Http.
@@ -40,13 +40,10 @@ export class SearchService {
   }
 
   searchById(searchValue:string): Observable<string[]> {
-  
-    if(this.landingAccess != "internal")
-      this.serviceApi = this.rmmApi+"records/";
-    else 
-      this.serviceApi = this.metaApi;
-
-    return this.http.get(this.serviceApi+ searchValue)
+    if(_.includes(this.landingBackend, "rmm"))
+      this.landingBackend = this.landingBackend+"records/";
+   
+    return this.http.get(this.landingBackend + searchValue)
     .map((res: Response) => res.json())
     .catch((error: any) => Observable.throw(error.json()));
   }
