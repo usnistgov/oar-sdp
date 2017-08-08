@@ -307,11 +307,14 @@ createDataHierarchy(){
         // this.fileHierarchy = this.createTreeObj("Files","Files");
         // this.fileHierarchy.children =[];
          for(let fields of this.recordDisplay['dataHierarchy']){
-                if( fields.downloadURL != null)
-                    this.files.push(this.createFileNode(fields.filepath, fields.filepath));
-                else 
+                if( fields.filepath != null) {
                     if(fields.children != null)
-                      this.files.push(this.createChildrenTree(fields.children,fields.filepath));       
+                        this.files.push(this.createChildrenTree(fields.children,
+                                                               fields.filepath));
+                    else
+                        this.files.push(this.createFileNode(fields.filepath,
+                                                            fields.filepath));
+                }
             }
         
         //this.files.push(this.fileHierarchy);
