@@ -109,24 +109,21 @@
                 </template>
               </p-tree>
             </div>
-            <div style="background-color:#F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);width: 100%;padding-left: 1em;padding-top: 1em">
-              <label style="font-size: 14px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"><b>Authors and Contributors</b></label>
-            </div>
-            <div *ngIf="selectedAuthorDropdown == false" style="padding-left:1.0em;padding-bottom: 3px;
-            border-bottom:.5px solid #cccccc;
-                width: 100%;padding-right: 5em;background-color:#F8F9F9;
-                box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
-              <p-autoComplete id="contact" [(ngModel)]="selectedAuthor" [suggestions]="suggestedAuthors"
-                              (completeMethod)="filterAuthors($event)" [size]="30" [minLength]="1"
-                              [dropdown]="true" (onDropdownClick)="onAuthorDropdownClick($event)" (onSelect)="filterResults($event,'Author')"
-                              [inputStyle]="{'width':'100%','background-color': '#FFFFFF'
-                              ,'font-weight': '400','font-style': 'italic','font-size': '14px'}">
-              </p-autoComplete>
-            </div>
-            <div *ngIf="selectedAuthorDropdown == true">
-              <span style="padding-left: 15px;">{{selectedAuthor}}</span>
-              <i style="vertical-align: middle" (click)="clearAuthorFilter()" class="material-icons"> clear
-              </i>
+            <div class="ui-g-10" style="padding: 0px;" >
+              <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+                <label style="font-size: 14px;"><b>Authors and Contributors</b></label>
+              </div>
+              <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
+                <p-autoComplete id="author" [(ngModel)]="selectedAuthor"  [suggestions]="suggestedAuthors"
+                                (completeMethod)="filterAuthors($event)"
+                                [multiple] = "true"
+                                (onSelect)="filterResults($event)"
+                                (onUnselect)="filterResults($event)"
+                                [minLength]="1" [maxlength] = "30" [style]="{'width':'100%',
+                              'background-color': '#FFFFFF','font-weight': '400','height':'30px',
+                              'font-style': 'italic','font-size': '14px'}">
+                </p-autoComplete>
+              </div>
             </div>
           </div>
           <div class="ui-g-10" style="padding: 0px;" >
