@@ -67,7 +67,6 @@
         </div>
       </div>
     </div>
-
     <div *ngIf="filteredResults.length > 0">
     <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
       <div class="ui-g-12 ui-md-4 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
@@ -203,4 +202,9 @@
       </div>
     </div>
     </div>
+    <div *ngIf="filteredResults.length == 0">
+      <div class="EmptyBox100"></div>
+      <div class="EmptyBox20"></div>
+    </div>
+</div>
 </div>
