@@ -71,7 +71,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   selectedKeywords: string[] = [];
   selectedThemes: string[] = [];
   selectedComponents: string[] = [];
-  selectedAuthor: string;
+  selectedAuthor: string[] = [];
   suggestedKeywords: string[] = [];
   suggestedThemes: string[] = [];
   suggestedAuthors: string[] = [];
@@ -594,19 +594,25 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * filter authors
    */
-  filterByAuthor(searchResults: any[], selectedAuthor: string) {
-    if (selectedAuthor !== null && selectedAuthor !== this.ALL && selectedAuthor !== '') {
-      var filteredResults: any[] = [];
-      if (searchResults && searchResults.length > 0) {
-        for (let resultItem of searchResults) {
+
+  filterByAuthor(searchResults:any[], selectedAuthor:any[]) {
+    var filteredResults : any[] = [];
+    if(selectedAuthor.length > 0 && selectedAuthor.indexOf(this.ALL) < 0) {
+      console.log("filterbyauthor" + selectedAuthor);
+      if (searchResults !== null && searchResults.length > 0) {
+        for (let resultItem of searchResults)
+        {
+          console.log("filterbyauthor inside for" + resultItem.contactPoint.fn);
           if (resultItem.contactPoint && resultItem.contactPoint !== null &&
-            resultItem.contactPoint.fn !== null && selectedAuthor === resultItem.contactPoint.fn) {
+            this.containsAllAuthors(resultItem.contactPoint.fn, selectedAuthor)) {
+            console.log("filterbyauthor inside for if--------------------------");
+
             filteredResults.push(resultItem);
           }
         }
       }
       return filteredResults;
-    } else {
+    }else {
       return searchResults;
     }
   }
@@ -678,6 +684,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
 
     if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
+      console.log("inside author" + this.selectedAuthor);
       authorSelected = true;
       this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
       if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
@@ -835,6 +842,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
       return true;
   }
+
+  /**
+   *
+   * @param resultAuthors
+   * @param Authors
+   * @returns {boolean}
+   */
+  containsAllAuthors(resultAuthors:string[], authors:string[]) {
+    for (let keyw of authors) {
+      if(resultAuthors.indexOf(keyw) === -1)
+        return false;
+    }
+    return true;
+  }
+
 
 
   containsAllThemes(resultThemes:any[], themes:string[]) {
