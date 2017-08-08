@@ -173,7 +173,7 @@
               <div class="ui-grid-col-12">
                 <div class="ui-grid ui-grid-responsive" style="text-align: left;">
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL,resultItem['@id'])" >
+                    <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL+'#/',resultItem.ediid)" >
                       {{resultItem.title}}</a></b></div>
                   </div>
                   <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
