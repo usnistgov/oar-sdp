@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Config } from '../config/env.config';
-
+import { environment } from '../../environment';
 
 
 /**
@@ -10,7 +10,7 @@ import { Config } from '../config/env.config';
  */
 @Injectable()
 export class SearchFieldsListService {
-  private RMMAPIURL: string = Config.RMMAPI;
+  private RMMAPIURL: string = environment.RMMAPI;
 
   /**
    * Creates a new FieldsListService with the injected Http.

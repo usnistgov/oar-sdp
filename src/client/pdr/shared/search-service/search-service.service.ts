@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import * as _ from 'lodash';
 import { Config } from '../config/env.config';
+import { environment } from '../../environment';
 
 
 /**
@@ -14,9 +15,9 @@ import { Config } from '../config/env.config';
 @Injectable()
 export class SearchService {
   //private RestAPIURL: string = Config.API;
-  private rmmApi : string = Config.RMMAPI;
-  private metaApi : string = Config.METAPI;
-  private landingBackend : string = Config.LANDING;
+  private rmmApi : string = environment.RMMAPI;
+  private metaApi : string = environment.METAPI;
+  private landingBackend : string = environment.LANDING;
   private serviceApi : string;
   /**
    * Creates a new SearchService with the injected Http.

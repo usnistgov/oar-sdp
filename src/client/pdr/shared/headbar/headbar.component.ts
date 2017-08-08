@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { Location } from '@angular/common';
 import { SelectItem, TabViewModule } from 'primeng/primeng';
 import { Config } from '../config/env.config';
+import { environment } from '../../environment';
 /**
  * This class represents the headbar component.
  */
@@ -22,8 +23,8 @@ export class HeadbarComponent {
   layoutMode: string = 'horizontal';
   darkMenu: boolean = false;
   profileMode: string = 'inline';
-  private SDPAPI : string = Config.SDPAPI;
-  private landingService : string = Config.LANDING;
+  private SDPAPI : string = environment.SDPAPI;
+  private landingService : string = environment.LANDING;
   internalBadge: boolean = false;
 
    

@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import * as _ from 'lodash';
 import { Config } from '../config/env.config';
+import { environment } from '../../environment';
 
 
 /**
@@ -13,7 +14,7 @@ import { Config } from '../config/env.config';
  */
 @Injectable()
 export class SearchService {
-  private RMMAPIURL: string = Config.RMMAPI;
+  private RMMAPIURL: string = environment.RMMAPI;
 
 
   /**
