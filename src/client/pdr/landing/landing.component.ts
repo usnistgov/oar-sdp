@@ -327,13 +327,13 @@ createDataHierarchy(){
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
 
-        if( fields.filepath != null) {
-            if(fields.children != null)
-                this.files.push(this.createChildrenTree(fields.children,
-                                                        fields.filepath));
+        if( child.filepath != null) {
+            if(child.children != null)
+                testObj.children.push(this.createChildrenTree(child.children,
+                                                              child.filepath));
             else
-                this.files.push(this.createFileNode(fields.filepath,
-                                                    fields.filepath));
+                testObj.children.push(this.createFileNode(child.filepath,
+                                                          child.filepath));
         }
      }
      return testObj;
