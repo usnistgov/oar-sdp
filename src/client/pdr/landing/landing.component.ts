@@ -326,12 +326,15 @@ createDataHierarchy(){
     //console.log(children);
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
-        
-         if(child.downloadURL != null){
-              testObj.children.push(this.createFileNode(fname, child.filepath));
-         }else if(child.children != null){
-           testObj.children.push(this.createChildrenTree(child.children,child.filepath));
-         }
+
+        if( fields.filepath != null) {
+            if(fields.children != null)
+                this.files.push(this.createChildrenTree(fields.children,
+                                                        fields.filepath));
+            else
+                this.files.push(this.createFileNode(fields.filepath,
+                                                    fields.filepath));
+        }
      }
      return testObj;
   }
