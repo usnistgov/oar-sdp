@@ -145,6 +145,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           }
 
         }
+        console.log("themes array" + this.uniqueThemes.filter(this.onlyUnique));
         this.themesAllArray = this.themesAllArray.concat(this.uniqueThemes.filter(this.onlyUnique));
       } else {
         this.unspecifiedCount += 1;
@@ -563,7 +564,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   filterByThemes(searchResults: any[], selectedThemes: string[]) {
     var filteredResults: any[] = [];
     console.log("selected theme" + selectedThemes);
-    if (selectedThemes.length > 0) {
+    if (typeof selectedThemes !== 'undefined') {
       if (searchResults !== null && searchResults.length > 0) {
         let themes: SelectItem[] = [];
         let resultItemThemes: string[] = [];
@@ -602,11 +603,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       if (searchResults !== null && searchResults.length > 0) {
         for (let resultItem of searchResults)
         {
-          console.log("filterbyauthor inside for" + resultItem.contactPoint.fn);
           if (resultItem.contactPoint && resultItem.contactPoint !== null &&
             this.containsAllAuthors(resultItem.contactPoint.fn, selectedAuthor)) {
             console.log("filterbyauthor inside for if--------------------------");
-
             filteredResults.push(resultItem);
           }
         }
@@ -620,7 +619,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * filter results
    */
-  filterResults(event: any, selectedDropdown: string) {
+  filterResults(event: any) {
     this.selectedThemes = [];
     this.selectedComponents = [];
     let themeSelected:boolean = false;
@@ -630,12 +629,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     // Research Topics selected
     if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-      themeSelected = true;
       for (let theme of this.selectedThemesNode) {
-        this.selectedThemes.push(theme.value);
+        if (typeof theme.value !== 'undefined' && theme.value !== 'undefined') {
+          themeSelected = true;
+          console.log("inside selected theme" + theme.value);
+          this.selectedThemes.push(theme.value);
+        }
       }
-      console.log("inside selectedcomponent" + this.selectedThemes);
-
       this.filteredResults = this.filterByThemes(this.searchResults, this.selectedThemes);
       this.filteredResults = this.filteredResults.filter(this.onlyUnique);
       this.authors = this.collectAuthors(this.filteredResults);
@@ -653,10 +653,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Resource Features selected
 
     if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-      componentSelected = true;
       console.log("inside selectedcomponent" + this.selectedComponentsNode);
       for (let comp of this.selectedComponentsNode) {
-        this.selectedComponents.push(comp.value);
+        if (typeof comp.value !== 'undefined' && comp.value !== 'undefined') {
+          componentSelected = true;
+          this.selectedComponents.push(comp.value);
+        }
       }
       this.filteredResults = this.filterByComponents(this.searchResults, this.selectedComponents);
       this.filteredResults = this.filteredResults.filter(this.onlyUnique);
@@ -675,30 +677,25 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Author selected
-
-    if (selectedDropdown !== null) {
-      if (selectedDropdown === 'Author') {
-        this.selectedAuthorDropdown = true;
-      }
-    }
-
     if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
       console.log("inside author" + this.selectedAuthor);
       authorSelected = true;
-      this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
+      this.filteredResults = this.filterByAuthor(this.searchResults, this.selectedAuthor);
       if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
       } else {
+        console.log("inside themes");
         this.themes = this.collectThemes(this.filteredResults);
         this.collectThemesWithCount();
       }
       if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
       } else {
+        console.log("inside components");
         this.components = this.collectComponents(this.filteredResults);
         this.collectComponentsWithCount();
       }
       if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
       } else {
+        console.log("inside keywords");
         this.suggestedKeywords = this.collectKeywords(this.filteredResults);
       }
     }
@@ -724,6 +721,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected)
     {
+      console.log("nothing selected");
       this.filteredResults = this.searchResults;
       this.suggestedThemes = [];
       this.suggestedKeywords =[];
