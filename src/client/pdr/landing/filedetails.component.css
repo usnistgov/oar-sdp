@@ -28,3 +28,12 @@
    color: white; 
    word-wrap: break-word; 
 }
+
+.filesection{
+  background-color:#F3F3F3; 
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+
+.filecard{
+  padding: 0 2.5rem 2.5rem 2.5rem;
+}

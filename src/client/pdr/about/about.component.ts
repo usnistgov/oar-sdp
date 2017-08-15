@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-
+import {  Component, OnInit } from '@angular/core';
+import { environment } from '../environment';
+// import * as d3 from 'd3';
 /**
  * This class represents the lazy loaded AboutComponent.
  */
@@ -10,5 +11,8 @@ import { Component } from '@angular/core';
   styleUrls: ['about.component.css']
 })
 export class AboutComponent { 
-
+    ngOnInit() {
+        alert("About:"+environment.DISTAPI);
+        // d3.json("flare.json", function(data){ alert("data")});
+    }
 }

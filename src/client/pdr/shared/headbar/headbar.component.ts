@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { Location } from '@angular/common';
 import { SelectItem, TabViewModule } from 'primeng/primeng';
-import { Config } from '../config/env.config';
+import { environment } from '../../environment';
+
 /**
  * This class represents the headbar component.
  */
@@ -22,24 +23,17 @@ export class HeadbarComponent {
   layoutMode: string = 'horizontal';
   darkMenu: boolean = false;
   profileMode: string = 'inline';
-  private SDPAPI : string = Config.SDPAPI;
-  private landingService : string = Config.LANDING;
+  SDPAPI : string = environment.SDPAPI;
+  landingService : string = environment.LANDING;
   internalBadge: boolean = false;
 
    
   constructor( private el: ElementRef) {
   }
-
-  onClickSearch(){
-    //alert("Test");
-    window.open(this.SDPAPI);
-  }
-  onClickAbout(){
-    window.open("../#/about");
-  }
+  
   checkinternal() {
-    if(this.landingService == "internal")
+    if(!this.landingService.includes("rmm"))
       this.internalBadge = true;
-      return this.internalBadge;
+    return this.internalBadge;
   }
 }

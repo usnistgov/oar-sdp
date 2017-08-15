@@ -4,14 +4,14 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Config } from '../config/env.config';
-
+import { environment } from '../../environment';
 
 /**
  * This class provides the TaxonomyList service with methods to read taxonomies and add names.
  */
 @Injectable()
 export class TaxonomyListService {
-  private RMMAPIURL: string = Config.RMMAPI;
+  private RMMAPIURL: string = environment.RMMAPI;
 
   /**
    * Creates a new TaxonomyListService with the injected Http.

@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
-
+import { environment } from '../environment';
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -48,11 +48,11 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
     metadata: boolean = false;
-    private rmmApi : string = Config.RMMAPI;
-    private sdpLink : string = Config.SDPAPI;
-    private distApi : string = Config.DISTAPI;
-    private metaApi : string = Config.METAPI;
-    private landing : string = Config.LANDING;
+    private rmmApi : string = environment.RMMAPI;
+    private sdpLink : string = environment.SDPAPI;
+    private distApi : string = environment.DISTAPI;
+    private metaApi : string = environment.METAPI;
+    private landing : string = environment.LANDING;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -76,7 +76,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
-    //    console.log({ myVar: process.env.npm_config_myVar });
+
+      console.log("******* .... "+this.rmmApi);
         this.recordDisplay = searchResults;
         this.type = this.recordDisplay['@type'];
         this.titleService.setTitle(this.recordDisplay['title']);
@@ -175,13 +176,14 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
  */
     updateRightMenu(){
       
-      var serviceApi = this.rmmApi+"records?@id="+this.recordDisplay['@id'];  
-      if(this.landing == "internal")
-        serviceApi = this.metaApi+this.recordDisplay['ediid'];
-       var itemsMenu: any[] = [];
-       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
-       var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
-       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",serviceApi);
+      var serviceApi = this.landing+"records?@id="+this.recordDisplay['@id']; 
+      if(!_.includes(this.landing, "rmm"))
+        serviceApi = this.landing+this.recordDisplay['ediid'];
+
+      var itemsMenu: any[] = [];
+      var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
+      var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
+      var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",serviceApi);
     
         itemsMenu.push(homepage);
         if (this.files.length != 0)
