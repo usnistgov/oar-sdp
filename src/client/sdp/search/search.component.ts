@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem, Checkbox } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 
@@ -34,6 +34,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   msgs: Message[] = [];
   exception: string;
   noResults: boolean;
+  checked: boolean = false;
   errorMsg: string;
   status: string;
   errorMessage: string;
@@ -46,6 +47,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   taxonomies: SelectItem[];
   sortItems: SelectItem[];
   fields: SelectItem[];
+  fieldsArray: any[];
+  displayFields: string[] = [];
+  selectedFields: string[] = ['Resource Description','Subject keywords'];
   searchTaxonomyKey: string;
   suggestedTaxonomies: string[];
   suggestedTaxonomyList: string[];
@@ -596,13 +600,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * filter authors
    */
 
-  filterByAuthor(searchResults:any[], selectedAuthor:any[]) {
-    var filteredResults : any[] = [];
-    if(selectedAuthor.length > 0 && selectedAuthor.indexOf(this.ALL) < 0) {
+  filterByAuthor(searchResults: any[], selectedAuthor: any[]) {
+    var filteredResults: any[] = [];
+    if (selectedAuthor.length > 0 && selectedAuthor.indexOf(this.ALL) < 0) {
       console.log("filterbyauthor" + selectedAuthor);
       if (searchResults !== null && searchResults.length > 0) {
-        for (let resultItem of searchResults)
-        {
+        for (let resultItem of searchResults) {
           if (resultItem.contactPoint && resultItem.contactPoint !== null &&
             this.containsAllAuthors(resultItem.contactPoint.fn, selectedAuthor)) {
             console.log("filterbyauthor inside for if--------------------------");
@@ -611,7 +614,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
       }
       return filteredResults;
-    }else {
+    } else {
       return searchResults;
     }
   }
@@ -622,10 +625,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   filterResults(event: any) {
     this.selectedThemes = [];
     this.selectedComponents = [];
-    let themeSelected:boolean = false;
-    let componentSelected:boolean = false;
-    let authorSelected:boolean = false;
-    let keywordSelected:boolean = false;
+    let themeSelected: boolean = false;
+    let componentSelected: boolean = false;
+    let authorSelected: boolean = false;
+    let keywordSelected: boolean = false;
 
     // Research Topics selected
     if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
@@ -719,18 +722,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected)
-    {
+    if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected) {
       console.log("nothing selected");
       this.filteredResults = this.searchResults;
       this.suggestedThemes = [];
-      this.suggestedKeywords =[];
+      this.suggestedKeywords = [];
       this.suggestedAuthors = [];
       this.selectedAuthor = null;
       this.selectedKeywords = [];
-      this.selectedThemes =[];
+      this.selectedThemes = [];
       this.selectedThemesNode = [];
-      this.selectedComponents =[];
+      this.selectedComponents = [];
       this.selectedComponentsNode = [];
       this.selectedAuthorDropdown = false;
       this.authors = this.collectAuthors(this.filteredResults);
@@ -755,7 +757,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
 
   onlyUnique(value, index, self) {
-     return self.indexOf(value) === index;
+    return self.indexOf(value) === index;
   }
 
 
@@ -765,13 +767,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   clearFilters() {
     this.filteredResults = this.searchResults;
     this.suggestedThemes = [];
-    this.suggestedKeywords =[];
+    this.suggestedKeywords = [];
     this.suggestedAuthors = [];
     this.selectedAuthor = null;
     this.selectedKeywords = [];
-    this.selectedThemes =[];
+    this.selectedThemes = [];
     this.selectedThemesNode = [];
-    this.selectedComponents =[];
+    this.selectedComponents = [];
     this.selectedComponentsNode = [];
     this.selectedAuthorDropdown = false;
     this.authors = this.collectAuthors(this.filteredResults);
@@ -802,11 +804,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.selectedAuthorDropdown = false;
 
     this.suggestedThemes = [];
-    this.suggestedKeywords =[];
+    this.suggestedKeywords = [];
     this.selectedKeywords = [];
-    this.selectedThemes =[];
+    this.selectedThemes = [];
     this.selectedThemesNode = [];
-    this.selectedComponents =[];
+    this.selectedComponents = [];
     this.selectedComponentsNode = [];
     this.selectedAuthorDropdown = false;
     this.authors = this.collectAuthors(this.filteredResults);
@@ -827,18 +829,18 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }];
   }
 
-    /**
-     *
-     * @param resultKeywords
-     * @param keywords
-     * @returns {boolean}
-     */
-  containsAllKeywords(resultKeywords:string[], keywords:string[]) {
+  /**
+   *
+   * @param resultKeywords
+   * @param keywords
+   * @returns {boolean}
+   */
+  containsAllKeywords(resultKeywords: string[], keywords: string[]) {
     for (let keyw of keywords) {
-      if(resultKeywords.indexOf(keyw) === -1)
+      if (resultKeywords.indexOf(keyw) === -1)
         return false;
     }
-      return true;
+    return true;
   }
 
   /**
@@ -847,17 +849,16 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * @param Authors
    * @returns {boolean}
    */
-  containsAllAuthors(resultAuthors:string[], authors:string[]) {
+  containsAllAuthors(resultAuthors: string[], authors: string[]) {
     for (let keyw of authors) {
-      if(resultAuthors.indexOf(keyw) === -1)
+      if (resultAuthors.indexOf(keyw) === -1)
         return false;
     }
     return true;
   }
 
 
-
-  containsAllThemes(resultThemes:any[], themes:string[]) {
+  containsAllThemes(resultThemes: any[], themes: string[]) {
     for (let theme of themes) {
       if (resultThemes !== null) {
         for (let result of resultThemes) {
@@ -872,12 +873,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  filterByKeyword(searchResults:any[], selectedKeywords:any[]) {
-    var filteredResults : any[] = [];
-    if(selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
+  filterByKeyword(searchResults: any[], selectedKeywords: any[]) {
+    var filteredResults: any[] = [];
+    if (selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
       if (searchResults !== null && searchResults.length > 0) {
-        for (let resultItem of searchResults)
-        {
+        for (let resultItem of searchResults) {
           if (resultItem.keyword && resultItem.keyword !== null &&
             this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
             filteredResults.push(resultItem);
@@ -885,17 +885,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
       }
       return filteredResults;
-    }else {
+    } else {
       return searchResults;
     }
   }
 
-  encodeString(url:string,param:string) {
+  encodeString(url: string, param: string) {
     var urlString = url + encodeURIComponent(param);
     window.open(urlString);
   }
 
-  openURL(url:string) {
+  openURL(url: string) {
     window.open(url);
   }
 
@@ -903,32 +903,71 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.searchFieldsListService.get()
       .subscribe(
         fields => this.fields = this.toSortItems(fields),
-        error =>  this.errorMessage = <any>error
+        error => this.errorMessage = <any>error
       );
   }
 
   /**
    * Advanced Search fields dropdown
    */
-  toSortItems(fields:any[]) {
-    let items :SelectItem[] = [];
+  toSortItems(fields: any[]) {
+    this.fieldsArray = fields;
+    let items: SelectItem[] = [];
     let sortItems: SelectItem[] = [];
+    this.displayFields = [];
     //for (let field of fields) {
-    console.log("hello" );
+    console.log("hello");
     for (let field of fields) {
-      if (_.includes(field.tags,'filterable')) {
-        console.log("sort items" + field.label);
-        sortItems.push({label: field.label, value: field.name});
+      if (_.includes(field.tags, 'filterable')) {
+        if (field.type !== 'object') {
+          console.log("sort items" + field.label);
+          sortItems.push({label: field.label, value: field.name});
+          if (field.label !== 'Resource Title') {
+            if (field.name !== 'component.topic.tag') {
+              this.displayFields.push(field.label);
+            }
+          }
+        }
       }
-    };
+    }
+    ;
     //sortItems = _.sortBy(sortItems, ['label','value']);
     return sortItems;
   }
 
   SortByFields() {
+    this.selectedFields = [];
     this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
     console.log("inside sort fields" + this.sortItemKey);
+    for (let field of this.fieldsArray) {
+      if (field.name == this.sortItemKey) {
+        this.selectedFields.push(field.label);
+        console.log("field label" + field.label);
+      }
+    }
     return this.filteredResults;
+  }
+
+
+  ResetSelectedFields() {
+    this.selectedFields = ['Resource Description','Subject keywords'];
+  }
+
+  SelectAllFields() {
+    this.selectedFields = [];
+    if (this.checked) {
+      for (let field of this.fieldsArray) {
+        if (_.includes(field.tags, 'filterable')) {
+          if (field.type !== 'object') {
+            if (field.label !== 'Resource Title') {
+              if (field.name !== 'component.topic.tag') {
+                this.selectedFields.push(field.label);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
 
