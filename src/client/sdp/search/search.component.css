@@ -23,6 +23,17 @@
   text-overflow: ellipsis;
 }
 
+.label {
+  display: inline-block;
+  max-width: 100%; // Force IE8 to wrap long content (see https://github.com/twbs/bootstrap/issues/13141)
+  margin-bottom: 5px;
+  font-weight: normal;
+  color: gray;
+  font-style: italic;
+  font-family: "Roboto","Helvetica Neue",sans-serif;
+  font-size: 14px;
+}
+
 .badge {
   background-color: gray;
 }

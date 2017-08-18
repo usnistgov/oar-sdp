@@ -29,12 +29,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 }
 
 .cardDiv:hover{
-  background-color: #1471AE;
+  background-color: #283593;
 }
 
 .cardDiv
 {
-  background-color: #2fa9e0;
+  background-color: #1471AE;
 }
 hr {
   -moz-box-sizing: content-box;

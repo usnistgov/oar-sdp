@@ -8,12 +8,12 @@ import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import {
   DropdownModule, AccordionModule, TreeModule, PanelMenuModule, AutoCompleteModule,
-  MessagesModule, MultiSelectModule, DataTableModule, DataListModule, OverlayPanelModule, CheckboxModule, Checkbox
+  MessagesModule, MultiSelectModule, DataTableModule, DataListModule, OverlayPanelModule, CheckboxModule, TooltipModule
 } from 'primeng/primeng';
 
 @NgModule({
     imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-      DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule, OverlayPanelModule, CheckboxModule],
+      DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule, OverlayPanelModule, CheckboxModule, TooltipModule],
     declarations: [SearchPanelComponent,ReadMoreComponent],
     exports: [SearchPanelComponent,ReadMoreComponent],
     providers: [TaxonomyListService, SearchFieldsListService]
