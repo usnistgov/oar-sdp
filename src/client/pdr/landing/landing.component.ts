@@ -307,11 +307,14 @@ createDataHierarchy(){
         // this.fileHierarchy = this.createTreeObj("Files","Files");
         // this.fileHierarchy.children =[];
          for(let fields of this.recordDisplay['dataHierarchy']){
-                if( fields.downloadURL != null)
-                    this.files.push(this.createFileNode(fields.filepath, fields.filepath));
-                else 
+                if( fields.filepath != null) {
                     if(fields.children != null)
-                      this.files.push(this.createChildrenTree(fields.children,fields.filepath));       
+                        this.files.push(this.createChildrenTree(fields.children,
+                                                               fields.filepath));
+                    else
+                        this.files.push(this.createFileNode(fields.filepath,
+                                                            fields.filepath));
+                }
             }
         
         //this.files.push(this.fileHierarchy);
@@ -323,12 +326,15 @@ createDataHierarchy(){
     //console.log(children);
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
-        
-         if(child.downloadURL != null){
-              testObj.children.push(this.createFileNode(fname, child.filepath));
-         }else if(child.children != null){
-           testObj.children.push(this.createChildrenTree(child.children,child.filepath));
-         }
+
+        if( child.filepath != null) {
+            if(child.children != null)
+                testObj.children.push(this.createChildrenTree(child.children,
+                                                              child.filepath));
+            else
+                testObj.children.push(this.createFileNode(child.filepath,
+                                                          child.filepath));
+        }
      }
      return testObj;
   }
