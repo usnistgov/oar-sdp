@@ -17,10 +17,10 @@ import { Component, Input, Pipe,PipeTransform } from '@angular/core';
 export class MetadataComponent {
    @Input() recordDisplay: any[];
    
-   
+  
    
    ngOnInit() {
-      
+      delete this.recordDisplay["_id"];
    }
    
   generateArray(obj){
