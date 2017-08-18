@@ -183,7 +183,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
               this.uniqueComp.push(_.startCase(_.split(compType, ':')[1]));
               if (componentsArray.indexOf(compType) < 0) {
                 components.push({
-                  label: 'with ' + _.startCase(_.split(compType, ':')[1]),
+                  label: _.startCase(_.split(compType, ':')[1]),
                   value: _.startCase(_.split(compType, ':')[1])
                 });
                 componentsArray.push(compType);
@@ -261,7 +261,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       children: this.themesWithCount
     }];
     this.componentsTree = [{
-      label: 'Resource Features -',
+      label: 'Record has -',
       "expanded": 'true',
       children: this.componentsWithCount
     }];
@@ -749,7 +749,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       children: this.themesWithCount
     }];
     this.componentsTree = [{
-      label: 'Resource Features -',
+      label: 'Record has -',
       "expanded": 'true',
       children: this.componentsWithCount
     }];
@@ -788,7 +788,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       children: this.themesWithCount
     }];
     this.componentsTree = [{
-      label: 'Resource Features -',
+      label: 'Record has -',
       "expanded": 'true',
       children: this.componentsWithCount
     }];
@@ -823,7 +823,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       children: this.themesWithCount
     }];
     this.componentsTree = [{
-      label: 'Resource Features -',
+      label: 'Record has -',
       "expanded": 'true',
       children: this.componentsWithCount
     }];
@@ -921,7 +921,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       if (_.includes(field.tags, 'filterable')) {
         if (field.type !== 'object') {
           console.log("sort items" + field.label);
-          sortItems.push({label: field.label, value: field.name});
+          if (field.name !== 'component.topic.tag') {
+            sortItems.push({label: field.label, value: field.name});
+          }
           if (field.label !== 'Resource Title') {
             if (field.name !== 'component.topic.tag') {
               this.displayFields.push(field.label);
@@ -951,6 +953,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   ResetSelectedFields() {
     this.selectedFields = ['Resource Description','Subject keywords'];
+    this.checked = false;
   }
 
   SelectAllFields() {

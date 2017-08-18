@@ -159,20 +159,21 @@
                   <p-overlayPanel #op1 [showCloseIcon]="true">
 
                     <div style="text-align: left">
-                      Display: <a href="#!" (click) = "ResetSelectedFields()" style="float: right;">Reset</a><br>
-
-                      <p-checkbox name="group2" binary="true" [(ngModel)]="checked" label="Select All"   (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
+                      <b>Display Fields:</b>  <a href="#!" (click) = "ResetSelectedFields()" style="float: right;">Reset</a>
                     </div>
-                    <div *ngFor="let fields of displayFields" style="text-align: left" >
-                      <p-checkbox name="group1" value={{fields}} label={{fields}} [(ngModel)]="selectedFields"></p-checkbox>
+                    <div style="text-align: left" >
+                    <p-checkbox name="group2" binary="true" [(ngModel)]="checked" label="Select All" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
+                    </div>
+                      <div *ngFor="let fields of displayFields" style="text-align: left" >
+                      <p-checkbox name="group1" class = "label" value={{fields}} label={{fields}} [(ngModel)]="selectedFields"></p-checkbox>
                     </div>
                     <div style="text-align: left">
-                      SortBy:</div>
-                      <p-dropdown
+                      <b>Sort Results by:</b> <br><p-dropdown
                       [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name" (onChange) = "SortByFields()"
                       [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
             'font-size': '14px','float':'left'}">
-                    </p-dropdown>
+                    </p-dropdown></div>
+
                     <div class="EmptyBox20"></div>
                   </p-overlayPanel>
                 </div>
@@ -217,7 +218,7 @@
                     </div>
                   </div>
                   <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Subject keywords') !==-1">
-                    <div class="ui-grid-col-12"><b>Keywords: </b> <i style="color: gray;"> <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
+                    <div class="ui-grid-col-12"><b>Subject Keywords: </b> <i style="color: gray;"> <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
                     </i>
                   </div>
                   </div>
