@@ -143,7 +143,6 @@
           </div>
         </div>
       </div>
-
       <!-- Section 1 -->
       <div class="ui-g-12 ui-md-6 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results responsive = "true" [paginator]="true" paginatorPosition = "top" [rows]="5"
@@ -155,13 +154,27 @@
                 <div style="color: gray;font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: left;padding-top: 10px;"> &nbsp;&nbsp;{{filteredResults.length}} records found</div>
               </div>
               <div class="ui-g-12 ui-md-6">
-                <div style="font-size: 25px;font-weight: lighter;font-family: 'Lato',Arial,sans-serif;float: right;
-          padding-right:10px;padding-top: 10px">
+                <div style="float: right;padding-right:10px;padding-top: 10px">
+                  <button type="text" pButton label="Customize Fields" (click)="op1.toggle($event)"></button>
+                  <p-overlayPanel #op1 [showCloseIcon]="true">
+
+                    <div style="text-align: left">
+                      Display: <a href="#!" (click) = "ResetSelectedFields()" style="float: right;">Reset</a><br>
+
+                      <p-checkbox name="group2" binary="true" [(ngModel)]="checked" label="Select All"   (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
+                    </div>
+                    <div *ngFor="let fields of displayFields" style="text-align: left" >
+                      <p-checkbox name="group1" value={{fields}} label={{fields}} [(ngModel)]="selectedFields"></p-checkbox>
+                    </div>
+                    <div style="text-align: left">
+                      SortBy:</div>
                       <p-dropdown
-                      [options]="fields" [(ngModel)]="sortItemKey" placeholder="Sortable Fields" (onChange) = "SortByFields()"
+                      [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name" (onChange) = "SortByFields()"
                       [style]="{'width':'200px','background-color': '#FFFFFF','font-weight': '400','font-style': 'italic',
-            'font-size': '14px','float':'right'}">
-                      </p-dropdown>
+            'font-size': '14px','float':'left'}">
+                    </p-dropdown>
+                    <div class="EmptyBox20"></div>
+                  </p-overlayPanel>
                 </div>
               </div>
             </div>
@@ -176,23 +189,48 @@
                     <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL+'#/',resultItem.ediid)" >
                       {{resultItem.title}}</a></b></div>
                   </div>
-                  <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
-                  <div class="ui-grid-row">
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Description') !==-1">
+                    <read-more [text]="resultItem.description" [maxLength]="240" ></read-more>
+                  </div>
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Point of Contact') !==-1">
+                    <div class="ui-grid-col-12"><b>Point of Contact: </b> <i style="color: gray;"> {{resultItem.contactPoint}}
+                    </i>
+                    </div>
+                  </div>
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Contact\'s full name') !==-1">
+                    <div class="ui-grid-col-12"><b>Contact Full Name: </b> <i style="color: gray;"> {{resultItem.contactPoint.fn}}
+                    </i>
+                    </div>
+                  </div>
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Home Page') !==-1">
+                    <div class="ui-grid-col-12"><b>Resource Home Page: </b> <i style="color: gray;"> {{resultItem.landingPage}}
+                    </i>
+                    </div>
+                  </div>
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Research Topic') !==-1">
+                    <div class="ui-grid-col-12"><b>Research Topic: </b> <i style="color: gray;"> {{resultItem.topic[0].tag}}
+                    </i>
+                    </div>
+                  </div>
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('research topic') !==-1">
+                    <div class="ui-grid-col-12"><b>Research Topic - Component: </b>
+                    </div>
+                  </div>
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Subject keywords') !==-1">
                     <div class="ui-grid-col-12"><b>Keywords: </b> <i style="color: gray;"> <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="102" ></read-more>
                     </i>
                   </div>
                   </div>
-                  <div class="ui-grid-row" *ngIf="resultItem.doi !=null">
+                  <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('DOI') !==-1">
                     <div class="ui-grid-col-1"><b>DOI: </b> </div>
                     <div class="ui-grid-col-11" style="color:#1471AE;">{{resultItem.doi}}</div>
                   </div>
                   <div class="ui-grid-row">
-                    <div class="ui-grid-col-2">
-                      <a [(href)]="resultItem.landingPage" target="_blank">
+                    <div class="ui-grid-col-12">
                       <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Visit Home Page"
-                              type="button" icon="ui-icon-launch" style="font-size: small;background-color: #277E2F"></button></a>
+                              type="button" icon="ui-icon-launch" style="width: 150px;font-size: small;background-color: #277E2F"></button>
                   </div>
-                  </div>
+                    </div>
                 </div>
               </div>
             </div>
