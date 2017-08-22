@@ -2,12 +2,14 @@ import { Component, Input } from '@angular/core';
 import {LandingPanelComponent} from './landing.component'; 
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 @Component({
+  moduleId: module.id,    
+  styleUrls: ['landing.component.css'],
   selector: 'description-resources',
   template: `
           <!--div class="ui-g">
           <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-12"-->
           <h3 id="description" name="desscription"><b>Description</b></h3><br>
-            <div id="recordDescription" class="well" style="background-color:#006495; text-align: left; color: white">
+            <div id="recordDescription" class="well welldesc">
                 {{ record["description"] }}
             </div>     
             <strong>Research Topics:</strong> 
