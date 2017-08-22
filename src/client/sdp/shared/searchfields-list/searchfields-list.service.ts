@@ -5,7 +5,6 @@ import { Config } from '../config/env.config';
 import { environment } from '../../environment';
 
 
-
 /**
  * This class provides the NameList service with methods to read names and add names.
  */

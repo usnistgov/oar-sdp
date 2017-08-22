@@ -9,7 +9,6 @@ import { MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
-
 declare var jQuery: any;
 
 /**

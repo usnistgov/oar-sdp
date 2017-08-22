@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import * as _ from 'lodash';
-import { Config } from '../';
+// import { Config } from '../';
 import { environment } from '../../environment';
 
 /**
