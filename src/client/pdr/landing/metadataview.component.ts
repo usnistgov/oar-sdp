@@ -16,8 +16,7 @@ import {AccordionModule} from 'primeng/primeng';
     <div *ngFor="let node of (entry | keyvalues)" >
       <div *ngIf="!isArrayOrObject(node.value)" class="ui-g break-long-words" style="padding:0;">
         <div class="ui-g-2 ui-md-3 ui-lg-2 ui-sm-3" style="padding:0;">
-          <span *ngIf="!isInteger(node.key)" style="color:#1471AE; word-wrap: break-word;">{{ifIntegerThenitem(node.key)}}</span>
-          <span *ngIf="isInteger(node.key)" style="color:grey; word-wrap: break-word;">{{ifIntegerThenitem(node.key)}}</span>
+          <span *ngIf="!isInteger(node.key)" class="keynames">{{ifIntegerThenitem(node.key)}}</span>
         </div>
         <div class="ui-g-10 ui-md-9 ui-lg-10 ui-sm-9" style="padding:0;">
           <span class="font10"> {{node.value}}</span>
@@ -25,18 +24,11 @@ import {AccordionModule} from 'primeng/primeng';
       </div>
        <div *ngIf="isArrayOrObject(node.value)">
         <br>
-        <div *ngIf="isInteger(node.key)">
-          <p-fieldset class="customlegend" legend="{{ ifIntegerThenitem(node.key) }}"  [toggleable]="true">
-          <fieldset-view [entry]="node.value"></fieldset-view>
-         </p-fieldset> <br>
-         </div>
-
-         <div *ngIf="!isInteger(node.key)">
+        
          <p-fieldset legend="{{ ifIntegerThenitem(node.key) }}"  [toggleable]="true">
           <fieldset-view [entry]="node.value"></fieldset-view>
          </p-fieldset> <br>
-         </div>
-
+        
        </div>
     </div> 
   `
@@ -83,7 +75,7 @@ import {AccordionModule} from 'primeng/primeng';
    ifIntegerThenitem(value){
    if((parseFloat(value) == parseInt(value)) && !isNaN(value)){ 
      
-      return "item "+value;
+      return "item ["+value+"]";
    } else {
        return value;
    }
