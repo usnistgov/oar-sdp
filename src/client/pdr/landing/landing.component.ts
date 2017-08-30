@@ -77,17 +77,17 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
 
   onSuccess(searchResults:any[]) {
 
-      console.log("******* .... "+this.rmmApi);
-        this.recordDisplay = searchResults;
+        if(searchResults["ResultCount"]== undefined || searchResults["ResultCount"] != 1)
+            this.recordDisplay = searchResults;
+        else if(searchResults["ResultCount"] != undefined && searchResults["ResultCount"] == 1)
+             this.recordDisplay = searchResults["ResultData"][0];
         this.type = this.recordDisplay['@type'];
         this.titleService.setTitle(this.recordDisplay['title']);
         this.createDataHierarchy();
-        if(this.recordDisplay['doi'] != undefined && this.recordDisplay['doi'] != "" ){
+        if(this.recordDisplay['doi'] != undefined && this.recordDisplay['doi'] != "" )
              this.isDOI = true;
-        }
         if(this.recordDisplay['contactPoint'].hasEmail!= undefined && this.recordDisplay['contactPoint'].hasEmail != "")
-       this.isEmail = true;
-                
+          this.isEmail = true;          
         this.updateLeftMenu();
         this.updateRightMenu();
     }
@@ -103,7 +103,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   }
 
   searchbyid(searchId:string){
-      console.log(searchId);
+        //console.log(searchId);
         this.keyword = '';
         let that = this;
         return this.searchService.searchById(searchId)
@@ -262,22 +262,26 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
         ];
     }
 
-  /**
+    /**
      * Get the params OnInit
      */
     ngOnInit() {
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-          if (_.includes(window.location.href,'?')) {
+            if(_.includes(window.location.href,"ark")){
+               var alength = _.split(window.location.href,'/').length;
+               this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
+               //alert("::"+this.searchValue);
+            }
+            else if(_.includes(window.location.href,'?')) {
               this.searchValue = params['id'];
-              console.log("*** test input ? **"+_.split(window.location.href,'/'));
             } else {
-                var alength = _.split(window.location.href,'/').length;
+              var alength = _.split(window.location.href,'/').length;
               this.searchValue =_.split(window.location.href,'/')[alength-1];
               console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
             }
             this.findId = this.searchValue;//params['id'];
             this.searchbyid(this.findId);
-             this.files =[];
+            this.files =[];
         });    
     }
 
@@ -288,34 +292,22 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
     isEmptyObject(obj) {
       return (Object.keys(obj).length === 0);
     }
-// Create Files Structure to browse throw files
-//  createDataHierarchy(){
-//         if (this.recordDisplay['dataHierarchy'] == null )
-//             return; 
-//         this.fileHierarchy = this.createTreeObj("Files","Files");
-//         this.fileHierarchy.children =[];
-//          for(let fields of this.recordDisplay['dataHierarchy']){
-//                 if( fields.downloadURL != null)
-//                     this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
-//                 else 
-//                     if(fields.children != null)
-//                       this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));       
-//             }
-        
-//         this.files.push(this.fileHierarchy);
-//      }
+
 createDataHierarchy(){
         if (this.recordDisplay['dataHierarchy'] == null )
             return; 
         // this.fileHierarchy = this.createTreeObj("Files","Files");
         // this.fileHierarchy.children =[];
          for(let fields of this.recordDisplay['dataHierarchy']){
-                if( fields.downloadURL != null)
-                    this.files.push(this.createFileNode(fields.filepath, fields.filepath));
-                else 
-                    if(fields.children != null)
-                      this.files.push(this.createChildrenTree(fields.children,fields.filepath));       
-            }
+                // if( fields.downloadURL != null)
+                //     this.files.push(this.createFileNode(fields.filepath, fields.filepath));
+                // else 
+            if(fields.children != null)
+                this.files.push(this.createChildrenTree(fields.children,fields.filepath));  
+             else
+               this.files.push(this.createFileNode(fields.filepath, fields.filepath));     
+            
+         }
         
         //this.files.push(this.fileHierarchy);
      }
@@ -327,10 +319,18 @@ createDataHierarchy(){
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
         
-         if(child.downloadURL != null){
-              testObj.children.push(this.createFileNode(fname, child.filepath));
-         }else if(child.children != null){
-           testObj.children.push(this.createChildrenTree(child.children,child.filepath));
+        //  if(child.downloadURL != null){
+        //       testObj.children.push(this.createFileNode(fname, child.filepath));
+        //  }else if(child.children != null){
+        //    testObj.children.push(this.createChildrenTree(child.children,child.filepath));
+        //  }
+        if( child.filepath != null) {
+             if(child.children != null)
+                 testObj.children.push(this.createChildrenTree(child.children,
+                                                               child.filepath));
+             else
+                 testObj.children.push(this.createFileNode(child.filepath,
+                                                           child.filepath));
          }
      }
      return testObj;
@@ -384,4 +384,15 @@ expandContact(){
           }
       }
  }
+
+  isArray(obj : any ) {
+     return Array.isArray(obj)
+  }
+
+  isObject(obj: any)
+  {
+    if (typeof obj === "object") {
+    return true;
+   }
+  }
 }

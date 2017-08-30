@@ -12,7 +12,6 @@ import { environment } from '../environment';
 })
 export class AboutComponent { 
     ngOnInit() {
-        alert("About:"+environment.DISTAPI);
-        // d3.json("flare.json", function(data){ alert("data")});
+        //  d3.json("flare.json", function(data){ alert("data")});
     }
 }

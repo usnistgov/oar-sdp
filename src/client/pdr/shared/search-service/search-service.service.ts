@@ -43,10 +43,13 @@ export class SearchService {
     //   this.serviceApi = this.rmmApi+"records/";
     // else 
     //   this.serviceApi = this.metaApi;
-    
-    if(_.includes(this.landingBackend, "rmm"))
+    if (_.includes(this.landingBackend, "rmm") && _.includes(searchValue,"ark"))
+      this.landingBackend= this.landingBackend+"records?@id=";
+    else if(_.includes(this.landingBackend, "rmm"))
       this.landingBackend = this.landingBackend+"records/"; //+"records?exclude=_id&ediid=";
     
+    console.log(this.landingBackend+searchValue);
+
     return this.http.get(this.landingBackend+ searchValue)
     .map((res: Response) => res.json())
     .catch((error: any) => Observable.throw(error.json()));
