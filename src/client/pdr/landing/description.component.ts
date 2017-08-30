@@ -32,10 +32,13 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                   </span>   
                 </span>
             </div>
+            <div> <br>
+
              <b>Data Access:</b> {{ record['accessLevel'] }} 
                 <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
              <br>
              <br>
+            </div> 
             <div *ngIf="files.length != 0">              
                 <h3 id="files" name="files"><b>Files</b></h3>   
                 <div class="ui-g">
