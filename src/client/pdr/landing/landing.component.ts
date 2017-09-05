@@ -64,6 +64,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      citeString:string = "";
      type: string = "";     
      process : any[];
+     requestedId : string = "";
+    
   /**
    * Creates an instance of the SearchPanel
    *
@@ -270,14 +272,14 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
             if(_.includes(window.location.href,"ark")){
                var alength = _.split(window.location.href,'/').length;
                this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
-               //alert("::"+this.searchValue);
+               
             }
             else if(_.includes(window.location.href,'?')) {
               this.searchValue = params['id'];
             } else {
               var alength = _.split(window.location.href,'/').length;
               this.searchValue =_.split(window.location.href,'/')[alength-1];
-              console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
+              //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
             }
             this.findId = this.searchValue;//params['id'];
             this.searchbyid(this.findId);
@@ -286,7 +288,14 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
     }
 
     ngOnDestroy() {
+        
           this._routeParamsSubscription.unsubscribe();
+        
+    }
+
+    ngAfterViewInit(){
+        
+        window.history.replaceState( {} , '#/id/', '/id/'+this.searchValue );
     }
     //This is to check if empty
     isEmptyObject(obj) {

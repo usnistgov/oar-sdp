@@ -14,4 +14,8 @@ export class AboutComponent {
     ngOnInit() {
         //  d3.json("flare.json", function(data){ alert("data")});
     }
+    ngAfterViewInit(){
+        //alert("TEST");  
+        window.history.replaceState( {} , '#/about/', '/about/' );
+    }
 }
