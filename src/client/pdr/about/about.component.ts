@@ -16,6 +16,6 @@ export class AboutComponent {
     }
     ngAfterViewInit(){
         //alert("TEST");  
-        window.history.replaceState( {} , '#/about/', '/about/' );
+        window.history.replaceState( {} , '#/about/', '/pdr/about/' );
     }
 }

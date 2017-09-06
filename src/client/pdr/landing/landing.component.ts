@@ -295,7 +295,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
 
     ngAfterViewInit(){
         
-        window.history.replaceState( {} , '#/id/', '/id/'+this.searchValue );
+        window.history.replaceState( {} , '#/id/', '/od/id/'+this.searchValue );
     }
     //This is to check if empty
     isEmptyObject(obj) {
