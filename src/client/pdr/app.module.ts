@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { routes } from './app.routes';
 import { HeadbarComponent, FootbarComponent } from './shared/index';
 
-
 import { AboutModule } from './about/about.module';
 import { SharedModule } from './shared/shared.module';
 import { LandingModule} from './landing/landing.module';

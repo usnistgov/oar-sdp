@@ -120,3 +120,9 @@
    word-wrap: break-word;
 }
 
+/* Description section */
+.welldesc{
+  background-color:#006495; 
+  text-align: left; 
+  color: white;
+}
