@@ -11,27 +11,24 @@ import {Collaspe} from './collapse.directive';
 import {SanitizeHtmlDirective} from './sanitizeHtml.directive';
 import {KeyValuePipe} from './keyvalue.pipe';
 import {MetadataView} from './metadataview.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NoidComponent} from './noid.component';
-
-
-
 
 import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
   MessagesModule, MultiSelectModule, DataTableModule, DataListModule,
   MenuModule,OverlayPanelModule, FieldsetModule, PanelModule } from 'primeng/primeng';
 
-import { BrowserModule, Title,DomSanitizer } from '@angular/platform-browser';
+import { BrowserModule,Title,DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
-    imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-      DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule,OverlayPanelModule,
-      Ng2StickyModule, FieldsetModule, PanelModule, BrowserAnimationsModule],
-    declarations: [LandingPanelComponent,Collaspe,MetadataComponent,SimilarsComponent,FileDetailsComponent,
-                   DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView ],
-    exports: [LandingPanelComponent],
-    providers: [Title]
+  imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
+    DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule,OverlayPanelModule,
+    Ng2StickyModule, FieldsetModule, PanelModule],
+  declarations: [LandingPanelComponent,Collaspe,MetadataComponent,SimilarsComponent,FileDetailsComponent,
+    DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent ],
+  exports: [LandingPanelComponent],
+  providers: [Title]
 
 })
 
 export class LandingModule { }
+

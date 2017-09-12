@@ -8,7 +8,7 @@ import { Message } from 'primeng/components/common/api';
 import { MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
-
+import { environment } from '../environment';
 declare var jQuery: any;
 
 /**
@@ -94,7 +94,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   sortable: any[] = [];
   showMoreResearchTopics: boolean = false;
   private _routeParamsSubscription: Subscription;
-  private PDRAPIURL: string = Config.PDRAPI;
+  private PDRAPIURL: string = environment.PDRAPI;
 
 
   /**

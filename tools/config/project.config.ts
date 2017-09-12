@@ -11,6 +11,7 @@ import { ExtendPackages } from './seed.config.interfaces';
  */
 export class ProjectConfig extends SeedConfig {
 
+  
   PROJECT_TASKS_DIR = join(process.cwd(), this.TOOLS_DIR, 'tasks', 'project');
 
     FONTS_DEST = `${this.APP_DEST}/fonts`;

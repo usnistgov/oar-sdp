@@ -24,8 +24,41 @@
     min-height: 0;
     height: 0;
     word-wrap: break-word;
+    margin-bottom: 10px;
+}
+
+
+ :host /deep/ .customlegend > .ui-fieldset .ui-fieldset-legend {
+    /*padding: 0.625em 1em;*/
+    /*padding-left: .125em;
+    padding-right: .5em;*/
+    border-bottom: none;
+    width: inherit; 
+    padding: 0 0;
+    color:grey;
+    font-size:10pt;
+    line-height: 0;
+    min-height: 0;
+    height: 0;
+    word-wrap: break-word;
+    margin-bottom: 10px;
 }
     
+:host /deep/ .notcustomlegend > .ui-fieldset .ui-fieldset-legend {
+    /*padding: 0.625em 1em;*/
+    /*padding-left: .125em;
+    padding-right: .5em;*/
+    border-bottom: none;
+    width: inherit; 
+    padding: 0 0;
+    color: red;
+    font-size:10pt;
+    line-height: 0;
+    min-height: 0;
+    height: 0;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+}
 
 :host /deep/ .ui-fieldset-content
 {
@@ -90,6 +123,15 @@
   hyphens: auto;
 }
 
+.keynames{
+    color:#1471AE;
+    word-wrap: break-word;
+}
+
+.keynumbers{
+    color:grey; 
+    word-wrap: break-word;
+}
  /*:host /deep/ .ui-fieldset-toggler .fa .fa-w .fa-minus{
 
 line-height: 0;

@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
-
+import { environment } from '../environment';
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -48,11 +48,11 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
     metadata: boolean = false;
-    private rmmApi : string = Config.RMMAPI;
-    private sdpLink : string = Config.SDPAPI;
-    private distApi : string = Config.DISTAPI;
-    private metaApi : string = Config.METAPI;
-    private landing : string = Config.LANDING;
+    private rmmApi : string = environment.RMMAPI;
+    private sdpLink : string = environment.SDPAPI;
+    private distApi : string = environment.DISTAPI;
+    private metaApi : string = environment.METAPI;
+    private landing : string = environment.LANDING;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -64,6 +64,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      citeString:string = "";
      type: string = "";     
      process : any[];
+     requestedId : string = "";
+    
   /**
    * Creates an instance of the SearchPanel
    *
@@ -76,17 +78,18 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
-    //    console.log({ myVar: process.env.npm_config_myVar });
-        this.recordDisplay = searchResults;
+
+        if(searchResults["ResultCount"]== undefined || searchResults["ResultCount"] != 1)
+            this.recordDisplay = searchResults;
+        else if(searchResults["ResultCount"] != undefined && searchResults["ResultCount"] == 1)
+             this.recordDisplay = searchResults["ResultData"][0];
         this.type = this.recordDisplay['@type'];
         this.titleService.setTitle(this.recordDisplay['title']);
         this.createDataHierarchy();
-        if(this.recordDisplay['doi'] != undefined && this.recordDisplay['doi'] != "" ){
+        if(this.recordDisplay['doi'] != undefined && this.recordDisplay['doi'] != "" )
              this.isDOI = true;
-        }
         if(this.recordDisplay['contactPoint'].hasEmail!= undefined && this.recordDisplay['contactPoint'].hasEmail != "")
-       this.isEmail = true;
-                
+          this.isEmail = true;          
         this.updateLeftMenu();
         this.updateRightMenu();
     }
@@ -102,7 +105,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   }
 
   searchbyid(searchId:string){
-      console.log(searchId);
+        //console.log(searchId);
         this.keyword = '';
         let that = this;
         return this.searchService.searchById(searchId)
@@ -126,7 +129,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
  * Update Leftside menu on landing page
  */
     updateLeftMenu(){
-     var itemsMenu: any[] = []; 
+      var itemsMenu: any[] = []; 
       var descItem = this.createMenuItem ("Description","",(event)=>{ 
                    this.metadata = false; this.similarResources =false;
                  },""); 
@@ -152,8 +155,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       itemsMenu.push(metaItem); 
 
       this.leftmenu = [{
-            label: 'Table of Contents', command: (event)=>{
-                    window.location.href="#";},
+            label: 'Table of Contents', 
+            command: (event)=>{ window.location.href="#";},
             items: itemsMenu
         }];
     }
@@ -174,13 +177,15 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
  * Update right side panel on landing page
  */
     updateRightMenu(){
-      var serviceApi = this.rmmApi+"records?@id="+this.recordDisplay['@id'];  
-      if(this.landing == "internal")
-        serviceApi = this.metaApi+this.recordDisplay['ediid'];
-       var itemsMenu: any[] = [];
-       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
-       var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
-       var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",serviceApi);
+      
+      var serviceApi = this.landing+"records?@id="+this.recordDisplay['@id']; 
+      if(!_.includes(this.landing, "rmm"))
+        serviceApi = this.landing+this.recordDisplay['ediid'];
+
+      var itemsMenu: any[] = [];
+      var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
+      var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
+      var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",serviceApi);
     
         itemsMenu.push(homepage);
         if (this.files.length != 0)
@@ -259,60 +264,59 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
         ];
     }
 
-  /**
+    /**
      * Get the params OnInit
      */
     ngOnInit() {
         this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-          if (_.includes(window.location.href,'?')) {
+            if(_.includes(window.location.href,"ark")){
+               var alength = _.split(window.location.href,'/').length;
+               this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
+               
+            }
+            else if(_.includes(window.location.href,'?')) {
               this.searchValue = params['id'];
-              console.log("*** test input ? **"+_.split(window.location.href,'/'));
             } else {
-                var alength = _.split(window.location.href,'/').length;
+              var alength = _.split(window.location.href,'/').length;
               this.searchValue =_.split(window.location.href,'/')[alength-1];
-              console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
+              //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
             }
             this.findId = this.searchValue;//params['id'];
             this.searchbyid(this.findId);
-             this.files =[];
+            this.files =[];
         });    
     }
 
     ngOnDestroy() {
+        
           this._routeParamsSubscription.unsubscribe();
+        
+    }
+
+    ngAfterViewInit(){
+        
+        window.history.replaceState( {} , '#/id/', '/od/id/'+this.searchValue );
     }
     //This is to check if empty
     isEmptyObject(obj) {
       return (Object.keys(obj).length === 0);
     }
-// Create Files Structure to browse throw files
-//  createDataHierarchy(){
-//         if (this.recordDisplay['dataHierarchy'] == null )
-//             return; 
-//         this.fileHierarchy = this.createTreeObj("Files","Files");
-//         this.fileHierarchy.children =[];
-//          for(let fields of this.recordDisplay['dataHierarchy']){
-//                 if( fields.downloadURL != null)
-//                     this.fileHierarchy.children.push(this.createFileNode(fields.filepath, fields.filepath));
-//                 else 
-//                     if(fields.children != null)
-//                       this.fileHierarchy.children.push(this.createChildrenTree(fields.children,fields.filepath));       
-//             }
-        
-//         this.files.push(this.fileHierarchy);
-//      }
+
 createDataHierarchy(){
         if (this.recordDisplay['dataHierarchy'] == null )
             return; 
         // this.fileHierarchy = this.createTreeObj("Files","Files");
         // this.fileHierarchy.children =[];
          for(let fields of this.recordDisplay['dataHierarchy']){
-                if( fields.downloadURL != null)
-                    this.files.push(this.createFileNode(fields.filepath, fields.filepath));
-                else 
-                    if(fields.children != null)
-                      this.files.push(this.createChildrenTree(fields.children,fields.filepath));       
-            }
+                // if( fields.downloadURL != null)
+                //     this.files.push(this.createFileNode(fields.filepath, fields.filepath));
+                // else 
+            if(fields.children != null)
+                this.files.push(this.createChildrenTree(fields.children,fields.filepath));  
+             else
+               this.files.push(this.createFileNode(fields.filepath, fields.filepath));     
+            
+         }
         
         //this.files.push(this.fileHierarchy);
      }
@@ -324,10 +328,18 @@ createDataHierarchy(){
     for(let child of children){
         let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
         
-         if(child.downloadURL != null){
-              testObj.children.push(this.createFileNode(fname, child.filepath));
-         }else if(child.children != null){
-           testObj.children.push(this.createChildrenTree(child.children,child.filepath));
+        //  if(child.downloadURL != null){
+        //       testObj.children.push(this.createFileNode(fname, child.filepath));
+        //  }else if(child.children != null){
+        //    testObj.children.push(this.createChildrenTree(child.children,child.filepath));
+        //  }
+        if( child.filepath != null) {
+             if(child.children != null)
+                 testObj.children.push(this.createChildrenTree(child.children,
+                                                               child.filepath));
+             else
+                 testObj.children.push(this.createFileNode(child.filepath,
+                                                           child.filepath));
          }
      }
      return testObj;
@@ -381,4 +393,15 @@ expandContact(){
           }
       }
  }
+
+  isArray(obj : any ) {
+     return Array.isArray(obj)
+  }
+
+  isObject(obj: any)
+  {
+    if (typeof obj === "object") {
+    return true;
+   }
+  }
 }

@@ -23,14 +23,14 @@ import {AccordionModule} from 'primeng/primeng';
           <span class="font10"> {{node.value}}</span>
         </div>
       </div>
-      <div *ngIf="isArrayOrObject(node.value)">
+       <div *ngIf="isArrayOrObject(node.value)">
         <br>
-        <p-fieldset legend="{{ ifIntegerThenitem(node.key) }}"  [toggleable]="true">
+         <p-fieldset legend="{{ ifIntegerThenitem(node.key) }}"  [toggleable]="true">
           <fieldset-view [entry]="node.value"></fieldset-view>
-        </p-fieldset>
+         </p-fieldset> 
         <br>
-      </div>
-    </div>
+       </div>
+    </div> 
   `
 })
 export class MetadataView {

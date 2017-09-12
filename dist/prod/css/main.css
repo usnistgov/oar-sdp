@@ -13626,7 +13626,7 @@ img {
 }
 
 .homeTitle {
-  font-size: 36px;
+  font-size: 30px;
 }
 
 .homeSubTitle {
@@ -13640,6 +13640,33 @@ img {
 
 .glyphicon {
   color: #1471ae;
+}
+
+.inner-addon {
+  position: relative;
+}
+
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 25px;
+}
+
+.left-addon .glyphicon {
+  left: 0;
+}
+
+.right-addon .glyphicon {
+  right: 0;
+}
+
+.left-addon input {
+  padding-left: 30px;
+}
+
+.right-addon input {
+  padding-right: 30px;
 }
 @charset "UTF-8";
 
@@ -19613,7 +19640,7 @@ body .ui-orderlist .ui-orderlist-controls .ui-button.ui-button-icon-only {
 
 body .ui-paginator {
   background-color: #fff;
-  padding: .625em 1em;
+  padding: 0;
 }
 
 body .ui-paginator>a {
@@ -21877,7 +21904,7 @@ body .ui-terminal .ui-terminal-input {
 }
 
 .login-panel .ui-inputtext:focus {
-  border-width: 0 0 2px;
+  border-width: 2px;
   border-color: #1471ae;
   padding-bottom: 0;
 }
@@ -22484,7 +22511,7 @@ body a {
   position: fixed;
   z-index: 100;
   width: 100%;
-  height: 55px;
+  height: 75px;
   background-color: #1471ae;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
 }
@@ -22500,8 +22527,8 @@ body a {
 
 .layout-container .topbar .topbar-left {
   box-sizing: border-box;
-  padding: 10px;
-  height: 55px;
+  padding: 20px;
+  height: 75px;
   width: 250px;
   background-color: #1471ae;
   float: left;
@@ -22583,7 +22610,7 @@ body a {
   top: -10px;
   font-size: 16px;
   background-color: transparent;
-  border-width: 0 0 1px;
+  border-width: 1px;
   padding: 2px 2px 1px;
   border-color: #fff;
   color: #fff;
@@ -22614,7 +22641,7 @@ body a {
   position: fixed;
   width: 250px;
   z-index: 99;
-  top: 55px;
+  top: 75px;
   height: 100%;
   background-color: #fff;
   box-shadow: 3px 0 6px rgba(0,0,0,.3);
@@ -22775,6 +22802,7 @@ body a {
 }
 
 .layout-container .layout-main {
+  padding: 96px 0 0;
   transition: margin-left .3s;
 }
 
@@ -22971,7 +22999,7 @@ body a {
 
   .layout-container .topbar-items>li>ul {
     position: absolute;
-    top: 55px;
+    top: 75px;
     right: 5px;
     display: none;
     width: 250px;
@@ -23037,7 +23065,7 @@ body a {
     overflow: visible;
     position: fixed;
     width: 100%;
-    top: 55px;
+    top: 75px;
     height: auto;
     background-color: #1471ae;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
@@ -23419,7 +23447,7 @@ body .layout-wrapper.layout-compact .ui-datepicker tbody td a {
   }
 
   .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
-    padding-top: 85px;
+    padding-top: 130px;
   }
 }
 @font-face {

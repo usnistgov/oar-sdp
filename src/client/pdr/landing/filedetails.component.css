@@ -1,4 +1,3 @@
-
 /** Metadata and File details related styles **/
 .textstyle1
 {
@@ -19,14 +18,14 @@
 }
 .font10{
   font-size:10pt;
-   word-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .filedesc{
   background-color:green;
-   text-align: left;
-   color: white;
-   word-wrap: break-word;
+  text-align: left;
+  color: white;
+  word-wrap: break-word;
 }
 
 .filesection{

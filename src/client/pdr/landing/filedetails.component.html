@@ -1,4 +1,3 @@
-
 <!--<div class="ui-grid ui-grid-responsive ui-grid-pad center">-->
 <div class="card filecard">
   <div class="ui-g filesection">
@@ -17,19 +16,19 @@
       <button pButton class="ui-button-success" type="button" (click)="download()" label="Download"></button>
     </div>
 
-        <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-            <span class="font10"><b>Description:</b> </span>
-            <div class="well filedesc" >
-                {{ fileDetails["description"] }}
-            </div>
-          <span *ngIf="fileDetails['Keyword']" class="font10"><b>Topic Keyword:</b>
+    <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+      <span *ngIf="fileDetails['description']" class="font10"><b>Description:</b> </span>
+      <div *ngIf="fileDetails['description']" class="well filedesc" >
+        {{ fileDetails["description"] }}
+      </div>
+      <span *ngIf="fileDetails['Keyword']" class="font10"><b>Topic Keyword:</b>
                  {{ fileDetails["Keyword"] }}
             </span>
-          <br>
-          <span *ngIf="fileDetails['metadata']" class="font10"><b>Collection Metadata:</b>
+      <br>
+      <span *ngIf="fileDetails['metadata']" class="font10"><b>Collection Metadata:</b>
                  {{ fileDetails["metadata"] }}
             </span>
-        </div>
+    </div>
   </div>
-  </div>
-  <!--</div>-->
+</div>
+<!--</div>-->
