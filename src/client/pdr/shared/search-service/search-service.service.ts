@@ -24,27 +24,27 @@ export class SearchService {
    * @constructor
    */
   constructor(private http: Http) {
-   
-      
+
+
   }
    /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
   searchByIdOld(searchValue:string): Observable<string[]> {
-    
-    searchValue = '@id=' + searchValue;  
+
+    searchValue = '@id=' + searchValue;
     return this.http.get(this.rmmApi+'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
     .catch((error: any) => Observable.throw(error.json()));
   }
 
   searchById(searchValue:string): Observable<string[]> {
-  
+
     if(this.landingAccess != "internal")
-      this.serviceApi = this.rmmApi+"records/";
-    else 
-      this.serviceApi = this.metaApi;
+      this.serviceApi = "https://testdata.nist.gov/rmm/records/";
+    else
+      this.serviceApi = "https://testdata.nist.gov/rmm/records/";
 
     return this.http.get(this.serviceApi+ searchValue)
     .map((res: Response) => res.json())
@@ -56,10 +56,10 @@ export class SearchService {
  * @param searchValue request params
  */
  searchRMMAny(searchValue:string): Observable<string[]> {
-   
+
     return this.http.get(this.rmmApi+'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
-    .catch((error: any) => Observable.throw(error.json()));    
+    .catch((error: any) => Observable.throw(error.json()));
   }
 }
 

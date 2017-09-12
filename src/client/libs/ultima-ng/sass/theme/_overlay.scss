@@ -49,8 +49,10 @@ body {
             padding: $contentPadding;
         }
         
-        .ui-dialog-buttonpane, .ui-dialog-footer {
+        .ui-dialog-footer {
             text-align: right;
+            border: 0 none;
+            border-top: 1px solid $dividerColor;
             
             .ui-button {
                 background-color: #ffffff;

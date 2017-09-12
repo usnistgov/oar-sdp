@@ -1,10 +1,12 @@
 import {Component, Input} from '@angular/core';
 import { FieldsetModule } from 'primeng/primeng';
 import {AccordionModule} from 'primeng/primeng';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 
  @Component ({
   selector: 'fieldset-view',
-  moduleId: module.id, 
+  moduleId: module.id,
   styleUrls: ['metadataview.component.css'],
   template: `
     <!-- p-accordion [multiple]="true">
@@ -28,7 +30,7 @@ import {AccordionModule} from 'primeng/primeng';
  })
  export class MetadataView {
    @Input() entry:any[];
-  
+
 
 
   isArray(obj : any ) {
@@ -41,14 +43,14 @@ import {AccordionModule} from 'primeng/primeng';
     return true;
    }
   }
-  
+
  check_if_is_integer(value){
-   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){ 
+   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
       // I can have spacespacespace1 - which is 1 and validators pases but
       // spacespacespace doesn't - which is what i wanted.
       // 1space2 doesn't pass - good
       // of course, when saving data you do another parseInt.
-      
+
        return true;
    } else {
        return false;
@@ -56,8 +58,8 @@ import {AccordionModule} from 'primeng/primeng';
   }
 
    check_if_is_integer_item(value){
-   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){ 
-     
+   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+
       return "item_ "+value;
    } else {
        return value;

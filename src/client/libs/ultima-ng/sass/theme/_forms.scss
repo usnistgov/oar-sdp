@@ -4,7 +4,7 @@ body {
         border-width: 0 0 1px 0;  
         padding: 2px 2px 1px 2px;
         font-size: $inputFontSize;
-        border-color: #bdbdbd;
+        border-color: $inputBorderColor;
         border-style: solid;
         @include transition(border-color .3s);
         @include border-radius(0px);
@@ -25,7 +25,7 @@ body {
         }
         
         &.ui-state-error {
-            border-color: #e62a10;  
+            border-color: $inputBorderErrorColor;  
         }
     }
     
@@ -109,14 +109,18 @@ body {
             @include rippleitem();
             @include transition(background-color .3s);
             @include border-radius(0);
-
-            &:not(.ui-state-highlight):hover {
-                @include hover-element();
-            }
-            
+                        
             &.ui-state-highlight {
                 background-color: $accentColor;
                 color: $accentTextColor;
+            }
+        }
+        
+        &:not(.ui-state-disabled) {
+            .ui-listbox-item {
+                &:not(.ui-state-highlight):hover {
+                    @include hover-element();
+                }                
             }
         }
         
@@ -133,9 +137,11 @@ body {
             .ui-listbox-filter-container {                
                 .ui-inputtext {
                     color: #ffffff;
+                    padding: 2px 2px 1px 2px;
                     padding-left: 1.5em;
 
                     &:focus {
+                        padding-bottom: 0;
                         border-bottom-color: #ffffff;
                     }
                 }
@@ -354,6 +360,19 @@ body {
                 background-color: lighten(#795548,10%);
             }
         }
+
+        &.indigo-btn {
+            background-color: #3F51B5;
+            
+            &:enabled:not(:focus):hover {
+                background-color: #283593;   
+            }
+            
+            &:focus {
+                outline: 0 none;
+                background-color: lighten(#3F51B5,10%);
+            }
+        }
         
         &.flat {
             @include no-shadow();
@@ -478,6 +497,7 @@ body {
                 transition: transform ease .28s;
                 -webkit-transform: scale(0);
                 transform: scale(0);
+                margin: 0;
             }
             
             .fa-circle {
@@ -547,11 +567,15 @@ body {
             .ui-autocomplete-multiple-container {
                 &.ui-inputtext {
                     box-sizing: border-box;
-                    padding: 2px 2px 0px 2px;
+                    padding: 2px 2px 1px 2px;
                 }
                 
                 &.ui-state-focus {
                     padding-bottom: 0;
+                }
+                
+                &.ui-state-disabled {
+                    border-bottom: 1px dotted;
                 }
             }
             
@@ -598,7 +622,7 @@ body {
     }
 
     .ui-dropdown {
-        border-bottom: 1px solid #bdbdbd;
+        border-bottom: 1px solid $inputBorderColor;
         box-sizing: border-box;
         @include border-radius(0); 
         @include transition(border-color .3s);      
@@ -664,7 +688,7 @@ body {
         
         .ui-dropdown-filter-container {
             display: block;
-            border-bottom: 1px solid #bdbdbd;
+            border-bottom: 1px solid $inputBorderColor;
             background-color: $primaryColor;
             padding: $inputHeaderPadding;
             
@@ -685,7 +709,7 @@ body {
     }
     
     .ui-multiselect {
-        border-bottom: 1px solid #bdbdbd;
+        border-bottom: 1px solid $inputBorderColor;
         box-sizing: border-box;
         @include border-radius(0);
         @include transition(border-color .3s); 
@@ -840,7 +864,7 @@ body {
 
             &:enabled:hover,
             &:active {
-                background-color: #ffffff;
+                background-color: transparent;
             }
         }
         
@@ -883,7 +907,7 @@ body {
         @include border-radius(8px);
     
         .ui-inputswitch-handle {
-            top: -3px;
+            top: -4px;
             background-color: #ffffff;
             @include border-radius(50%);
             @include transition(background-color .3s);
@@ -937,7 +961,7 @@ body {
         &.ui-slider-horizontal {
             height: 2px;
             border: 0 none;
-            background-color: #bdbdbd;
+            background-color: $inputBorderColor;
             
             .ui-slider-handle {
                 top: -.55em;
@@ -947,7 +971,7 @@ body {
         &.ui-slider-vertical {
             width: 2px;
             border: 0 none;
-            background-color: #bdbdbd;
+            background-color: $inputBorderColor;
             
             .ui-slider-handle {
                 left: -.55em;
@@ -1013,28 +1037,39 @@ body {
             @include border-radius-top(2px);
             @include border-radius-bottom(0);
                         
-            .ui-datepicker-next {
+            .ui-datepicker-prev {
                 cursor: pointer;
-                top: .5em;
-                right: .2em;
-                @include material-icon("play_circle_outline");
+                top: .4em;
+                left: .2em;  
+                @include border-radius(50%);
+                @include material-icon("keyboard_arrow_left");                
+                @include transition(background-color .3s);
                 color: #ffffff;
                 
                 .fa {
                     display: none;
                 }
+                
+                &:hover {
+                    background-color: $primaryLightColor;                    
+                }
             }
-            
-            .ui-datepicker-prev {
+                        
+            .ui-datepicker-next {
                 cursor: pointer;
-                top: .5em;
-                left: .2em;  
-                @include material-icon("play_circle_outline");
-                @include rotate(180deg);
+                top: .4em;
+                right: .2em;
+                @include material-icon("keyboard_arrow_right");
+                @include border-radius(50%);               
+                @include transition(background-color .3s);
                 color: #ffffff;
                 
                 .fa {
                     display: none;
+                }
+                
+                &:hover {
+                    background-color: $primaryLightColor;                    
                 }
             }
             
@@ -1085,6 +1120,7 @@ body {
                     height: 2.250em;
                     width: 2.250em;
                     @include border-radius(50%);
+                    line-height: 1.8em;
                                         
                     &.ui-state-active {
                         color: #ffffff;
@@ -1153,6 +1189,10 @@ body {
     .ui-chips {
         > ul.ui-inputtext {
             padding: 2px 2px 1px 2px;
+
+            &.ui-state-disabled {
+                border-bottom: 1px dotted;
+            }
             
             &.ui-state-focus {
                 padding-bottom: 0;
@@ -1161,7 +1201,14 @@ body {
             .ui-chips-input-token {
                 padding-bottom: 2px;
                 
-                input.ui-state-disabled {
+                > input {
+                    padding: 0;
+                    font-size: $fontSize;
+                    margin: 0;
+                    vertical-align: bottom;
+                }
+                
+                input:disabled {
                     width: 0;
                 }
             }
@@ -1212,6 +1259,19 @@ body {
         }
     }
     
+    .ui-fileupload-choose:not(.ui-state-disabled):hover,
+    .ui-fileupload-choose.ui-state-focus {
+        &.ui-button {
+            background-color: darken($accentColor, 5%);
+        }
+    }
+    
+    .ui-fileupload-choose:not(.ui-state-disabled):active {
+        &.ui-button {
+            background-color: darken($accentColor, 10%);
+        }
+    }
+    
     .ui-editor-container {
         .ui-editor-toolbar {
             background-color: #e8e8e8;
@@ -1220,6 +1280,56 @@ body {
         .ql-picker.ql-expanded {
             .ql-picker-label {
                 color: #444444;
+            }
+        }
+    }
+    
+    /* InputGroup */
+    .ui-inputgroup {
+        .ui-inputgroup-addon {
+            border-width: 0 0 1px 0;
+            border-color: $inputBorderColor;
+            color: $textSecondaryColor;
+            padding: 2px 2px 1px 2px;
+            align-self: flex-end;
+            
+            > i {
+                @include flex();
+                align-self: flex-end;
+            }
+        }
+        
+        .ui-inputtext {
+            align-self: flex-end;
+        }
+        
+        .md-inputfield {
+            -webkit-box-flex: 1;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            width: 1%;
+            display: inherit;
+            
+            label {
+                top: 5px;
+            }
+        }
+        
+        .ui-chkbox, .ui-radiobutton {
+            margin-bottom: .125em;
+        }
+    }
+    
+    .ui-fluid {
+        .ui-inputgroup {
+            .ui-button-icon-only {
+                width: 1.643em;
+                height: 1.643em;
+                padding: 0;
+                
+                .ui-button-icon-left {
+                    margin-left: -.45em;
+                }
             }
         }
     }
@@ -1255,6 +1365,19 @@ body {
                 
                 &:last-child {
                     @include border-radius-bottom($borderRadius);
+                }
+            }
+        }
+        .ui-splitbutton {
+            > .ui-button {
+                display: inline-block;
+
+                &:first-child {
+                    @include border-radius-top(0);
+                }
+                
+                &:last-child {
+                    @include border-radius-bottom(0);
                 }
             }
         }

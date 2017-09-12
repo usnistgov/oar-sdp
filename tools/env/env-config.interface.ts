@@ -1,3 +1,4 @@
+
 // Feel free to extend this interface
 // depending on your app specific config.
 export interface EnvConfig {
@@ -9,5 +10,5 @@ export interface EnvConfig {
   DISTAPI? : string;
   METAPI? : string;
   LANDING? : string;
-
+  VERSION?: string;
 }

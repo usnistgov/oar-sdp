@@ -26,19 +26,6 @@ export class ProjectConfig extends SeedConfig {
     this.APP_TITLE = '';
     this.GOOGLE_ANALYTICS_ID = 'UA-98270028-1';
 
-
-      this.SYSTEM_CONFIG_DEV.paths['primeng'] =
-      `${this.APP_BASE}node_modules/primeng/primeng`;
-
-      this.SYSTEM_BUILDER_CONFIG.packages['primeng'] = {
-          main: 'primeng.js',
-          defaultExtension : 'js'
-      };
-
-      this.SYSTEM_CONFIG_DEV.paths['jspdf'] =
-      `${this.APP_BASE}node_modules/jspdf/dist/jspdf.min.js`;
-
-
       /* Enable typeless compiler runs (faster) between typed compiler runs. */
     // this.TYPED_COMPILE_INTERVAL = 5;
 
@@ -49,13 +36,13 @@ export class ProjectConfig extends SeedConfig {
       {src: 'nanoscroller/bin/javascripts/jquery.nanoscroller.js', inject: 'libs'},
       {src: 'nanoscroller/bin/css/nanoscroller.css', inject: true},
       {src: 'lodash/lodash.min.js', inject: 'libs'},
-      { src: 'primeng/resources/primeng.min.css', inject: true },
+      { src: 'primeng/resources/primeng.css', inject: true },
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
       {src: 'jquery.auto-text-rotating/jquery.auto-text-rotating.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
       {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
-      // inject into css section
+    // inject into css section
   ];
 
 
@@ -68,8 +55,20 @@ export class ProjectConfig extends SeedConfig {
       {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/font-awesome/css/font-awesome.min.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/${this.BOOTSTRAP_DIR}/styles.layout.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/${this.BOOTSTRAP_DIR}/styles.themes.css`, inject: true, vendor: false},
 
 // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
+    ];
+
+    this.ROLLUP_INCLUDE_DIR = [
+      ...this.ROLLUP_INCLUDE_DIR,
+      //'node_modules/moment/**'
+    ];
+
+    this.ROLLUP_NAMED_EXPORTS = [
+      ...this.ROLLUP_NAMED_EXPORTS,
+      //{'node_modules/immutable/dist/immutable.js': [ 'Map' ]},
     ];
 
     // Add packages (e.g. ng2-translate)
@@ -81,16 +80,22 @@ export class ProjectConfig extends SeedConfig {
          name: 'jspdf',
          path: 'node_modules/jspdf/dist/jspdf.min.js'
        }
-     ,
+       ,
+       {
+         name: 'ng2-sticky',
+         path: 'node_modules/ng2-sticky/dist/ng2-sticky.umd.js'
+       },
        {
          name: 'auto-text-rotating',
          path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
        },
        {
-         name: 'ng2-sticky',
-         path: 'node_modules/ng2-sticky/dist/ng2-sticky.umd.js'
+         name: 'primeng',
+         path: 'node_modules/primeng',
+         packageMeta: {
+           defaultExtension: 'js'
+         }
        }
-       
      ];
 
     //
@@ -110,7 +115,7 @@ export class ProjectConfig extends SeedConfig {
    this.addPackagesBundles(additionalPackages);
     */
     /* Add to or override NPM module configurations: */
-    // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });
+    // this.PLUGIN_CONFIGS['browser-sync'] = { ghostMode: false };
   }
 
 }

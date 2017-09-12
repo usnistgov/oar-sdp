@@ -6,6 +6,8 @@ import { SearchFieldsListService } from './searchfields-list/index';
 import { TaxonomyListService } from './taxonomy-list/index';
 import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
+import { NameListService } from './name-list/name-list.service';
+
 
 import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
  PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
@@ -30,7 +32,7 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [TaxonomyListService,SearchService,SearchFieldsListService]
+      providers: [NameListService,TaxonomyListService,SearchService,SearchFieldsListService]
     };
   }
 }

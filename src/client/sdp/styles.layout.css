@@ -1,0 +1,105 @@
+.login-panel .ui-inputtext:focus {
+  border-width: 2px 2px 2px 2px;
+  border-color: #1471AE;}
+
+.layout-container .topbar {
+  background-color: #1471AE;}
+
+.layout-container .topbar .topbar-left {
+  background-color: #1471AE;}
+
+.layout-container .topbar .topbar-right #menu-button {
+  background-color: #03A9F4;}
+
+.layout-container .layout-menu.layout-menu-dark .profile-menu {
+  border-bottom: 1px solid #676767; }
+
+.layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a {
+  background-color: #1471AE;}
+
+.layout-container .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+  background-color: #03A9F4; }
+
+.layout-container .layout-main {
+  padding: 96px 0px 0px 0px;}
+
+.layout-container .ultima-menu li a {
+  padding: .5em .5em;
+  color: #ffffff;}
+
+.layout-container .ultima-menu li a i {
+  color: #FFFFFF; }
+
+.layout-container .ultima-menu li a i:first-child {
+  position: absolute;}
+
+.layout-container .ultima-menu li a:hover {
+  background-color: #03A5EF; }
+
+.layout-container .ultima-menu li a span {
+  padding-left: .8em;
+  padding-right: .3em; /* OPTIONAL */}
+
+.layout-container .ultima-menu li a.active-menuitem-routerlink {
+  color: #FFFFFF; }
+
+.layout-container .ultima-menu li a.active-menuitem-routerlink > i {
+  color: #FFFFFF; }
+
+.layout-container .ultima-menu li.active-menuitem > a {
+  color: #1471AE;
+  background-color: #03A5EF; }
+
+.layout-container .topbar-items > li > ul {
+  top: 55px;}
+
+.layout-container .topbar .topbar-right .topbar-items {
+  top: 55px }
+
+.layout-container.menu-layout-horizontal .topbar .topbar-left {
+  background-color: #1471AE;}
+
+.layout-container.menu-layout-horizontal .layout-menu {
+  background-color: #1471AE;}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a:hover {
+  background-color: #03A5EF;
+  color: #FFFFFF; }
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul {
+  background-color: #1471AE;}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li a {
+  padding: 10px 10px; }
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li.active-menuitem > a {
+  color: #1471AE;
+  background-color: #03A5EF; }
+
+.layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+  background-color: #03A9F4; }
+
+.layout-container .topbar .topbar-right .topbar-items > li > a:hover {
+  background-color: #03A5EF; }
+
+.layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+  background-color: #03A9F4; }
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a {
+  background-color: #03A9F4; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
