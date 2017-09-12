@@ -12,6 +12,8 @@ import {SanitizeHtmlDirective} from './sanitizeHtml.directive';
 import {KeyValuePipe} from './keyvalue.pipe';
 import {MetadataView} from './metadataview.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NoidComponent} from './noid.component';
+
 
 
 

@@ -5,8 +5,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import * as _ from 'lodash';
-import { Config } from '../config/env.config';
-
+// import { Config } from '../';
+import { environment } from '../../environment';
 
 /**
  * This class provides the Search service with methods to search for records from tha rmm.
@@ -14,9 +14,9 @@ import { Config } from '../config/env.config';
 @Injectable()
 export class SearchService {
   //private RestAPIURL: string = Config.API;
-  private rmmApi : string = Config.RMMAPI;
-  private metaApi : string = Config.METAPI;
-  private landingAccess : string = Config.LANDING;
+  private rmmApi : string = environment.RMMAPI;
+  private metaApi : string = environment.METAPI;
+  private landingBackend : string = environment.LANDING;
   private serviceApi : string;
   /**
    * Creates a new SearchService with the injected Http.
@@ -24,10 +24,8 @@ export class SearchService {
    * @constructor
    */
   constructor(private http: Http) {
-
-
   }
-   /**
+  /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
@@ -35,31 +33,38 @@ export class SearchService {
 
     searchValue = '@id=' + searchValue;
     return this.http.get(this.rmmApi+'records?' + searchValue)
-    .map((res: Response) => res.json().ResultData)
-    .catch((error: any) => Observable.throw(error.json()));
+      .map((res: Response) => res.json().ResultData)
+      .catch((error: any) => Observable.throw(error.json()));
   }
 
   searchById(searchValue:string): Observable<string[]> {
 
-    if(this.landingAccess != "internal")
-      this.serviceApi = "https://testdata.nist.gov/rmm/records/";
-    else
-      this.serviceApi = "https://testdata.nist.gov/rmm/records/";
+    // if(this.landingAccess != "internal")
+    //   this.serviceApi = this.rmmApi+"records/";
+    // else
+    //   this.serviceApi = this.metaApi;
+    if (_.includes(this.landingBackend, "rmm") && _.includes(searchValue,"ark"))
+      this.landingBackend= this.landingBackend+"records?@id=";
+    else if(_.includes(this.landingBackend, "rmm"))
+      this.landingBackend = this.landingBackend+"records/"; //+"records?exclude=_id&ediid=";
 
-    return this.http.get(this.serviceApi+ searchValue)
-    .map((res: Response) => res.json())
-    .catch((error: any) => Observable.throw(error.json()));
+    console.log(this.landingBackend+searchValue);
+
+    return this.http.get(this.landingBackend+ searchValue)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json()));
   }
 
-/**
- * Returns the results from RMMAPI for any acceptable request params
- * @param searchValue request params
- */
- searchRMMAny(searchValue:string): Observable<string[]> {
+  /**
+   * Returns the results from RMMAPI for any acceptable request params
+   * @param searchValue request params
+   */
+  searchRMMAny(searchValue:string): Observable<string[]> {
 
     return this.http.get(this.rmmApi+'records?' + searchValue)
-    .map((res: Response) => res.json().ResultData)
-    .catch((error: any) => Observable.throw(error.json()));
+      .map((res: Response) => res.json().ResultData)
+      .catch((error: any) => Observable.throw(error.json()));
   }
 }
+
 

@@ -10,5 +10,4 @@ export interface EnvConfig {
   DISTAPI? : string;
   METAPI? : string;
   LANDING? : string;
-  VERSION?: string;
 }
