@@ -8,4 +8,5 @@ export interface EnvConfig {
   PDRAPI?: string;
   DISTAPI? : string;
   METAPI? : string;
+  LANDING? : string;
 }

@@ -10,14 +10,5 @@ export const AboutRoutes: Route[] = [
         component: AboutComponent
       }
     ]
-  },
-   {
-    path: '',
-    children: [
-      {
-        path: '',
-        component: AboutComponent
-      }
-    ]
   }
 ];

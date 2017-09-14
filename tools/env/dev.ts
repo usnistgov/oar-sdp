@@ -6,7 +6,8 @@ const DevConfig: EnvConfig = {
   SDPAPI: 'https://testdata.nist.gov/sdp/',
   PDRAPI: 'https://testdata.nist.gov/pdr/',
   DISTAPI: 'https://testdata.nist.gov/od/',
-  METAPI: 'https://testdata.nist.gov/meta/'
+  METAPI: 'http://datapubtest.nist.gov/midas/',
+  LANDING: 'https://testdata.nist.gov/rmm/'
 };
 
 export = DevConfig;

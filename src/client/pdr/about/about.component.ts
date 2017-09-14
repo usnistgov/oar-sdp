@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-
+import {  Component, OnInit } from '@angular/core';
+import { environment } from '../environment';
+// import * as d3 from 'd3';
 /**
  * This class represents the lazy loaded AboutComponent.
  */
@@ -9,4 +10,12 @@ import { Component } from '@angular/core';
   templateUrl: 'about.component.html',
   styleUrls: ['about.component.css']
 })
-export class AboutComponent { }
+export class AboutComponent { 
+    ngOnInit() {
+        //  d3.json("flare.json", function(data){ alert("data")});
+    }
+    ngAfterViewInit(){
+        //alert("TEST");  
+        window.history.replaceState( {} , '#/about/', '/pdr/about/' );
+    }
+}
