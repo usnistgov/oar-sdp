@@ -75,7 +75,6 @@ body {
     
     .ui-menu {
         padding: .5em 0;
-    
         
         .ui-shadow, &.ui-shadow {
             @include overlay-input-shadow();    
@@ -190,6 +189,11 @@ body {
                         .ui-menuitem-icon {
                             margin-right: 0;
                         }
+                        
+                        > span {
+                            display: inline-block;
+                            vertical-align: middle;
+                        }
                     }
                 }
             }
@@ -296,6 +300,7 @@ body {
                 padding: .625em 1em;
                 color: #ffffff;
                 font-size: $fontSize;
+                border-bottom: 1px solid #ffffff;
             }
             
             .fa {

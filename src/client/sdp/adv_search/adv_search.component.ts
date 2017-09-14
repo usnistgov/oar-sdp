@@ -227,8 +227,9 @@ export class AdvSearchComponent implements OnInit {
    *  Pass Search example popup value to home screen
    */
   searchExample (popupValue:string) {
-      this.display = false;
-      this.searchValue = popupValue;
+    this.display = false;
+    this.searchValue = popupValue;
+    this.textRotate = !this.textRotate;
   }
 
   /**

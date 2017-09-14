@@ -1,8 +1,10 @@
-import { Component,Input,OnInit,EventEmitter,ViewChild,trigger,state,transition,style,animate,Inject,forwardRef } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
-import { MenuItem } from 'primeng/primeng';
-import { AppComponent } from './app.component';
+import {Component,Input,OnInit,EventEmitter,ViewChild} from '@angular/core';
+import {trigger,state,style,transition,animate} from '@angular/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {Location} from '@angular/common';
+import {Router} from '@angular/router';
+import {MenuItem} from 'primeng/primeng';
+import {AppComponent} from './app.component';
 
 @Component({
   selector: 'app-menu',
@@ -16,11 +18,11 @@ export class AppMenuComponent implements OnInit {
 
   model: any[];
 
-  constructor(@Inject(forwardRef(() => AppComponent)) public app:AppComponent) {}
+  constructor(public app: AppComponent) {}
 
 
   ngOnInit() {
- 
+
   }
 }
 
@@ -28,41 +30,101 @@ export class AppMenuComponent implements OnInit {
 @Component({
   selector: '[app-submenu]',
   template: `
-        <template ngFor let-child let-i="index" [ngForOf]="(root ? item : item.items)">
-            <li [ngClass]="{'active-menuitem': isActive(i)}" *ngIf="child.visible === false ? false : true">
-                <a [href]="child.url||'#'" target="_blank" (click)="itemClick($event,child,i)" class="ripplelink" 
-                *ngIf="!child.routerLink" [attr.tabindex]="!visible ? '-1' : null">
-                    <i class="material-icons">{{child.icon}}</i>
-                    <span>{{child.label}}</span>
-                    <i class="material-icons" *ngIf="child.items">keyboard_arrow_down</i>
-                </a>
+    <ng-template ngFor let-child let-i="index" [ngForOf]="(root ? item : item.items)">
+      <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true">
+        <a [href]="child.url||'#'" (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="!child.routerLink"
+           [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target">
+          <i class="material-icons">{{child.icon}}</i>
+          <span>{{child.label}}</span>
+          <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
+          <i class="material-icons submenu-icon" *ngIf="child.items">keyboard_arrow_down</i>
+        </a>
 
-                <a (click)="itemClick($event,child,i)" class="ripplelink" *ngIf="child.routerLink"
-                    [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink" 
-                    [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null">
-                    <i class="material-icons">{{child.icon}}</i>
-                    <span>{{child.label}}</span>
-                    <i class="material-icons" *ngIf="child.items">keyboard_arrow_down</i>
-                </a>
-                <ul app-submenu [item]="child" *ngIf="child.items" [@children]="isActive(i) ? 'visible' : 'hidden'" 
-                [visible]="isActive(i)" [reset]="reset"></ul>
-            </li>
-        </template>
-    `,
+        <a (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="child.routerLink"
+           [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink" [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target">
+          <i class="material-icons">{{child.icon}}</i>
+          <span>{{child.label}}</span>
+          <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
+          <i class="material-icons submenu-icon" *ngIf="child.items">keyboard_arrow_down</i>
+        </a>
+        <div class="layout-menu-tooltip">
+          <div class="layout-menu-tooltip-arrow"></div>
+          <div class="layout-menu-tooltip-text">{{child.label}}</div>
+        </div>
+        <ul app-submenu [item]="child" *ngIf="child.items" [visible]="isActive(i)" [reset]="reset"
+            [@children]="(app.isSlim()||app.isHorizontal())&&root ? isActive(i) ? 'visible' : 'hidden' : isActive(i) ? 'visibleAnimated' : 'hiddenAnimated'"></ul>
+      </li>
+    </ng-template>
+  `,
   animations: [
     trigger('children', [
-      state('hidden', style({
+      state('hiddenAnimated', style({
         height: '0px'
+      })),
+      state('visibleAnimated', style({
+        height: '*'
       })),
       state('visible', style({
         height: '*'
       })),
-      transition('visible => hidden', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
-      transition('hidden => visible', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
+      state('hidden', style({
+        height: '0px'
+      })),
+      transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
+      transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
     ])
   ]
 })
-export class AppSubMenuComponent {
+
+@Component({
+  selector: '[app-submenu]',
+  template: `
+    <ng-template ngFor let-child let-i="index" [ngForOf]="(root ? item : item.items)">
+      <li [ngClass]="{'active-menuitem': isActive(i)}" [class]="child.badgeStyleClass" *ngIf="child.visible === false ? false : true">
+        <a [href]="child.url||'#'" (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="!child.routerLink"
+           [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target">
+          <i class="material-icons">{{child.icon}}</i>
+          <span>{{child.label}}</span>
+          <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
+          <i class="material-icons submenu-icon" *ngIf="child.items">keyboard_arrow_down</i>
+        </a>
+
+        <a (click)="itemClick($event,child,i)" (mouseenter)="onMouseEnter(i)" class="ripplelink" *ngIf="child.routerLink"
+           [routerLink]="child.routerLink" routerLinkActive="active-menuitem-routerlink" [routerLinkActiveOptions]="{exact: true}" [attr.tabindex]="!visible ? '-1' : null" [attr.target]="child.target">
+          <i class="material-icons">{{child.icon}}</i>
+          <span>{{child.label}}</span>
+          <span class="menuitem-badge" *ngIf="child.badge">{{child.badge}}</span>
+          <i class="material-icons submenu-icon" *ngIf="child.items">keyboard_arrow_down</i>
+        </a>
+        <div class="layout-menu-tooltip">
+          <div class="layout-menu-tooltip-arrow"></div>
+          <div class="layout-menu-tooltip-text">{{child.label}}</div>
+        </div>
+        <ul app-submenu [item]="child" *ngIf="child.items" [visible]="isActive(i)" [reset]="reset"
+            [@children]="(app.isSlim()||app.isHorizontal())&&root ? isActive(i) ? 'visible' : 'hidden' : isActive(i) ? 'visibleAnimated' : 'hiddenAnimated'"></ul>
+      </li>
+    </ng-template>
+  `,
+  animations: [
+    trigger('children', [
+      state('hiddenAnimated', style({
+        height: '0px'
+      })),
+      state('visibleAnimated', style({
+        height: '*'
+      })),
+      state('visible', style({
+        height: '*'
+      })),
+      state('hidden', style({
+        height: '0px'
+      })),
+      transition('visibleAnimated => hiddenAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)')),
+      transition('hiddenAnimated => visibleAnimated', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
+    ])
+  ]
+})
+export class AppSubMenu {
 
   @Input() item: MenuItem;
 
@@ -74,9 +136,13 @@ export class AppSubMenuComponent {
 
   activeIndex: number;
 
-  constructor(@Inject(forwardRef(() => AppComponent)) public app:AppComponent, public router: Router, public location: Location) {}
+  constructor(public app: AppComponent) {}
 
   itemClick(event: Event, item: MenuItem, index: number) {
+    if(this.root) {
+      this.app.menuHoverActive = !this.app.menuHoverActive;
+    }
+
     //avoid processing disabled items
     if(item.disabled) {
       event.preventDefault();
@@ -88,15 +154,7 @@ export class AppSubMenuComponent {
 
     //execute command
     if(item.command) {
-      if(!item.eventEmitter) {
-        item.eventEmitter = new EventEmitter();
-        item.eventEmitter.subscribe(item.command);
-      }
-
-      item.eventEmitter.emit({
-        originalEvent: event,
-        item: item
-      });
+      item.command({originalEvent: event, item: item});
     }
 
     //prevent hash change
@@ -106,13 +164,20 @@ export class AppSubMenuComponent {
 
     //hide menu
     if(!item.items) {
-      if(this.app.isHorizontal())
+      if(this.app.isHorizontal() || this.app.isSlim())
         this.app.resetMenu = true;
       else
         this.app.resetMenu = false;
 
       this.app.overlayMenuActive = false;
       this.app.staticMenuMobileActive = false;
+      this.app.menuHoverActive = !this.app.menuHoverActive;
+    }
+  }
+
+  onMouseEnter(index: number) {
+    if(this.root && this.app.menuHoverActive && (this.app.isHorizontal() || this.app.isSlim())) {
+      this.activeIndex = index;
     }
   }
 
@@ -127,7 +192,7 @@ export class AppSubMenuComponent {
   set reset(val:boolean) {
     this._reset = val;
 
-    if(this._reset && this.app.isHorizontal()) {
+    if(this._reset && (this.app.isHorizontal() || this.app.isSlim())) {
       this.activeIndex = null;
     }
   }

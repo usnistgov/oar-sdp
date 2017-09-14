@@ -8,6 +8,10 @@ body {
             padding: $headerPadding;
             @include border-radius-top($borderRadius - 1);
             @include border-radius-bottom(0);
+            
+            .ui-panel-title {
+                line-height: 1.5em;
+            }
                         
             .ui-panel-titlebar-icon {
                 position: relative;
@@ -260,6 +264,16 @@ body {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        .ui-toolbar {
+            .ui-toolbar-group-right {
+                margin-top: 1em;
             }
         }
     }
