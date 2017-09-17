@@ -149,17 +149,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
   margin: 0;
   overflow: hidden;
   padding: .25em;
-word-break: break-all;
-hyphens: auto;}
+  word-break: break-all;
+  hyphens: auto;}
 
 .ui-tree .ui-treenode-label {
-padding: 0 .25em;
+  padding: 0 .25em;
   vertical-align: middle;
 }
 
-
-
-  .custWhite {
+.custWhite {
   color: #FFFFFF;
   height:42px;
   background-color: #FFFFFF;
