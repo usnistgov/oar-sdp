@@ -60,7 +60,7 @@
       <div class="ui-g-12 ui-md-2">
       </div>
       <div class="ui-g-12 ui-md-6">
-        <a id= "examples" style="color: #000;" href = "#" (click) = "showDialog()" > <b> Examples: </b></a>
+        <b> Examples: </b>
         <a (click)="searchExample('&quot;Kinetics database&quot;');" href="#!" style="color: #2fa9e0;text-decoration: underline;">"Kinetics database" </a> &nbsp;
         <a (click)="searchExample('Gallium');" href="#!" style="color: #2fa9e0;text-decoration: underline;">Gallium </a>&nbsp;
         <a (click)="searchExample('&quot;SRD 69&quot;');" href="#!" style="color: #2fa9e0;text-decoration: underline;">"SRD 69" </a>&nbsp;
@@ -100,19 +100,6 @@
   </div>
 </div>
 </div>
-<p-dialog header="Example Searches" [(visible)]="display">
-  <div class="card">
-    <button (click)="searchExample('&quot;Kinetics database&quot;');" class="button">"Kinetics database" </button><br>
-    <button (click)="searchExample('Gallium');" class="button">Gallium </button><br>
-    <button (click)="searchExample('&quot;SRD 69&quot;');" class="button">"SRD 69" </button><br>
-    <button (click)="searchExample('XPDB');" class="button">XPDB </button><br>
-    <button (click)="searchExample('Interatomic Potentials');" class="button">Interatomic Potentials </button><br>
-    <button (click)="searchExample('Potentials');" class="button">Potentials </button><br>
-    <button (click)="searchExample('Crystallization');" class="button">Crystallization </button><br>
-    <button (click)="searchExample('Infrared spectroscopy');" class="button">Infrared spectroscopy </button><br>
-  </div>
-</p-dialog>
-
 
 
 

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  moduleId: module.id,    
+  moduleId: module.id,
   styleUrls: ['landing.component.css'],
   selector: 'noid-template',
   template: `
@@ -15,8 +15,9 @@ import { Component, Input } from '@angular/core';
 })
 
 export class NoidComponent {
-    ngAfterViewInit(){
-        
-        window.history.replaceState( {} , '#/id/', '/od/id');
-    }
+  ngAfterViewInit(){
+
+    window.history.replaceState( {} , '#/id/', '/od/id');
+  }
 }
+

@@ -2,9 +2,9 @@ import {Component, Input} from '@angular/core';
 import { FieldsetModule } from 'primeng/primeng';
 import {AccordionModule} from 'primeng/primeng';
 
- @Component ({
+@Component ({
   selector: 'fieldset-view',
-  moduleId: module.id, 
+  moduleId: module.id,
   styleUrls: ['metadataview.component.css'],
   template: `
     <!-- p-accordion [multiple]="true">
@@ -32,52 +32,52 @@ import {AccordionModule} from 'primeng/primeng';
        </div>
     </div> 
   `
- })
- export class MetadataView {
-   @Input() entry:any[];
+})
+export class MetadataView {
+  @Input() entry:any[];
   // [ngClass]="{'customlegend': isInteger(node.key), 'notcustomlegend':!isInteger(node.key) }"
 
 
   isArray(obj : any ) {
-     return Array.isArray(obj)
+    return Array.isArray(obj)
   }
 
   isObject(obj: any)
   {
     if (typeof obj === "object") {
-    return true;
-   }
+      return true;
+    }
   }
 
   isArrayOrObject(obj: any){
-     if(!this.isArray(obj) &&  !this.isObject(obj))
-        return false;
-     
-      else if(this.isArray(obj) || this.isObject(obj))
-        return true;
+    if(!this.isArray(obj) &&  !this.isObject(obj))
+      return false;
+
+    else if(this.isArray(obj) || this.isObject(obj))
+      return true;
   }
- 
-  
-  
- isInteger(value){
-   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){ 
+
+
+
+  isInteger(value){
+    if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
       // I can have spacespacespace1 - which is 1 and validators pases but
       // spacespacespace doesn't - which is what i wanted.
       // 1space2 doesn't pass - good
       // of course, when saving data you do another parseInt.
-      
-       return true;
-   } else {
-       return false;
-   }
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
-   ifIntegerThenitem(value){
-   if((parseFloat(value) == parseInt(value)) && !isNaN(value)){ 
-     
+  ifIntegerThenitem(value){
+    if((parseFloat(value) == parseInt(value)) && !isNaN(value)){
+
       return "item ["+value+"]";
-   } else {
-       return value;
-   }
+    } else {
+      return value;
+    }
   }
 }

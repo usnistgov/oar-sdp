@@ -11,7 +11,7 @@ import { AboutModule } from './about/about.module';
 import { SharedModule } from './shared/shared.module';
 import { LandingModule} from './landing/landing.module';
 
-import { AppMenuComponent,AppSubMenuComponent }  from './app.menu.component';
+import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
@@ -19,7 +19,7 @@ import { AppMenuComponent,AppSubMenuComponent }  from './app.menu.component';
   ],
   declarations: [AppComponent,
     AppMenuComponent,
-    AppSubMenuComponent],
+    AppSubMenu],
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'

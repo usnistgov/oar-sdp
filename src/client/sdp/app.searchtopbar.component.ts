@@ -12,13 +12,10 @@ import { AppComponent } from './app.component';
             </a> 
         <span style="color: #FFFFFF;font-size: large;padding-left: 2%">Science <br> &nbsp;Data Portal </span>
       </span>
-      <img style="vertical-align: text-top;padding-top: 1%" srcset="./assets/images/beta-pdr.png">
-         <div class="topbar-right">
-           <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)" 
-                [ngClass]="{'menu-button-rotate': app.rotateMenuButton}">
+      <span class="badge" style="background-color:coral;vertical-align: text-top;margin-top: 20px;">1.0.0-beta</span>
+        <div class="topbar-right">
+              <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                     <i></i>
-                </a>
-                <a id="topbar-menu-button" href="#" (click)="app.onTopbarMenuButtonClick($event)">
                 </a>
          </div>
       </div>
@@ -27,6 +24,6 @@ import { AppComponent } from './app.component';
 
 export class SearchTopBarComponent {
 
-    constructor(@Inject(forwardRef(() => AppComponent)) public app:AppComponent) {}
+  constructor(public app: AppComponent) {}
 
 }

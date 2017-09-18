@@ -11,10 +11,10 @@
 
 <div class="" *ngIf="recordDisplay.length == 0">
     <div class="ui-g">
-       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%"> 
+       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%">
             <b>No Landing page available</b>
             <p>The requested record id {{ findId }}  does not match with any records in the system</p>
-       </div> 
+       </div>
     </div>
 </div>
 <!-- <div class="row">
@@ -36,7 +36,7 @@
                         <h2>{{recordDisplay.title}}</h2>
                     </span>
                     <div class="" *ngIf="recordDisplay.authors">
-                        <span *ngFor="let author of recordDisplay.authors; let i = index"> 
+                        <span *ngFor="let author of recordDisplay.authors; let i = index">
                             {{ author.fn}}<span *ngIf="i < recordDisplay.authors.length-1 ">,</span>
                         </span>
                         <i style="cursor: pointer;" class ="faa" [ngClass]="{'faa-plus-square-o': !clickAuthors, 'faa-minus-square-o': clickAuthors}" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent; clickAuthors = expandClick();"></i>
@@ -44,7 +44,7 @@
                     <div [collapse]="!isCollapsedContent" class="card card-block card-header">
                         <div class="" *ngIf="recordDisplay.authors">
                             <span><b>Authors:</b></span>
-                            <div *ngFor="let author of recordDisplay.authors; let i = index"> 
+                            <div *ngFor="let author of recordDisplay.authors; let i = index">
                                 <span>{{ author.fn}}</span>,
                                 <span *ngFor="let aff of author.affiliation">
                                      <br>{{aff.title}}
@@ -54,16 +54,16 @@
                     </div>
                     <br>
                     <div class="" *ngIf="recordDisplay.contactPoint">
-                        Contact: 
-                        <strong>  
+                        Contact:
+                        <strong>
                             <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
                                 {{recordDisplay.contactPoint.fn}}</a>
                             <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
                         </strong>..
-                        <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}" 
+                        <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}"
                         aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
-                        <div [collapse]="!closeContent"> 
-                            <div class="card"> 
+                        <div [collapse]="!closeContent">
+                            <div class="card">
                                 <span class="" *ngIf="recordDisplay.contactPoint.fn">
                                     <span>{{recordDisplay.contactPoint.fn}}</span>
                                 </span>
@@ -74,31 +74,31 @@
                                 </span>
                                 <div class="" *ngIf="recordDisplay.contactPoint.address">
                                     <span><b>Address:</b></span>
-                                     <div *ngFor="let address of recordDisplay.contactPoint.address"> 
+                                     <div *ngFor="let address of recordDisplay.contactPoint.address">
                                         {{address}}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    Identifier: 
+                 Identifier: 
                     <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span> 
                     <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
                     <span *ngIf="checkReferences()">
                         <span>Described in article: </span>
-                        <small *ngFor="let refs of recordDisplay.references; let i =index"> 
+                        <small *ngFor="let refs of recordDisplay.references; let i =index">
                             <span *ngIf="refs.refType == 'IsDocumentedBy'">
-                                <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a> 
+                                <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a>
                                 <span *ngIf="i < recordDisplay.references.length-1 ">,</span>
                             </span>
                         </small>
-                    </span><br> 
+                    </span><br>
                     <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
                     <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
-                </div>    
+                </div>
             </div>
             <div class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">      
+                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
                     <div *ngIf="metadata != true && similarResources != true ">
                         <description-resources [record]="recordDisplay" [files]="files" ></description-resources>
                     </div>
@@ -122,18 +122,21 @@
                         });
                     </script>
                     Copy the recommended text to cite this resource: <br><br>
+
                     <span id="foo" style="font-family:  Franklin Gothic Urw; font-style:italic; color:#484646; font-size: 12;">
                         {{ citeString }}                    
                     </span>
                     <button style="position:relative; float:right;" id="copy-clipboard" class="btn" pButton icon="faa faa-clipboard" data-clipboard-target="#foo"></button>
                     <br><br>
+
                     <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
                 </p-dialog>
             </div>
         </div>
         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
-            <div class="ui-g">     
+            <div class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+
                    <!-- <div class="visible-lg-block visible-md-block "> -->
                         <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>
                    <!-- </div> -->
@@ -143,22 +146,23 @@
                     <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>
                
                    </div> -->
+
                 </div>
             </div>
-            <div ng2-sticky class="ui-g">     
+            <div ng2-sticky class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
                     <div ng2-sticky><p-menu class="leftMenuStyle" [model]="leftmenu" ></p-menu> </div>
                 </div>
             </div>
         </div>
     </div>
- </div>        
-         
-         
-         
-         
-         
-         
+ </div>
+
+
+
+
+
+
          <!--div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
           <div class="ui-g-9 ui-md-9 ui-lg-9 ui-sm-10">
             <span style="font-family: Arial, Helvetica, sans-serif; color: grey; font-size: 14;" [ngSwitch]="recordDisplay['@type']">
@@ -166,13 +170,13 @@
                 <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
                 <b *ngSwitchCase="'nrdp:PublicDataResource'">Public Data Resource</b>
                 <b *ngSwitchDefault></b>
-            </span>              
+            </span>
              <br><span class="title" style="text-align: left; vertical-align: top; ">
                 <h2>{{recordDisplay.title}}</h2>
              </span>
-   
+
             <div class="" *ngIf="recordDisplay.authors">
-                <span *ngFor="let author of recordDisplay.authors; let i = index"> 
+                <span *ngFor="let author of recordDisplay.authors; let i = index">
                     {{ author.fn}}<span *ngIf="i < recordDisplay.authors.length-1 ">,</span>
                 </span>
                 <i style="cursor: pointer;" class ="faa" [ngClass]="{'faa-plus-square-o': !clickAuthors, 'faa-minus-square-o': clickAuthors}" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent; clickAuthors = expandClick();"></i>
@@ -180,7 +184,7 @@
              <div [collapse]="!isCollapsedContent" class="card card-block card-header">
                     <div class="" *ngIf="recordDisplay.authors">
                         <span><b>Authors:</b></span>
-                        <div *ngFor="let author of recordDisplay.authors; let i = index"> 
+                        <div *ngFor="let author of recordDisplay.authors; let i = index">
                             <span>{{ author.fn}}</span>,
                              <span *ngFor="let aff of author.affiliation">
                                  <br>{{aff.title}}
@@ -190,17 +194,17 @@
                 </div>
              <br>
              <div class="" *ngIf="recordDisplay.contactPoint">
-                Contact: 
-                <strong>  
+                Contact:
+                <strong>
                     <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
                         {{recordDisplay.contactPoint.fn}}</a>
                     <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
                 </strong>..
-                <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}" 
+                <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}"
                    aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
-                
-                <div [collapse]="!closeContent"> 
-                  <div class="card"> 
+
+                <div [collapse]="!closeContent">
+                  <div class="card">
                      <span class="" *ngIf="recordDisplay.contactPoint.fn">
                          <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">{{recordDisplay.contactPoint.fn}}</a>
                         <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
@@ -209,39 +213,39 @@
                     <span class="" *ngIf="isEmail">{{recordDisplay.contactPoint.hasEmail.split(":")[1]}}</span>
                     <div class="" *ngIf="recordDisplay.contactPoint.address">
                         <span><b>Address:</b></span>
-                        <div *ngFor="let address of recordDisplay.contactPoint.address"> 
+                        <div *ngFor="let address of recordDisplay.contactPoint.address">
                             {{address}}
                         </div>
                     </div>
                   </div>
                 </div>
             </div>
-            Identifier: 
-                <span *ngIf="isDOI" ><i>  <a href="javascript:window.location.reload(true)">{{recordDisplay.doi}}</a></i></span> 
+            Identifier:
+                <span *ngIf="isDOI" ><i>  <a href="javascript:window.location.reload(true)">{{recordDisplay.doi}}</a></i></span>
                 <span  *ngIf="!isDOI"><i> <a href="javascript:window.location.reload(true)">{{recordDisplay["@id"]}}</a></i> </span>
-            
+
             <span *ngIf="checkReferences()">
                 <span>Described in article: </span>
-                <small *ngFor="let refs of recordDisplay.references; let i =index"> 
+                <small *ngFor="let refs of recordDisplay.references; let i =index">
                     <span *ngIf="refs.refType == 'IsDocumentedBy'">
-                        <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a> 
+                        <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a>
                         <span *ngIf="i < recordDisplay.references.length-1 ">,</span>
                     </span>
                 </small>
-            </span><br> 
+            </span><br>
             <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
             <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
-         
+
          </div>
          <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
-             <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>  
+             <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>
          </div>
     </div>
-  
+
     <div class="ui-g" style="padding-top: 0%; padding-right: 1%;">
-        
+
         <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
-            
+
             <div *ngIf="metadata != true && similarResources != true ">
                 <description-resources [record]="recordDisplay" [files]="files" ></description-resources>
             </div>
@@ -252,14 +256,14 @@
         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
             <div ng2-sticky><p-menu class="leftMenuStyle" [model]="leftmenu" ></p-menu> </div>
         </div>
-        
+
         <p-dialog header="Citation" [(visible)]="display" modal="modal" width="300" responsive="true">
               Copy the recommended text to cite this resource: <br><br>
               <span style="font-family:  Franklin Gothic Urw; font-style:italic; color:#484646; font-size: 12;">
-                   {{ citeString }}                    
+                   {{ citeString }}
               </span>     <br><br>
                <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
-              
+
         </p-dialog>
     </div>
 </div -->
