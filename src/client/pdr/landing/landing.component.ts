@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef,  ViewChildren } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
 import { SearchService } from '../shared/index';
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
@@ -12,6 +12,9 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
 import { environment } from '../environment';
+
+
+
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -26,7 +29,6 @@ declare var jQuery: any;
 })
 
 export class LandingPanelComponent implements OnInit, OnDestroy {
-   
   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
   profileMode: string = 'inline';
@@ -53,6 +55,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private distApi : string = environment.DISTAPI;
     private metaApi : string = environment.METAPI;
     private landing : string = environment.LANDING;
+    pdrApi : string = environment.PDRAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
      similarResources: boolean = false;
@@ -185,7 +188,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
       var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
-      var metadata = this.createMenuItem("Export Metadata", "faa faa-file-o","",serviceApi);
+      var metadata = this.createMenuItem("Export JSON", "faa faa-file-o","",serviceApi);
     
         itemsMenu.push(homepage);
         if (this.files.length != 0)
@@ -213,6 +216,8 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
 
                          this.citeString +=", "
                         }
+                        
+
                     }else if(this.recordDisplay['contactPoint']){
                         if(this.recordDisplay['contactPoint'].fn != null && this.recordDisplay['contactPoint'].fn != undefined)
                         this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
@@ -378,10 +383,12 @@ expandContact(){
 }
  display: boolean = false;
 
-    showDialog() {
+ showDialog() {
         this.display = true;
-    }
-
+ }
+closeDialog(){
+    this.display = false;
+}
   public setTitle( newTitle: string) {
     this.titleService.setTitle( newTitle );
   }

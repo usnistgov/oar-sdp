@@ -54,6 +54,13 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                             <div *ngIf="isFileDetails">
                                 <filedetails-resources [fileDetails]="fileDetails"></filedetails-resources>
                             </div>   
+                            <div *ngIf="!isFileDetails">
+                                <div class="card fileinfocard ">
+                                    <div class="ui-g fileinfosection">
+                                        <span>Click on the file name to view details.</span>    
+                                    </div>
+                                </div>            
+                            </div>
                         </div>
                     </div>
                 </div>
