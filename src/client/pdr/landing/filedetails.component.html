@@ -2,20 +2,22 @@
 <!--<div class="ui-grid ui-grid-responsive ui-grid-pad center">-->
   <div class="card filecard">
     <div class="ui-g filesection">
-        <div class="ui-g-8 ui-md-8 ui-lg-8 ui-sm-10">
+        <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-10">
           <span class="textstyle1 fDetailsfFont">
             <span *ngIf="fileDetails['downloadURL']"> File </span>    
             <span *ngIf="!fileDetails['downloadURL']"> Subcollection</span>     
           </span>   
+          <!-- <button pButton style="position:relative; float:right;" class="ui-button-success" type="button" (click)="download()" label="Download"></button> -->
+          <a style="position:relative; float:right;"  href="{{this.fileDetails['downloadURL']}}" class="faa faa-download" title="Click to download File" ></a>
           <h4><span *ngIf="fileDetails['title']"> {{ fileDetails["title"]}} </span></h4>
           <br><span class="font10">Path: <b>{{fileDetails["filepath"]}}</b></span>
           <span *ngIf="fileDetails['downloadURL']" class="font8"> <br>Type:<b>{{fileDetails["mediaType"]}}</b></span>
           <span *ngIf="fileDetails['downloadURL']" class="font8"><br>Size:</span>
         </div>
-        <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div>
-        <div class="ui-g-3 ui-md-3 ui-lg-3 ui-sm-10">
-         <button pButton class="ui-button-success" type="button" (click)="download()" label="Download"></button>
-        </div>
+        <!-- <div class="ui-g-1 ui-md-1 ui-lg-1 ui-sm-10"></div> -->
+        <!-- <div class="ui-g-3 ui-md-3 ui-lg-3 ui-sm-10"> -->
+         <!-- <button pButton class="ui-button-success" type="button" (click)="download()" label="Download"></button> -->
+        <!-- </div> -->
     
         <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
             <span *ngIf="fileDetails['description']" class="font10"><b>Description:</b> </span>
