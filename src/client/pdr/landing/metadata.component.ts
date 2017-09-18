@@ -9,6 +9,8 @@ import { Component, Input, Pipe,PipeTransform } from '@angular/core';
     <div class="ui-g">
      <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-12" >
        <h3 id="metadata" name="metadata"><b>Metadata</b></h3>
+        For more information about the metadata click on NERM documentation  
+        <button>JSON</button>
         <span style="font-size:8pt;color:grey;" >* item[number] indicates an array not a key name</span>
         <br><br>
        <fieldset-view [entry]="recordDisplay"></fieldset-view>

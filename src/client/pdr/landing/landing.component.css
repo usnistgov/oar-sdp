@@ -22,6 +22,12 @@
   font-size: 20px;
 }
 
+.recordType{
+  font-family: Arial, Helvetica, sans-serif; 
+  color:#707070; 
+  font-size: 14;
+}
+
 :host /deep/ .ui-tree {
   padding: 0.625em 1em/2;
   font-weight:bold;
@@ -126,3 +132,26 @@
   text-align: left; 
   color: white;
 }
+
+
+:host /deep/ citationDialog > button.ui-button-icon-only{  
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.fileinfosection{
+  background-color:#F3F3F3; 
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+
+.fileinfocard{
+  padding: 0 2.5rem 2.5rem 2.5rem;
+}
+.landingcard{
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+
+/* :host /deep/ body .ui-button.ui-button-icon-only, body .ui-datepicker-buttonpane > button.ui-button-icon-only{
+
+} */

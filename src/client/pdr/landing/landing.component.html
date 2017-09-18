@@ -7,7 +7,7 @@
 </script>
 
 <div class="ui-grid ui-grid-responsive ui-grid-pad center">
-  <div class="card" style="padding: 2.5rem 2.5rem 2.5rem 2.5rem">
+  <div class="card landingcard">
 
 <div class="" *ngIf="recordDisplay.length == 0">
     <div class="ui-g">
@@ -26,7 +26,7 @@
         <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
             <div class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-                    <span style="font-family: Arial, Helvetica, sans-serif; color: grey; font-size: 14;" [ngSwitch]="recordDisplay['@type']">
+                    <span class="recordType" [ngSwitch]="recordDisplay['@type'][0]">
                         <b *ngSwitchCase="'nrd:SRD'">Standard Reference Data</b>
                         <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
                         <b *ngSwitchCase="'nrdp:PublicDataResource'">Public Data Resource</b>
@@ -65,11 +65,13 @@
                         <div [collapse]="!closeContent"> 
                             <div class="card"> 
                                 <span class="" *ngIf="recordDisplay.contactPoint.fn">
-                                    <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">{{recordDisplay.contactPoint.fn}}</a>
-                                    <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
+                                    <span>{{recordDisplay.contactPoint.fn}}</span>
                                 </span>
                                 <br><strong>Email:</strong>
-                                <span class="" *ngIf="isEmail">{{recordDisplay.contactPoint.hasEmail.split(":")[1]}}</span>
+                                <span class="" *ngIf="isEmail">
+                                    <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
+                                     {{recordDisplay.contactPoint.hasEmail.split(":")[1]}}</a>
+                                </span>
                                 <div class="" *ngIf="recordDisplay.contactPoint.address">
                                     <span><b>Address:</b></span>
                                      <div *ngFor="let address of recordDisplay.contactPoint.address"> 
@@ -80,8 +82,8 @@
                         </div>
                     </div>
                     Identifier: 
-                    <span *ngIf="isDOI" ><i>  <a href="javascript:window.location.reload(true)">{{recordDisplay.doi}}</a></i></span> 
-                    <span  *ngIf="!isDOI"><i> <a href="javascript:window.location.reload(true)">{{recordDisplay["@id"]}}</a></i> </span>
+                    <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span> 
+                    <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
                     <span *ngIf="checkReferences()">
                         <span>Described in article: </span>
                         <small *ngFor="let refs of recordDisplay.references; let i =index"> 
@@ -104,11 +106,27 @@
                         <metadata-detail [recordDisplay]="recordDisplay" ></metadata-detail>
                     </div>
                 </div>
-                <p-dialog header="Citation" [(visible)]="display" modal="modal" width="300" responsive="true">
+                <p-dialog  class="citationDialog" [closable]="false" [(visible)]="display" modal="modal" width="300" responsive="true" #citeDialog>
+                    <p-header> Citation
+                        <button style="position:relative; float:right;" type="button" pButton icon="faa faa-close" (click)="closeDialog()"></button>
+                    </p-header>
+                    <script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+                    <script>
+                      var btn = document.getElementById('copy-clipboard');
+                      var clipboard = new Clipboard(btn);
+                            clipboard.on('success', function(e) {
+                            console.log(e);
+                        });
+                        clipboard.on('error', function(e) {
+                        console.log(e);
+                        });
+                    </script>
                     Copy the recommended text to cite this resource: <br><br>
-                    <span style="font-family:  Franklin Gothic Urw; font-style:italic; color:#484646; font-size: 12;">
+                    <span id="foo" style="font-family:  Franklin Gothic Urw; font-style:italic; color:#484646; font-size: 12;">
                         {{ citeString }}                    
-                    </span><br><br>
+                    </span>
+                    <button style="position:relative; float:right;" id="copy-clipboard" class="btn" pButton icon="faa faa-clipboard" data-clipboard-target="#foo"></button>
+                    <br><br>
                     <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
                 </p-dialog>
             </div>
@@ -116,7 +134,15 @@
         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
             <div class="ui-g">     
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-                    <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>  
+                   <!-- <div class="visible-lg-block visible-md-block "> -->
+                        <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>
+                   <!-- </div> -->
+                            
+                   <!-- <div class="visible-xs-block visible-sm-block ">
+                       <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
+                    <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>
+               
+                   </div> -->
                 </div>
             </div>
             <div ng2-sticky class="ui-g">     
