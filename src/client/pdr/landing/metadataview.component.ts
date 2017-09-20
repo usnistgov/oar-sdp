@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import { FieldsetModule } from 'primeng/primeng';
 import {AccordionModule} from 'primeng/primeng';
-
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 @Component ({
   selector: 'fieldset-view',
   moduleId: module.id,

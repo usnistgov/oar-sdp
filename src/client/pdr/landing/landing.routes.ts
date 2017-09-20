@@ -2,6 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HeadbarComponent } from '../shared/headbar/index';
 import { LandingPanelComponent } from './index';
 import { NoidComponent } from './noid.component';
+import { NerdmComponent } from './nerdm.component';
 
 export const LandingRoutes: Routes = [
   {
@@ -26,6 +27,15 @@ export const LandingRoutes: Routes = [
       {
         path: '',
         component: NoidComponent
+      }
+    ]
+  }
+  ,{
+    path: 'nerdm',
+    children: [
+      {
+        path: '',
+        component: NerdmComponent
       }
     ]
   }

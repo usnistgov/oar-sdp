@@ -11,17 +11,21 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
           <h3 id="description" name="desscription"><b>Description</b></h3><br>
             <div id="recordDescription" class="well welldesc">
                 {{ record["description"] }}
-            </div>     
+            </div>
+            <div *ngIf="record['topic']">     
             <strong>Research Topics:</strong> 
             <span  *ngFor="let topic of record['topic']; let i =index">
                 {{ topic.tag }}
                 <span *ngIf="i < record['topic'].length-1 ">,</span>
             </span>
-            <br> 
-            <b>Subject Keywords:</b>
-            <span *ngFor="let keyword of record['keyword']; let i =index">
-                {{ keyword }}<span *ngIf="i < record['keyword'].length-1 ">,</span>
-            </span>
+            </div>
+            
+            <div *ngIf="record['keyword']">
+                <b>Subject Keywords:</b>
+                <span *ngFor="let keyword of record['keyword']; let i =index">
+                    {{ keyword }}<span *ngIf="i < record['keyword'].length-1 ">,</span>
+                </span>
+            </div>
             <br>
             <div *ngIf="checkReferences()"> 
              <h3 id="reference" name="reference">References</h3>
@@ -32,7 +36,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                   </span>   
                 </span>
             </div>
-            <div> <br>
+            <div>
 
              <b>Data Access:</b> {{ record['accessLevel'] }} 
                 <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
@@ -40,7 +44,9 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
              <br>
             </div> 
             <div *ngIf="files.length != 0">              
-                <h3 id="files" name="files"><b>Files</b></h3>   
+                <h3 id="files" name="files"><b>Files</b>  <a href="{{distdownload}}" class="faa faa-file-archive-o" title="Download All Files" ></a>
+                </h3> 
+                 
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
@@ -74,6 +80,7 @@ export class DescriptionComponent {
  
  @Input() record: any[];
  @Input() files: any[];
+ @Input() distdownload: string; 
 
  fileDetails:string="";
  isFileDetails: boolean = false;

@@ -12,9 +12,6 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
 import { environment } from '../environment';
-
-
-
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -68,7 +65,9 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      type: string = "";     
      process : any[];
      requestedId : string = "";
-    
+     isCopied: boolean = false;
+     distdownload: string = "";
+     serviceApi: string = "";
   /**
    * Creates an instance of the SearchPanel
    *
@@ -181,14 +180,16 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
  */
     updateRightMenu(){
       
-      var serviceApi = this.landing+"records?@id="+this.recordDisplay['@id']; 
+      this.serviceApi = this.landing+"records?@id="+this.recordDisplay['@id']; 
       if(!_.includes(this.landing, "rmm"))
-        serviceApi = this.landing+this.recordDisplay['ediid'];
+        this.serviceApi = this.landing+this.recordDisplay['ediid'];
+
+      this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
 
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
-      var download = this.createMenuItem("Download all data","faa faa-download", "",this.distApi+"ds/zip?id="+this.recordDisplay['@id']);
-      var metadata = this.createMenuItem("Export JSON", "faa faa-file-o","",serviceApi);
+      var download = this.createMenuItem("Download all data","faa faa-download", "", this.distdownload);
+      var metadata = this.createMenuItem("Export JSON", "faa faa-file-o","",this.serviceApi);
     
         itemsMenu.push(homepage);
         if (this.files.length != 0)
@@ -307,48 +308,44 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
       return (Object.keys(obj).length === 0);
     }
 
-createDataHierarchy(){
+    createDataHierarchy(){
         if (this.recordDisplay['dataHierarchy'] == null )
             return; 
-        // this.fileHierarchy = this.createTreeObj("Files","Files");
-        // this.fileHierarchy.children =[];
-         for(let fields of this.recordDisplay['dataHierarchy']){
-                // if( fields.downloadURL != null)
-                //     this.files.push(this.createFileNode(fields.filepath, fields.filepath));
-                // else 
-            if(fields.children != null)
-                this.files.push(this.createChildrenTree(fields.children,fields.filepath));  
-             else
-               this.files.push(this.createFileNode(fields.filepath, fields.filepath));     
-            
-         }
+          for(let fields of this.recordDisplay['dataHierarchy']){
+                if( fields.filepath != null) {
+                    if(fields.children != null)
+                        this.files.push(this.createChildrenTree(fields.children,
+                                                               fields.filepath));
+                    else
+                        this.files.push(this.createFileNode(fields.filepath,
+                                                            fields.filepath));
+                }
+            }
         
-        //this.files.push(this.fileHierarchy);
-     }
-  createChildrenTree(children:any[], filepath:string){
-    let testObj:TreeNode = {};
-    testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
-    testObj.children=[];
-    //console.log(children);
-    for(let child of children){
-        let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
         
-        //  if(child.downloadURL != null){
-        //       testObj.children.push(this.createFileNode(fname, child.filepath));
-        //  }else if(child.children != null){
-        //    testObj.children.push(this.createChildrenTree(child.children,child.filepath));
-        //  }
-        if( child.filepath != null) {
-             if(child.children != null)
-                 testObj.children.push(this.createChildrenTree(child.children,
-                                                               child.filepath));
-             else
-                 testObj.children.push(this.createFileNode(child.filepath,
-                                                           child.filepath));
-         }
      }
-     return testObj;
-  }
+  
+
+     createChildrenTree(children:any[], filepath:string){
+        let testObj:TreeNode = {};
+        testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
+        testObj.children=[];
+        //console.log(children);
+        for(let child of children){
+            let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
+    
+            if( child.filepath != null) {
+                if(child.children != null)
+                    testObj.children.push(this.createChildrenTree(child.children,
+                                                                  child.filepath));
+                else
+                    testObj.children.push(this.createFileNode(child.filepath,
+                                                              child.filepath));
+            }
+         }
+         return testObj;
+    }       
+  
   createTreeObj(label :string, data:string){
      let testObj : TreeNode = {}; 
      testObj = {};

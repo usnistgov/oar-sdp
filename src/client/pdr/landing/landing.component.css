@@ -148,3 +148,13 @@
 .landingcard{
   padding: 2.5rem 2.5rem 2.5rem 2.5rem;
 }
+.citeString{
+  font-family:  Franklin Gothic Urw;
+  font-style:italic;
+  color:#484646; 
+  font-size: 12;
+}
+.copyCite{
+  position:relative;
+  float:right;
+}
