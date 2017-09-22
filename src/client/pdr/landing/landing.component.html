@@ -22,7 +22,7 @@
     <div class="ui-g" style="padding-bottom: 1%; padding-right:1%;">
         <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
             <div class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-11">
                     <span class="recordType" [ngSwitch]="recordDisplay['@type'][0]">
                         <b *ngSwitchCase="'nrd:SRD'">Standard Reference Data</b>
                         <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
@@ -93,6 +93,10 @@
                     <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
                     <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
                 </div>
+                <div class="ui-sm-1 visible-xs-block visible-sm-block ">
+                    <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
+                     <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>         
+                </div>
             </div>
             <div class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
@@ -125,17 +129,10 @@
         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
             <div class="ui-g">
                 <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-
-                   <!-- <div class="visible-lg-block visible-md-block "> -->
+                   <div class="visible-lg-block visible-md-block ">
                         <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>
-                   <!-- </div> -->
-                            
-                   <!-- <div class="visible-xs-block visible-sm-block ">
-                       <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
-                    <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>
-               
-                   </div> -->
-
+                   </div>          
+                  
                 </div>
             </div>
             <div ng2-sticky class="ui-g">

@@ -13,4 +13,7 @@ body .ui-state-active, body .ui-state-highlight {
 
 .ui-menu .ui-menu-list li.ui-widget-header {
   color: #000;
+  background-color: #B8D4E6;
+  font-family: 'Roboto';
+  font-weight: bold;
 }
