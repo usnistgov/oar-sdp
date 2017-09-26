@@ -6,26 +6,24 @@ describe('About Page', function() {
     // expect(true).toBe(true);
     browser.get('/');
     browser.waitForAngular();
-    expect(browser.getLocationAbsUrl()).toEqual("/about");
+    expect<any>(browser.getCurrentUrl()).toEqual('/about');
   });
 
-  it('should display welcome page', function() {
+  it('should display title of about page', function() {
     browser.get('#/about');
     browser.waitForAngular();
     var EC = protractor.ExpectedConditions;
     var label = element.all(by.css('.labelStyle'));
     
-    expect(label.get(0).getText()).toContain('');
+    expect(label.get(0).getText()).toContain('About Public Data Repository');
    });
 
-
-  it('should have all the cards present', function() {
+  it('should check contents of the P field', function() {
     browser.get('#/home');
     browser.waitForAngular();
     var EC = protractor.ExpectedConditions;
     var list = element.all(by.css('p'));
     
   });
-
 
 });
