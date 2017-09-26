@@ -3,21 +3,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
-import { AboutComponent } from './about.component';
+import { HeadbarComponent } from './headbar.component';
 
 describe('AppComponent', () => {
-  let component: AboutComponent;
-  let fixture: ComponentFixture<AboutComponent>;
+  let component: HeadbarComponent;
+  let fixture: ComponentFixture<HeadbarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AboutComponent ]
+      declarations: [ HeadbarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AboutComponent);
+    fixture = TestBed.createComponent(HeadbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges(); 
   });

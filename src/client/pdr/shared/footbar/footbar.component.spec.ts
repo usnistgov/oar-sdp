@@ -3,21 +3,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
-import { AboutComponent } from './about.component';
+import { FootbarComponent } from './footbar.component';
 
 describe('AppComponent', () => {
-  let component: AboutComponent;
-  let fixture: ComponentFixture<AboutComponent>;
+  let component: FootbarComponent;
+  let fixture: ComponentFixture<FootbarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AboutComponent ]
+      declarations: [ FootbarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AboutComponent);
+    fixture = TestBed.createComponent(FootbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges(); 
   });
