@@ -40,34 +40,35 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     recordDisplay:any[] = [];
     keyword:string;
     summaryCandidate: any[];
-    private _routeParamsSubscription: Subscription;
     findId: string;
     leftmenu: MenuItem[];
     rightmenu: MenuItem[];
+    similarResources: boolean = false;
+    similarResourcesResults: any[]=[];
+    qcriteria:string = '';
+    selectedFile: TreeNode;
+    isDOI = false;
+    isEmail = false;
+    citeString:string = '';
+    type: string = '';     
+    process : any[];
+    requestedId : string = '';
+    isCopied: boolean = false;
+    distdownload: string = '';
+    serviceApi: string = '';
+    metadata: boolean = false;
+    pdrApi : string = environment.PDRAPI;
+    private _routeParamsSubscription: Subscription;
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
-    metadata: boolean = false;
     private rmmApi : string = environment.RMMAPI;
     private sdpLink : string = environment.SDPAPI;
     private distApi : string = environment.DISTAPI;
     private metaApi : string = environment.METAPI;
     private landing : string = environment.LANDING;
-    pdrApi : string = environment.PDRAPI;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
-     similarResources: boolean = false;
-     similarResourcesResults: any[]=[];
-     qcriteria:string ="";
-     selectedFile: TreeNode;
-     isDOI = false;
-     isEmail = false;
-     citeString:string = "";
-     type: string = "";     
-     process : any[];
-     requestedId : string = "";
-     isCopied: boolean = false;
-     distdownload: string = "";
-     serviceApi: string = "";
+     
   /**
    * Creates an instance of the SearchPanel
    *
@@ -81,16 +82,16 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
 
   onSuccess(searchResults:any[]) {
 
-        if(searchResults["ResultCount"]== undefined || searchResults["ResultCount"] != 1)
+        if(searchResults["ResultCount"] === undefined || searchResults["ResultCount"] !== 1)
             this.recordDisplay = searchResults;
-        else if(searchResults["ResultCount"] != undefined && searchResults["ResultCount"] == 1)
+        else if(searchResults["ResultCount"] !== undefined && searchResults["ResultCount"] === 1)
              this.recordDisplay = searchResults["ResultData"][0];
         this.type = this.recordDisplay['@type'];
         this.titleService.setTitle(this.recordDisplay['title']);
         this.createDataHierarchy();
-        if(this.recordDisplay['doi'] != undefined && this.recordDisplay['doi'] != "" )
+        if(this.recordDisplay['doi'] !== undefined && this.recordDisplay['doi'] !== "" )
              this.isDOI = true;
-        if(this.recordDisplay['contactPoint'].hasEmail!= undefined && this.recordDisplay['contactPoint'].hasEmail != "")
+        if(this.recordDisplay['contactPoint'].hasEmail !== undefined && this.recordDisplay['contactPoint'].hasEmail !== "")
           this.isEmail = true;          
         this.updateLeftMenu();
         this.updateRightMenu();
@@ -132,27 +133,27 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
  */
     updateLeftMenu(){
       var itemsMenu: any[] = []; 
-      var descItem = this.createMenuItem ("Description","",(event)=>{ 
+      var descItem = this.createMenuItem ("Description",'',(event)=>{ 
                    this.metadata = false; this.similarResources =false;
-                 },""); 
+                 },''); 
 
-      var refItem = this.createMenuItem ("References","",(event)=>{
+      var refItem = this.createMenuItem ("References",'',(event)=>{
                       this.metadata = false; this.similarResources =false;
                       
-                },"");           
+                },'');           
 
-      var filesItem = this.createMenuItem("Files","", (event)=>{    
+      var filesItem = this.createMenuItem("Files",'', (event)=>{    
                      this.metadata = false;
                      this.similarResources =false; 
-                },"");
+                },'');
 
-      var metaItem = this.createMenuItem("Metadata","",(event)=>{
-                    this.metadata = true; this.similarResources =false;},"");    
+      var metaItem = this.createMenuItem("Metadata",'',(event)=>{
+                    this.metadata = true; this.similarResources =false;},'');    
     
       itemsMenu.push(descItem);
       if(this.checkReferences())
         itemsMenu.push(refItem);
-      if(this.files.length != 0)
+      if(this.files.length !== 0)
         itemsMenu.push(filesItem);
       itemsMenu.push(metaItem); 
 
@@ -168,10 +169,10 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
      let testItem : any = {};
      testItem.label = label;
      testItem.icon = icon;
-     if(command != "")
-     testItem.command = command;
-     if(url != "")
-     testItem.url = url;
+     if(command !== '')
+        testItem.command = command;
+     if(url !== '')
+        testItem.url = url;
      return testItem;
 }
 
@@ -187,9 +188,9 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
       this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
 
       var itemsMenu: any[] = [];
-      var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", "",this.recordDisplay['landingPage']);
-      var download = this.createMenuItem("Download all data","faa faa-download", "", this.distdownload);
-      var metadata = this.createMenuItem("Export JSON", "faa faa-file-o","",this.serviceApi);
+      var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
+      var download = this.createMenuItem("Download all data","faa faa-download", '', this.distdownload);
+      var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
     
         itemsMenu.push(homepage);
         if (this.files.length != 0)
@@ -206,30 +207,25 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     this.citeString = "";
                     let date =  new Date(); 
-                    if(this.recordDisplay['authors'] !=  null){
-                        for(let author of this.recordDisplay['authors'])
-                        { if(author.familyName != null && author.familyName != undefined) 
-                         this.citeString += author.familyName +" ";
-                         if(author.givenName != null && author.givenName != undefined) 
-                         this.citeString +=  author.givenName+" ";
-                         if(author.middleName != null && author.middleName != undefined) 
-                         this.citeString += author.middleName;
-
-                         this.citeString +=", "
+                    if(this.recordDisplay['authors'] !==  null){
+                        for(let author of this.recordDisplay['authors']) { 
+                         if(author.familyName !== null && author.familyName !== undefined) 
+                            this.citeString += author.familyName +' ';
+                         if(author.givenName !== null && author.givenName !== undefined) 
+                            this.citeString +=  author.givenName+' ';
+                         if(author.middleName !== null && author.middleName !== undefined) 
+                            this.citeString += author.middleName;
+                         this.citeString +=", ";
                         }
-                        
-
-                    }else if(this.recordDisplay['contactPoint']){
-                        if(this.recordDisplay['contactPoint'].fn != null && this.recordDisplay['contactPoint'].fn != undefined)
+                    } else if(this.recordDisplay['contactPoint']) {
+                        if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
                         this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
                     }
-                    if(this.recordDisplay['title']!= null && this.recordDisplay['title']!= 'undefined' )
+                    if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== 'undefined' )
                         this.citeString += this.recordDisplay['title'] +", ";
-                    if(this.recordDisplay['doi']!= null && this.recordDisplay['doi']!= 'undefined' )
+                    if(this.recordDisplay['doi']!== null && this.recordDisplay['doi']!== 'undefined' )
                         this.citeString += this.recordDisplay['doi'];
-        
                     this.citeString += ", access:"+date;
-
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
@@ -245,8 +241,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                 {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
                       let authlist = "";
                       for(let auth of this.recordDisplay['authors'])
-                                authlist = authlist+auth.familyName+",";
-                            
+                            authlist = authlist+auth.familyName+",";
                             window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
                         }
                     }
@@ -330,10 +325,8 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
         let testObj:TreeNode = {};
         testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
         testObj.children=[];
-        //console.log(children);
         for(let child of children){
-            let fname = child.filepath.split("/")[child.filepath.split("/").length-1]
-    
+            let fname = child.filepath.split("/")[child.filepath.split("/").length-1];
             if( child.filepath != null) {
                 if(child.children != null)
                     testObj.children.push(this.createChildrenTree(child.children,
@@ -399,7 +392,7 @@ closeDialog(){
  }
 
   isArray(obj : any ) {
-     return Array.isArray(obj)
+     return Array.isArray(obj);
   }
 
   isObject(obj: any)

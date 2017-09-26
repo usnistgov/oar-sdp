@@ -16,18 +16,14 @@ import { Component } from '@angular/core';
       lossless conversion keeping all the key fields as is, NERDm adds some extensions.
       <br>
       More details of NERDm  coming soon ....
-  
-      
     </div>
   </div> 
   `
 })
 
 export class NerdmComponent {
-
-  ngAfterViewInit(){
-
+  ngAfterViewInit() {
     window.history.replaceState( {} , '#/nerdm/', '/pdr/nerdm/' );
-}
+  }
 }
    
