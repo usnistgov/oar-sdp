@@ -137,7 +137,7 @@
     "minimatch": "^3.0.3",
     "open": "0.0.5",
     "primeui": "4.1.15",
-    "protractor": "^4.0.14",
+    "protractor" : "5.1.0",
     "remap-istanbul": "^0.9.5",
     "rimraf": "^2.5.4",
     "rollup": "^0.43.0",
