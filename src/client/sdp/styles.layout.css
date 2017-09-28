@@ -88,14 +88,17 @@
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a {
   background-color: #03A9F4; }
 
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink > i
+{
+  color: #ffffff;
+}
+.card {
+  margin-bottom: 0px;
+}
 
-
-
-
-
-
-
-
+.ui-g.form-group > div {
+  padding: 0.5em;
+}
 
 
 

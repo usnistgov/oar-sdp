@@ -11,7 +11,7 @@ import { ExtendPackages } from './seed.config.interfaces';
  */
 export class ProjectConfig extends SeedConfig {
 
-  
+
   PROJECT_TASKS_DIR = join(process.cwd(), this.TOOLS_DIR, 'tasks', 'project');
 
     FONTS_DEST = `${this.APP_DEST}/fonts`;
@@ -50,7 +50,8 @@ export class ProjectConfig extends SeedConfig {
     // Add `local` third-party libraries to be injected/bundled.
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
-      {src: `${this.APP_SRC}/assets/css/main.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/css/main.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/assets/env.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
