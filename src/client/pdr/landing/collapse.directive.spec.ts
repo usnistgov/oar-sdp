@@ -9,7 +9,7 @@ import { Collaspe } from './collapse.directive';
   template: ``
 })
 class TestComponent { }
-
+export function main() {
 describe('Collaspe', () => {
 
   let fixture: ComponentFixture<TestComponent>;
@@ -41,4 +41,4 @@ describe('Collaspe', () => {
     expect(bgColor).toBe('white');
   });
 
-  });
+  });}

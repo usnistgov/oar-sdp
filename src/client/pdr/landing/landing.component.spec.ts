@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { LandingPanelComponent } from './landing.component';
-
+export function main() {
 describe('AppComponent', () => {
   let component: LandingPanelComponent;
   let fixture: ComponentFixture<LandingPanelComponent>;
@@ -21,4 +21,4 @@ describe('AppComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges(); 
   });
-});
+});}

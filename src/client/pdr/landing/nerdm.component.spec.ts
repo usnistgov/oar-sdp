@@ -3,7 +3,7 @@ import { NerdmComponent } from './nerdm.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By }           from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-  
+export function main() {
   describe('NerdmComponent', function () {
     let de: DebugElement;
     let comp: NerdmComponent;
@@ -31,4 +31,4 @@ import { DebugElement } from '@angular/core';
         '<P> should say something about "JSON-LD"');
     });
   });
-  
+}

@@ -1,5 +1,5 @@
 import { KeyValuePipe } from './keyvalue.pipe';
-
+export function main() {
 describe('KeyValuePipe', () => {
   // This pipe is a pure, stateless function so no need for BeforeEach
   let pipe = new KeyValuePipe();
@@ -14,3 +14,4 @@ describe('KeyValuePipe', () => {
     expect(pipe.transform('keyval')).toBe('keyval');
   });
 });
+}

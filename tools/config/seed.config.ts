@@ -438,7 +438,7 @@ export class SeedConfig {
 
       'app/': `${this.APP_BASE}app/`,
       // For test config
-      'dist/dev/': '/base/dist/dev/',
+      'dist/dev/': '/dist/dev/',
       '': 'node_modules/',
     },
     packages: {

@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { AboutComponent } from './about.component';
-
+//export function main() {
 describe('AboutComponent', () => {
   let component: AboutComponent;
   let fixture: ComponentFixture<AboutComponent>;
@@ -40,3 +40,4 @@ describe('AboutComponent', () => {
   });
   
 });
+//}

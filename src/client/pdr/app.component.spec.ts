@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-
+export function main() {
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -22,3 +22,4 @@ describe('AppComponent', () => {
     fixture.detectChanges(); 
   });
 });
+}
