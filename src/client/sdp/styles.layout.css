@@ -94,9 +94,12 @@
 }
 
 .card {
-  margin-bottom: 0em;
+  margin-bottom: 0px;
 }
 
+.ui-g.form-group > div {
+  padding: 0.5em;
+}
 
 
 
