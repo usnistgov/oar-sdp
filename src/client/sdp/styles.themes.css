@@ -124,7 +124,22 @@ body .ui-paginator .ui-paginator-pages a.ui-state-active {
 body .ui-datalist .ui-datalist-header {
   padding:0px;}
 
+@media screen and (min-width: 0px) and (max-width: 640px) {
+  body .my-content-small { display: block; hidden: false; }   /* hide it elsewhere */
+  body .my-content-big { display: none; hidden: true }   /* hide it elsewhere */
+}
 
+.form-group {
+  margin-bottom: 0px;
+}
+
+body .ui-overlaypanel .ui-overlaypanel-close {
+  background-color: #1471AD;
+}
+
+body .ui-overlaypanel .ui-overlaypanel-close:hover {
+  background-color: #283593;
+}
 
 
 
