@@ -12,7 +12,7 @@ import { AppComponent } from './app.component';
             </a> 
         <span style="color: #FFFFFF;font-size: large;padding-left: 2%">Science <br> &nbsp;Data Portal </span>
       </span>
-      <span class="badge" style="background-color:coral;vertical-align: text-top;margin-top: 20px;">1.0.0-beta</span>
+      <span class="badge" style="background-color:#982800;vertical-align: text-top;margin-top: 20px;">1.0.0-beta</span>
         <div class="topbar-right">
               <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                     <i></i>
