@@ -17,6 +17,7 @@
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
     "typeRoots": [
       "../../node_modules/@types",
       "../../node_modules"
@@ -27,10 +28,8 @@
       "systemjs"
     ]
   },
+  "compileOnSave": false,
   "exclude": [
-    "node_modules",
-    "dist",
-    "src"
-  ],
-  "compileOnSave": false
+    "app/main-prod.ts"
+  ]
 }

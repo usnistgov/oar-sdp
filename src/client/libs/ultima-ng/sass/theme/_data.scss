@@ -69,6 +69,55 @@ body {
         }
     }
     
+    .ui-organizationchart {
+        .ui-organizationchart-node-content {
+            &.ui-organizationchart-selectable-node:not(.ui-state-highlight):hover {
+                @include hover-element();
+            }
+            
+            &.ui-state-highlight {
+                .ui-node-toggler {
+                    i {
+                        color: darken($accentColor, 25%);
+                    }
+                }
+            }
+        }
+        .ui-organizationchart-line-down {
+            background-color: $dividerColor;
+        }
+        
+        .ui-organizationchart-line-left {
+            border-right: 1px solid $dividerColor;
+        }
+        
+        .ui-organizationchart-line-right {
+            
+        }
+        
+        .ui-organizationchart-line-top {
+            border-top: 1px solid $dividerColor;
+        }
+        
+        .ui-organizationchart-node-content {
+            border-color: $dividerColor;
+        }
+        
+        .ui-organizationchart-node-content .ui-node-toggler {
+            bottom: -1.3em;
+            margin-left: -.75em;
+            color: $dividerColor;
+            
+            .fa-chevron-down {
+                @include material-icon("keyboard_arrow_down");
+            }
+            
+            .fa-chevron-up {
+                @include material-icon("keyboard_arrow_up");
+            }
+        }
+    }
+    
     .ui-orderlist {
         .ui-orderlist-caption {
             font-size: $inputHeaderFontSize;
@@ -98,6 +147,12 @@ body {
             }
         }
         
+        &.ui-orderlist-responsive {
+            .ui-orderlist-controls {
+                width: 3.75em;
+            }
+        }
+        
         .ui-orderlist-controls {
             width: 3.75em;
             text-align: center;
@@ -105,8 +160,8 @@ body {
             .ui-button {
                 &.ui-button-icon-only {
                     width: 2.5em;
+                    margin-bottom: .5em;
                     margin-right: 0;
-                    display: inline-block;
                 }
             }
         }
@@ -237,12 +292,6 @@ body {
                     
                     .ui-sortable-column-icon {
                         vertical-align: middle;
-                        color: $textSecondaryColor;
-                    }
-                    
-                    .ui-column-resizer {
-                        @include material-icon("code");
-                        font-size: 1em;
                         color: $textSecondaryColor;
                     }
                     
@@ -432,9 +481,25 @@ body {
                 }
             }
         }
+        
+        .ui-datatable-loading {
+            @include opacity(.3);
+        }
+        
+        .ui-datatable-loading-content {
+            top: 35%;
+            
+            .fa {
+                @include material-icon('refresh');
+                @include animation(0, 1000ms, spin);
+                font-size: 2em;
+            }
+        }
     }
     
     .ui-carousel {
+        padding: 0;
+                
         .ui-carousel-header{
             padding: $headerPadding;
             font-size: $headerFontSize;
@@ -446,6 +511,14 @@ body {
             
             .fa {
                 color: #ffffff;
+            }
+            
+            .ui-carousel-button {
+                margin: -1px 0 0 0;
+            }
+            
+            .ui-carousel-page-links {
+                margin: -1px 0 0 0;
             }
         }
     }
@@ -545,7 +618,7 @@ body {
         
         .fc-event {
             background-color: $primaryLightColor;
-            color: $textColor;
+            color: #ffffff;
         }
     
         table {
@@ -661,6 +734,18 @@ body {
                 th {
                     background-color: #ffffff;
                     color: $textColor;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 40em) {
+    body {
+        .ui-orderlist {
+            &.ui-orderlist-responsive {
+                .ui-orderlist-controls {
+                    width: 100%;
                 }
             }
         }

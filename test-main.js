@@ -18,8 +18,8 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 // we will call `__karma__.start()` later, once all the specs are loaded.
 __karma__.loaded = function() {};
 Promise.all([
-  System.import('@angular/core/testing'),
-  System.import('@angular/platform-browser-dynamic/testing')
+  System.import('node_modules/@angular/core/bundles/core-testing.umd.js'),
+  System.import('node_modules/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing.umd.js')
 ]).then(function (providers) {
   var testing = providers[0];
   var testingBrowser = providers[1];

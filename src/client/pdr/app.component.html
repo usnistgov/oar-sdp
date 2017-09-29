@@ -13,13 +13,13 @@
 </script>
 
      <pdr-headbar></pdr-headbar>
-<div class="layout-wrapper layout-compact">
-
+<div class="layout-wrapper" [ngClass]="{'layout-compact':layoutCompact}" (click)="onLayoutClick()">
   <div #layoutContainer class="layout-container"
        [ngClass]="{'menu-layout-static': !isOverlay(),
             'menu-layout-overlay': isOverlay(),
             'layout-menu-overlay-active': overlayMenuActive,
             'menu-layout-horizontal': isHorizontal(),
+            'menu-layout-slim': isSlim(),
             'layout-menu-static-inactive': staticMenuDesktopInactive,
             'layout-menu-static-active': staticMenuMobileActive}">
 
@@ -33,8 +33,11 @@
         </div>
       </div>
     </div>
+    <div class="layout-main" style="padding: 0em">
+
     <router-outlet></router-outlet>
     <pdr-footbar></pdr-footbar>
+    </div>
     <div class="layout-mask"></div>
   </div>
 

@@ -23,47 +23,48 @@ export class SearchService {
    * @param {Http} http - The injected Http.
    * @constructor
    */
-  constructor(private http: Http) {   
+  constructor(private http: Http) {
   }
-   /**
+  /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
   searchByIdOld(searchValue:string): Observable<string[]> {
-    
-    searchValue = '@id=' + searchValue;  
+
+    searchValue = '@id=' + searchValue;
     return this.http.get(this.rmmApi+'records?' + searchValue)
-    .map((res: Response) => res.json().ResultData)
-    .catch((error: any) => Observable.throw(error.json()));
+      .map((res: Response) => res.json().ResultData)
+      .catch((error: any) => Observable.throw(error.json()));
   }
 
   searchById(searchValue:string): Observable<string[]> {
-  
+
     // if(this.landingAccess != "internal")
     //   this.serviceApi = this.rmmApi+"records/";
-    // else 
+    // else
     //   this.serviceApi = this.metaApi;
     if (_.includes(this.landingBackend, "rmm") && _.includes(searchValue,"ark"))
       this.landingBackend= this.landingBackend+"records?@id=";
     else if(_.includes(this.landingBackend, "rmm"))
       this.landingBackend = this.landingBackend+"records/"; //+"records?exclude=_id&ediid=";
-    
+
     console.log(this.landingBackend+searchValue);
 
     return this.http.get(this.landingBackend+ searchValue)
-    .map((res: Response) => res.json())
-    .catch((error: any) => Observable.throw(error.json()));
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json()));
   }
 
-/**
- * Returns the results from RMMAPI for any acceptable request params
- * @param searchValue request params
- */
- searchRMMAny(searchValue:string): Observable<string[]> {
-   
+  /**
+   * Returns the results from RMMAPI for any acceptable request params
+   * @param searchValue request params
+   */
+  searchRMMAny(searchValue:string): Observable<string[]> {
+
     return this.http.get(this.rmmApi+'records?' + searchValue)
-    .map((res: Response) => res.json().ResultData)
-    .catch((error: any) => Observable.throw(error.json()));    
+      .map((res: Response) => res.json().ResultData)
+      .catch((error: any) => Observable.throw(error.json()));
   }
 }
+
 

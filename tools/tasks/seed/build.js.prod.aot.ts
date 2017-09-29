@@ -15,7 +15,7 @@ const plugins = <any>gulpLoadPlugins();
 export = () => {
   let tsProject = makeTsProject({}, Config.TMP_DIR);
   let toIgnore = readdirSync(Config.TMP_DIR).filter((f: string) =>
-  lstatSync(join(Config.TMP_DIR, f)).isDirectory() && f !== Config.BOOTSTRAP_DIR)
+    lstatSync(join(Config.TMP_DIR, f)).isDirectory() && f !== Config.BOOTSTRAP_DIR)
     .map((f: string) => '!' + join(Config.TMP_DIR, f, Config.NG_FACTORY_FILE + '.ts'));
 
   let src = [

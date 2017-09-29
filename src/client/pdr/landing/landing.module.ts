@@ -20,14 +20,15 @@ import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, T
 import { BrowserModule,Title,DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
-    imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-      DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule,OverlayPanelModule,
-      Ng2StickyModule, FieldsetModule, PanelModule],
-    declarations: [LandingPanelComponent,Collaspe,MetadataComponent,SimilarsComponent,FileDetailsComponent,
-                   DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent ],
-    exports: [LandingPanelComponent],
-    providers: [Title]
-    
+  imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
+    DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule,OverlayPanelModule,
+    Ng2StickyModule, FieldsetModule, PanelModule],
+  declarations: [LandingPanelComponent,Collaspe,MetadataComponent,SimilarsComponent,FileDetailsComponent,
+    DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent ],
+  exports: [LandingPanelComponent],
+  providers: [Title]
+
 })
 
 export class LandingModule { }
+

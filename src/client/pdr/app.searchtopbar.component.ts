@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
           alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
             </a>         
       </div>
-        
+        <!--
          <div class="topbar-right">
                 <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)" 
                 [ngClass]="{'menu-button-rotate': app.rotateMenuButton}">
@@ -20,12 +20,23 @@ import { AppComponent } from './app.component';
                 <a id="topbar-menu-button" href="#" (click)="app.onTopbarMenuButtonClick($event)">
                 </a>
          </div>
+         -->
+            <div class="topbar-right">
+              <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
+                    <i></i>
+                </a>
+
+                <a id="topbar-menu-button" href="#" (click)="app.onTopbarMenuButtonClick($event)">
+                    <i class="material-icons">menu</i>
+                </a>
+           
+         </div>
       </div>
     `
 })
 
 export class SearchTopBarComponent {
 
-    constructor(@Inject(forwardRef(() => AppComponent)) public app:AppComponent) {}
+  constructor(public app: AppComponent) {}
 
 }
