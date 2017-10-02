@@ -51,7 +51,6 @@ export class ProjectConfig extends SeedConfig {
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
       {src: `${this.APP_SRC}/css/main.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/assets/env.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
