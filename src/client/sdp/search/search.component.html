@@ -20,7 +20,6 @@
   <div class="EmptyBox100"></div>
   <div class="EmptyBox100"></div>
 </div>
-
 <div *ngIf="!noResults">
   <div class="ui-fluid"  style="background-color: #EFEFEF">
     <div class="ui-g">
@@ -62,31 +61,17 @@
       </div>
     </div>
     <div *ngIf="filteredResults.length > 0">
-      <!--
-      <p>
-        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          Link with href
-        </a>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-          Button with data-target
-        </button>
-      </p>
-      <div id="collapseExample">
-        <div class="card card-body">
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-        </div>
-      </div>-->
-    <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
-      <div class="ui-g-12 ui-md-3 ui-lg-3 " style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)"  >
-        <div class="ui-g" style="padding: 0px;" >
+    <div class="ui-g " style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
+      <div *ngIf = "mobWidth <641" class="ui-g-12 ui-md-3 ui-lg-3 collapsed" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+        <div class="ui-g my-content-small collapsed" style="padding: 0px;" >
           <div class="ui-g-12" style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
-            <div style="background-color: #025277;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)">
-              <a data-toggle="collapse" href="#collapseExample" style="font-size: 16px;background-color: #025277;color: #FFFFFF;">Filter</a>
+            <div style="background-color: #025277;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
+              <a style="font-size: 16px;background-color: #025277;color: #FFFFFF;">Filter </a><button type="button" class="btn btn-sm btn-info collapsed" data-toggle="collapse" style="background-color: #025277;border-color: #025277; padding: 0em;align:left;" data-target="#filter"></button>
               <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
                 <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
                 </i>Clear All</a>
             </div>
-            <div class="ui-g-12" id="collapseExample">
+            <div class="ui-g-12" id="filter" class="collapse">
             <div style="border-bottom:.5px solid #cccccc;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
               <label for="themes" class="hideLabel">Themes</label>
               <p-tree header="test" id= "themes" [value]="themesTree" selectionMode="checkbox"
@@ -141,7 +126,6 @@
             </div>
             <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
               <label for="keyword" class="hideLabel">Keyword</label>
-
               <p-autoComplete inputId="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
                               (completeMethod)="filterKeywords($event)"
                               [multiple] = "true"
@@ -157,8 +141,91 @@
         </div>
       </div>
       </div>
+      <div *ngIf = "mobWidth >641" class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" [hidden]="!isActive" id="demo" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+          <div  class="ui-g-12 "   style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+            <div style="background-color: #025277;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
+              <a style="font-size: 16px;background-color: #025277;color: #FFFFFF;">Filters </a> <button type="button" class="btn-sm btn-info collapse1 in" (click) = "setResultsWidth()"  data-toggle="collapse" style="background-color: #025277;border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo"><i class="faa faa-angle-double-left" style="zoom: 130%;color: #fff;"></i></button>
+              <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
+                <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
+                </i>Clear All</a>
+            </div>
+            <div class="ui-g-12">
+              <div style="border-bottom:.5px solid #cccccc;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
+                <label for="themes" class="hideLabel">Themes</label>
+                <p-tree header="test" id= "themes" [value]="themesTree" selectionMode="checkbox"
+                        [style]="{'width':'100%','font-size': '12px','overflow':'hidden','padding-top': '.5em',
+                        'height': 'auto','padding-bottom': '.5em',
+                        'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
+                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
+                  <ng-template let-node  pTemplate="default">
+                    <span> {{node.label.split("-")[0]}}&nbsp;</span>
+                    <span class="badge" style="background-color: #515151" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
+                  </ng-template>
+                </p-tree>
+                <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
+                  <a href="#!" (click)="showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
+                </div>
+                <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
+                  <a href="#!" (click)="showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
+                </div>
+              </div>
+              <div style="border-bottom:.5px solid #cccccc;width: 100%;'box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)'">
+                <p-tree [value]="componentsTree" selectionMode="checkbox"
+                        [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)','padding-right': '.5em',
+                          'padding-bottom': '.5em','background-color': '#F8F9F9'}"
+                        [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
+                        (onNodeSelect)="filterResults($event)" >
+                  <ng-template let-node  pTemplate="default">
+                    <span> {{node.label.split("-")[0]}}&nbsp;</span>
+                    <span class="badge" style="background-color: #515151" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
+                  </ng-template>
+                </p-tree>
+              </div>
+              <div class="ui-g-10" style="padding: 0px;" >
+                <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+                  <label style="font-size: 14px;"><b>Authors and Contributors</b></label>
+                </div>
+                <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
+                  <label for="suggestedauthor" class="hideLabel">Search Input</label>
+                  <p-autoComplete [(ngModel)]="selectedAuthor" inputId="suggestedauthor" [suggestions]="suggestedAuthors"
+                                  (completeMethod)="filterAuthors($event)"
+                                  [multiple] = "true"
+                                  (onSelect)="filterResults($event,'selectauthor')"
+                                  (onUnselect)="filterResults($event,'unselectauthor')"
+                                  [minLength]="1" [maxlength]="30" [style]="{'width':'100%',
+                              'background-color': '#FFFFFF','font-weight': '400','height':'30px',
+                              'font-style': 'italic','font-size': '14px'}">
+                  </p-autoComplete>
+                </div>
+              </div>
+              <div class="ui-g-10" style="padding: 0px;" >
+                <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+                  <label style="font-size: 14px;"><b>Keyword</b></label>
+                </div>
+                <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
+                  <label for="keyword" class="hideLabel">Keyword</label>
+                  <p-autoComplete inputId="keyword" [(ngModel)]="selectedKeywords"  [suggestions]="suggestedKeywords"
+                                  (completeMethod)="filterKeywords($event)"
+                                  [multiple] = "true"
+                                  (onSelect)="filterResults($event,'selectkeyword')"
+                                  (onUnselect)="filterResults($event,'unselectkeyword')"
+                                  [minLength]="1" [maxlength] = "30" [style]="{'width':'100%',
+                              'background-color': '#FFFFFF','font-weight': '400','height':'30px',
+                              'font-style': 'italic','font-size': '14px'}">
+                  </p-autoComplete>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       <!-- Section 1 -->
-      <div class="ui-g-12 ui-md-9 ui-lg-9 " style="padding: 0px;background-color: #FFFFFF">
+      <div *ngIf = "mobWidth >641" [className]="filterClass" [hidden]="isActive" style="text-align:center;float: right;padding: 0px;background-color: #025377;font-size: 14px;color: #fff;"> <br>
+        <div class="ui-g-12">
+          <button type="button" (click) = "setResultsWidth()" class="btn-sm btn-info collapsed" data-toggle="collapse" style="background-color: #025377;border-color: #025377; padding: 0em;font-size: 14px;border: 0em;align:left;color: #FFF;" data-target="#demo"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>
+          <div class="rotate" style="display: block; font-size:16px;right:-30px;color: #fff;"> Filters </div>
+        </div>
+      </div>
+      <div [className]="resultsClass" style="padding: 0px;background-color: #FFFFFF">
       <p-dataList [value]="filteredResults" #results responsive = "true" [paginator]="true" paginatorPosition = "top" [rows]="5"
                   [style]="{'padding-right': '.5em','height':'auto'}">
         <p-header >
@@ -196,9 +263,9 @@
         </p-header>
         <ng-template let-resultItem pTemplate="item">
           <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:1px solid #D5D5D5;">
-            <div class="ui-grid-row nowrap">
+            <div class="ui-grid-row nowrap" >
               <div class="ui-grid-col-12">
-                <div class="ui-grid ui-grid-responsive" style="text-align: left;">
+                <div class="ui-grid ui-grid-responsive" style="text-align: left;width: auto;">
                   <div class="ui-grid-row">
                     <div class="ui-grid-col-12" ><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL,resultItem.ediid)" >
                       {{resultItem.title}}</a></b></div>
