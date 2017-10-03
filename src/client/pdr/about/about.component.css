@@ -47,3 +47,6 @@ hr {
 .node--leaf {
   pointer-events: none;
 }
+.labelStyle{
+  font-size: xx-large;float: left;display: block;
+}

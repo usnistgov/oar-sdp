@@ -149,43 +149,58 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
   margin: 0;
   overflow: hidden;
   padding: .25em;
-word-break: break-all;
-hyphens: auto;}
+  word-break: break-all;
+  hyphens: auto;}
 
 .ui-tree .ui-treenode-label {
-padding: 0 .25em;
+  padding: 0 .25em;
   vertical-align: middle;
 }
 
-/* enable absolute positioning */
-.inner-addon {
-  position: relative;
-}
-
-.glyphicon
-{
-  color: #1471AE;
-}
-
-  .custWhite {
+.custWhite {
   color: #FFFFFF;
   height:42px;
   background-color: #FFFFFF;
   margin-top: 0;
   margin-left: 0; }
 
-/* style icon */
-.inner-addon .glyphicon {
-  position: absolute;
-  padding: 10px;
-  pointer-events: none;
-  font-size: 25px;
+   /* Icon when the collapsible content is shown */
+ .btn:after {
+   font-family: "Glyphicons Halflings";
+   content: "\e114";
+   float: right;
+ }
+/* Icon when the collapsible content is hidden */
+.btn.collapsed:after {
+  content: "\e080";
 }
 
-/* align icon */
-.left-addon .glyphicon  { left:  0px;}
-.right-addon .glyphicon { right: 0px;}
+/* Icon when the collapsible content is shown */
+.btn:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e114";
+  float: right;
+}
+/* Icon when the collapsible content is hidden */
+.btn.collapsed:after {
+  content: "\e080";
+}
 
-/* add padding  */
-.left-addon input p-autoComplete { padding-left:  30px; }
-.right-addon input { padding-right: 30px; }
+.btnlarge:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e080";
+}
+
+.btnlarge.collapsed:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e079";
+}
+
+.rotate {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+
+}
