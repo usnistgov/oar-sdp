@@ -6,7 +6,7 @@ enum MenuOrientation {
   OVERLAY,
   SLIM,
   HORIZONTAL
-};
+}
 
 declare var jQuery: any;
 
@@ -102,8 +102,7 @@ export class AppComponent implements AfterViewInit {
 
     if(this.layoutMode === MenuOrientation.OVERLAY) {
       this.overlayMenuActive = !this.overlayMenuActive;
-    }
-    else {
+    } else {
       if(this.isDesktop())
         this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive;
       else

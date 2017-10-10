@@ -22,7 +22,6 @@
   "build.e2e": [
     "initialize",
     "clean.e2e",
-    "tslint",
     "build.js.e2e"
   ],
 
@@ -65,7 +64,6 @@
     "initialize",
     "check.tools",
     "clean.prod",
-    "tslint",
     "build.assets.prod",
     "build.html_css",
     "build.fonts",
@@ -106,7 +104,7 @@
   ],
 
   "serve.e2e": [
-    "tslint",
+    
     "build.dev",
     "build.js.e2e",
     "server.start",

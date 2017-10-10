@@ -27,12 +27,11 @@ export class HeadbarComponent {
   landingService : string = environment.LANDING;
   internalBadge: boolean = false;
 
-   
   constructor( private el: ElementRef) {
   }
   
   checkinternal() {
-    if(!this.landingService.includes("rmm"))
+    if(!this.landingService.includes('rmm'))
       this.internalBadge = true;
     return this.internalBadge;
   }

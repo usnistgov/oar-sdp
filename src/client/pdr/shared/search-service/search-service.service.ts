@@ -43,10 +43,10 @@ export class SearchService {
     //   this.serviceApi = this.rmmApi+"records/";
     // else
     //   this.serviceApi = this.metaApi;
-    if (_.includes(this.landingBackend, "rmm") && _.includes(searchValue,"ark"))
-      this.landingBackend= this.landingBackend+"records?@id=";
-    else if(_.includes(this.landingBackend, "rmm"))
-      this.landingBackend = this.landingBackend+"records/"; //+"records?exclude=_id&ediid=";
+    if (_.includes(this.landingBackend,'rmm') && _.includes(searchValue,'ark'))
+      this.landingBackend = this.landingBackend+'records?@id=';
+    else if(_.includes(this.landingBackend,'rmm'))
+      this.landingBackend = this.landingBackend+'records/'; //+"records?exclude=_id&ediid=";
 
     console.log(this.landingBackend+searchValue);
 
