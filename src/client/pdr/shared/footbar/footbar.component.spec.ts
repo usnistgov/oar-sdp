@@ -3,22 +3,22 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
-import { LandingPanelComponent } from './landing.component';
-export function main() {
+import { FootbarComponent } from './footbar.component';
+
 describe('AppComponent', () => {
-  let component: LandingPanelComponent;
-  let fixture: ComponentFixture<LandingPanelComponent>;
+  let component: FootbarComponent;
+  let fixture: ComponentFixture<FootbarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LandingPanelComponent ]
+      declarations: [ FootbarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LandingPanelComponent);
+    fixture = TestBed.createComponent(FootbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges(); 
   });
-});}
+});
