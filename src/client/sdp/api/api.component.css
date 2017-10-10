@@ -1,6 +1,6 @@
 :host {
   display: block;
-  }
+}
 
 h2 {
   font-size: 20px;
@@ -11,12 +11,12 @@ h2 {
 }
 
 .background-white {
-	background-color:#ffffff;
+  background-color:#ffffff;
 }
 
 .center
 {
-	align: center;
+  align: center;
 }
 
 .divPad
@@ -24,8 +24,26 @@ h2 {
   padding: 50px 100px 50px 100px;
 }
 
-
 .cardDiv:hover{
   color: #1471AE;
   border:1px solid;
 }
+
+.api:hover
+{
+  background-color: #808080;
+  color: #fff;
+}
+
+.api
+{
+  background-color:#595959;
+  color: #fff;
+}
+
+.element {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
