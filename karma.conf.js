@@ -48,7 +48,7 @@ module.exports = function (config) {
       { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
 
       'test-config.js',
-       { pattern: 'dist/dev/system-config.js', watched: true, included: true },
+      { pattern: 'dist/dev/system-config.js', watched: true, included: true },
 
       { pattern: 'dist/dev/**/*.js', included: false, watched: true },
       { pattern: 'dist/dev/**/*.html', included: false, watched: true, served: true },

@@ -21,6 +21,12 @@
   font-size: 20px;
 }
 
+.recordType{
+  font-family: Arial, Helvetica, sans-serif; 
+  color:#707070; 
+  font-size: 14;
+}
+
 :host /deep/ .ui-tree {
   padding: 0.625em 1em/2;
   font-weight:bold;
@@ -97,7 +103,6 @@
   padding: 2%;
   padding-left: 5%;
   font-family: 'Roboto';
-
   font-weight: bold;
 }
 
@@ -106,7 +111,6 @@
   min-height: 0;
   padding: 2px;
   font-family: 'Roboto';
-
   padding-left: 5%;
   /*font-family: 'Franklin Gothic Medium';*/
   /*font-style: italic; font-size: 10pt;*/
@@ -124,4 +128,31 @@
   background-color:#006495;
   text-align: left;
   color: white;
+}
+:host /deep/ citationDialog > button.ui-button-icon-only{  
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.fileinfosection{
+  background-color:#F3F3F3; 
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+
+.fileinfocard{
+  padding: 0 2.5rem 2.5rem 2.5rem;
+}
+.landingcard{
+  padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+.citeString{
+  font-family:  Franklin Gothic Urw;
+  font-style:italic;
+  color:#484646; 
+  font-size: 12;
+}
+.copyCite{
+  position:relative;
+  float:right;
 }

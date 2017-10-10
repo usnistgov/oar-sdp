@@ -29,3 +29,21 @@ h2 {
   color: #1471AE;
   border:1px solid;
 }
+
+.api:hover
+{
+  background-color: #808080;
+  color: #fff;
+}
+
+.api
+{
+  background-color:#595959;
+  color: #fff;
+}
+
+.element {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}

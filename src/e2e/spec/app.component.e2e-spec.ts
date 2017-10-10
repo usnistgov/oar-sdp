@@ -1,6 +1,6 @@
 import {browser, element, by, By, $, $$, ExpectedConditions, protractor} from 'protractor';
 
-describe('About Page', function() {
+describe('App1 Page', function() {
 
   it('should automatically redirect to /home the first time', function() {
     // expect(true).toBe(true);
