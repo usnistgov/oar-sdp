@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Config } from '../shared/index';
+import { environment } from '../environment';
 
 
 /**
@@ -13,6 +13,6 @@ import { Config } from '../shared/index';
 })
 export class ApiComponent {
 
-  RestAPIURL: string = Config.RMMAPI;
+  RestAPIURL: string = environment.RMMAPI;
 
 }
