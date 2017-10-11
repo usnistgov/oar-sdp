@@ -207,7 +207,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     this.citeString = "";
                     let date =  new Date(); 
-                    if(this.recordDisplay['authors'] !==  null){
+                    if(this.recordDisplay['authors']){
                         for(let author of this.recordDisplay['authors']) { 
                          if(author.familyName !== null && author.familyName !== undefined) 
                             this.citeString += author.familyName +' ';
@@ -217,7 +217,8 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                             this.citeString += author.middleName;
                          this.citeString +=", ";
                         }
-                    } else if(this.recordDisplay['contactPoint']) {
+                    } 
+                    else if(this.recordDisplay['contactPoint']) {
                         if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
                         this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
                     }
