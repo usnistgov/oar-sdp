@@ -24,7 +24,7 @@ export =
         Config.TOOLS_DIR + '/manual_typings/**/*.d.ts'
       ] );
       let src = [
-        join(Config.APP_SRC, 'pdr/*.spec.ts')
+        join(Config.APP_SRC, '**/*.spec.ts')
       ];
 
       let projectFiles = gulp.src(src);
@@ -68,4 +68,4 @@ export =
         //    }))
         .pipe(gulp.dest(Config.APP_DEST));
     }
-  };
+};
