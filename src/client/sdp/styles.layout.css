@@ -24,7 +24,7 @@
   padding: 96px 0px 0px 0px;}
 
 .layout-container .ultima-menu li a {
-  padding: .5em .5em;
+  padding: .5em;
   color: #ffffff;}
 
 .layout-container .ultima-menu li a i {
@@ -37,7 +37,7 @@
   background-color: #03A5EF; }
 
 .layout-container .ultima-menu li a span {
-  padding-left: .8em;
+  padding-left: .5em;
   padding-right: .3em; /* OPTIONAL */}
 
 .layout-container .ultima-menu li a.active-menuitem-routerlink {
@@ -109,11 +109,3 @@
 {
   width: 97%;
 }
-
-
-
-
-
-
-
-

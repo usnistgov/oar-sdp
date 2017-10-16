@@ -42,13 +42,19 @@ module.exports = function (config) {
       { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
       { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
 
+      { pattern: 'node_modules/lodash/**/*.js', included: false, watched: true },
+      { pattern: 'node_modules/jquery/**/*.js', included: false, watched: true },
+      { pattern: 'node_modules/primeng/**/*.js', included: false, watched: true },
+      { pattern: 'node_modules/primeng/**/*.js', included: false, watched: true },
+      { pattern: 'dist/dev/assets/env.js', included: true, watched: false},
+
       // paths loaded via module imports
       // Angular itself
       { pattern: 'node_modules/@angular/**/*.js', included: false, watched: true },
       { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
 
       'test-config.js',
-       { pattern: 'dist/dev/system-config.js', watched: true, included: true },
+      { pattern: 'dist/dev/system-config.js', watched: true, included: true },
 
       { pattern: 'dist/dev/**/*.js', included: false, watched: true },
       { pattern: 'dist/dev/**/*.html', included: false, watched: true, served: true },
@@ -69,7 +75,6 @@ module.exports = function (config) {
     exclude: [
       'node_modules/**/*spec.js'
     ],
-
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
