@@ -45,18 +45,18 @@
             <button style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
           font-size: 18px;border-radius: 0px" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>          </div>
           <div class="ui-g-12 ui-md-2">
-            &nbsp;&nbsp;<a href="#!" [routerLink] = "['/advanced']" style="color: #1f496e;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search </a>
+            &nbsp;&nbsp;<a href="#" [routerLink] = "['/advanced']" style="color: #1f496e;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search </a>
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
         </div>
         <div class="ui-g-12 ui-md-6">
           <b> Examples: </b>
-          <a (click)="searchExample('&quot;Kinetics database&quot;');" href="#!" style="color: #0f4a65;text-decoration: underline;">"Kinetics database" </a> &nbsp;
-          <a (click)="searchExample('Gallium');" href="#!" style="color: #0f4a65;text-decoration: underline;">Gallium </a>&nbsp;
-          <a (click)="searchExample('&quot;SRD 69&quot;');" href="#!" style="color: #0f4a65;text-decoration: underline;">"SRD 69" </a>&nbsp;
-          <a (click)="searchExample('XPDB');" href="#!" style="color: #0f4a65;text-decoration: underline;">XPDB </a>&nbsp;
-          <a (click)="searchExample('Interatomic Potentials');" href="#!" style="color: #0f4a65;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
+          <a (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');" href="#" style="color: #0f4a65;text-decoration: underline;">"Kinetics database" </a> &nbsp;
+          <a (click)="$event.preventDefault();searchExample('Gallium');" href="#" style="color: #0f4a65;text-decoration: underline;">Gallium </a>&nbsp;
+          <a (click)="$event.preventDefault();searchExample('&quot;SRD 69&quot;');" href="#" style="color: #0f4a65;text-decoration: underline;">"SRD 69" </a>&nbsp;
+          <a (click)="$event.preventDefault();searchExample('XPDB');" href="#" style="color: #0f4a65;text-decoration: underline;">XPDB </a>&nbsp;
+          <a (click)="$event.preventDefault();searchExample('Interatomic Potentials');" href="#" style="color: #0f4a65;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
         </div>
       </div>
     </div>
@@ -67,14 +67,15 @@
           <div class="ui-g-12" style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
             <div style="background-color: #025277;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
               <a style="font-size: 16px;background-color: #025277;color: #FFFFFF;">Filter </a><button type="button" class="btn btn-sm btn-info collapsed" data-toggle="collapse" style="background-color: #025277;border-color: #025277; padding: 0em;align:left;" data-target="#filter"></button>
-              <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
+              <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="$event.preventDefault();clearFilters()" >
                 <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
                 </i>Clear All</a>
             </div>
+
             <div class="ui-g-12" id="filter" class="collapse">
             <div style="border-bottom:.5px solid #cccccc;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
               <label for="themes" class="hideLabel">Themes</label>
-              <p-tree header="test" id= "themes" [value]="themesTree" selectionMode="checkbox"
+              <p-tree [value]="themesTree" selectionMode="checkbox"
                       [style]="{'width':'100%','font-size': '12px','overflow':'hidden','padding-top': '.5em',
                         'height': 'auto','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
@@ -85,10 +86,10 @@
                 </ng-template>
               </p-tree>
               <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                <a href="#!" (click)="showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
+                <a href="#" (click)="$event.preventDefault();showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
               </div>
               <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                <a href="#!" (click)="showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
+                <a href="#" (click)="$event.preventDefault();showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
               </div>
             </div>
             <div style="border-bottom:.5px solid #cccccc;width: 100%;'box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)'">
@@ -145,7 +146,7 @@
           <div  class="ui-g-12 "   style="padding: 0px;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" >
             <div style="background-color: #025277;border-bottom:.5px solid #cccccc;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
               <a style="font-size: 16px;background-color: #025277;color: #FFFFFF;">Filters </a> <button type="button" class="btn-sm btn-info collapse1 in" (click) = "setResultsWidth()"  data-toggle="collapse" style="background-color: #025277;border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo"><i class="faa faa-angle-double-left" style="zoom: 130%;color: #fff;"></i></button>
-              <a href="#!" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="clearFilters()" >
+              <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="$event.preventDefault();clearFilters()" >
                 <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
                 </i>Clear All</a>
             </div>
@@ -163,18 +164,18 @@
                   </ng-template>
                 </p-tree>
                 <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                  <a href="#!" (click)="showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
+                  <a href="#" (click)="$event.preventDefault();showMoreResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show More</a>
                 </div>
                 <div style="background-color: #F8F9F9;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)" *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                  <a href="#!" (click)="showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
+                  <a href="#" (click)="$event.preventDefault();showLessResTopics()" style="font-size: 14px;background-color: #F8F9F9;color: #1f496e;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);padding-left: 50px;">Show Less</a>
                 </div>
               </div>
               <div style="border-bottom:.5px solid #cccccc;width: 100%;'box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)'">
                 <p-tree [value]="componentsTree" selectionMode="checkbox"
                         [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','box-shadow': 'inset -2px 0 16px -9px rgba(0, 0, 0, 0.5)','padding-right': '.5em',
                           'padding-bottom': '.5em','background-color': '#F8F9F9'}"
-                        [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
-                        (onNodeSelect)="filterResults($event)" >
+                        [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event,'')"
+                        (onNodeSelect)="filterResults($event,'')" >
                   <ng-template let-node  pTemplate="default">
                     <span> {{node.label.split("-")[0]}}&nbsp;</span>
                     <span class="badge" style="background-color: #515151" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
@@ -187,7 +188,7 @@
                 </div>
                 <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
                   <label for="suggestedauthor" class="hideLabel">Search Input</label>
-                  <p-autoComplete [(ngModel)]="selectedAuthor" inputId="suggestedauthor" [suggestions]="suggestedAuthors"
+                  <p-autoComplete [immutable]="true" [(ngModel)]="selectedAuthor" inputId="suggestedauthor" [suggestions]="suggestedAuthors"
                                   (completeMethod)="filterAuthors($event)"
                                   [multiple] = "true"
                                   (onSelect)="filterResults($event,'selectauthor')"
@@ -239,7 +240,7 @@
                   <button type="text" pButton label="Customize Fields" (click)="op1.toggle($event)"></button>
                   <p-overlayPanel #op1 [showCloseIcon]="true">
                     <div style="text-align: left">
-                      <b>Display Fields:</b> <a href="#!" (click) = "ResetSelectedFields()" style="float: right;">Reset</a>
+                      <b>Display Fields:</b> <a href="#" (click) = "$event.preventDefault();ResetSelectedFields()" style="float: right;">Reset</a>
                     </div>
                     <div style="text-align: left" >
                     <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>

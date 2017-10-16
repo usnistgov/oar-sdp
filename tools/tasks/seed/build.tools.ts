@@ -25,5 +25,4 @@ export = () => {
     .pipe(tsProject());
 
   return result.js.pipe(plugins.sourcemaps.write()).pipe(gulp.dest('./'));
-
 };
