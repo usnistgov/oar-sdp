@@ -22,8 +22,6 @@ declare var jQuery: any;
     providers:[TaxonomyListService, SearchService, SearchFieldsListService]
 })
 
-
-
 export class SearchPanelComponent implements OnInit, OnDestroy {
 
   layoutCompact: boolean = true;
