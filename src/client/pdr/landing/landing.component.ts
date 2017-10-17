@@ -5,7 +5,9 @@ import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { TreeModule,TreeNode, Tree, MenuItem,OverlayPanelModule, FieldsetModule,PanelModule } from 'primeng/primeng';
+import { TreeModule,TreeNode, Tree, MenuItem,OverlayPanelModule, 
+    FieldsetModule,PanelModule,ContextMenuModule,
+    MenuModule } from 'primeng/primeng';
 import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
 import { CommonModule } from '@angular/common';  
@@ -68,6 +70,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private landing : string = environment.LANDING;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
+    isResultAvailable: boolean = true;
      
   /**
    * Creates an instance of the SearchPanel
@@ -92,7 +95,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
         if(this.recordDisplay['doi'] !== undefined && this.recordDisplay['doi'] !== "" )
              this.isDOI = true;
         if(this.recordDisplay['contactPoint'].hasEmail !== undefined && this.recordDisplay['contactPoint'].hasEmail !== "")
-          this.isEmail = true;          
+          this.isEmail = true;      
+
         this.updateLeftMenu();
         this.updateRightMenu();
     }
@@ -113,7 +117,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
         let that = this;
         return this.searchService.searchById(searchId)
             .subscribe(
-            searchResults => that.onSuccess(searchResults),
+            async searchResults => await that.onSuccess(searchResults),
             error => that.onError(error)
             );
   }
@@ -282,8 +286,9 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
               this.searchValue =_.split(window.location.href,'/')[alength-1];
               //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
             }
-            this.findId = this.searchValue;//params['id'];
-            this.searchbyid(this.findId);
+            this.recordDisplay = this.route.snapshot.data['searchService'];
+            // this.findId = this.searchValue;//params['id'];
+            // this.searchbyid(this.findId);
             this.files =[];
         });    
     }
