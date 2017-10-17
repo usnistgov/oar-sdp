@@ -6,39 +6,39 @@ import { Collaspe } from './collapse.directive';
 
 
 @Component({
-  template: ``
+  template: `
+  <i style="cursor: pointer;" class ="faa"  aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent;"></i>
+  <div [collapse]="!isCollapsedContent" style="background-color:#FFFFF">
+     <span> Test This Div!!</span>
+  </div>
+  `, 
+
 })
 class TestComponent { }
 export function main() {
-describe('Collaspe', () => {
-
+describe('Collaspe Directive', () => {
+  let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
-  let des: DebugElement[];  // the three elements w/ the directive
-  let bareH2: DebugElement; // the <h2> w/o the directive
-
+  let iEle: DebugElement;  
+  let divEle: DebugElement;
   beforeEach(() => {
-    fixture = TestBed.configureTestingModule({
+     TestBed.configureTestingModule({
       declarations: [ Collaspe, TestComponent ]
     })
-    .createComponent(TestComponent);
-
-    fixture.detectChanges(); // initial binding
-
-    // all elements with an attached HighlightDirective
-    des = fixture.debugElement.queryAll(By.directive(Collaspe));
-
-    // the h2 without the HighlightDirective
-    bareH2 = fixture.debugElement.query(By.css(''));
+    fixture = TestBed.createComponent(TestComponent);
+    component = fixture.componentInstance;
+    iEle=fixture.debugElement.query(By.css('i'));
+    divEle = fixture.debugElement.query(By.css('div'));
+    fixture.detectChanges(); // initial bindin
   });
 
-  // color tests
-  it('should have two collapsed elements', () => {
-    expect(des.length).toBe(2);
+  // color and event test
+  it('should have collapsed elements', () => {
+    iEle.triggerEventHandler('mouseclick', null); 
+    fixture.detectChanges();
+    console.log(divEle.nativeElement +" ::: "+ iEle);
+    expect(divEle.nativeElement.style.backgroundColor).toBe(''); 
   });
 
-  it('should color 1st background "white"', () => {
-    const bgColor = des[0].nativeElement.style.backgroundColor;
-    expect(bgColor).toBe('white');
-  });
 
   });}
