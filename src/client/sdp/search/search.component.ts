@@ -3,7 +3,7 @@ import { SearchService, TaxonomyListService, SearchFieldsListService } from '../
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import { SelectItem } from 'primeng/primeng';
+import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
@@ -15,21 +15,20 @@ declare var jQuery: any;
  * This class represents the lazy loaded HomeComponent.
  */
 @Component ({
-    moduleId: module.id,
-    selector: 'sdp-search',
-    templateUrl: 'search.component.html',
-    styleUrls: ['search.component.css'],
-    providers:[TaxonomyListService, SearchService, SearchFieldsListService]
+  moduleId: module.id,
+  selector: 'sdp-search',
+  templateUrl: 'search.component.html',
+  styleUrls: ['search.component.css'],
+  providers:[TaxonomyListService, SearchService, SearchFieldsListService]
 })
 
-
-
 export class SearchPanelComponent implements OnInit, OnDestroy {
+
   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
   darkMenu: boolean = false;
-  selectedThemesNode: any[];
-  selectedComponentsNode: any[];
+  selectedThemesNode: TreeNode[];
+  selectedComponentsNode: TreeNode[];
   profileMode: string = 'inline';
   msgs: Message[] = [];
   exception: string;
@@ -43,8 +42,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   queryAdvSearch: string;
   searchResults: any[] = [];
   errorMessageArray: string[];
-  themesTree: any[];
-  componentsTree: any[];
+  searchResultsError: Message[] = [];
+  themesTree: TreeNode[];
+  componentsTree: TreeNode[];
   searchValue: string;
   taxonomies: SelectItem[];
   sortItems: SelectItem[];
@@ -64,8 +64,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   searching: boolean = false;
   keywords: string[];
   themes: SelectItem[] = [];
-  themesWithCount: SelectItem[] = [];
-  componentsWithCount: SelectItem[] = [];
+  themesWithCount: TreeNode[];
+  componentsWithCount: TreeNode[];
   components: SelectItem[] = [];
   authors: string[] = [];
   themesAllArray: string[] = [];
@@ -102,7 +102,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   private _routeParamsSubscription: Subscription;
   private PDRAPIURL: string = environment.PDRAPI;
-
 
   /**
    * Creates an instance of the SearchPanel
@@ -207,7 +206,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           comp = resultItemComponents.byType;
           for (let type of comp) {
             let compType = type.forType;
-            if ((_.includes(compType, 'nrd')) && !(_.includes(compType, 'Hidden'))) {
+            if ((_.includes(compType, 'nrdp'))){
               //this.componentsAllArray.push(_.startCase(_.split(compType, ':')[1]));
               this.uniqueComp.push(_.startCase(_.split(compType, ':')[1]));
               if (componentsArray.indexOf(compType) < 0) {
@@ -276,6 +275,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.filteredResults = searchResults;
     this.keywords = this.collectKeywords(searchResults);
     this.themes = this.collectThemes(searchResults);
+    let compNoData : boolean = false;
+    this.searchResultsError = [];
+
+    if (searchResults.length === 0) {
+      this.noResults = true;
+      this.searchResultsError.push({severity:'info', summary:'Info Message', detail:'No records found'});
+    }
 
     // collect Research topics with count
     this.collectThemesWithCount();
@@ -283,18 +289,38 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // collect Resource features with count
     this.collectComponentsWithCount();
 
+    if (this.componentsWithCount.length == 0)
+    {
+      compNoData = true;
+      this.componentsWithCount = [];
+      this.componentsWithCount.push({label: "DataFile - 0", data: "DataFile"});
+      this.componentsWithCount.push({label: "AccessPage - 0", data: "AccessPage"});
+      this.componentsWithCount.push({label: "SubCollection - 0", data: "Subcollection"});
+      this.componentsTree = [{
+        label: 'Record has -',
+        "expanded": true,
+        children: this.componentsWithCount,
+      }];
+      this.componentsTree[0].selectable = false;
+      for (var i=0; i<this.componentsWithCount.length; i++)
+      {
+        this.componentsTree[0].children[i].selectable = false;
+      }
+    }
+
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.themesWithCount
     }];
-    this.componentsTree = [{
-      label: 'Record has -',
-      "expanded": 'true',
-      children: this.componentsWithCount
-    }];
+    if (!compNoData) {
+      this.componentsTree = [{
+        label: 'Record has -',
+        "expanded": true,
+        children: this.componentsWithCount,
+      }];
+    }
     this.authors = this.collectAuthors(searchResults);
-    this.clearFilters();
     if (this.filteredResults.length < 5) {
       this.rows = 20;
     }
@@ -332,13 +358,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     for (var key in this.sortable) {
       this.themesWithCount.push({
         label: this.sortable[key][0] + "-" + this.sortable[key][1],
-        value: this.sortable[key][0]
+        data: this.sortable[key][0]
       });
     }
 
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.themesWithCount
     }];
     this.showMoreResearchTopics = true;
@@ -360,13 +386,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     for (var key in this.sortable.slice(0, 5)) {
       this.themesWithCount.push({
         label: this.sortable[key][0] + "-" + this.sortable[key][1],
-        value: this.sortable[key][0]
+        data: this.sortable[key][0]
       });
     }
 
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.themesWithCount
     }];
     this.showMoreResearchTopics = false;
@@ -427,6 +453,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   }
 
+  nodeSelect(event) {
+    //event.node = selected node
+  }
+
   /**
    * Filter keywords for suggestive search
    */
@@ -460,7 +490,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     for (var key in this.sortable.slice(0, 5)) {
       this.themesWithCount.push({
         label: this.sortable[key][0] + "-" + this.sortable[key][1],
-        value: this.sortable[key][0]
+        data: this.sortable[key][0]
       });
     }
     if (this.sortable.length > 5) {
@@ -474,8 +504,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.componentsWithCount = [];
     for (let comp of this.components) {
       let count: any;
+      console.log("comp value" + comp.value);
       count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
-      this.componentsWithCount.push({label: comp.label + "-" + count, value: comp.value});
+      this.componentsWithCount.push({label: comp.label + "-" + count, data: comp.value});
     }
   }
 
@@ -660,15 +691,16 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   filterResults(event: any,type: string) {
 
     console.log("author" + this.selectedAuthor);
+    console.log("keywords" + this.selectedKeywords);
 
-    if(type === 'unselectauthor') {
+    if (type === 'unselectauthor') {
       if (typeof this.selectedAuthor != 'undefined') {
         let selAuthorIndex = this.selectedAuthor.indexOf(event);
         this.selectedAuthor = [...this.selectedAuthor.slice(0, selAuthorIndex), ...this.selectedAuthor.slice(selAuthorIndex + 1)];
       }
     }
 
-    if(type === 'unselectkeyword') {
+    if (type === 'unselectkeyword') {
       if (typeof this.selectedKeywords != 'undefined') {
         let selKeywordsIndex = this.selectedKeywords.indexOf(event);
         this.selectedKeywords = [...this.selectedKeywords.slice(0, selKeywordsIndex), ...this.selectedKeywords.slice(selKeywordsIndex + 1)];
@@ -681,54 +713,60 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let componentSelected: boolean = false;
     let authorSelected: boolean = false;
     let keywordSelected: boolean = false;
+    let compNoData: boolean = false;
 
     // Research Topics selected
-    if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-      for (let theme of this.selectedThemesNode) {
-        if (typeof theme.value !== 'undefined' && theme.value !== 'undefined') {
-          themeSelected = true;
-          this.selectedThemes.push(theme.value);
+    if (typeof this.selectedThemesNode != 'undefined') {
+      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+        for (let theme of this.selectedThemesNode) {
+          if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
+            themeSelected = true;
+            this.selectedThemes.push(theme.data);
+          }
         }
-      }
-      this.filteredResults = this.filterByThemes(this.searchResults, this.selectedThemes);
-      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-      this.authors = this.collectAuthors(this.filteredResults);
-      if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-      } else {
-        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-      }
-      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-      } else {
-        this.components = this.collectComponents(this.filteredResults);
-        this.collectComponentsWithCount();
+
+        this.filteredResults = this.filterByThemes(this.searchResults, this.selectedThemes);
+        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+        this.authors = this.collectAuthors(this.filteredResults);
+        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+        } else {
+          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+        }
+        if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+        } else {
+          this.components = this.collectComponents(this.filteredResults);
+          this.collectComponentsWithCount();
+          console.log("count" + this.componentsWithCount);
+        }
       }
     }
     // Resource Features selected
-
-    if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-      for (let comp of this.selectedComponentsNode) {
-        if (typeof comp.value !== 'undefined' && comp.value !== 'undefined') {
-          componentSelected = true;
-          this.selectedComponents.push(comp.value);
+    if (typeof this.selectedComponentsNode != 'undefined') {
+      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+        for (let comp of this.selectedComponentsNode) {
+          if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
+            componentSelected = true;
+            this.selectedComponents.push(comp.data);
+          }
+        }
+        this.filteredResults = this.filterByComponents(this.searchResults, this.selectedComponents);
+        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
+        } else {
+          this.authors = this.collectAuthors(this.filteredResults);
+        }
+        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+        } else {
+          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+        }
+        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+        } else {
+          this.themes = this.collectThemes(this.filteredResults);
+          this.collectThemesWithCount();
         }
       }
-      this.filteredResults = this.filterByComponents(this.searchResults, this.selectedComponents);
-      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-      if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-      } else {
-        this.authors = this.collectAuthors(this.filteredResults);
-      }
-      if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-      } else {
-        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-      }
-      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-      } else {
-        this.themes = this.collectThemes(this.filteredResults);
-        this.collectThemesWithCount();
-      }
     }
-
+    if (typeof this.selectedAuthor != 'undefined') {
       if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
         authorSelected = true;
         this.filteredResults = this.filterByAuthor(this.searchResults, this.selectedAuthor);
@@ -747,23 +785,26 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         }
       }
+    }
 
-    if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
-      keywordSelected = true;
-      this.filteredResults = this.filterByKeyword(this.searchResults, this.selectedKeywords);
-      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-      } else {
-        this.themes = this.collectThemes(this.filteredResults);
-        this.collectThemesWithCount();
-      }
-      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-      } else {
-        this.components = this.collectComponents(this.filteredResults);
-        this.collectComponentsWithCount();
-      }
-      if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-      } else {
-        this.authors = this.collectAuthors(this.filteredResults);
+    if (typeof this.selectedKeywords != 'undefined') {
+      if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
+        keywordSelected = true;
+        this.filteredResults = this.filterByKeyword(this.searchResults, this.selectedKeywords);
+        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+        } else {
+          this.themes = this.collectThemes(this.filteredResults);
+          this.collectThemesWithCount();
+        }
+        if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+        } else {
+          this.components = this.collectComponents(this.filteredResults);
+          this.collectComponentsWithCount();
+        }
+        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
+        } else {
+          this.authors = this.collectAuthors(this.filteredResults);
+        }
       }
     }
 
@@ -787,16 +828,29 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.collectThemesWithCount();
     }
 
-    this.themesTree = [{
-      label: 'Research Topics -',
-      "expanded": 'true',
-      children: this.themesWithCount
-    }];
-    this.componentsTree = [{
-      label: 'Record has -',
-      "expanded": 'true',
-      children: this.componentsWithCount
-    }];
+    if (this.componentsWithCount.length == 0)
+    {
+      compNoData = true;
+      this.componentsWithCount = [];
+      this.componentsWithCount.push({label: "DataFile - 0", data: "DataFile"});
+      this.componentsWithCount.push({label: "AccessPage - 0", data: "AccessPage"});
+      this.componentsWithCount.push({label: "SubCollection - 0", data: "Subcollection"});
+      this.componentsTree[0].children = this.componentsWithCount;
+      this.componentsTree[0].selectable = false;
+      for (var i=0; i<this.componentsWithCount.length; i++) {
+        this.componentsTree[0].children[i].selectable = false;
+      }
+    } else {
+      this.componentsTree[0].selectable = true;
+      for (var i=0; i<this.componentsWithCount.length; i++)
+      {
+        this.componentsTree[0].children[i].selectable = true;
+      }
+    }
+    if (!compNoData) {
+      this.componentsTree[0].children = this.componentsWithCount;
+    }
+    this.themesTree[0].children = this.themesWithCount;
   }
 
 
@@ -828,12 +882,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.collectThemesWithCount();
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.themesWithCount
     }];
     this.componentsTree = [{
       label: 'Record has -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.componentsWithCount
     }];
   }
@@ -863,12 +917,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.collectThemesWithCount();
     this.themesTree = [{
       label: 'Research Topics -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.themesWithCount
     }];
     this.componentsTree = [{
       label: 'Record has -',
-      "expanded": 'true',
+      "expanded": true,
       children: this.componentsWithCount
     }];
   }
@@ -979,16 +1033,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     return sortItems;
   }
 
+  SortByFields() {
+    let sortField :string[] = [];
+    console.log("sortitemkey" + this.sortItemKey);
+    this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
 
-    SortByFields() {
-      let sortField :string[] = [];
-      this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
-      for (let field of this.fieldsArray) {
-        if (field.name == this.sortItemKey) {
-          this.selectedFields = [...this.selectedFields,field.label];
-        }
+    for (let field of this.fieldsArray) {
+      if (field.name === this.sortItemKey) {
+        this.selectedFields = [...this.selectedFields,field.label];
       }
-        return this.filteredResults;
+    }
+    return this.filteredResults;
   }
 
 
@@ -1014,10 +1069,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /**
-     * Get the params OnInit
-     */
+   * Get the params OnInit
+   */
   ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
@@ -1027,10 +1081,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.queryAdvSearch = params['queryAdvSearch'];
       this.getTaxonomies();
       this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
-  });
+    });
   }
 
   ngOnDestroy() {
+    if ( this._routeParamsSubscription) {
       this._routeParamsSubscription.unsubscribe();
     }
+  }
 }
