@@ -50,9 +50,9 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
-                            <template let-node  pTemplate="default">
+                            <ng-template let-node  pTemplate="default">
                                 <span>{{node.label}}</span>
-                            </template>
+                            </ng-template>
                         </p-tree>
                     </div>
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">

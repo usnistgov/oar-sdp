@@ -8,6 +8,8 @@ import { routes } from './app.routes';
 import { HeadbarComponent, FootbarComponent } from './shared/index';
 
 import { AboutModule } from './about/about.module';
+import { HelpModule } from './help/help.module';
+
 import { SharedModule } from './shared/shared.module';
 import { LandingModule} from './landing/landing.module';
 
@@ -15,7 +17,7 @@ import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
-  , AboutModule, LandingModule, SharedModule.forRoot()
+  , AboutModule,HelpModule, LandingModule, SharedModule.forRoot()
   ],
   declarations: [AppComponent,
     AppMenuComponent,
