@@ -31,6 +31,9 @@ npm run build.prod.aot -- --app sdp
 #To build PDR
 npm run build.prod.aot -- --app pdr
 
+#If there are issues with certain modules like rxjs and build fails, just run following command
+npm run-script postinstall  #only run if there are issues in above script
+
 #To start individual application
 npm start -- --app sdp
 npm start -- --app pdr
