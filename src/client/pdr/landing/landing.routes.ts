@@ -33,9 +33,7 @@ export const LandingRoutes: Routes = [
       {
         path: '',
         component: NoidComponent,
-        resolve: {
-          searchService: SearchResolve
-        }
+        
       }
     ]
   }

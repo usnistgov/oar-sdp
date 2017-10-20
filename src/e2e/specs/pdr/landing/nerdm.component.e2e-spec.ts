@@ -5,12 +5,13 @@ describe('Nerdm Page', function() {
     return await browser.get('/#/nerdm');
   });
 
-  it('should display title of about page', async() => {
+  it('should display title page', async() => {
     
     var EC = protractor.ExpectedConditions;
-    var label = await element(by.css('nerdm-detail h2'));
+    var label = await element(by.css('nerdm-detail p'));
     
-    expect(label.getText()).toContain('TEST NERDM TITLE');
+    expect(label.getText()).toMatch(/NERDm/i,
+      '<P> should say something about NERDM');
    });
 
 });
