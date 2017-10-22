@@ -40,7 +40,7 @@ export function main() {
       imports:[ MenuModule,DialogModule, FormsModule, TreeModule,FieldsetModule, HttpModule ,RouterTestingModule],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA],
       providers: [
-        SearchService, SearchResolve
+        SearchService
       ]
       
       })
@@ -53,17 +53,17 @@ export function main() {
       fixture.detectChanges();
     });
 
-    it('should check the landing component', async(() => {
-      expect(component).toBeTruthy();
-    }));
+    // it('should check the landing component', async(() => {
+    //   expect(component).toBeTruthy();
+    // }));
 
-    // it('should return one record per landing page', () => {
-    //   let service = TestBed.get(SearchService);
-    //   spyOn(service,'searchById').and.returnValue(Observable.from([[sampleData]]));
-    //   fixture.detectChanges();
-    //   //console.log("****DISP RESULTS ***** ::: "+component.searchbyid);
-    //   expect(component.searchbyid.length).toBe(1);
-    // });
+    it('should return one record per landing page', () => {
+      let service = TestBed.get(SearchService);
+      spyOn(service,'searchById').and.returnValue(Observable.from([[sampleData]]));
+      fixture.detectChanges();
+      console.log("****DISP RESULTS ***** ::: "+component.searchbyid.length);
+      expect(component.searchbyid.length).toBe(1);
+    });
 
     // it('check results', () => {
     //   var testResults;

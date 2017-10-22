@@ -211,7 +211,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     this.citeString = "";
                     let date =  new Date(); 
-                    if(this.recordDisplay['authors'] !==  null){
+                    if(this.recordDisplay['authors'] !==  null && this.recordDisplay['authors'] !==  undefined){
                         for(let author of this.recordDisplay['authors']) { 
                          if(author.familyName !== null && author.familyName !== undefined) 
                             this.citeString += author.familyName +' ';
@@ -286,9 +286,9 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
               this.searchValue =_.split(window.location.href,'/')[alength-1];
               //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
             }
-            this.recordDisplay = this.route.snapshot.data['searchService'];
-            // this.findId = this.searchValue;//params['id'];
-            // this.searchbyid(this.findId);
+            //this.onSuccess(this.route.snapshot.data['searchService']);
+             this.findId = this.searchValue;//params['id'];
+             this.searchbyid(this.findId);
             this.files =[];
         });    
     }

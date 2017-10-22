@@ -11,4 +11,7 @@ export class LandingPage {
 
     return element.all(by.css('div'));
   }
+  getlandingTitle(){
+    return element.all(by.css('h2'));
+  }
 }

@@ -22,28 +22,23 @@ const config = {
 
   directConnect: true,
 
-  capabilities: {
-    browserName: 'chrome'
-  },
+  multicapabilities: [{
+    browserName: 'chrome',
+    chromeOptions: {
+      args: ["--disable-web-security","--user-data-dir=~/.e2e-chrome-profile"]
+     }
+  }],
 
-  onPrepare: function() {
+  onPrepare: function () {
     browser.ignoreSynchronization = false;
   },
 
-
-  /**
-   * Angular 2 configuration
-   *
-   * useAllAngular2AppRoots: tells Protractor to wait for any angular2 apps on the page instead of just the one matching
-   * `rootEl`
-   */
-  useAllAngular2AppRoots: true
 };
 
-if (process.env.TRAVIS) {
-  config.capabilities = {
-    browserName: 'firefox'
-  };
-}
+// if (process.env.TRAVIS) {
+//   config.multicapabilities.push({
+//     browserName: 'firefox'
+//   });
+// }
 
 exports.config = config;
