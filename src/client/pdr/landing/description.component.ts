@@ -50,9 +50,9 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
-                            <template let-node  pTemplate="default">
+                            <ng-template let-node  pTemplate="default">
                                 <span>{{node.label}}</span>
-                            </template>
+                            </ng-template>
                         </p-tree>
                     </div>
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
@@ -77,24 +77,24 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 })
 
 export class DescriptionComponent {
- 
+
  @Input() record: any[];
  @Input() files: any[];
- @Input() distdownload: string; 
+ @Input() distdownload: string;
 
  fileDetails:string = '';
  isFileDetails: boolean = false;
  isReference: boolean = false;
  selectedFile: TreeNode;
- 
+
  nodeSelect(event) {
     var test = this.getComponentDetails(this.record["components"],event.node.data);
     let i =0;
     this.fileDetails = '';
     for(let t of test){
         this.isFileDetails = true;
-        this.fileDetails = t; 
-    } 
+        this.fileDetails = t;
+    }
   }
 getComponentDetails(data,filepath) {
   return data.filter(
@@ -105,7 +105,7 @@ getComponentDetails(data,filepath) {
 keys() : Array<string> {
     return Object.keys(this.fileDetails);
 }
- 
+
 checkReferences(){
       if(Array.isArray(this.record['references']) ){
           for(let ref of this.record['references'] ){

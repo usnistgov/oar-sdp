@@ -24,14 +24,21 @@ export function main() {
 ////////  Tests  /////////////
   describe('SearchService (mockBackend)', () => {
 
+    let response: Response;
+    let fakerecords: any[];
+    let searchValue: string = 'NIST';
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [HttpModule],
         providers: [
-          {provide: XHRBackend, useClass: MockBackend}
+          {provide: XHRBackend, useClass: MockBackend},
+          SearchService
         ]
       })
         .compileComponents();
+      fakerecords = makeRMMData();
+      let options = new ResponseOptions({status: 200, body: JSON.stringify(fakerecords)});
+      response = new Response(options);
     }));
 
     it('can instantiate service with "new"', inject([Http], (http: Http) => {
@@ -45,21 +52,49 @@ export function main() {
         expect(backend).not.toBeNull('backend should be provided');
       }));
 
-    describe('when searchRecords', () => {
-      let backend: MockBackend;
-      let service: SearchService;
-      let response: Response;
-      let fakerecords: any[];
-      let searchValue: string = '';
-      let searchTaxonomyKey: string = '';
-      let queryAdvSearch: string = '';
-      beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
-        backend = be;
-        service = new SearchService(http);
-        fakerecords = makeRMMData();
-        let options = new ResponseOptions({status: 200, body: {data: fakerecords}});
-        response = new Response(options);
-      }));
+
+    describe('search Records',() => {
+      it('should return records',
+        inject([SearchService, XHRBackend], (service, backend) => {
+          backend.connections.subscribe((connection) => {
+            connection.mockRespond(response);
+          });
+
+          service.searchPhraseTest(searchValue,'','no').subscribe((records) => {
+            expect(records.length).toBe(2);
+          });
+        })
+      );
+
+      it('should return no records',
+        inject([SearchService, XHRBackend], (service, backend) => {
+          backend.connections.subscribe((connection) => {
+            connection.mockRespond(new Response( new ResponseOptions({status: 200, body: JSON.stringify([])})));
+          });
+          service.searchPhraseTest('fjdkksdl','','no').subscribe((records) => {
+            expect(records.length).toBe(0);
+          });
+
+        })
+      );
+
+      it('should treat 404 as an Observable error', async(inject([SearchService, XHRBackend], (service, backend) => {
+        let resp = new Response(new ResponseOptions({status: 404}));
+        backend.connections.subscribe((connection) => {
+          connection.mockRespond(resp);
+        });
+        let searchValue: string = '';
+        service.searchPhraseTest(searchValue,'','no')
+          .do(records => {
+            //fail('should not respond with records');
+            Observable.throw(404);
+          })
+          .catch(err => {
+            expect(err).toMatch(/Bad response status/, 'should catch bad response status code');
+            return Observable.of(null); // failure is the expected test result
+          })
+          .toPromise();
+      })));
     });
   });
 }

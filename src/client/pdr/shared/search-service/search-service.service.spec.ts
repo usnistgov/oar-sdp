@@ -52,7 +52,7 @@ describe('SearchService (mockBackend)', () => {
       expect(backend).not.toBeNull('backend should be provided');
     }));
 
-    
+
     describe('search REcords',() => {
       it('should return records',
         inject([SearchService, XHRBackend], (service, backend) => {

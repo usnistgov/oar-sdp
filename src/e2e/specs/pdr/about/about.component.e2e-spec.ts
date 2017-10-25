@@ -6,10 +6,10 @@ describe('About Page', function() {
   });
 
   it('should display title of about page', async() => {
-    
+
     var EC = protractor.ExpectedConditions;
     var label = await element(by.css('pdr-about .labelStyle'));
-    
+
     expect(label.getText()).toContain('About Public Data Repository');
    });
 
