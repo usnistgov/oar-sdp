@@ -1069,7 +1069,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-
   /**
    * Get the params OnInit
    */
