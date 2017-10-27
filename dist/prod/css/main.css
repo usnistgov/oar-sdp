@@ -18856,6 +18856,7 @@ body .ui-widget-overlay {
 body .ui-inputtext {
   background: transparent;
   border-width: 0 0 1px;
+  padding: 2px 2px 1px;
   font-size: 1em;
   border-color: #bdbdbd;
   border-style: solid;
