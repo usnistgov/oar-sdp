@@ -141,6 +141,17 @@ body .ui-overlaypanel .ui-overlaypanel-close:hover {
   background-color: #283593;
 }
 
+.fa-caret-down:before {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
 
+.well-sm {
+  padding: 11px;
+}
 
-
+body .ui-dropdown .ui-dropdown-trigger
+{
+  margin-top: .15em;
+}
