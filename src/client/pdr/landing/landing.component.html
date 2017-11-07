@@ -26,7 +26,7 @@
     </div>
 </div>
 
- <div *ngIf="recordDisplay?.length != 0">
+ <div *ngIf="recordDisplay.length !== 0">
     <div class="ui-g" style="padding-bottom: 1%; padding-right:1%;">
         <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
             <div class="ui-g">
@@ -86,20 +86,22 @@
                             </div>
                         </div>
                     </div>
-                 Identifier: 
-                    <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span> 
-                    <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
-                    <span *ngIf="checkReferences()">
+                    <div>
+                        <span>Identifier: </span>
+                        <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span> 
+                        <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
+                        <span *ngIf="checkReferences()">
                         <span>Described in article: </span>
-                        <small *ngFor="let refs of recordDisplay.references; let i =index">
-                            <span *ngIf="refs.refType == 'IsDocumentedBy'">
-                                <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a>
+                            <small *ngFor="let refs of recordDisplay.references; let i =index">
+                                <span *ngIf="refs.refType == 'IsDocumentedBy'">
+                                    <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a>
                                 <span *ngIf="i < recordDisplay.references.length-1 ">,</span>
-                            </span>
-                        </small>
-                    </span><br>
-                    <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
-                    <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
+                                </span>
+                            </small>
+                        </span><br>
+                        <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
+                        <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
+                    </div>
                 </div>
                 <div class="ui-sm-1 visible-xs-block visible-sm-block ">
                     <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
@@ -115,23 +117,25 @@
                         <metadata-detail [recordDisplay]="recordDisplay" [serviceApi]="serviceApi" ></metadata-detail>
                     </div>
                 </div>
-                <p-dialog  class="citationDialog" [closable]="false" [(visible)]="display" modal="modal" width="310" height="310" responsive="true" #citeDialog>
-                    <p-header> Citation
-                        <button style="position:relative; float:right;" type="button" pButton icon="faa faa-close" (click)="closeDialog()"></button>
-                    </p-header>
+                <div *ngIf="recordDisplay.length !== 0">
+                    <p-dialog  class="citationDialog" [closable]="false" [(visible)]="display" modal="modal" width="310" height="310" responsive="true" #citeDialog>
+                        <p-header> Citation
+                            <button style="position:relative; float:right;" type="button" pButton icon="faa faa-close" (click)="closeDialog()"></button>
+                        </p-header>
                 
-                    Copy the recommended text to cite this resource: <br><br>
+                        Copy the recommended text to cite this resource: <br><br>
 
-                    <textarea style="height:120px" #inputTarget class="form-control" [(ngModel)]="text2" placeholder="{{ citeString }}" >
+                        <textarea style="height:120px" #inputTarget class="form-control" [(ngModel)]="text2" placeholder="{{ citeString }}" >
                                             
-                    </textarea>
-                    <!-- <span class="input-group-btn">
+                        </textarea>
+                        <!-- <span class="input-group-btn">
                         <button class="copyCite" [class.btn-success]= "isCopied" type="button" [ngxClipboard]="inputTarget" (cbOnSuccess)="isCopied = true">copy</button>
-                    </span> -->
-                    <br><br>
+                        </span> -->
+                        <br><br>
 
-                    <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
-                </p-dialog>
+                        <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
+                    </p-dialog>
+                </div>
             </div>
         </div>
         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
