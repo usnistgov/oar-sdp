@@ -11,15 +11,13 @@ import { AboutModule } from './about/about.module';
 import { SharedModule } from './shared/shared.module';
 import { LandingModule} from './landing/landing.module';
 
-import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
+
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
   , AboutModule, LandingModule, SharedModule.forRoot()
   ],
-  declarations: [AppComponent,
-    AppMenuComponent,
-    AppSubMenu],
+  declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'

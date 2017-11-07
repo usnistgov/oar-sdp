@@ -48,10 +48,10 @@ export class SearchService {
     else if(_.includes(this.landingBackend,'rmm'))
       this.landingBackend = this.landingBackend+'records/'; //+"records?exclude=_id&ediid=";
 
-    console.log(this.landingBackend+searchValue);
+    //console.log(this.landingBackend+searchValue);
 
     return this.http.get(this.landingBackend+ searchValue)
-      .map((res: Response) => res.json())
+      .map((res: Response)  => res.json())
       .catch((error: any) => Observable.throw(error.json()));
   }
 
