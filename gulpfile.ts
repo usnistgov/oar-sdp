@@ -1,9 +1,10 @@
 import * as gulp from 'gulp';
 import * as util from 'gulp-util';
 import * as runSequence from 'run-sequence';
+import * as mockServer from 'gulp-mock-server';
 
 import Config from './tools/config';
-import { loadTasks, loadCompositeTasks } from './tools/utils';
+import { loadCompositeTasks, loadTasks } from './tools/utils';
 
 
 loadTasks(Config.SEED_TASKS_DIR);
@@ -25,3 +26,13 @@ gulp.task('clean.once', (done: any) => {
     done();
   }
 });
+
+ 
+gulp.task('mock', function() {
+  gulp.src('.')
+    .pipe(mockServer({
+      port: 8090,
+      allowCrossOrigin: true
+    }));
+});
+

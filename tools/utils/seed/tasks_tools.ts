@@ -21,12 +21,12 @@ export function loadTasks(path: string): void {
 function validateTasks(tasks: any) {
   return Object.keys(tasks)
     .map((taskName: string) => {
-      if (!tasks[taskName] ||
+       if (!tasks[taskName] ||
         !Array.isArray(tasks[taskName]) ||
         tasks[taskName].some((t: any) => typeof t !== 'string')) {
-        return taskName;
-      }
-      return null;
+         return taskName;
+       }
+       return null;
     }).filter((taskName: string) => !!taskName);
 }
 

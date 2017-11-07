@@ -13,6 +13,7 @@
   }
 </script>
 
+
 <div class="ui-g" style="background-color: #153971;color: #FFFFFF">
   <div class="ui-g-12">
     <div class="EmptyBox10"></div>
@@ -20,11 +21,13 @@
     <div class="EmptyBox20"></div>
     <div class="TexAlCenter homeSubTitle"><i>Explore data, tools, and resources for Science, Engineering, Technology and <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></div>
     <div class="EmptyBox20"></div>
+
   </div>
 </div>
 <div class="ui-fluid"  style="background-color: #EFEFEF">
   <div class="ui-g">
     <div class="ui-g-12">
+
       <div class="ui-g form-group">
         <div class="ui-g-12 ui-md-2">
         </div>
@@ -32,6 +35,7 @@
           <div class="well-sm inner-addon left-addon " [hidden]="!textRotate" (click) = "toggleTextRotate()" style="background-color: #FFFFFF;border:1px solid;height: 42px;
       font-weight: 400;font-style: italic;font-size: 16px;padding: .5em;border-color: #bdbdbd;border-width: 1px 1px 1px 1px;border-radius: 0px;vertical-align: middle;"  >
             <i class="glyphicon glyphicon-search"></i><span class="element" style="color: #515151;vertical-align:middle;border-color: #bdbdbd;padding-left:40px;border-width: 1px 1px 1px 1px;">
+
         Kinetics database |Gallium|"SRD 69" | XPDB | Interatomic Potentials
             </span>
           </div>
@@ -41,6 +45,7 @@
         'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue" inputId="searchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "30" [size] = "50" >
           </p-autoComplete>
           </div>
+
         </div>
         <div class="ui-g-12 ui-md-2" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
           <p-dropdown [options]="taxonomies"  inputId="searchtaxonomy" [style]="{'width':'100%','padding-top': '.5em',

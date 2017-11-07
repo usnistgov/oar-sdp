@@ -3,14 +3,17 @@ import { HeadbarComponent } from '../shared/headbar/index';
 import { LandingPanelComponent } from './index';
 import { NoidComponent } from './noid.component';
 import { NerdmComponent } from './nerdm.component';
-
+import { SearchResolve } from './search-service.resolve';
 export const LandingRoutes: Routes = [
   {
     path: 'id/:id',
     children: [
       {
         path: '',
-        component: LandingPanelComponent
+        component: LandingPanelComponent,
+        resolve: {
+          searchService: SearchResolve
+        }
       }
     ]
   },{
@@ -18,7 +21,10 @@ export const LandingRoutes: Routes = [
     children: [
       {
         path: '',
-        component: LandingPanelComponent
+        component: LandingPanelComponent,
+        resolve: {
+          searchService: SearchResolve
+        }
       }
     ]
   },{
@@ -26,7 +32,8 @@ export const LandingRoutes: Routes = [
     children: [
       {
         path: '',
-        component: NoidComponent
+        component: NoidComponent,
+        
       }
     ]
   }

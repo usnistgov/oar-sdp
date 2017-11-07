@@ -1,1 +1,1 @@
-import '../../../src/client/sdp/operators';
+import '../../../src/client/app/operators';

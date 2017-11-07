@@ -23,7 +23,7 @@
             'layout-menu-static-inactive': staticMenuDesktopInactive,
             'layout-menu-static-active': staticMenuMobileActive}">
 
-    <router-outlet name="route1"></router-outlet>
+    <!-- <router-outlet name="route1"></router-outlet> -->
 
     <div class="layout-menu" [ngClass]="{'layout-menu-dark':darkMenu}" (click)="onMenuClick($event)">
       <div #layoutMenuScroller class="nano">
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="layout-main" style="padding: 0em">
-
+    
     <router-outlet></router-outlet>
     <pdr-footbar></pdr-footbar>
     </div>
