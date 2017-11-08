@@ -333,7 +333,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                     testObj.children.push(this.createChildrenTree(child.children,
                                                                   child.filepath));
                 else
-                    testObj.children.push(this.createFileNode(child.filepath,
+                    testObj.children.push(this.createFileNode(fname,
                                                               child.filepath));
             }
          }
