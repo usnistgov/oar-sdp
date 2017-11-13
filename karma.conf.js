@@ -115,7 +115,10 @@ module.exports = function (config) {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
+        flags: ['--no-sandbox','--headless',
+        '--disable-gpu',
+        // Without a remote debugging port, Google Chrome exits immediately.
+        '--remote-debugging-port=9222']
       }
     },
 
