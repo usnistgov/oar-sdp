@@ -189,8 +189,9 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
       if(!_.includes(this.landing, "rmm"))
         this.serviceApi = this.landing+this.recordDisplay['ediid'];
 
-      this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
-
+      //this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
+      this.distdownload = this.distApi+"/"+this.recordDisplay['@id']+"?format=zip";
+      
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
       var download = this.createMenuItem("Download all data","faa faa-download", '', this.distdownload);
