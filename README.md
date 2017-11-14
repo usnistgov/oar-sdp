@@ -13,14 +13,15 @@ In order to start the projects use following instructions:
 ```bash
 git clone https://github.com/usnistgov/oar-sdp.git
 cd oar-sdp
-#Make sure clean cache
-npm cache clean
-bower cache clean
-# Make sure you have updated your npm isntallations (optional)
+#Make sure clean cache if you have already installed npm and have built applications before
+# npm cache clean
+# bower cache clean
+
+# Make sure you have updated your npm isntallations (this is optional, only if there is an older version of npm is running)
 npm update
-# install the project's dependencies
-npm install gulp bower
-# install the project's dependencies
+# installs the project's dependencies gulp and bower
+npm install gulp 
+# installs the project's dependencies
 npm install
 # api document for the app
 # npm run build.docs
@@ -32,10 +33,10 @@ npm run build.prod.aot -- --app sdp
 npm run build.prod.aot -- --app pdr
 
 #If there are issues with certain modules like rxjs and build fails
-#run-script then run build again
+#run-script then run build again (optional)
 npm run-script postinstall  
 
-#To start individual application
+#To start applications specify the app name. 
 npm start -- --app sdp
 npm start -- --app pdr
 
@@ -44,10 +45,15 @@ npm start
 ```
 
 Some things to remember:
-This project is used along with the various ODI projects and deployed in docker env, using code deploy. The env variable setting is done in unique so as to change it even after the project is built and without changing the code itself.
- Currently all the env variables values are stored in the 'env.js' file at src/client/assets/env.js
+This project is used along with the various ODI projects and deployed in docker env, using code deploy. The env variable setting is done in unique way. This is because in our deployment scripts the project is built before the container starts and depending on the environment in which container is running (dev/test/prod) the env variables change. 
+To be able to update these env variables through docker container after building project we used following method to set these variables.
+
+ All the env variables values for sdp/pdr project, are stored in the 'env.js' file at src/client/assets/env.js
+
  To make sure these env variables are read properly by apps (e.g /sdp and /pdr), they are declared in 'environment.ts' at root of each application.
+
  To make sure the variables in 'environment.ts' get values fron env.js, the application needs to set a path to 'env.js', which is set up in index.html of each application as below.
+ 
  <script src="assets/env.js"></script> 
  This tag reads the values at runtime.
 
@@ -64,7 +70,10 @@ There are two types of tests added in the package
     npm run serve.coverage
 
 2. e2e test
-    # To run end to end tests, build application first specifyling app name
+    # To run end to end tests, build  the application first specifying app name 
+    e.g to run e2e test on 'pdr' 
+    build pdr application first as below
+      npm run build.prod.aot -- --app pdr
     and run following command speicifying app name in multi app projects
     npm run serve.e2e -- --app pdr
     # above command will start the mock server which provides data.
