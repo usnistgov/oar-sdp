@@ -74,7 +74,6 @@
                   <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
                   </i>Clear All</a>
               </div>
-
               <div class="ui-g-12" id="filter" class="collapse">
                 <div style="border-bottom:.5px solid #cccccc;width: 100%;">
                 <p-tree [value]="resourceTypeTree" selectionMode="checkbox"
@@ -272,7 +271,9 @@
             </div>
           </div>
         </div>
+
         <!-- Section 1 -->
+        
         <div *ngIf = "mobWidth >641" [className]="filterClass" [hidden]="isActive" style="text-align:center;float: right;padding: 0px;background-color: #025377;font-size: 14px;color: #fff;"> <br>
           <div class="ui-g-12">
             <button type="button" (click) = "setResultsWidth()" class="btn-sm btn-info collapsed" data-toggle="collapse" style="background-color: #025377;border-color: #025377; padding: 0em;font-size: 14px;border: 0em;align:left;color: #FFF;" data-target="#demo"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>

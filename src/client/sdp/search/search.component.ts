@@ -488,6 +488,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.sortable.sort(function (a, b) {
       return b[1] - a[1];
     });
+
     for (var key in this.sortable) {
       this.themesWithCount.push({
         label: this.sortable[key][0] + "-" + this.sortable[key][1],
