@@ -1,16 +1,20 @@
 .filters {
-    background: #f8f9f9;
-    background-color: #f8f9f9;
-    box-shadow: inset -4px 0 16px -9px rgba(0, 0, 0, 0.5);
+  background: #f8f9f9;
+  background-color: #f8f9f9;
+  box-shadow: inset -4px 0 16px -9px rgba(0, 0, 0, 0.5);
 }
 .summary-content {
-    text-align: left; max-height: 400px; overflow: auto;
-    background-color: #f2f2f2;
-    border:1px #f2f2f2;
+  text-align: left; max-height: 400px; overflow: auto;
+  background-color: #f2f2f2;
+  border:1px #f2f2f2;
+}
+
+:host /deep/ .ui-tree .ui-tree-container {
+  overflow: hidden;
 }
 
 .glimpse-content{
-   display: block; /* Fallback for non-webkit */
+  display: block; /* Fallback for non-webkit */
   display: -webkit-box;
   max-width: 400px;
   height: 10*1.4*3; /* Fallback for non-webkit */
@@ -26,7 +30,7 @@
 .label {
   display: inline-block;
   max-width: 100%; // Force IE8 to wrap long content (see https://github.com/twbs/bootstrap/issues/13141)
-  margin-bottom: 5px;
+margin-bottom: 5px;
   font-weight: normal;
   color: gray;
   font-style: italic;
@@ -38,18 +42,18 @@
   background-color: gray;
 }
 #search-page{
-    padding-bottom:100px;
+  padding-bottom:100px;
 }
 
 .style-horizontal {
-    border: 0;
-    height: 1px;
-    background: #333;
-    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+  border: 0;
+  height: 1px;
+  background: #333;
+  background-image: linear-gradient(to right, #ccc, #333, #ccc);
 }
 
 .style-vertical {
-   border-left: thick solid #ff0000;
+  border-left: thick solid #ff0000;
 }
 
 .background-white
@@ -90,12 +94,12 @@
 
 .custbutton
 {
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2c539e+0,2c539e+100;Blue+3D+%232 */
-background: #2c539e; /* Old browsers */
-background: -moz-linear-gradient(top,  #2c539e 0%, #2c539e 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(top,  #2c539e 0%,#2c539e 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to bottom,  #2c539e 0%,#2c539e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2c539e+0,2c539e+100;Blue+3D+%232 */
+  background: #2c539e; /* Old browsers */
+  background: -moz-linear-gradient(top,  #2c539e 0%, #2c539e 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #2c539e 0%,#2c539e 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #2c539e 0%,#2c539e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
 }
 
 .sidebar-box {
@@ -164,12 +168,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
   margin-top: 0;
   margin-left: 0; }
 
-   /* Icon when the collapsible content is shown */
- .btn:after {
-   font-family: "Glyphicons Halflings";
-   content: "\e114";
-   float: right;
- }
+/* Icon when the collapsible content is shown */
+.btn:after {
+  font-family: "Glyphicons Halflings";
+  content: "\e114";
+  float: right;
+}
 /* Icon when the collapsible content is hidden */
 .btn.collapsed:after {
   content: "\e080";
