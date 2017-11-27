@@ -8,7 +8,7 @@ import { Message } from 'primeng/components/common/api';
 import { TreeModule,TreeNode, Tree, MenuItem,OverlayPanelModule, FieldsetModule,PanelModule } from 'primeng/primeng';
 import { Config } from '../shared/config/env.config';
 import * as _ from 'lodash';
-import { CommonModule } from '@angular/common';  
+import { CommonModule } from '@angular/common';
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
 import { environment } from '../environment';
@@ -50,7 +50,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     isDOI = false;
     isEmail = false;
     citeString:string = '';
-    type: string = '';     
+    type: string = '';
     process : any[];
     requestedId : string = '';
     isCopied: boolean = false;
@@ -68,7 +68,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private landing : string = environment.LANDING;
     private displayIdentifier :string;
     private dataHierarchy: any[]=[];
-     
+
   /**
    * Creates an instance of the SearchPanel
    *
@@ -92,7 +92,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
         if(this.recordDisplay['doi'] !== undefined && this.recordDisplay['doi'] !== "" )
              this.isDOI = true;
         if(this.recordDisplay['contactPoint'].hasEmail !== undefined && this.recordDisplay['contactPoint'].hasEmail !== "")
-          this.isEmail = true;          
+          this.isEmail = true;
         this.updateLeftMenu();
         this.updateRightMenu();
     }
@@ -118,7 +118,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
             );
   }
 
-  
+
   encodeString(url:string,param:string) {
       var urlString = url + encodeURIComponent(param);
       window.open(urlString);
@@ -132,38 +132,38 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
  * Update Leftside menu on landing page
  */
     updateLeftMenu(){
-      var itemsMenu: any[] = []; 
-      var descItem = this.createMenuItem ("Description",'',(event)=>{ 
+      var itemsMenu: any[] = [];
+      var descItem = this.createMenuItem ("Description",'',(event)=>{
                    this.metadata = false; this.similarResources =false;
-                 },''); 
+                 },'');
 
       var refItem = this.createMenuItem ("References",'',(event)=>{
                       this.metadata = false; this.similarResources =false;
-                      
-                },'');           
 
-      var filesItem = this.createMenuItem("Files",'', (event)=>{    
+                },'');
+
+      var filesItem = this.createMenuItem("Files",'', (event)=>{
                      this.metadata = false;
-                     this.similarResources =false; 
+                     this.similarResources =false;
                 },'');
 
       var metaItem = this.createMenuItem("Metadata",'',(event)=>{
-                    this.metadata = true; this.similarResources =false;},'');    
-    
+                    this.metadata = true; this.similarResources =false;},'');
+
       itemsMenu.push(descItem);
       if(this.checkReferences())
         itemsMenu.push(refItem);
       if(this.files.length !== 0)
         itemsMenu.push(filesItem);
-      itemsMenu.push(metaItem); 
+      itemsMenu.push(metaItem);
 
       this.leftmenu = [{
-            label: 'Table of Contents', 
+            label: 'Table of Contents',
             command: (event)=>{ window.location.href="#";},
             items: itemsMenu
         }];
     }
-    
+
 
 createMenuItem(label :string, icon:string, command: any, url : string ){
      let testItem : any = {};
@@ -180,8 +180,8 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
  * Update right side panel on landing page
  */
     updateRightMenu(){
-      
-      this.serviceApi = this.landing+"records?@id="+this.recordDisplay['@id']; 
+
+      this.serviceApi = this.landing+"records?@id="+this.recordDisplay['@id'];
       if(!_.includes(this.landing, "rmm"))
         this.serviceApi = this.landing+this.recordDisplay['ediid'];
 
@@ -189,35 +189,35 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
 
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
-      var download = this.createMenuItem("Download all data","faa faa-download", '', this.distdownload);
+      var download = this.createMenuItem("Download all data","faa faa-file-archive-o", '', this.distdownload);
       var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
-    
+
         itemsMenu.push(homepage);
         if (this.files.length != 0)
             itemsMenu.push(download);
-        itemsMenu.push(metadata);   
-         
+        itemsMenu.push(metadata);
+
       this.rightmenu = [{
-            label: 'Access ', 
+            label: 'Access ',
             items: itemsMenu
         },
         {
-            label: 'Use', 
+            label: 'Use',
             items: [
                 {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
                     this.citeString = "";
-                    let date =  new Date(); 
+                    let date =  new Date();
                     if(this.recordDisplay['authors']){
-                        for(let author of this.recordDisplay['authors']) { 
-                         if(author.familyName !== null && author.familyName !== undefined) 
+                        for(let author of this.recordDisplay['authors']) {
+                         if(author.familyName !== null && author.familyName !== undefined)
                             this.citeString += author.familyName +' ';
-                         if(author.givenName !== null && author.givenName !== undefined) 
+                         if(author.givenName !== null && author.givenName !== undefined)
                             this.citeString +=  author.givenName+' ';
-                         if(author.middleName !== null && author.middleName !== undefined) 
+                         if(author.middleName !== null && author.middleName !== undefined)
                             this.citeString += author.middleName;
                          this.citeString +=", ";
                         }
-                    } 
+                    }
                     else if(this.recordDisplay['contactPoint']) {
                         if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
                         this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
@@ -246,11 +246,11 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                             window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
                         }
                     }
-                        
+
             ]
         //     label: 'Export Metadata', icon: "Menu", items: [
         //         // {   label: 'PDF',  icon: "faa faa-file-pdf-o",
-        //         //     command: (event)=>{ 
+        //         //     command: (event)=>{
         //         //         alert("Coming soon");
         //         //         // var doc = new jsPDF();
         //         //         // var i=0;
@@ -261,7 +261,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
         //         //         // doc.save('metadata_'+this.searchResults[0].title+'.pdf');
         //         //     }
         //         // },
-       
+
          }
         ];
     }
@@ -274,7 +274,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
             if(_.includes(window.location.href,"ark")){
                var alength = _.split(window.location.href,'/').length;
                this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
-               
+
             }
             else if(_.includes(window.location.href,'?')) {
               this.searchValue = params['id'];
@@ -286,17 +286,17 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
             this.findId = this.searchValue;//params['id'];
             this.searchbyid(this.findId);
             this.files =[];
-        });    
+        });
     }
 
     ngOnDestroy() {
-        
+
           this._routeParamsSubscription.unsubscribe();
-        
+
     }
 
     ngAfterViewInit(){
-        
+
         window.history.replaceState( {} , '#/id/', '/od/id/'+this.searchValue );
     }
     //This is to check if empty
@@ -306,7 +306,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
 
     createDataHierarchy(){
         if (this.recordDisplay['dataHierarchy'] == null )
-            return; 
+            return;
           for(let fields of this.recordDisplay['dataHierarchy']){
                 if( fields.filepath != null) {
                     if(fields.children != null)
@@ -317,10 +317,10 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                                                             fields.filepath));
                 }
             }
-        
-        
+
+
      }
-  
+
 
      createChildrenTree(children:any[], filepath:string){
         let testObj:TreeNode = {};
@@ -338,14 +338,14 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
             }
          }
          return testObj;
-    }       
-  
+    }
+
   createTreeObj(label :string, data:string){
-     let testObj : TreeNode = {}; 
+     let testObj : TreeNode = {};
      testObj = {};
      testObj.label = label;
      testObj.data = data;
-     if(label == "Files") 
+     if(label == "Files")
      testObj.expanded = true;
      testObj.expandedIcon = "faa faa-folder-open";
      testObj.collapsedIcon =  "faa faa-folder";
