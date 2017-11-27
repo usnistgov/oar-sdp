@@ -41,7 +41,7 @@ npm run build.docs                      # to build the API documentation
 
 The build products are written under the `dist/prod` directory.
 
-# Running Unit and End-to-end Tests
+## Running Unit and End-to-end Tests
 
 Once the app prerequisites are installed (as described in the previous
 section), unit and end-to-end (e2e) tests can be run.  Unit tests run
@@ -78,4 +78,46 @@ npm run e2e                             # run the tests
 ```
 
 *Note*:  to make sure e2e tests run properly, do not chage the RMM and LANDING variable values (urls) in the 'env.js'. Once you ready to use application with actual data change those to point to proper services. For ODI project this has been taken care of at the code deploy and env.js is generated as per server requirement.
+
+## Deploying an App
+
+The build command (described above) writes the application in the
+`dist/prod` directory.  To deploy the application, the contents of
+this directory should be copied into a directory used by a web server
+for serving content to browsers.  Typically, the URLs configured into
+the file, `dist/prod/assets/env.js` usually need to be edited before
+deploying.
+
+## Notes on running in the NIST environment
+
+*Note:*  In NIST production, the SDP and PDR apps are normally run via
+docker containers edits the `env.js` file based on the deployment
+environment.  In detail:
+
+*  All the env variables values for sdp/pdr project, are stored in the 'env.js' file at src/client/assets/env.js
+
+*  To make sure these env variables are read properly by apps (e.g /sdp and /pdr), they are declared in 'environment.ts' at root of each application.
+
+*  To make sure the variables in `environment.ts` get values fron `env.js`, the application needs to set a path to `env.js`, which is set up in the `index.html` file for each application as below.
+```
+ <script src="assets/env.js"></script>
+```
+This tag reads the values at runtime.
+
+## Developing the Apps
+
+When developing, one builds the app slightly differently and serves it
+to a local browser using the `npm` development tool:
+
+```bash
+npm run build.dev.aot -- --app pdr     # to develop the PDR Landing Page Service
+npm start -- --app pdr
+```
+
+Here we built the application using the `run` command argument,
+"build._dev_.oat" instead of "build.prod.oat".  The `start` command
+serves the application through `npm`'s built-in webserver.  To
+interact with the application, use a local browser to access
+"http://localhost/".  `sdp` should be substituted for `pdr` when
+developing the science data portal app.
 
