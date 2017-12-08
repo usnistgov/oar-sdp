@@ -62,13 +62,13 @@ volopt="-v ${CODEDIR}:/home/build"
 build_script=$CODEDIR/docker/build/build.sh
 
 if echo "$ops" | egrep -qsw 'test|shell'; then
-    [ -n "$dodockbuild" ] && $execdir/dockbuild test
+    [ -n "$dodockbuild" ] && $execdir/dockbuild.sh test
 
     echo '+' docker run $ti --rm $volopt $testopts oarsdp/test "$ops"
     docker run $ti --rm $volopt $testopts oarsdp/test "$ops"
 else
     # build only
-    [ -n "$dodockbuild" ] && $execdir/dockbuild build
+    [ -n "$dodockbuild" ] && $execdir/dockbuild.sh build
 
     echo '+' docker run --rm $volopt oarsdp/build
     docker run --rm $volopt oarsdp/build
