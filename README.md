@@ -51,6 +51,8 @@ displaying a browser.
 _Note that both unit and e2e tests require that Chrome be installed_
 (see prerequisites above).
 
+### Unit Tests
+
 To run unit tests, type the following:
 
 ```bash
@@ -63,7 +65,7 @@ SUMMARY:
 ✔ 30 tests completed
 ```
 
-If there are any failures, that same output will look somethine like
+If there are any failures, that same output will look something like
 this:
 ```
 SUMMARY:
@@ -88,17 +90,74 @@ An analysis of test coverage can be done after the unit tests via:
 npm run serve.coverage
 ```
 
-To run the e2e tests, one needs to first build the full application
-and then launch the app through `npm`'s internal server.  Afteward,
-the tests can be executed:
+### End-to-end (e2e) Tests
+
+At this time, the e2e tests can only be run interactively under a (Mac
+or Linux) windowing system; this is because it launches and displays a
+browser to conduct its tests.  The user, however, does not need to
+interact with that browser (which closes when the tests are
+complete).  It also requires two terminal windows, one to launch a
+server and one to actually run the tests.  
+
+You must test the pdr and sdp apps separately.  The first step is to
+build the app.  Next, you launches a "mock server"--a web server for
+the app that runs on your local machine.  That is, assuming we are
+testing the PDR app first, you would run in the first terminal:
 
 ```bash
 npm run build.prod.aot -- --app pdr     # build the app (pdr)
 npm run serve.e2e -- --app pdr          # launch the server
-npm run e2e                             # run the tests
 ```
 
+When a message appears saying, `[Browsersync] Serving files from:
+dist/empty/`,  the server is ready.  You can then run the tests in a
+second terminal:
+
+```bash
+npm run e2e -- --specs='./dist/e2e/specs/pdr/**/*.e2e-spec.js'
+```
+
+With this, a browser window will appear and different views of the app
+will flash by as the tests are executed.  (Chrome will show a message
+below the URL bar, "Chrome is being controlled by automated test
+software".)  When the tests are finished (passed or failed), the
+browser window will go away.  At this point, the server can be
+shutdown by typing `Control-C` in the terminal where you launched it.  
+
+To test the sdp app, run the above commands except substitute "pdr" everywhere
+with "sdp".  
+
 *Note*:  to make sure e2e tests run properly, do not chage the RMM and LANDING variable values (urls) in the 'env.js'. Once you ready to use application with actual data change those to point to proper services. For ODI project this has been taken care of at the code deploy and env.js is generated as per server requirement.
+
+If all tests pass, the output will end with the following message:
+```
+......
+
+6 specs, 0 failures
+Finished in 11.985 seconds
+
+[15:03:39] I/launcher - 0 instance(s) of WebDriver still running
+[15:03:39] I/launcher - chrome #01 passed
+```
+
+If there are any failures, that same output will look something like
+this:
+```
+F......F
+
+Failures:
+...
+
+8 specs, 2 failures
+Finished in 2.865 seconds
+
+[15:10:03] I/launcher - 0 instance(s) of WebDriver still running
+[15:10:03] I/launcher - chrome #01 failed 2 test(s)
+[15:10:03] I/launcher - overall: 2 failed spec(s)
+[15:10:03] E/launcher - Process exited with error code 1
+...
+```
+
 
 ## Deploying an App
 
@@ -112,7 +171,7 @@ deploying.
 ## Notes on running in the NIST environment
 
 *Note:*  In NIST production, the SDP and PDR apps are normally run via
-docker containers edits the `env.js` file based on the deployment
+docker containers which edit the `env.js` file based on the deployment
 environment.  In detail:
 
 *  All the env variables values for sdp/pdr project, are stored in the 'env.js' file at src/client/assets/env.js
@@ -123,7 +182,7 @@ environment.  In detail:
 ```
  <script src="assets/env.js"></script>
 ```
-This tag reads the values at runtime.
+This tag causes the values to be read at runtime.
 
 ## Developing the Apps
 
