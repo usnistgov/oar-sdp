@@ -57,10 +57,31 @@ To run unit tests, type the following:
 npm test
 ```
 
-If all tests pass, the output will display the following:
+If all tests pass, the output will end with the following message:
+```
+SUMMARY:
+✔ 30 tests completed
 ```
 
+If there are any failures, that same output will look somethine like
+this:
 ```
+SUMMARY:
+✔ 28 tests completed
+✖ 2 test failed
+
+FAILED TESTS:
+  Landing Component
+    ✖ should return one record per landing page
+...
+```
+
+__Caveats__:
+* Currently an additional exception gets displayed with the message,
+`Error: Could not find source map for: "dist/dev/assets/env.js"`; this
+is ignorable.
+* An output terminal that does not support full unicode characters may not
+display the check (✔) and x (✖) characters.  
 
 An analysis of test coverage can be done after the unit tests via:
 ```bash
