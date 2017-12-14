@@ -24,22 +24,32 @@ the [docker/README.md](docker/README.md) file for details.
 
 The SDP and PDR-LPS apps can be built by first obtaining the source
 from GitHub.  `npm` is then used to install required Javascript
-libraries and create the deployable apps
+libraries and create the deployable apps.  You first obtains the
+source code and installs the libraries:
 
 ```bash
 git clone https://github.com/usnistgov/oar-sdp.git   # Retrieve from GitHub
 cd oar-sdp
 npm update         # Not necessary unless you have built this package previously
 npm install        # Install required modules
-npm install gulp
-nodejs node_modules/gulp/bin/gulp build.bundle.rxjs
-
-npm run build.prod.aot -- --app pdr     # to build the PDR Landing Page Service
-npm run build.prod.aot -- --app sdp     # to build the SDP
-npm run build.docs                      # to build the API documentation
 ```
 
-The build products are written under the `dist/prod` directory.
+To build one of the actual software products, you should next execute
+one of the following commands:
+```bash
+npm run build.prod.aot -- --app pdr     # to build the PDR Landing Page Service
+npm run build.prod.aot -- --app sdp     # to build the SDP
+```
+
+The application files are written under the `dist/prod` directory.  To
+install the app, just copy the contents of `dist/prod` into a
+directory that is accessible by a web server.  
+
+Note that both commands above will overwrite files produced in
+previous builds, regardless of what product is being built; thus, to
+build both products, you need to execute one command, copy out the
+files from the `dist/prod` directory, and then execute the build
+command for the other product.  
 
 ## Running Unit and End-to-end Tests
 

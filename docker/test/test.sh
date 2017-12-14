@@ -22,5 +22,5 @@ set -x
 [ -n "$doinstall" ] && $DOCKERDIR/build/installprereqs.sh
 
 npm test
-# npm run serve.coverage
+
 
