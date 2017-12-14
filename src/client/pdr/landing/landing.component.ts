@@ -189,7 +189,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
 
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
-      var download = this.createMenuItem("Download all data","faa faa-download", '', this.distdownload);
+      var download = this.createMenuItem("Download all data","faa faa-file-archive-o", '', this.distdownload);
       var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
 
         itemsMenu.push(homepage);
@@ -335,7 +335,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                     testObj.children.push(this.createChildrenTree(child.children,
                                                                   child.filepath));
                 else
-                    testObj.children.push(this.createFileNode(child.filepath,
+                    testObj.children.push(this.createFileNode(fname,
                                                               child.filepath));
             }
          }
