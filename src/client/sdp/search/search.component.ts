@@ -767,6 +767,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let theme of this.selectedThemesNode) {
           if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
             themeSelected = true;
+
             this.selectedThemes.push(theme.data);
 
           }
@@ -803,6 +804,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             this.selectedComponents.push(comp.data);
           }
         }
+
         this.filteredResults = this.filterByComponents(this.filteredResults, this.selectedComponents);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
         if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
@@ -1044,6 +1046,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     for (let keyw of keywords) {
       if (resultKeywords.indexOf(keyw) === -1)
         return false;
+      console.log("keyword not matched" + keywords);
     }
     return true;
   }
@@ -1085,6 +1088,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let resultItem of searchResults) {
           if (resultItem.keyword && resultItem.keyword !== null &&
             this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
+            console.log("keyword matched");
             filteredResults.push(resultItem);
           }
         }
@@ -1148,6 +1152,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
     return this.filteredResults;
+
   }
 
   SortByFieldsTest(filteredResults,sortItemKey) {

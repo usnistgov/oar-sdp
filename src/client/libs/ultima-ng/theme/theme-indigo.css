@@ -3229,7 +3229,7 @@ body {
 body .ui-inputtext {
   background: transparent;
   border-width: 0 0 1px 0;
-  padding: 2px 2px 1px 2px;
+  /*padding: 2px 2px 1px 2px;*/
   font-size: 1em;
   border-color: #bdbdbd;
   border-style: solid;

@@ -16,3 +16,4 @@ export = clean([
   join(Config.APP_SRC, '**/*.js.map'),
   join(Config.APP_SRC, '**/*.metadata.json')
 ]);
+
