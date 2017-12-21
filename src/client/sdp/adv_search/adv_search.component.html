@@ -33,23 +33,24 @@
         </div>
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
           <div class="well-sm inner-addon left-addon " [hidden]="!textRotate" (click) = "toggleTextRotate()" style="background-color: #FFFFFF;border:1px solid;height: 42px;
-      font-weight: 400;font-style: italic;font-size: 16px;padding: .5em;border-color: #bdbdbd;border-width: 1px 1px 1px 1px;border-radius: 0px;vertical-align: middle;"  >
-            <i class="glyphicon glyphicon-search"></i><span class="element" style="color: #515151;vertical-align:middle;border-color: #bdbdbd;padding-left:40px;border-width: 1px 1px 1px 1px;">
-        Kinetics database |Gallium|"SRD 69" | XPDB | Interatomic Potentials
+      font-weight: 400;font-style: italic;font-size: 16px;border-color: #bdbdbd;border-width: 1px 1px 1px 1px;border-radius: 0px;vertical-align: middle;"  >
+            <i class="glyphicon glyphicon-search"></i><span class="element" style="color: gray;display: flex;align-items:center;vertical-align:middle;border-color: #bdbdbd;padding-left:40px;border-width: 1px 1px 1px 1px;">
+        Kinetics database |Gallium|"SRD 101" | XPDB | Interatomic Potentials
             </span>
           </div>
+          <label for="searchinput" class="hideLabel">Search Input</label>
           <div class="inner-addon left-addon element " style="background-color: #FFFFFF" [hidden]="textRotate" >
             <i class="glyphicon glyphicon-search"></i><label for="searchinput" class="hideLabel">Search Input</label>
             <p-autoComplete inputId="searchinput"  [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "30" [size] = "50" >
+        'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
         <div class="ui-g-12 ui-md-2" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','padding-top': '.5em',
+          <p-dropdown [options]="taxonomies"  inputId="searchtaxonomy" [style]="{'width':'100%',
         'background-color': '#FFFFFF','height': '42px'
-        ,'font-weight': '400','font-style': 'italic',
-          'font-size': '14px'}" [(ngModel)]="searchTaxonomyKey" >
+        ,'font-weight': '400','font-style': 'italic','display': 'flex','align-items':'center',
+          'font-size': '16px'}" [(ngModel)]="searchTaxonomyKey" >
           </p-dropdown>
         </div>
         <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
@@ -64,45 +65,41 @@
         <b> Examples: </b>
         <a (click)="searchExample('&quot;Kinetics database&quot;');" href="#!" style="color: #0f4a65;text-decoration: underline;">"Kinetics database" </a> &nbsp;
         <a (click)="searchExample('Gallium');" href="#!" style="color: #0f4a65;text-decoration: underline;">Gallium </a>&nbsp;
-        <a (click)="searchExample('&quot;SRD 69&quot;');" href="#!" style="color: #0f4a65;text-decoration: underline;">"SRD 69" </a>&nbsp;
+        <a (click)="searchExample('&quot;SRD 101&quot;');" href="#!" style="color: #0f4a65;text-decoration: underline;">"SRD 101" </a>&nbsp;
         <a (click)="searchExample('XPDB');" href="#!" style="color: #0f4a65;text-decoration: underline;">XPDB </a>&nbsp;
         <a (click)="searchExample('Interatomic Potentials');" href="#!" style="color: #0f4a65;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
       </div>
     </div>
-  <div class="EmptyBox20"></div>
-  <div  class="ui-g-12 "  *ngFor='let row of rows; let rowIndex = index'>
-    <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1">
-    </div>
-    <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1" style="padding-right: 0em;padding-left: 0em" >
-      <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
+    <div class="EmptyBox20"></div>
+    <div  class="ui-g-12 "  *ngFor='let row of rows; let rowIndex = index'>
+      <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1">
+      </div>
+      <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1" style="padding-right: 0em;padding-left: 0em" >
+        <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
         ,'font-weight': '400','font-style': 'italic',
           'font-size': '14px'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
-    </div>
-    <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-2">
-    </div>
+      </div>
+      <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-2">
+      </div>
 
-    <div class="ui-g-12 ui-md-4 " style="padding-right: 0em;padding-left: 0em">
-      <label for="fieldstext" class="hideLabel">Fields text</label>
-      <input type="text" id="fieldstext" pInputText style="width: 100%;background-color: #FFFFFF;height: 42px;font-weight: 400;
+      <div class="ui-g-12 ui-md-4 " style="padding-right: 0em;padding-left: 0em">
+        <label for="fieldstext" class="hideLabel">Fields text</label>
+        <input type="text" id="fieldstext" pInputText style="width: 100%;background-color: #FFFFFF;height: 42px;font-weight: 400;
           font-style: italic;
           font-size: 20px;" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
-    </div>
-    <div class="ui-g-12 ui-md-2 " style="padding-left: 0em;padding-right: 0em">
-      <p-dropdown [options]="fields"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
+      </div>
+      <div class="ui-g-12 ui-md-2 " style="padding-left: 0em;padding-right: 0em">
+        <p-dropdown [options]="fields"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
         ,'font-weight': '400','font-style': 'italic',
           'font-size': '14px'}" [(ngModel)]="row.column2" (click) = "saveSearch()" >
-      </p-dropdown>
-    </div>
-    <div class="ui-g-12 ui-md-3  " style="width: 3%;" *ngIf="showDeleteButton == true" >
-      <button type="button" (click)="deleteRow(rowIndex)" pButton icon="ui-icon-remove"></button>
-    </div>
-    <div *ngIf="rowIndex == rows.length -1 " class="ui-g-12 ui-md-3">
-      <button type="button" (click)="addRow()" pButton  icon="ui-icon-add"></button>
+        </p-dropdown>
+      </div>
+      <div class="ui-g-12 ui-md-3  " style="width: 3%;" *ngIf="showDeleteButton == true" >
+        <button type="button" (click)="deleteRow(rowIndex)" pButton icon="ui-icon-remove"></button>
+      </div>
+      <div *ngIf="rowIndex == rows.length -1 " class="ui-g-12 ui-md-3">
+        <button type="button" (click)="addRow()" pButton  icon="ui-icon-add"></button>
+      </div>
     </div>
   </div>
 </div>
-</div>
-
-
-
-

@@ -136,12 +136,26 @@ body .ui-datalist .ui-datalist-header {
 body .ui-overlaypanel .ui-overlaypanel-close {
   background-color: #1471AD;
 }
+
 body .ui-overlaypanel .ui-overlaypanel-close:hover {
   background-color: #283593;
 }
 
 .fa-caret-down:before {
-
+  display: inline-block;
   vertical-align: middle;
+  line-height: normal;
 }
 
+body .ui-tree-toggler.fa.fa-fw.fa-caret-down:before {
+  vertical-align: top;
+}
+
+.well-sm {
+  padding: 11px;
+}
+
+body .ui-dropdown .ui-dropdown-trigger
+{
+  margin-top: .15em;
+}
