@@ -2,7 +2,7 @@ const config = {
   baseUrl: 'http://localhost:5555/',
 
   specs: [
-    './dist/dev/**/*.e2e-spec.js'
+    './dist/e2e/**/*.e2e-spec.js'
   ],
 
   exclude: [],
@@ -22,28 +22,24 @@ const config = {
 
   directConnect: true,
 
-  capabilities: {
-    browserName: 'chrome'
-  },
+  multicapabilities: [{
+    browserName: 'chrome',
+    chromeOptions: {
+         args: ["--headless", "--disable-gpu", "--window-size=800x600" ,
+      "--disable-web-security","--user-data-dir=~/.e2e-chrome-profile"]
+     }
+  }],
 
-  onPrepare: function() {
+  onPrepare: function () {
     browser.ignoreSynchronization = false;
   },
 
-
-  /**
-   * Angular 2 configuration
-   *
-   * useAllAngular2AppRoots: tells Protractor to wait for any angular2 apps on the page instead of just the one matching
-   * `rootEl`
-   */
-  useAllAngular2AppRoots: true
 };
 
-if (process.env.TRAVIS) {
-  config.capabilities = {
-    browserName: 'firefox'
-  };
-}
+// if (process.env.TRAVIS) {
+//   config.multicapabilities.push({
+//     browserName: 'firefox'
+//   });
+// }
 
 exports.config = config;

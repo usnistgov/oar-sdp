@@ -17,7 +17,6 @@
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "suppressImplicitAnyIndexErrors": true,
     "typeRoots": [
       "../../node_modules/@types",
       "../../node_modules"

@@ -16,3 +16,4 @@ export = clean([
   join(Config.TOOLS_DIR, '**/*.js'),
   join(Config.TOOLS_DIR, '**/*.js.map')
 ]);
+
