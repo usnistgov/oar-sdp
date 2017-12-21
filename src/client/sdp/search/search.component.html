@@ -320,8 +320,8 @@
                   <div class="ui-grid-col-12">
                     <div class="ui-grid ui-grid-responsive" style="text-align: left;width: auto;">
                       <div class="ui-grid-row">
-                        <div class="ui-grid-col-12" ><h4><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL,resultItem.ediid)" >
-                          {{resultItem.title}}</a></b></h4></div>
+                        <div class="ui-grid-col-12" ><b><a href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank" class="title" >
+                          {{resultItem.title}}</a></b></div>
                       </div>
                       <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Description') !==-1">
                         <read-more [text]="resultItem.description" [maxLength]="270" ></read-more>
