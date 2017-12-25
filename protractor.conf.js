@@ -25,7 +25,7 @@ const config = {
   multicapabilities: [{
     browserName: 'chrome',
     chromeOptions: {
-         args: ["--headless", "--disable-gpu", "--window-size=800x600" ,
+      args: ["--headless", "--disable-gpu", "--window-size=800x600" ,
       "--disable-web-security","--user-data-dir=~/.e2e-chrome-profile"]
      }
   }],
