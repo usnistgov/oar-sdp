@@ -63,7 +63,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private fileHierarchy : TreeNode;
     private rmmApi : string = environment.RMMAPI;
     private sdpLink : string = environment.SDPAPI;
-    private distApi : string = environment.DISTAPI;
+    //private distApi : string = environment.DISTAPI;
+    private distApi : string = "http://localhost:8083/oar-dist-service"
     private metaApi : string = environment.METAPI;
     private landing : string = environment.LANDING;
     private displayIdentifier :string;
@@ -185,7 +186,7 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
       if(!_.includes(this.landing, "rmm"))
         this.serviceApi = this.landing+this.recordDisplay['ediid'];
 
-      this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
+      this.distdownload = this.distApi+"/zip?id="+this.recordDisplay['@id'];
 
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);

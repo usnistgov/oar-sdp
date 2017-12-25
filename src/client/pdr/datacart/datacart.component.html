@@ -1,0 +1,47 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    if(antiClickjack !== null && antiClickjack !== undefined)
+      antiClickjack.parentNode.removeChild(antiClickjack);
+
+  } else {
+    top.location = self.location;
+  }
+</script>
+
+  <div class="card landingcard">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12" style="padding-left: 1%">
+          <p-dataTable [value]="cartEntities"  [(selection)]="selectedData" [loading]="showSpinner" [paginator]="true" [rows]="5" [headerCheckboxToggleAllPages]="true">
+            <p-header>Data Cart</p-header>
+            <p-column [style]="{'width':'10px'}" selectionMode="multiple"></p-column>
+            <p-column [style]="{'width':'100px','word-wrap': 'break-word'}"  field="data.dataset" header="Dataset"></p-column>
+            <p-column [style]="{'width':'200px','word-wrap': 'break-word'}"  field="data.fileName" header="File Name"></p-column>
+            <p-column [style]="{'width':'100px','word-wrap': 'break-word'}"  field="data.fileSize" header="Size"></p-column>
+            <p-column [style]="{'width':'200px','word-wrap': 'break-word'}"  field="data.fileFormat" header="Format"></p-column>
+            <p-column [hidden] = "true" field="data.downloadURL" header="downloadURL"></p-column>
+            <p-column [hidden] = "true" field="data.filePath" header="filePath"></p-column>
+            <p-column [hidden] = "true" field="data.resTitle" header="resTitle"></p-column>
+            <p-column [hidden] = "true" field="data.resId" header="resId"></p-column>
+          </p-dataTable>
+
+        </div>
+      </div>
+
+    <div class="ui-g">
+      <div class="ui-g-2 ui-md-2" style="padding-left: 1%">
+        <button type="button" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="downloadZIP()" pButton label="Download Zip" type="submit" ></button>
+      </div>
+      <div class="ui-g-2 ui-md-2" >
+        <button type="button" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="removeByDataId()" pButton label="Remove" type="submit" ></button>
+      </div>
+    </div>
+  </div>
+

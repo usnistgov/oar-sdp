@@ -1,8 +1,7 @@
 {
   "name": "sdp-angular-seed",
   "version": "0.0.1",
-  "description":
-    "SDP Portal using Modular starter project for Angular 2 (and beyond) with statically typed build and AoT compilation",
+  "description": "SDP Portal using Modular starter project for Angular 2 (and beyond) with statically typed build and AoT compilation",
   "repository": {
     "url": "https://github.com/mgechev/angular-seed"
   },
@@ -11,20 +10,16 @@
     "build.dev.watch": "gulp build.dev.watch --color",
     "build.e2e": "gulp build.e2e --color",
     "build.prod": "gulp build.prod --color --env-config prod --build-type prod",
-    "build.prod.exp":
-      "gulp build.prod.aot --color --env-config prod --build-type prod",
-    "build.prod.rollup.aot":
-      "gulp build.prod.rollup.aot --color --env-config prod --build-type prod",
-    "build.prod.aot":
-      "gulp build.prod.aot --color --env-config prod --build-type prod",
+    "build.prod.exp": "gulp build.prod.aot --color --env-config prod --build-type prod",
+    "build.prod.rollup.aot": "gulp build.prod.rollup.aot --color --env-config prod --build-type prod",
+    "build.prod.aot": "gulp build.prod.aot --color --env-config prod --build-type prod",
     "build.test": "gulp build.test --color",
     "test.watch": "gulp test.watch --color",
     "generate.manifest": "gulp generate.manifest --color",
     "e2e": "protractor",
     "e2e.live": "protractor --elementExplorer",
     "gulp": "gulp",
-    "i18n":
-      "gulp i18n.build --build-type prod && ng-xi18n -p dist/tmp/tsconfig.json --i18nFormat xlf && gulp i18n.merge",
+    "i18n": "gulp i18n.build --build-type prod && ng-xi18n -p dist/tmp/tsconfig.json --i18nFormat xlf && gulp i18n.merge",
     "lint": "gulp tslint",
     "karma": "karma",
     "karma.start": "karma start",
@@ -34,29 +29,20 @@
     "serve.dev": "gulp serve.dev --color --env-config dev",
     "serve.e2e": "gulp serve.e2e --color",
     "serve.prod": "gulp serve.prod --color --env-config prod --build-type prod",
-    "serve.prod.aot":
-      "gulp serve.prod.aot --color --env-config prod --build-type prod",
-    "serve.prod.exp":
-      "gulp serve.prod.aot --color --env-config prod --build-type prod",
-    "serve.prod.rollup.aot":
-      "gulp serve.prod.rollup.aot --color --env-config prod --build-type prod",
-    "sme.prod":
-      "gulp sme.prod --color --env-config prod --build-type prod --preserve-source-maps",
-    "sme.prod.aot":
-      "gulp sme.prod.aot --color --env-config prod --build-type prod --preserve-source-maps",
-    "sme.prod.rollup.aot":
-      "gulp sme.prod.rollup.aot --color --env-config prod --build-type prod --preserve-source-maps",
+    "serve.prod.aot": "gulp serve.prod.aot --color --env-config prod --build-type prod",
+    "serve.prod.exp": "gulp serve.prod.aot --color --env-config prod --build-type prod",
+    "serve.prod.rollup.aot": "gulp serve.prod.rollup.aot --color --env-config prod --build-type prod",
+    "sme.prod": "gulp sme.prod --color --env-config prod --build-type prod --preserve-source-maps",
+    "sme.prod.aot": "gulp sme.prod.aot --color --env-config prod --build-type prod --preserve-source-maps",
+    "sme.prod.rollup.aot": "gulp sme.prod.rollup.aot --color --env-config prod --build-type prod --preserve-source-maps",
     "start": "gulp serve.dev --color",
     "start.deving": "gulp start.deving --color",
     "tasks.list": "gulp --tasks-simple --color",
     "test": "gulp test --color",
-    "e2e.ci":
-      "gulp build.prod.rollup.aot --color && gulp build.e2e --color && gulp e2e --color",
+    "e2e.ci": "gulp build.prod.rollup.aot --color && gulp build.e2e --color && gulp e2e --color",
     "tests.all": "npm test && npm run e2e.ci",
-    "webdriver-start":
-      "node ./node_modules/protractor/bin/webdriver-manager start",
-    "webdriver-update":
-      "node ./node_modules/protractor/bin/webdriver-manager update",
+    "webdriver-start": "node ./node_modules/protractor/bin/webdriver-manager start",
+    "webdriver-update": "node ./node_modules/protractor/bin/webdriver-manager update",
     "compodoc": "./node_modules/.bin/compodoc -p src/client/tsconfig.json",
     "serve.compodoc": "./node_modules/.bin/compodoc -s"
   },
@@ -170,12 +156,13 @@
     "@angular/platform-browser": "^4.3.0",
     "@angular/platform-browser-dynamic": "^4.3.0",
     "@angular/router": "^4.3.0",
+    "@angular/service-worker": "^1.0.0-beta.16",
     "angular2-logger": "^0.6.0",
     "bootstrap": "^3.3.7",
     "chart.js": "2.1.3",
-    "@angular/service-worker": "^1.0.0-beta.16",
     "core-js": "^2.4.1",
     "d3": "^4.10.0",
+    "file-saver": "^1.3.3",
     "font-awesome": "^4.7.0",
     "fullcalendar": "^3.1.0",
     "intl": "^1.2.5",
@@ -186,10 +173,10 @@
     "moment": "^2.17.1",
     "nanoscroller": "0.8.7",
     "ng2-sticky": "^0.5.0",
-    "primeng": "4.1.3",
+    "primeng": "4.3.0",
     "rxjs": "5.4.3",
     "systemjs": "0.20.14",
-    "zone.js": "0.8.12",
-    "web-animations-js": "^2.2.2"
+    "web-animations-js": "^2.2.2",
+    "zone.js": "0.8.12"
   }
 }

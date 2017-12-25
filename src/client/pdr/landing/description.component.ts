@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import {LandingPanelComponent} from './landing.component';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
+import { CartService } from '../datacart/cart.service';
+import { Data } from '../datacart/data';
 
 @Component({
   moduleId: module.id,
@@ -13,14 +15,14 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
             <div id="recordDescription" class="well welldesc">
                 {{ record["description"] }}
             </div>
-            <div *ngIf="checkTopics()">
+            <div *ngIf="record['topic']">
             <strong>Research Topics:</strong>
             <span  *ngFor="let topic of record['topic']; let i =index">
                 {{ topic.tag }}
                 <span *ngIf="i < record['topic'].length-1 ">,</span>
             </span>
             </div>
-            <div *ngIf="checkKeywords()">
+            <div *ngIf="record['keyword']">
                 <b>Subject Keywords:</b>
                 <span *ngFor="let keyword of record['keyword']; let i =index">
                     {{ keyword }}<span *ngIf="i < record['keyword'].length-1 ">,</span>
@@ -46,19 +48,21 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
             <div *ngIf="files.length != 0">           
                 <h3 id="files" name="files"><b>Files</b>
                    <a href="{{distdownload}}" class="faa faa-file-archive-o" title="Download All Files" ></a>
+                  <a href="javascript:;" (click)="addFilesToCart()" class="faa faa-cart-plus " title="Add All files to datacart" ></a>
+
                 </h3>
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
-                            <template let-node  pTemplate="default">
+                            <ng-template let-node  pTemplate="default">
                                 <span>{{node.label}}</span>
-                            </template>
+                            </ng-template>
                         </p-tree>
                     </div>
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <div ng2-sticky>
                             <div *ngIf="isFileDetails">
-                                <filedetails-resources [fileDetails]="fileDetails"></filedetails-resources>
+                                <filedetails-resources [fileDetails]="fileDetails" [record]="record"></filedetails-resources>
                             </div>
                             <div *ngIf="!isFileDetails">
                                 <div class="card fileinfocard ">
@@ -77,64 +81,70 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 })
 
 export class DescriptionComponent {
- 
- @Input() record: any[];
- @Input() files: any[];
- @Input() distdownload: string; 
 
- fileDetails:string = '';
- isFileDetails: boolean = false;
- isReference: boolean = false;
- selectedFile: TreeNode;
- 
- nodeSelect(event) {
-    var test = this.getComponentDetails(this.record["components"],event.node.data);
-    let i =0;
-    this.fileDetails = '';
-    for(let t of test){
-        this.isFileDetails = true;
-        this.fileDetails = t; 
-    } 
+  @Input() record: any[];
+  @Input() files: any[];
+  @Input() distdownload: string;
+
+  /**
+   * Dependecy injection of the service with reflection by angular
+   */
+  constructor(private cartService: CartService) {
+
   }
-getComponentDetails(data,filepath) {
-  return data.filter(
-      function(data){return data.filepath == filepath }
-  );
-}
 
-keys() : Array<string> {
-    return Object.keys(this.fileDetails);
-}
- 
-checkReferences(){
-      if(Array.isArray(this.record['references']) ){
-          for(let ref of this.record['references'] ){
-              if(ref.refType === 'isDocumentedBy') return true;
-          }
+  fileDetails: string = '';
+  isFileDetails: boolean = false;
+  isReference: boolean = false;
+  selectedFile: TreeNode;
+
+  nodeSelect(event) {
+    var test = this.getComponentDetails(this.record["components"], event.node.data);
+    let i = 0;
+    this.fileDetails = '';
+    for (let t of test) {
+      this.isFileDetails = true;
+      this.fileDetails = t;
+    }
+  }
+
+  getComponentDetails(data, filepath) {
+    return data.filter(
+      function (data) {
+        return data.filepath == filepath
       }
- }
+    );
+  }
 
- checkKeywords(){
-    if(Array.isArray(this.record['keyword']) ){
-        if(this.record['keyword'].length > 0)
-            return true;
-        else 
-            return false;    
-    }
-    else {
-        return false;
-    }
- }
- checkTopics(){
-    if(Array.isArray(this.record['topic']) ){
-        if(this.record['topic'].length > 0)
-            return true;
-        else 
-            return false;    
-    }
-    else {
-        return false;
-    }
- }
+  keys(): Array<string> {
+    return Object.keys(this.fileDetails);
+  }
 
+  checkReferences() {
+    if (Array.isArray(this.record['references'])) {
+      for (let ref of this.record['references']) {
+        if (ref.refType === 'isDocumentedBy') return true;
+      }
+    }
+  }
+
+  addFilesToCart() {
+    let data: Data;
+    for (let comp of this.record["components"]) {
+      console.log("title+++" + comp["title"]);
+      console.log("downloadURL+++" + comp["downloadURL"]);
+      data = {
+        'resId': this.record["@id"],
+        'resTitle': this.record["title"],
+        'id': comp["@id"],
+        'fileName': comp["title"],
+        'filePath': comp["filepath"],
+        'fileSize': comp["size"],
+        'downloadURL': comp["downloadURL"],
+        'fileFormat': comp["mediaType"],
+        'dataset': "Resource"
+      };
+      this.cartService.addDataToCart(data);
+    }
+  }
 }

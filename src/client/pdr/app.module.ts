@@ -12,10 +12,11 @@ import { SharedModule } from './shared/shared.module';
 import { LandingModule} from './landing/landing.module';
 
 import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
+import {DatacartModule} from './datacart/datacart.module';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
-  , AboutModule, LandingModule, SharedModule.forRoot()
+  , AboutModule, LandingModule, DatacartModule, SharedModule.forRoot()
   ],
   declarations: [AppComponent,
     AppMenuComponent,

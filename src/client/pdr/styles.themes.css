@@ -17,3 +17,12 @@ body .ui-state-active, body .ui-state-highlight {
   font-family: 'Roboto';
   font-weight: bold;
 }
+
+body .ui-paginator .ui-paginator-pages a.ui-state-active {
+  background-color: #03A9F4;}
+
+body .ui-datatable .ui-datatable-data tr.ui-datatable-even.ui-state-highlight {
+  background-color: #03A9F4;}
+
+body .ui-datatable .ui-datatable-data tr.ui-datatable-odd.ui-state-highlight {
+  background-color: #03A9F4;}

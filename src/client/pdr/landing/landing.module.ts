@@ -1,5 +1,7 @@
-import { NgModule,Inject } from '@angular/core';
+import { NgModule,Inject,CUSTOM_ELEMENTS_SCHEMA,NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 import { SharedModule } from '../shared/shared.module';
 import { LandingPanelComponent } from './landing.component';
 import { DescriptionComponent } from './description.component';
@@ -12,23 +14,28 @@ import { KeyValuePipe } from './keyvalue.pipe';
 import { MetadataView } from './metadataview.component';
 import { NoidComponent } from './noid.component';
 import { NerdmComponent } from './nerdm.component';
+import { SearchService } from '../shared/search-service/index';
+import { SearchResolve } from './search-service.resolve';
 
 import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
-  MessagesModule, MultiSelectModule, DataTableModule, DataListModule,
-  MenuModule,OverlayPanelModule, FieldsetModule, PanelModule } from 'primeng/primeng';
+  MessagesModule, MultiSelectModule, DataTableModule, DataListModule,ContextMenuModule,
+  MenuModule,OverlayPanelModule, FieldsetModule, PanelModule ,DialogModule, ProgressSpinnerModule} from 'primeng/primeng';
 
 import { BrowserModule,Title,DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CartService } from '../datacart/cart.service';
 
 
 @NgModule({
   imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-    DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,MenuModule,OverlayPanelModule,
-    Ng2StickyModule, FieldsetModule, PanelModule,BrowserAnimationsModule],
+    DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,DialogModule,
+    ContextMenuModule,MenuModule,OverlayPanelModule,
+    Ng2StickyModule, FieldsetModule, PanelModule,BrowserAnimationsModule, FormsModule,ProgressSpinnerModule],
   declarations: [LandingPanelComponent,Collaspe,MetadataComponent,FileDetailsComponent,
     DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent,NerdmComponent ],
   exports: [LandingPanelComponent],
-  providers: [Title]
+  providers: [Title, SearchService,SearchResolve,CartService ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA]
 
 })
 
