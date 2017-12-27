@@ -29,8 +29,8 @@ export function main() {
     it('should have expected <p> text', () => {
       fixture.detectChanges();
       const p = de.nativeElement;
-      expect(p.textContent).toMatch(/Open/i,
-        '<P> should say something about "Open Data Policy"');
+      expect(p.textContent).toMatch(/Dissemination/i,
+        '<P> should say something about "Dissemination"');
     });
     it('should have proper label', () => {
       fixture.detectChanges();

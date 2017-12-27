@@ -46,7 +46,9 @@
     "webdriver-start": "node ./node_modules/protractor/bin/webdriver-manager start",
     "webdriver-update": "node ./node_modules/protractor/bin/webdriver-manager update",
     "compodoc": "./node_modules/.bin/compodoc -p src/client/tsconfig.json",
-    "serve.compodoc": "./node_modules/.bin/compodoc -s"
+    "serve.compodoc": "./node_modules/.bin/compodoc -s",
+    "e2e.sdp": "npm run webdriver-update && npm run e2e  -- --specs='./dist/e2e/specs/sdp/**/*.e2e-spec.js'",
+    "e2e.pdr": "npm run webdriver-update && npm run e2e  -- --specs='./dist/e2e/specs/pdr/**/*.e2e-spec.js'"
   },
   "author": "Minko Gechev <mgechev>",
   "license": "MIT",
