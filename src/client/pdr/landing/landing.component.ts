@@ -180,80 +180,82 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     return testItem;
   }
 
-  /**
-   * Update right side panel on landing page
-   */
-  updateRightMenu(){
+  
+/**
+ * Update right side panel on landing page
+ */
+    updateRightMenu(){
+      
+      this.serviceApi = this.landing+"records?@id="+this.recordDisplay['@id']; 
+      if(!_.includes(this.landing, "rmm"))
+        this.serviceApi = this.landing+this.recordDisplay['ediid'];
 
-    this.serviceApi = this.landing+"records?@id="+this.recordDisplay['@id'];
-    if(!_.includes(this.landing, "rmm"))
-      this.serviceApi = this.landing+this.recordDisplay['ediid'];
+      //this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
+      this.distdownload = this.distApi+"/"+this.recordDisplay['@id']+"?format=zip";
+      
+      var itemsMenu: any[] = [];
+      var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
+      var download = this.createMenuItem("Download all data","faa faa-download", '', this.distdownload);
+      var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
+    
+        itemsMenu.push(homepage);
+        if (this.files.length != 0)
+            itemsMenu.push(download);
+        itemsMenu.push(metadata);   
+         
+      this.rightmenu = [{
+            label: 'Access ', 
+            items: itemsMenu
+        },
+        {
+            label: 'Use', 
+            items: [
+                {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
+                    this.citeString = "";
+                    let date =  new Date(); 
 
-    this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
+                    if(this.recordDisplay['authors'] !==  null && this.recordDisplay['authors'] !==  undefined){
 
-    var itemsMenu: any[] = [];
-    var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
-    var download = this.createMenuItem("Download all data","faa faa-file-archive-o", '', this.distdownload);
-    var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
-
-    itemsMenu.push(homepage);
-    if (this.files.length != 0)
-      itemsMenu.push(download);
-    itemsMenu.push(metadata);
-
-    this.rightmenu = [{
-      label: 'Access ',
-      items: itemsMenu
-    },
-      {
-        label: 'Use',
-        items: [
-          {label: 'Cite this resource',  icon: "faa faa-angle-double-right",command: (event)=>{
-            this.citeString = "";
-            let date =  new Date();
-
-            if(this.recordDisplay['authors'] !==  null && this.recordDisplay['authors'] !==  undefined){
-
-              for(let author of this.recordDisplay['authors']) {
-                if(author.familyName !== null && author.familyName !== undefined)
-                  this.citeString += author.familyName +' ';
-                if(author.givenName !== null && author.givenName !== undefined)
-                  this.citeString +=  author.givenName+' ';
-                if(author.middleName !== null && author.middleName !== undefined)
-                  this.citeString += author.middleName;
-                this.citeString +=", ";
-              }
-            }
-            else if(this.recordDisplay['contactPoint']) {
-              if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
-                this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
-            }
-            if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== 'undefined' )
-              this.citeString += this.recordDisplay['title'] +", ";
-            if(this.recordDisplay['doi']!== null && this.recordDisplay['doi']!== 'undefined' )
-              this.citeString += this.recordDisplay['doi'];
-            this.citeString += ", access:"+date;
-            this.showDialog();
-          }},
-          {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
-            window.open(this.recordDisplay['license']);
-          }}
-        ]
-      },{
-        label: 'Find',   items: [
-          {label: 'Similar Resources',  icon: "faa faa-external-link",
-            command: (event)=>{
-              window.open(this.sdpLink+"/#/search?q=keyword="+this.recordDisplay['keyword']+"&key=&queryAdvSearch=yes");
-            }},
-          {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
-            let authlist = "";
-            for(let auth of this.recordDisplay['authors'])
-              authlist = authlist+auth.familyName+",";
-            window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
-          }
-          }
-
-        ]
+                        for(let author of this.recordDisplay['authors']) { 
+                         if(author.familyName !== null && author.familyName !== undefined) 
+                            this.citeString += author.familyName +' ';
+                         if(author.givenName !== null && author.givenName !== undefined) 
+                            this.citeString +=  author.givenName+' ';
+                         if(author.middleName !== null && author.middleName !== undefined) 
+                            this.citeString += author.middleName;
+                         this.citeString +=", ";
+                        }
+                    } 
+                    else if(this.recordDisplay['contactPoint']) {
+                        if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
+                        this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
+                    }
+                    if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== 'undefined' )
+                        this.citeString += this.recordDisplay['title'] +", ";
+                    if(this.recordDisplay['doi']!== null && this.recordDisplay['doi']!== 'undefined' )
+                        this.citeString += this.recordDisplay['doi'];
+                    this.citeString += ", access:"+date;
+                    this.showDialog();
+              }},
+             {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
+                    window.open(this.recordDisplay['license']);
+             }}
+           ]
+        },{
+            label: 'Find',   items: [
+                {label: 'Similar Resources',  icon: "faa faa-external-link",
+                        command: (event)=>{
+                              window.open(this.sdpLink+"/#/search?q=keyword="+this.recordDisplay['keyword']+"&key=&queryAdvSearch=yes");
+                  }},
+                {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
+                      let authlist = "";
+                      for(let auth of this.recordDisplay['authors'])
+                            authlist = authlist+auth.familyName+",";
+                            window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
+                        }
+                    }
+                        
+            ]
         //     label: 'Export Metadata', icon: "Menu", items: [
         //         // {   label: 'PDF',  icon: "faa faa-file-pdf-o",
         //         //     command: (event)=>{
