@@ -124,11 +124,7 @@ dist/empty/`,  the server is ready.  You can then run the tests in a
 second terminal:
 
 ```bash
-#to run pdr e2e tests
-npm run e2e.pdr 
-
-# similarly to run sdp e2e tests repleace e2e.pdr with e2e.sdp following above steps for sdp
-#npm run e2e.sdp
+npm run e2e.pdr              # run pdr tests against the running server
 ```
 
 With this, a browser window will appear and different views of the app
