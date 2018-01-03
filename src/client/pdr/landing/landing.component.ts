@@ -238,23 +238,24 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
-                    window.open(this.recordDisplay['license']);
+                    window.open(this.recordDisplay['license'],'_self');
              }}
            ]
         },{
             label: 'Find',   items: [
                 {label: 'Similar Resources',  icon: "faa faa-external-link",
                         command: (event)=>{
-                              window.open(this.sdpLink+"/#/search?q=keyword="+this.recordDisplay['keyword']+"&key=&queryAdvSearch=yes");
+                              window.open(this.sdpLink+"/#/search?q=keyword="+this.recordDisplay['keyword']+"&key=&queryAdvSearch=yes",'search');
                   }},
-                {label: 'Resources by Authors',icon: "faa faa-external-link",command: (event)=>{
-                      let authlist = "";
-                      for(let auth of this.recordDisplay['authors'])
-                            authlist = authlist+auth.familyName+",";
-                            window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes");
-                        }
-                    }
-                        
+                {label: 'Resources by Authors',icon: "faa faa-external-link", command: (event)=>{
+                let authlist = "";
+                if (this.recordDisplay['authors']) {    
+                  for(let auth of this.recordDisplay['authors'])
+                    authlist = authlist+auth.familyName+",";
+                }
+                window.open(this.sdpLink+"/#/search?q=authors.familyName="+authlist+"&key=&queryAdvSearch=yes", 'search');
+              }
+              }
             ]
         //     label: 'Export Metadata', icon: "Menu", items: [
         //         // {   label: 'PDF',  icon: "faa faa-file-pdf-o",
