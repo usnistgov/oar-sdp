@@ -190,12 +190,12 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       if(!_.includes(this.landing, "rmm"))
         this.serviceApi = this.landing+this.recordDisplay['ediid'];
 
-      //this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
-      this.distdownload = this.distApi+"/"+this.recordDisplay['@id']+"?format=zip";
+      this.distdownload = this.distApi+"ds/zip?id="+this.recordDisplay['@id'];
+      //this.distdownload = this.distApi+"/"+this.recordDisplay['@id']+"?format=zip";
       
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
-      var download = this.createMenuItem("Download all data","faa faa-download", '', this.distdownload);
+      var download = this.createMenuItem("Download all data","faa faa-file-archive-o", '', this.distdownload);
       var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
     
         itemsMenu.push(homepage);
