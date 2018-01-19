@@ -6,6 +6,10 @@
   font-size: 12;
 }
 
+:host /deep/ .ui-widget-content {
+  border: 0px;
+}
+
 .fDetailsfFont{
   font-family: Arial, Helvetica, sans-serif;
   color: grey;

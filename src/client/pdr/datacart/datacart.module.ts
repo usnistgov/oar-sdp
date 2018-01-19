@@ -6,9 +6,13 @@ import { DatacartComponent } from '../datacart/datacart.component';
 
 import { SearchService } from '../shared/search-service/index';
 
-import { DropdownModule, AccordionModule, ButtonModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
-  MessagesModule, MultiSelectModule, DataTableModule, DataListModule,ContextMenuModule,
-  MenuModule,OverlayPanelModule, FieldsetModule, PanelModule ,DialogModule, ProgressSpinnerModule} from 'primeng/primeng';
+
+import {
+  DropdownModule, AccordionModule, ButtonModule, TreeTableModule, PanelMenuModule, MenuItem, TreeNode, AutoCompleteModule,
+  MessagesModule, MultiSelectModule, DataTableModule, DataListModule, ContextMenuModule,
+  MenuModule, OverlayPanelModule, FieldsetModule, PanelModule, DialogModule, ProgressSpinnerModule
+} from 'primeng/primeng';
+
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CartService } from '../datacart/cart.service';
@@ -16,7 +20,7 @@ import { CartService } from '../datacart/cart.service';
 
 @NgModule({
   imports: [CommonModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-    DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,DialogModule,
+    DropdownModule,DataTableModule, DataListModule,TreeTableModule, PanelMenuModule,DialogModule,
     ContextMenuModule,MenuModule,OverlayPanelModule,
     FieldsetModule, PanelModule,BrowserAnimationsModule, FormsModule,ProgressSpinnerModule, ButtonModule],
   declarations: [DatacartComponent ],

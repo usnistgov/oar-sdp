@@ -57,14 +57,15 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     distdownload: string = '';
     serviceApi: string = '';
     metadata: boolean = false;
+    cartDisplay: boolean = true;
     pdrApi : string = environment.PDRAPI;
     private _routeParamsSubscription: Subscription;
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
     private rmmApi : string = environment.RMMAPI;
     private sdpLink : string = environment.SDPAPI;
-    //private distApi : string = environment.DISTAPI;
-    private distApi : string = "http://localhost:8083/oar-dist-service"
+    private distApi : string = environment.DISTAPI;
+    //private distApi : string = "http://localhost:8083/oar-dist-service"
     private metaApi : string = environment.METAPI;
     private landing : string = environment.LANDING;
     private displayIdentifier :string;
@@ -318,8 +319,6 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
                                                             fields.filepath));
                 }
             }
-
-
      }
 
 
@@ -328,7 +327,9 @@ createMenuItem(label :string, icon:string, command: any, url : string ){
         testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
         testObj.children=[];
         for(let child of children){
-            let fname = child.filepath.split("/")[child.filepath.split("/").length-1];
+          console.log("fields children" + JSON.stringify(child));
+
+          let fname = child.filepath.split("/")[child.filepath.split("/").length-1];
             if( child.filepath != null) {
                 if(child.children != null)
                     testObj.children.push(this.createChildrenTree(child.children,

@@ -1,9 +1,16 @@
 import {Data} from './data';
 import {Injectable} from '@angular/core';
 import {CartEntity} from './cart.entity';
+import { Http, Response,URLSearchParams } from '@angular/http';
 import { Subject} from 'rxjs/Subject';
 import {BehaviorSubject } from 'rxjs/BehaviorSubject';
 import {Observable } from 'rxjs';
+import * as _ from 'lodash';
+import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
+import 'rxjs/add/operator/toPromise';
+
+
+
 
 /**
  * The cart service provides an way to store the cart in local store.
@@ -16,7 +23,7 @@ export class CartService {
   private _storage = localStorage;
 
 
-  constructor() {
+  constructor(private http: Http) {
     this.initCart();
   }
 
@@ -33,7 +40,6 @@ export class CartService {
       this.setCart(emptyMap);
 
     }
-
   }
 
   saveListOfCartEntities(listOfCartEntries : CartEntity[]) {
@@ -45,7 +51,7 @@ export class CartService {
 
     // persist the map
     this.setCart(cartMap);
-    this.storageSub.next(44);
+    //this.storageSub.next(44);
     //this.setCartLength (5);
     console.log("cart size" + this.getCart().length);
 
@@ -116,7 +122,9 @@ export class CartService {
 
     // if the current key exists in the map , append value
       if (cartMap[data.id] != undefined) {
+
         console.log("key exists");
+        console.log("data id - " + data.id);
       } else {
         // if not, set default value
         cartMap[data.id] = {
@@ -125,8 +133,6 @@ export class CartService {
       }
     // save the map
     this.setCart(cartMap);
-    cartMap = this.getCart();
-    console.log("size" + JSON.stringify(cartMap));
   }
 
   /**

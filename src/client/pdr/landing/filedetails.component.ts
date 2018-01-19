@@ -26,10 +26,10 @@ export class FileDetailsComponent {
        //alert("download here");
    }
 
-  addtoCart(resId:string,resTitle:string,id:string,fileName:string,filePath:string,fileSize:number,downloadURL:string,fileFormat:string,dataset:string){
+  addtoCart(resId:string,resTitle:string,resFilePath:string,id:string,fileName:string,filePath:string,fileSize:number,downloadURL:string,fileFormat:string,dataset:string,downloadStatus:string){
     let data : Data;
-    data = {'resId':resId,'resTitle':resTitle,'id':id,'fileName':fileName,'filePath':filePath,'fileSize':fileSize,'downloadURL':downloadURL,'fileFormat':fileFormat,
-      'dataset':dataset};
+    data = {'resId':resId,'resTitle':resTitle,'resFilePath':'resFilePath','id':id,'fileName':fileName,'filePath':filePath,'fileSize':fileSize,'downloadURL':downloadURL,'fileFormat':fileFormat,'downloadStatus':downloadStatus
+      };
     this.cartService.addDataToCart(data);
   }
 

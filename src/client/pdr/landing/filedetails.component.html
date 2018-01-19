@@ -7,7 +7,7 @@
             <span *ngIf="!fileDetails['downloadURL']"> Subcollection</span>
           </span>
       <!-- <button pButton style="position:relative; float:right;" class="ui-button-success" type="button" (click)="download()" label="Download"></button> -->
-      <a style="; float:right;" href="javascript:;" (click)='addtoCart(record["@id"], record["title"], fileDetails["@id"], fileDetails["title"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource")' class="faa faa-cart-plus faa-2x" title="Add to Data cart" ></a>
+      <a style="; float:right;" href="javascript:;" (click)='addtoCart(record["@id"], record["title"], fileDetails["title"], fileDetails["title"],fileDetails["filepath"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource","no")' class="faa faa-cart-plus faa-2x" title="Add to Data cart" ></a>
       <a style=""  href="{{this.fileDetails['downloadURL']}}" class="faa faa-download " title="Download File" ></a>
       <h4><span *ngIf="fileDetails['title']"> {{ fileDetails["title"]}} </span></h4>
       <br><span class="font10">Path: <b>{{fileDetails["filepath"]}}</b></span>

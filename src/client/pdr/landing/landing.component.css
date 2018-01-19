@@ -1,3 +1,7 @@
+:host /deep/ .ui-widget-content {
+  border: 0px;
+}
+
 .style-horizontal {
   border: 0;
   height: 1px;
@@ -22,8 +26,8 @@
 }
 
 .recordType{
-  font-family: Arial, Helvetica, sans-serif; 
-  color:#707070; 
+  font-family: Arial, Helvetica, sans-serif;
+  color:#707070;
   font-size: 14;
 }
 
@@ -129,14 +133,14 @@
   text-align: left;
   color: white;
 }
-:host /deep/ citationDialog > button.ui-button-icon-only{  
+:host /deep/ citationDialog > button.ui-button-icon-only{
   border-radius: 50%;
   width: 1.5em;
   height: 1.5em;
 }
 
 .fileinfosection{
-  background-color:#F3F3F3; 
+  background-color:#F3F3F3;
   padding: 2.5rem 2.5rem 2.5rem 2.5rem;
 }
 
@@ -149,7 +153,7 @@
 .citeString{
   font-family:  Franklin Gothic Urw;
   font-style:italic;
-  color:#484646; 
+  color:#484646;
   font-size: 12;
 }
 .copyCite{

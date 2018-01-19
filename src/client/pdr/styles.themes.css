@@ -1,7 +1,3 @@
-body .ui-widget-content {
-  border: 0px;
-}
-
 body .ui-state-active, body .ui-state-highlight {
   background-color: #FFFFFF;
 }
@@ -26,3 +22,6 @@ body .ui-datatable .ui-datatable-data tr.ui-datatable-even.ui-state-highlight {
 
 body .ui-datatable .ui-datatable-data tr.ui-datatable-odd.ui-state-highlight {
   background-color: #03A9F4;}
+
+body .ui-treetable tbody .ui-treetable-row.ui-state-highlight {
+background-color: #03A9F4;}

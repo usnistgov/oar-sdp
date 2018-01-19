@@ -85,6 +85,7 @@ export class DescriptionComponent {
   @Input() record: any[];
   @Input() files: any[];
   @Input() distdownload: string;
+  private dataFiles: TreeNode[] = [];
 
   /**
    * Dependecy injection of the service with reflection by angular
@@ -130,21 +131,86 @@ export class DescriptionComponent {
 
   addFilesToCart() {
     let data: Data;
+    let compValue: any;
+    console.log("component size" + this.record["components"].length);
     for (let comp of this.record["components"]) {
-      console.log("title+++" + comp["title"]);
-      console.log("downloadURL+++" + comp["downloadURL"]);
-      data = {
-        'resId': this.record["@id"],
-        'resTitle': this.record["title"],
-        'id': comp["@id"],
-        'fileName': comp["title"],
-        'filePath': comp["filepath"],
-        'fileSize': comp["size"],
-        'downloadURL': comp["downloadURL"],
-        'fileFormat': comp["mediaType"],
-        'dataset': "Resource"
-      };
-      this.cartService.addDataToCart(data);
+      if (typeof comp["downloadURL"] != "undefined") {
+        console.log("title+++" + comp["title"]);
+        console.log("downloadURL+++" + comp["downloadURL"]);
+        data = {
+          'resId': this.record["@id"],
+          'resTitle': this.record["title"],
+          'id': comp["title"],
+          'fileName': comp["title"],
+          'filePath': comp["filepath"],
+          'fileSize': comp["size"],
+          'downloadURL': comp["downloadURL"],
+          'fileFormat': comp["mediaType"],
+          'downloadStatus' : 'no',
+          'resFilePath':''
+        };
+        this.cartService.addDataToCart(data);
+        data = null;
+      }
     }
   }
+
+  /*
+
+  createDataCartHierarchy(){
+    if (this.recordDisplay['dataHierarchy'] == null )
+      return;
+    for(let fields of this.recordDisplay['dataHierarchy']){
+      if( fields.filepath != null) {
+        if(fields.children != null)
+          this.dataFiles.push(this.createChildrenTree(fields.children,
+            fields.filepath));
+        else
+          this.dataFiles.push(this.createFileNode(fields.filepath,
+            fields.filepath));
+      }
+    }
+
+
+  }
+
+  createChildrenTree(children:any[], filepath:string){
+    let testObj:TreeNode = {};
+    testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
+    testObj.children=[];
+    for(let child of children){
+      let fname = child.filepath.split("/")[child.filepath.split("/").length-1];
+      if( child.filepath != null) {
+        if(child.children != null)
+          testObj.children.push(this.createChildrenTree(child.children,
+            child.filepath));
+        else
+          testObj.children.push(this.createFileNode(fname,
+            child.filepath));
+      }
+    }
+    return testObj;
+  }
+
+  createTreeObj(label :string, data:string){
+    let testObj : TreeNode = {};
+    testObj = {};
+    testObj.label = label;
+    testObj.data = data;
+    if(label == "Files")
+      testObj.expanded = true;
+    testObj.expandedIcon = "faa faa-folder-open";
+    testObj.collapsedIcon =  "faa faa-folder";
+    return testObj;
+  }
+  createFileNode(label :string, data:string){
+    let endFileNode:TreeNode = {};
+    endFileNode.label = label;
+    endFileNode.data = data;
+    endFileNode.icon = "faa faa-file-o";
+    endFileNode.expandedIcon = "faa faa-folder-open";
+    endFileNode.collapsedIcon =  "faa fa-folder";
+    return endFileNode;
+  }
+  */
 }

@@ -3,7 +3,9 @@
    line-height: 0;
    min-height: 0;
 }
-
+:host /deep/ .ui-widget-content {
+  border: 0px;
+}
 
 :host /deep/ .ui-fieldset {
   /*padding: 0.625em 1em;*/
@@ -16,7 +18,7 @@
     /*padding-left: .125em;
     padding-right: .5em;*/
     border-bottom: none;
-    width: inherit; 
+    width: inherit;
     padding: 0 0;
     color: #1471AE;
     font-size:10pt;
@@ -33,7 +35,7 @@
     /*padding-left: .125em;
     padding-right: .5em;*/
     border-bottom: none;
-    width: inherit; 
+    width: inherit;
     padding: 0 0;
     color:grey;
     font-size:10pt;
@@ -43,13 +45,13 @@
     word-wrap: break-word;
     margin-bottom: 10px;
 }
-    
+
 :host /deep/ .notcustomlegend > .ui-fieldset .ui-fieldset-legend {
     /*padding: 0.625em 1em;*/
     /*padding-left: .125em;
     padding-right: .5em;*/
     border-bottom: none;
-    width: inherit; 
+    width: inherit;
     padding: 0 0;
     color: red;
     font-size:10pt;
@@ -69,7 +71,7 @@
     /*padding-right: .5em;*/
     /*padding-top: .1em;*/
     /*padding-bottom: .1em; */
-   
+
 }
 
 /*:host /deep/ .ui-fieldset-legend .ui-corner-all .ui-state-default .ui-unselectable-text{
@@ -97,7 +99,7 @@
       margin-right: .1em;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
       -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
-      -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12); 
+      -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
   }
 
 /*:host /deep/ .ui-g{
@@ -108,7 +110,7 @@
 }*/
 
 .font10{
-  font-size:10pt; 
+  font-size:10pt;
    word-wrap: break-word;
 }
 .break-long-words {
@@ -129,7 +131,7 @@
 }
 
 .keynumbers{
-    color:grey; 
+    color:grey;
     word-wrap: break-word;
 }
  /*:host /deep/ .ui-fieldset-toggler .fa .fa-w .fa-minus{
@@ -177,7 +179,7 @@ line-height: 0;
 .customfieldset > h1 {
     font: 1em normal;
     margin: -1em -0.5em 0;
-}   
+}
 .customfieldset > h1 > span {
     float: left;
 }
