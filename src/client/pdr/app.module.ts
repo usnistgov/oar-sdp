@@ -13,6 +13,8 @@ import { LandingModule} from './landing/landing.module';
 
 import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
 import {DatacartModule} from './datacart/datacart.module';
+import {CartService} from './datacart/cart.service';
+
 
 @NgModule({
   imports: [BrowserModule, HttpModule, RouterModule.forRoot(routes ,{ useHash: true })
@@ -24,7 +26,7 @@ import {DatacartModule} from './datacart/datacart.module';
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
-  }],
+  },CartService],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 

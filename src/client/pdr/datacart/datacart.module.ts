@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 
 import { DatacartComponent } from '../datacart/datacart.component';
 
-import { SearchService } from '../shared/search-service/index';
-
 
 import {
   DropdownModule, AccordionModule, ButtonModule, TreeTableModule, PanelMenuModule, MenuItem, TreeNode, AutoCompleteModule,
@@ -15,7 +13,7 @@ import {
 
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CartService } from '../datacart/cart.service';
+import {CartService} from './cart.service';
 
 
 @NgModule({

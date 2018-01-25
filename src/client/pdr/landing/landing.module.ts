@@ -17,7 +17,7 @@ import { NerdmComponent } from './nerdm.component';
 import { SearchService } from '../shared/search-service/index';
 import { SearchResolve } from './search-service.resolve';
 
-import { DropdownModule, AccordionModule, TreeModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
+import { DropdownModule, AccordionModule, TreeModule,TreeTableModule,PanelMenuModule,MenuItem, TreeNode, AutoCompleteModule,
   MessagesModule, MultiSelectModule, DataTableModule, DataListModule,ContextMenuModule,
   MenuModule,OverlayPanelModule, FieldsetModule, PanelModule ,DialogModule, ProgressSpinnerModule} from 'primeng/primeng';
 
@@ -28,13 +28,13 @@ import { CartService } from '../datacart/cart.service';
 
 @NgModule({
   imports: [CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-    DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule,DialogModule,
+    DropdownModule,DataTableModule, DataListModule,TreeModule,TreeTableModule, PanelMenuModule,DialogModule,
     ContextMenuModule,MenuModule,OverlayPanelModule,
     Ng2StickyModule, FieldsetModule, PanelModule,BrowserAnimationsModule, FormsModule,ProgressSpinnerModule],
   declarations: [LandingPanelComponent,Collaspe,MetadataComponent,FileDetailsComponent,
     DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent,NerdmComponent ],
   exports: [LandingPanelComponent],
-  providers: [Title, SearchService,SearchResolve,CartService ],
+  providers: [Title, SearchService,SearchResolve, CartService ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA]
 
 })

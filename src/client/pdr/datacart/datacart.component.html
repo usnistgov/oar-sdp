@@ -1,3 +1,5 @@
+<p-dialog header="Title" [(visible)]="display">
+
 <div >
         <div style="padding-left: 1%">
           <!--
@@ -16,18 +18,18 @@
 
           <p-treeTable selectionMode="checkbox" [value]="dataFiles" [loading]="showSpinner" [(selection)]="selectedData" [style]="{'margin-top':'50px'}">
             <p-header>Data cart</p-header>
-            <!--
+
             <p-column styleClass="col-button">
               <ng-template let-file="rowData" pTemplate="body">
-                  <button type="button" *ngIf = "file.data.downloadStatus != 'no'" pButton icon="faa faa-check"></button>
+                  <button type="button" *ngIf = "file.data.downloadedStatus === true" pButton icon="faa faa-check"></button>
               </ng-template>
             </p-column>
-            -->
+
             <p-column field="resTitle" header="Name"></p-column>
             <p-column field="size" header="Size"></p-column>
             <p-column header="Actions" styleClass="col-button">
               <ng-template let-file="rowData" #download pTemplate="body">
-                <!--<button type="button" *ngIf = "file.data.resTitle.indexOf('.') > 0" pButton label="Clear Item Status" icon="faa faa-times"></button>-->
+                <button type="button" *ngIf = "file.data.resTitle.indexOf('.') > 0" pButton (click)="updateCartEntries(file,false)" label="Clear Item Status" icon="faa faa-times"></button>
                 <button type="button" pButton *ngIf = "file.data.resTitle.indexOf('.') > 0" (click)="removeItem(file)" label="Delete" icon="faa faa-trash"></button>
               </ng-template>
             </p-column>
@@ -45,5 +47,14 @@
         <button type="button" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
           font-size: 18px;border-radius: 0px" (click)="removeByDataId()" pButton label="Remove" type="submit" ></button>
       </div>
+      <div class="ui-g-2 ui-md-2" >
+        <button type="button" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="clearDownloadStatus()" pButton label="Clear Download Status" type="submit" ></button>
+      </div>
+      <div class="ui-g-2 ui-md-2" >
+        <button type="button" style="width: 100%;height: 42px;font-weight: 400;font-style: italic;
+          font-size: 18px;border-radius: 0px" (click)="removeByDownloadStatus()" pButton label="Delete downloaded" type="submit" ></button>
+      </div>
     </div>
   </div>
+</p-dialog>

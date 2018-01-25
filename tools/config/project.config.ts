@@ -45,7 +45,7 @@ export class ProjectConfig extends SeedConfig {
       {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
       {src: 'file-saver/FileSaver.min.js', inject: 'libs'},
       {src: 'underscore/underscore-min.js', inject: 'libs'},
-      // inject into css section
+    // inject into css section
   ];
 
 

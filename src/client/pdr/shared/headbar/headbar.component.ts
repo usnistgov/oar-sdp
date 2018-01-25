@@ -4,7 +4,9 @@ import { SelectItem, TabViewModule } from 'primeng/primeng';
 import { environment } from '../../environment';
 import { CartService } from '../../datacart/cart.service';
 import { CartEntity } from '../../datacart/cart.entity';
+import { DatacartComponent } from '../../datacart/datacart.component';
 import {Observable } from 'rxjs';
+
 
 
 /**
@@ -19,7 +21,6 @@ declare var Ultima: any;
   selector: 'pdr-headbar',
   templateUrl: 'headbar.component.html',
   styleUrls: ['headbar.component.css'],
-  providers: [CartService]
 })
 
 export class HeadbarComponent implements OnInit {
@@ -34,14 +35,17 @@ export class HeadbarComponent implements OnInit {
   cartEntities: CartEntity[];
   //cartLength: number;
   errorMessage: string = 'test';
-  cartLength : Observable<number>;
+  cartLength : number;
 
 
   constructor( private el: ElementRef, private cartService: CartService) {
+
     //this.cartLength = this.cartService.watchStorage();
     //this.getDataCartList();
     //this.cartService.setCartLength(this.cartLength);
-    //this.subscription = this.cartService.watchStorage.subscribe(value => console.log("value --" + value));
+    this.cartService.watchStorage().subscribe(value => {
+      this.cartLength = value;
+    });
     //console.log("hello world");
   }
 
@@ -65,10 +69,14 @@ export class HeadbarComponent implements OnInit {
     return null;
   }
 
+  updateCartStatus()
+  {
+    this.cartService.updateCartDisplayStatus(true);
+  }
+
   /**
    * Get the params OnInit
    */
   ngOnInit() {
-    this.getDataCartList ();
   }
 }

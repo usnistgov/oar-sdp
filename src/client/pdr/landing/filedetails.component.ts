@@ -13,6 +13,7 @@ import { Data } from '../datacart/data';
 export class FileDetailsComponent {
    @Input() fileDetails: any[];
   @Input() record: any[];
+  fileSuccessSpinner: boolean = false;
 
   /**
    * Dependecy injection of the service with reflection by angular
@@ -26,11 +27,22 @@ export class FileDetailsComponent {
        //alert("download here");
    }
 
-  addtoCart(resId:string,resTitle:string,resFilePath:string,id:string,fileName:string,filePath:string,fileSize:number,downloadURL:string,fileFormat:string,dataset:string,downloadStatus:string){
+  addtoCart(resId:string,resTitle:string,resFilePath:string,id:string,fileName:string,filePath:string,fileSize:number,downloadURL:string,fileFormat:string,dataset:string,downloadedStatus:boolean){
+    this.fileSuccessSpinner = true;
     let data : Data;
-    data = {'resId':resId,'resTitle':resTitle,'resFilePath':'resFilePath','id':id,'fileName':fileName,'filePath':filePath,'fileSize':fileSize,'downloadURL':downloadURL,'fileFormat':fileFormat,'downloadStatus':downloadStatus
+    data = {'resId':resId,'resTitle':resTitle,'resFilePath':'resFilePath','id':id,'fileName':fileName,'filePath':filePath,'fileSize':fileSize,'downloadURL':downloadURL,'fileFormat':fileFormat,'downloadedStatus':downloadedStatus
       };
     this.cartService.addDataToCart(data);
+    //this.wait(7000);  //7 seconds in milliseconds
+    this.fileSuccessSpinner = false;
+  }
+
+  wait(ms){
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+      end = new Date().getTime();
+    }
   }
 
  }

@@ -24,7 +24,6 @@ declare var $: any;
   selector: 'data-cart',
   templateUrl: 'datacart.component.html',
   styleUrls: ['datacart.component.css'],
-  providers: [CartService ]
 })
 
 export class DatacartComponent implements OnInit, OnDestroy {
@@ -87,9 +86,9 @@ export class DatacartComponent implements OnInit, OnDestroy {
 
   getDataCartList() {
     this.cartService.getAllCartEntities().then(function (result) {
-      console.log("result" + result.length);
+      //console.log("result" + result.length);
       this.cartEntities = result;
-
+      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
     }.bind(this), function (err) {
       alert("something went wrong while fetching the products");
     });
@@ -112,6 +111,7 @@ export class DatacartComponent implements OnInit, OnDestroy {
           params.append('fileName', selData.data['id'] + selData.data['fileName']);
           params.append('filePath', selData.data['filePath']);
           params.append('resFilePath', selData.data['resFilePath']);
+          this.cartService.updateCartItemDownloadStatus(selData.data['id'],true);
         }
       }
     }
@@ -120,6 +120,21 @@ export class DatacartComponent implements OnInit, OnDestroy {
         this.showSpinner = false;
       }
     );
+  }
+
+  updateCartEntries(row:any,downloadedStatus:boolean) {
+    console.log("id" + JSON.stringify(row.data));
+    this.cartService.updateCartItemDownloadStatus(row.data['id'],downloadedStatus);
+    this.cartService.getAllCartEntities().then(function (result) {
+      //console.log("result" + result.length);
+      this.cartEntities = result;
+      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
+      this.createDataHierarchy();
+
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+
   }
 
   showLoadingSpinner() {
@@ -152,10 +167,49 @@ export class DatacartComponent implements OnInit, OnDestroy {
       //save to localStorage
       this.cartService.saveListOfCartEntities(this.cartEntities);
     }
+
     this.getDataCartList();
     this.createDataHierarchy();
+    this.cartService.setCartLength(this.dataFiles.length);
   }
 
+  /**
+   * Removes all cartInstances that are bound to the productId given.
+   **/
+  removeByDownloadStatus() {
+
+    let dataId: any;
+    // convert the map to an array
+    this.cartService.removeDownloadStatus();
+    this.cartService.getAllCartEntities().then(function (result) {
+      //console.log("result" + result.length);
+      this.cartEntities = result;
+      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
+      this.createDataHierarchy();
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+    this.cartService.setCartLength(this.dataFiles.length);
+  }
+
+  /**
+   * Removes all cartInstances that are bound to the productId given.
+   **/
+  clearDownloadStatus() {
+
+    let dataId: any;
+    // convert the map to an array
+    this.cartService.updateCartDownloadStatus(false);
+    this.cartService.getAllCartEntities().then(function (result) {
+      //console.log("result" + result.length);
+      this.cartEntities = result;
+      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
+      this.createDataHierarchy();
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+    this.cartService.setCartLength(this.dataFiles.length);
+  }
   /**
    * Removes all cartInstances that are bound to the productId given.
    **/
@@ -168,7 +222,7 @@ export class DatacartComponent implements OnInit, OnDestroy {
     this.cartService.saveListOfCartEntities(this.cartEntities);
     this.getDataCartList();
     this.createDataHierarchy();
-    console.log("datafiles" + this.dataFiles.length);
+    //console.log("datafiles" + this.dataFiles.length);
 
   }
 
@@ -188,16 +242,17 @@ export class DatacartComponent implements OnInit, OnDestroy {
 
   createDataHierarchy() {
 
+    console.log("cart ent" + JSON.stringify(this.cartEntities));
 
     let arrayList = this.cartEntities.reduce(function (result, current) {
       result[current.data.resTitle] = result[current.data.resTitle] || [];
       result[current.data.resTitle].push(current);
       return result;
     }, {});
-
+    console.log("list" + JSON.stringify(arrayList));
     this.dataFiles = [];
     //let arrayList = this.cartEntities;
-    console.log("arraylist" + JSON.stringify(arrayList));
+    //console.log("arraylist" + JSON.stringify(arrayList));
     let parentObj: TreeNode = {};
     for (var key in arrayList) {
       let resId = key;
@@ -205,12 +260,11 @@ export class DatacartComponent implements OnInit, OnDestroy {
         parentObj = {
           data: {
             'resTitle': key,
-            'downloadStatus': 'no'
           }
         };
         parentObj.children = [];
         for (let fields of arrayList[key]) {
-          console.log("file path" + fields.data.filePath);
+          //console.log("file path" + fields.data.filePath);
           let fpath = fields.data.filePath.split("/");
           if (fpath.length > 0) {
             let child2: TreeNode = {};
@@ -220,8 +274,8 @@ export class DatacartComponent implements OnInit, OnDestroy {
             let folder = null;
             for (let path in fpath) {
                 //let array = JSON.stringify(parent);
-                console.log("path" + fpath[path]);
-              child2 = this.createChildrenTree(fpath[path],fields.data.id,resId,key,fields.data.downloadURL,fields.data.filePath,fields.data.downloadStatus);
+                //console.log("path" + fpath[path]);
+              child2 = this.createChildrenTree(fpath[path],fields.data.id,resId,key,fields.data.downloadURL,fields.data.filePath,fields.data.downloadedStatus);
               parent.children.push(child2);
               parent = child2;
               }
@@ -243,11 +297,12 @@ export class DatacartComponent implements OnInit, OnDestroy {
         parentObj.children = values;
         this.dataFiles.push(parentObj);
         }
-        console.log(JSON.stringify(this.dataFiles));
+        //console.log(JSON.stringify(this.dataFiles));
     }
+
   }
 
-  createChildrenTree(path: string,id:string,resId:string,resTitle:string,downloadURL:string,resFilePath:string,downloadStatus:string){
+  createChildrenTree(path: string,id:string,resId:string,resTitle:string,downloadURL:string,resFilePath:string,downloadedStatus:string){
    let child1:TreeNode = {};
    child1 = {
       data: {
@@ -257,7 +312,7 @@ export class DatacartComponent implements OnInit, OnDestroy {
           'resTitle': path,
           'downloadURL' : downloadURL,
           'resFilePath' : resFilePath,
-          'downloadStatus' : downloadStatus
+          'downloadedStatus' : downloadedStatus
         }
     };
     child1.children = [];

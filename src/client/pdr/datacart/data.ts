@@ -13,6 +13,6 @@ export interface Data {
   fileName: any;
   fileSize: any;
   downloadURL: any;
-  downloadStatus: any;
+  downloadedStatus: boolean;
   fileFormat: any;
 }

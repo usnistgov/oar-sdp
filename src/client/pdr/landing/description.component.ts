@@ -49,7 +49,9 @@ import { Data } from '../datacart/data';
                 <h3 id="files" name="files"><b>Files</b>
                    <a href="{{distdownload}}" class="faa faa-file-archive-o" title="Download All Files" ></a>
                   <a href="javascript:;" (click)="addFilesToCart()" class="faa faa-cart-plus " title="Add All files to datacart" ></a>
-
+                     <span *ngIf="fileSuccessSpinner">
+                        <p-progressSpinner [style]="{width: '25px', height: '25px',left: '93%'}" ></p-progressSpinner>
+                     </span>
                 </h3>
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
@@ -85,6 +87,11 @@ export class DescriptionComponent {
   @Input() record: any[];
   @Input() files: any[];
   @Input() distdownload: string;
+  fileSuccessSpinner:boolean = false;
+  fileDetails: string = '';
+  isFileDetails: boolean = false;
+  isReference: boolean = false;
+  selectedFile: TreeNode;
   private dataFiles: TreeNode[] = [];
 
   /**
@@ -94,10 +101,6 @@ export class DescriptionComponent {
 
   }
 
-  fileDetails: string = '';
-  isFileDetails: boolean = false;
-  isReference: boolean = false;
-  selectedFile: TreeNode;
 
   nodeSelect(event) {
     var test = this.getComponentDetails(this.record["components"], event.node.data);
@@ -133,6 +136,7 @@ export class DescriptionComponent {
     let data: Data;
     let compValue: any;
     console.log("component size" + this.record["components"].length);
+    this.fileSuccessSpinner = true;
     for (let comp of this.record["components"]) {
       if (typeof comp["downloadURL"] != "undefined") {
         console.log("title+++" + comp["title"]);
@@ -146,10 +150,11 @@ export class DescriptionComponent {
           'fileSize': comp["size"],
           'downloadURL': comp["downloadURL"],
           'fileFormat': comp["mediaType"],
-          'downloadStatus' : 'no',
+          'downloadedStatus' : false,
           'resFilePath':''
         };
         this.cartService.addDataToCart(data);
+        //this.fileSuccessSpinner = false;
         data = null;
       }
     }

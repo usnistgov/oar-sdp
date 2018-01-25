@@ -1,5 +1,5 @@
 /*.header__inner {
-    
+
     background: white;
     color: black;
 }
@@ -59,4 +59,23 @@ img {
 
 .textlinks{
     color:white;
+}
+*.icon-blue {color: #0088cc}
+*.icon-grey {color: grey}
+
+i {
+  width:20px;
+  text-align:left;
+}
+
+.faa {
+  position: relative;
+}
+
+.badge{
+  font-size: 10px;
+  color: #fff;
+  padding: 0 5px;
+  vertical-align: top;
+  margin-top: -0.5em
 }

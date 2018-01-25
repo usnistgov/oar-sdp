@@ -160,3 +160,8 @@
   position:relative;
   float:right;
 }
+
+.ui-button.small-button {
+  font-size:.6em;
+}
+
