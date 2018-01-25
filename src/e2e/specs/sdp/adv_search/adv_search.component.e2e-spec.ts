@@ -6,7 +6,7 @@ describe('Advanced Search Page', function() {
   });
 
   it('should display title of advanced search page', async() => {
-
+    browser.sleep(1000);
     var label = element.all(by.css('sdp-advsearch label'));
     expect(label.get(0).getText()).toContain('Advanced Search Builder');
   });
