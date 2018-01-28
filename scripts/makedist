@@ -1,0 +1,98 @@
+#! /bin/bash
+#
+# makedist:  build the package and make the distribution
+#
+set -e
+prog=`basename $0`
+execdir=`dirname $0`
+[ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
+PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+distdir=$PACKAGE_DIR/dist
+
+# Update this list with the names of the individual component names
+# 
+DISTNAMES="sdp pdr"
+
+# handle command line options
+build_dist=
+while [ "$1" != "" ]; do 
+  case "$1" in
+    --dist-dir=*)
+        DIST_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        ;;
+    --dist-dir)
+        shift
+        DIST_DIR=$1
+        ;;
+    --source-dir=*|--dir=*)
+        PACKAGE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        ;;
+    -d|--dir|--source-dir)
+        shift
+        PACKAGE_DIR=$1
+        ;;
+    -*)
+        echo "$prog: unsupported option:" $1
+        false
+        ;;
+    *)
+        (echo :${DISTNAMES}: | sed -e 's/ /:/g' | grep -qs :${1}:) || {
+            echo "${prog}: ${1}: unrecognized distribution name"
+            false
+        }
+        build_dist="$build_dist $1"
+        ;;
+  esac
+  shift
+done
+[ -n "$build_dist" ] || build_dist=$DISTNAMES
+
+true ${DIST_DIR:=$SOURCE_DIR/dist}
+
+mkdir -p $distdir
+
+# set the current version.  This will inject the version into the code, if 
+# needed.
+#
+echo '+' $execdir/setversion.sh
+$execdir/setversion.sh
+[ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
+version=`cat VERSION | awk '{print $2}'`
+vers4fn=`echo $version | sed -re 's#[/\s]+#_#g'`
+
+# install required modules
+npmvers=`npm --version`
+echo '+' npm install
+npm install
+
+for dist in $build_dist; do
+    distname="${dist}-$vers4fn"
+
+    echo '#########################'
+    echo '#'
+    echo "# Building $distname"...
+    echo '#'
+    echo '#########################'
+ 
+    # build the component
+    echo '+' "npm run build.prod.aot -- --app $dist"
+    npm run build.prod.aot -- --app $dist
+
+    # create the dependency file
+    if [ -f "$PACKAGE_DIR/package-lock.json" ]; then
+        echo '+' $execdir/record_deps.py $dist $version package-lock.json \
+                 $npmvers \> dist/${distname}_dep.json
+        $execdir/record_deps.py $dist $version package-lock.json $npmvers \
+                                > $PACKAGE_DIR/dist/${distname}_dep.json
+    else
+        echo ${prog}: WARNING: Unable to create dependency file: \
+             package-lock.json not found
+    fi
+
+    # create the distribution file
+    echo '+' '(cd' $PACKAGE_DIR/dist/prod '&&' \
+             "zip -r ../${distname}.zip) *"
+    (cd $PACKAGE_DIR/dist/prod && zip -qr ../${dist}-${vers4fn}.zip *)
+
+done
+
