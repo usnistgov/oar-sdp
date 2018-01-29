@@ -11,25 +11,18 @@ set -e
 
 [ -f "$DOCKERDIR/env.sh" ] && . env.sh
 
-function installreqs {
-    echo '+' bash $DOCKERDIR/build/installreqs.sh
-    bash $DOCKERDIR/build/installprereqs.sh
-}
-
 function build {
-    echo '+' bash $DOCKERDIR/build/build.sh
-    bash $DOCKERDIR/build/build.sh
+    echo '+' $CODEDIR/scripts/makedist
+    $CODEDIR/scripts/makedist
 }
 
 function test {
-    echo '+' bash $DOCKERDIR/test/test.sh
-    bash $DOCKERDIR/test/test.sh
+    echo '+' $CODEDIR/scripts/testall
+    $CODEDIR/scripts/testall
 }
 
 if echo "$@" | grep -qsw build; then
     build
-elif echo "$@" | grep -qsw install; then
-    installreqs
 fi
 
 if echo "$@" | grep -qsw test; then

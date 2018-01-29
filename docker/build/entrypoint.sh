@@ -14,9 +14,9 @@ set -e
 op=$1
 [ "$op" == "" ] && op=build
 case "$op" in
-    build)
-        echo '+' bash $DOCKERDIR/build/build.sh
-        bash $DOCKERDIR/build/build.sh
+    build|makedist)
+        echo '+' scripts/makedist
+        $CODEDIR/scripts/makedist
         ;;
     shell)
         exec /bin/bash

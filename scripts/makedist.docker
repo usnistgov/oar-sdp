@@ -1,0 +1,23 @@
+#! /bin/bash
+#
+# build.sh:  build the package
+#
+prog=`basename $0`
+execdir=`dirname $0`
+[ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
+PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+docker_dir=${PACKAGE_DIR}/docker
+
+# (re-)build the docker containers
+$docker_dir/dockbuild.sh -q || {
+    echo "${prog}: Failed to build docker containers; see docker/dockbuild.log" \
+         "for details."
+    false
+}
+
+$docker_dir/makedist $@
+
+
+
+
+
