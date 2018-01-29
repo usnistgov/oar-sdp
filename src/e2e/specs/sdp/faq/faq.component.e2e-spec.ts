@@ -6,9 +6,9 @@ describe('FAQ Page', function() {
   });
 
   it('should display title of faq page', async() => {
-
-    var label = await element(by.css('sdp-faq label'));
-    expect(label.getText()).toContain('FAQ');
+    browser.sleep(1000);
+    var label = await element(by.css('sdp-faq label')).getText();
+    expect(label).toEqual('FAQ');
   });
 
 });

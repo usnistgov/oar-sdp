@@ -6,9 +6,9 @@ describe('Policy Page', function() {
   });
 
   it('should display title of policy page', async() => {
-
-    var label = await element(by.css('sdp-policy label'));
-    expect(label.getText()).toContain('Policy');
+    browser.sleep(1000);
+    var label = await element(by.css('sdp-policy label')).getText();
+    expect(label).toEqual('Policy');
   });
 
 });

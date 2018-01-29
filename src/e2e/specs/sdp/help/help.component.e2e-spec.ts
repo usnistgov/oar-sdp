@@ -6,9 +6,9 @@ describe('Help Page', function() {
   });
 
   it('should display title of help page', async() => {
-
-    var label = await element(by.css('sdp-help label'));
-    expect(label.getText()).toContain('Help');
+    browser.sleep(1000);
+    var label = await element(by.css('sdp-help label')).getText();
+    expect(label).toEqual('Help');
   });
 
 });
