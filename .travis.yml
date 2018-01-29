@@ -3,6 +3,7 @@ node_js: stable
 
 sudo: false
 
+
 addons:
   firefox: latest
   chrome: stable
