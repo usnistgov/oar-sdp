@@ -6,9 +6,9 @@ describe('API Page', function() {
   });
 
   it('should display title of api page', async() => {
-
-    var label = await element(by.css('sdp-api label'));
-    expect(label.getText()).toContain('APIs');
+    browser.sleep(1000);
+    var label = await element(by.css('sdp-api label')).getText();
+    expect(label).toEqual('APIs');
   });
 
 });
