@@ -26,10 +26,10 @@ echo '#' Running unit tests
 echo '+' npm test
 npm test
 
-trap "pkill gulp" EXIT
+trap "{ pkill gulp || true; exit $failed; }" EXIT
 
 # run pdr e2e tests
-failed=
+failed=0
 echo '#' Running pdr e2e tests
 echo '+' npm run build.prod.aot -- --app pdr
 npm run build.prod.aot -- --app pdr
@@ -45,10 +45,7 @@ echo '+' npm run e2e.pdr
 npm run e2e.pdr || failed=1
 echo '#' killing e2e server
 kill $serverid && sleep 1
-[ -z "$failed" ] || {
-    echo "${prog}: pdr e2e tests failed"
-    false
-}
+[ "$failed" -eq 0 ] || echo "${prog}: pdr e2e tests failed"
 
 # run sdp e2e tests
 echo '#' Running sdp e2e tests
@@ -66,8 +63,6 @@ echo '+' npm run e2e.sdp
 npm run e2e.sdp || failed=1
 echo '#' killing e2e server
 kill $serverid && sleep 1
-[ -z "$failed" ] || {
-    echo "${prog}: pdr e2e tests failed"
-    false
-}
+[ "$failed" -eq 0 ] || echo "${prog}: sdp e2e tests failed"
+exit $failed
 
