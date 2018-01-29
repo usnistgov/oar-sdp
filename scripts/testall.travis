@@ -40,7 +40,6 @@ function waitforserver {
         echo "${prog}: e2e mock server apparently died"
         false
     }
-    true
 }
 
 echo '+' $PACKAGE_DIR/scripts/setversion.sh
@@ -54,7 +53,7 @@ npm test
 trap "{ pkill gulp || true; exit $failed; }" EXIT
 
 # run pdr e2e tests
-# set -x
+set -x
 failed=0
 echo '#' Running pdr e2e tests
 echo '+' npm run build.prod.aot -- --app pdr
@@ -68,6 +67,8 @@ serverid=`getserverid`
     false
 }
 waitforserver $serverid
+ls dist
+ls dist/e2e/specs/pdr/*/ || true
 echo '+' npm run e2e.pdr
 npm run e2e.pdr || failed=1
 echo '#' killing e2e server
