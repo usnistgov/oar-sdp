@@ -1,0 +1,73 @@
+#! /bin/bash
+#
+# testall:  run all package tests
+#
+set -e
+prog=`basename $0`
+execdir=`dirname $0`
+[ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
+PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+
+function getserverid {
+#    set -x
+    npmid=`pgrep -P $$ npm` || return 0
+    [ -n "$npmid" ] || return 0
+    gulpshid=`pgrep -P $npmid sh` || return 0
+    [ -n "$gulpshid" ] || return 0
+    pgrep -P $gulpshid gulp
+#    set +x
+}
+
+echo '+' $PACKAGE_DIR/scripts/setversion.sh
+$PACKAGE_DIR/scripts/setversion.sh
+
+# run unit tests
+echo '#' Running unit tests
+echo '+' npm test
+npm test
+
+trap "pkill gulp" EXIT
+
+# run pdr e2e tests
+failed=
+echo '#' Running pdr e2e tests
+echo '+' npm run build.prod.aot -- --app pdr
+npm run build.prod.aot -- --app pdr
+echo '+' npm run serve.e2e -- --app pdr '&'
+npm run serve.e2e -- --app pdr &
+sleep 10
+serverid=`getserverid`
+[ -n "$serverid" ] || {
+    echo "${prog}: Failed to start e2e test server"
+    false
+}
+echo '+' npm run e2e.pdr
+npm run e2e.pdr || failed=1
+echo '#' killing e2e server
+kill $serverid && sleep 1
+[ -z "$failed" ] || {
+    echo "${prog}: pdr e2e tests failed"
+    false
+}
+
+# run sdp e2e tests
+echo '#' Running sdp e2e tests
+echo '+' npm run build.prod.aot -- --app sdp
+npm run build.prod.aot -- --app sdp
+echo '+' npm run serve.e2e -- --app sdp '&'
+npm run serve.e2e -- --app sdp &
+sleep 10
+serverid=`getserverid`
+[ -n "$serverid" ] || {
+    echo "${prog}: Failed to start e2e test server"
+    false
+}
+echo '+' npm run e2e.sdp
+npm run e2e.sdp || failed=1
+echo '#' killing e2e server
+kill $serverid && sleep 1
+[ -z "$failed" ] || {
+    echo "${prog}: pdr e2e tests failed"
+    false
+}
+
