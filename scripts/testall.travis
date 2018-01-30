@@ -12,7 +12,7 @@ function getserverid {
     # set -x
     children=`pgrep -P $$`
     for pid in $children; do
-        ps -wwp $pid 1>&2 || true
+        # ps -wwp $pid 1>&2 || true
         npmid=`pgrep -P $pid npm` || true
         [ -z "$npmid" ] || break
     done
@@ -54,7 +54,7 @@ npm test
 trap "{ pkill gulp || true; exit $failed; }" EXIT
 
 # run pdr e2e tests
-set -x
+# set -x
 failed=0
 echo '#' Running pdr e2e tests
 echo '+' npm run build.prod.aot -- --app pdr
@@ -68,8 +68,6 @@ serverid=`getserverid`
     false
 }
 waitforserver $serverid
-ls dist
-ls dist/e2e/specs/pdr/*/ || true
 echo '+' npm run e2e.pdr
 npm run e2e.pdr || failed=1
 echo '#' killing e2e server
