@@ -12,6 +12,7 @@ function getserverid {
     # set -x
     children=`pgrep -P $$`
     for pid in $children; do
+        ps -wwp $pid 1>&2 || true
         npmid=`pgrep -P $pid npm` || true
         [ -z "$npmid" ] || break
     done
@@ -25,8 +26,8 @@ function getserverid {
 function waitforserver {
     readystr="Serving files from:"
     timer=60
-    until { [ $timer -le 0 ] || egrep -qs "$readystr" mockserver.log || \
-            ps -p $serverid >/dev/null 2>&1; }; do
+    until { [ $timer -le 0 ] || egrep -qs "$readystr" mockserver.log; }; do
+        ps -p $serverid >/dev/null 2>&1 || break
         sleep 2
         let timer-=2
     done
