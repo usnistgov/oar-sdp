@@ -8,6 +8,20 @@ execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 
+components="pdr sdp"
+args="$@"
+[ -n "$args" ] || args=$components
+unrec=
+for arg in $args; do
+    { echo " $components --unitonly " | grep -qs " $arg "; } || {
+        unrec="$unrec $arg"
+    }
+done
+[ -z "$unrec" ] || {
+    echo "${prog}: Unrecognized arguments: $unrec"
+    false
+}
+
 function getserverid {
     # set -x
     children=`pgrep -P $$`
@@ -46,51 +60,60 @@ function waitforserver {
 echo '+' $PACKAGE_DIR/scripts/setversion.sh
 $PACKAGE_DIR/scripts/setversion.sh
 
+failed=0
+
 # run unit tests
 echo '#' Running unit tests
 echo '+' npm test
-npm test
+npm test || failed=1
+
+if { echo " $args " | grep -qs " --unitonly "; }; then
+    exit $failed
+fi
 
 trap "{ pkill gulp || true; exit $failed; }" EXIT
 
-# run pdr e2e tests
-# set -x
-failed=0
-echo '#' Running pdr e2e tests
-echo '+' npm run build.prod.aot -- --app pdr
-npm run build.prod.aot -- --app pdr
-echo '+' npm run serve.e2e -- --app pdr '# in background'
-{ npm run serve.e2e -- --app pdr | tee mockserver.log; } &
-sleep 2
-serverid=`getserverid`
-[ -n "$serverid" ] || {
-    echo "${prog}: Failed to start e2e mock server"
-    false
-}
-waitforserver $serverid
-echo '+' npm run e2e.pdr
-npm run e2e.pdr || failed=1
-echo '#' killing e2e server
-kill $serverid && sleep 1
-[ "$failed" -eq 0 ] || echo "${prog}: pdr e2e tests failed"
+if { echo " $args " | grep -qs " pdr "; }; then
+    # run pdr e2e tests
+    # set -x
+    echo '#' Running pdr e2e tests
+    echo '+' npm run build.prod.aot -- --app pdr
+    npm run build.prod.aot -- --app pdr
+    echo '+' npm run serve.e2e -- --app pdr '# in background'
+    { npm run serve.e2e -- --app pdr | tee mockserver.log; } &
+    sleep 2
+    serverid=`getserverid`
+    [ -n "$serverid" ] || {
+        echo "${prog}: Failed to start e2e mock server"
+        false
+    }
+    waitforserver $serverid
+    echo '+' npm run e2e.pdr
+    npm run e2e.pdr || failed=2
+    echo '#' killing e2e server
+    kill $serverid && sleep 1
+    [ "$failed" -eq 0 ] || echo "${prog}: pdr e2e tests failed"
+fi
 
-# run sdp e2e tests
-echo '#' Running sdp e2e tests
-echo '+' npm run build.prod.aot -- --app sdp
-npm run build.prod.aot -- --app sdp
-echo '+' npm run serve.e2e -- --app sdp '# in background'
-{ npm run serve.e2e -- --app sdp | tee mockserver.log; } &
-sleep 2
-serverid=`getserverid`
-[ -n "$serverid" ] || {
-    echo "${prog}: Failed to start e2e test server"
-    false
-}
-waitforserver $serverid
-echo '+' npm run e2e.sdp
-npm run e2e.sdp || failed=1
-echo '#' killing e2e server
-kill $serverid && sleep 1
-[ "$failed" -eq 0 ] || echo "${prog}: sdp e2e tests failed"
+if { echo " $args " | grep -qs " sdp "; }; then
+    # run sdp e2e tests
+    echo '#' Running sdp e2e tests
+    echo '+' npm run build.prod.aot -- --app sdp
+    npm run build.prod.aot -- --app sdp
+    echo '+' npm run serve.e2e -- --app sdp '# in background'
+    { npm run serve.e2e -- --app sdp | tee mockserver.log; } &
+    sleep 2
+    serverid=`getserverid`
+    [ -n "$serverid" ] || {
+        echo "${prog}: Failed to start e2e test server"
+        false
+    }
+    waitforserver $serverid
+    echo '+' npm run e2e.sdp
+    npm run e2e.sdp || failed=3
+    echo '#' killing e2e server
+    kill $serverid && sleep 1
+    [ "$failed" -eq 0 ] || echo "${prog}: sdp e2e tests failed"
+fi
+
 exit $failed
-
