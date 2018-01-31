@@ -9,6 +9,6 @@ describe('Help Page', function() {
     browser.sleep(1000);
     var label = await element(by.css('sdp-help label')).getText();
     expect(label).toEqual('Help');
-  });
+  }, 4000);
 
 });

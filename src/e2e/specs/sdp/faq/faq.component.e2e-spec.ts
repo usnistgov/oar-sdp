@@ -9,6 +9,6 @@ describe('FAQ Page', function() {
     browser.sleep(1000);
     var label = await element(by.css('sdp-faq label')).getText();
     expect(label).toEqual('FAQ');
-  });
+  }, 4000);
 
 });
