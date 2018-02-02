@@ -20,9 +20,13 @@ export class CartService {
 
   public cartEntities : CartEntity[];
   storageSub= new BehaviorSubject<number>(0);
+  addCartSpinnerSub = new BehaviorSubject<boolean>(false);
+  addAllCartSpinnerSub = new BehaviorSubject<boolean>(false);
   displayCartSub = new BehaviorSubject<boolean>(false);
   cartSize: number ;
-  displayCart: boolean = false;
+  showAddCartSpinner : boolean = false;
+  showAddAllCartSpinner : boolean = false;
+  displayCart : boolean = false;
   private _storage = localStorage;
 
 
@@ -38,9 +42,18 @@ export class CartService {
     return this.storageSub.asObservable();
   }
 
+  watchAddFileCart(): Observable<any> {
+    return this.addCartSpinnerSub.asObservable();
+  }
+
+  watchAddAllFilesCart(): Observable<any> {
+    return this.addAllCartSpinnerSub.asObservable();
+  }
+
   watchCart(): Observable<any> {
     return this.displayCartSub.asObservable();
   }
+
 
   initCart () {
 
@@ -93,18 +106,19 @@ export class CartService {
    * Returns all the products in the cart form the local storage
    *
    **/
-  updateCartItemDownloadStatus(id:string, status:boolean)  {
+  updateCartItemDownloadStatus(id:string, status:any)  {
     // get the cart
     let myCartMap = this.getCart();
     let cartEntities : CartEntity[] = [];
-
+    console.log("id in cart update" + id);
     // convert the map to an array
     for (let key in myCartMap) {
       let value = myCartMap[key];
       if (value.data.id == id) {
-        console.log("status before" + JSON.stringify(value.data.downloadStatus));
+        console.log("id in cart match update" + id);
+        console.log("status before" + JSON.stringify(value.data.downloadedStatus));
         value.data.downloadedStatus = status;
-        console.log("status after" + JSON.stringify(value.data.downloadStatus));
+        console.log("status after" + JSON.stringify(value.data.downloadedStatus));
       }
       console.log("value" + JSON.stringify(value.data.resId));
       cartEntities.push(value);
@@ -247,22 +261,31 @@ export class CartService {
     this.setCart(cartMap);
     let cart  = this.getAllCartEntities();
     this.setCartLength (this.cartSize);
+    //this.updateFileSpinnerStatus(false);
 
+  }
+
+  updateFileSpinnerStatus(addFileSpinner:boolean)
+  {
+    this.addCartSpinnerSub.next(addFileSpinner);
+  }
+
+  updateAllFilesSpinnerStatus(addAllFilesSpinner:boolean)
+  {
+    this.addAllCartSpinnerSub.next(addAllFilesSpinner);
   }
 
   updateCartDisplayStatus(displayCart:boolean)
   {
     this.displayCartSub.next(displayCart);
   }
-
-
 /**
    * Retrive the cart from local storage
    **/
   private getCart() {
 
     let cartAsString = this._storage.getItem('cart');
-    console.log("cartasstring" + JSON.stringify(cartAsString));
+    //console.log("cartasstring" + JSON.stringify(cartAsString));
     return JSON.parse(cartAsString);
 
   }

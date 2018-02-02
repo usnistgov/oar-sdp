@@ -148,12 +148,7 @@
       </div>
     </div>
   </div></div>
-<p-dialog header="Data Cart" [(visible)]="displayCart" responsive="true" width = "800px" height = "800px" modal = "modal" [style] = "{'border':'1px solid #bdbdbd','height':'550px','width':'1200px'}" styleClass="active">
-  <style type="text/css" >
-    .active {
-      border:1px solid #000000;
-    }
-  </style>
+<p-dialog header="Data Cart" [(visible)]="displayCart" responsive="true" width = "800px" height = "800px" modal = "modal" [style] = "{'border':'1px solid #bdbdbd','height':'550px','width':'1200px','overflow-y': 'scroll'}" styleClass="active">
   <div >
     <div style="padding-left: 1%">
       <!--
@@ -169,36 +164,46 @@
         <p-column [hidden] = "true" field="data.resId" header="resId"></p-column>
       </p-dataTable>
       -->
-
-      <p-treeTable  selectionMode="checkbox" [style] = "{'border':'1px solid #bdbdbd'}" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'50px'}">
-        <p-column styleClass="col-button" [style]="{'width':'110px','word-wrap': 'break-word'}">
+      <div class="ui-g">
+        <div class="ui-g-8 ui-md-8" >
+          <button type="button" (click)="downloadZIP()" pButton label="Download selected" type="submit"></button>
+          <button type="button" (click)="removeByDataId()" pButton label="Remove selected" type="submit"></button>
+          <button type="button" (click)="removeByDownloadStatus()" pButton label="Remove downloaded" type="submit"></button>
+        </div>
+      </div>
+      <p-treeTable  selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px'}">
+        <p-column styleClass="col-button" [style]="{'width':'65px','word-wrap': 'break-word'}">
           <ng-template let-file="rowData" pTemplate="body">
-            <button type="button" *ngIf = "file.data.downloadedStatus === true" class="small-button" pButton icon="faa faa-check"></button>
+            <button type="button" *ngIf = "file.data.downloadedStatus === 'downloaded' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-60px" class="small-button" pButton icon="faa faa-check"></button>
           </ng-template>
         </p-column>
 
-        <p-column field="resTitle" [style]="{'width':'110px','word-wrap': 'break-word'}" header="Name"></p-column>
-        <p-column field="size" [style]="{'width':'100px','word-wrap': 'break-word'}" header="Size"></p-column>
+        <p-column field="resTitle" [style]="{'width':'210px','word-wrap': 'break-word'}" header="Name">
+            <ng-template let-file="rowData" pTemplate="body">
+              <a href="{{file.data.downloadURL}}" target="_blank" *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.resTitle}}</a>
+              <span *ngIf = "file.data.resTitle.indexOf('.') < 0">{{file.data.resTitle}}</span>
+            </ng-template>
+        </p-column>
+        <p-column field="downloadedStatus" [style]="{'width':'50px','word-wrap': 'break-word'}" header="Status">
+          <ng-template let-file="rowData" pTemplate="body">
+            <span *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.downloadedStatus}}</span>
+          </ng-template>
+        </p-column>
+        <p-column field="size" [style]="{'width':'200px','word-wrap': 'break-word'}" header="Size"></p-column>
+        <!--
         <p-column header="Actions" [style]="{'width':'150px','word-wrap': 'break-word'}" styleClass="col-button">
           <ng-template let-file="rowData" #download pTemplate="body">
             <button type="button"  *ngIf = "file.data.resTitle.indexOf('.') > 0" pButton (click)="updateCartEntries(file,false)" label="Clear Item Status" icon="faa faa-times"></button>
             <button type="button" pButton *ngIf = "file.data.resTitle.indexOf('.') > 0" (click)="removeItem(file)" label="Delete" icon="faa faa-trash"></button>
           </ng-template>
         </p-column>
+        -->
       </p-treeTable>
       <!--
       <div *ngIf="showSpinner === true" style="left: 50%">
         <p-progressSpinner [style]="{width: '50px', height: '50px',left: '50%'}" ></p-progressSpinner>
       </div>
       -->
-    </div>
-    <div class="ui-g">
-      <div class="ui-g-8 ui-md-8" >
-        <button type="button" (click)="downloadZIP()" pButton label="Download Zip" type="submit"></button>
-        <button type="button" (click)="removeByDataId()" pButton label="Remove" type="submit"></button>
-        <button type="button" (click)="clearDownloadStatus()" pButton label="Clear Download Status" type="submit"></button>
-        <button type="button" (click)="removeByDownloadStatus()" pButton label="Delete downloaded items" type="submit"></button>
-      </div>
     </div>
   </div>
 </p-dialog>

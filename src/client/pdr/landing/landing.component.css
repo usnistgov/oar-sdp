@@ -162,6 +162,34 @@
 }
 
 .ui-button.small-button {
-  font-size:.6em;
+  font-size:.5em;
+  background-color: green;
+  margin-bottom: 1em;
 }
 
+:host /deep/ .ui-progress-spinner-svg {
+  top:50%;
+}
+
+:host /deep/ p-dialog .ui-dialog {
+  background-color: #ebffff;
+}
+
+:host /deep/ .ui-dialog .ui-dialog-titlebar{
+  background-color: #232F3E;
+  color: #fff;
+}
+
+:host /deep/ .ui-treetable .ui-treetable-row td {
+  border:1px solid #bdbdbd;
+}
+
+:host /deep/ .ui-treetable thead tr th {
+  border:1px solid #bdbdbd;
+  background-color: lightgrey;
+}
+
+:host /deep/ .ui-chkbox .ui-chkbox-box {
+  width: 1.4em;
+  height: 1.4em;
+}

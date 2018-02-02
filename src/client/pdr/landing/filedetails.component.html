@@ -7,12 +7,11 @@
             <span *ngIf="!fileDetails['downloadURL']"> Subcollection</span>
           </span>
       <!-- <button pButton style="position:relative; float:right;" class="ui-button-success" type="button" (click)="download()" label="Download"></button> -->
-      <!--
-      <span *ngIf="fileSuccessSpinner" style="float:right;">
-        <p-progressSpinner [style]="{width: '25px', height: '25px',float: 'right'}" ></p-progressSpinner>
+      <span [hidden] ="!addFileSpinner" style="float:right;">
+        <p-progressSpinner [style]="{width: '20px', height: '20px', float: 'right'}" ></p-progressSpinner>
       </span>
-      -->
-      <a style="; float:right;" href="javascript:;" (click)='addtoCart(record["@id"], record["title"], fileDetails["title"], fileDetails["title"],fileDetails["filepath"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource",false)' class="faa faa-cart-plus faa-2x" title="Add to Data cart" ></a>
+
+      <a style="; float:right;" href="javascript:;" (click)='addtoCart(record["@id"], record["title"], fileDetails["title"], fileDetails["title"],fileDetails["filepath"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource",null)' class="faa faa-cart-plus faa-2x" title="Add to Data cart" ></a>
       <a style=""  href="{{this.fileDetails['downloadURL']}}" class="faa faa-download " title="Download File" ></a>
       <h4><span *ngIf="fileDetails['title']"> {{ fileDetails["title"]}} </span></h4>
       <br><span class="font10">Path: <b>{{fileDetails["filepath"]}}</b></span>

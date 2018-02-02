@@ -19,6 +19,7 @@ import { CartEntity } from '../datacart/cart.entity';
 import { Observable } from 'rxjs/Observable';
 import {ProgressSpinnerModule, DialogModule} from 'primeng/primeng';
 import * as __ from 'underscore';
+import {isNullOrUndefined} from "util";
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -73,6 +74,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     dataFiles: TreeNode[] = [];
     childNode: TreeNode = {};
     display: boolean = false;
+    index:any = {};
     private distApi : string = environment.DISTAPI;
     private _routeParamsSubscription: Subscription;
     private files: TreeNode[] = [];
@@ -430,7 +432,7 @@ closeDialog(){
     this.cartService.getAllCartEntities().then(function (result) {
       //console.log("result" + result.length);
       this.cartEntities = result;
-      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
+      //console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
     }.bind(this), function (err) {
       alert("something went wrong while fetching the products");
     });
@@ -442,6 +444,9 @@ closeDialog(){
     let params: URLSearchParams = new URLSearchParams();
     let folderName: string;
     this.showSpinner = true;
+    for (let p of params.getAll('id')){
+      console.log('params before' + p);
+    }
     for (let selData of this.selectedData) {
       if (selData.data['filePath'] != null) {
         if (selData.data['filePath'].split(".").length > 1) {
@@ -453,24 +458,33 @@ closeDialog(){
           params.append('fileName', selData.data['id'] + selData.data['fileName']);
           params.append('filePath', selData.data['filePath']);
           params.append('resFilePath', selData.data['resFilePath']);
-          this.cartService.updateCartItemDownloadStatus(selData.data['id'],true);
+          params.append('id', selData.data['id']);
+          console.log('params selected' + selData.data['id']);
+          this.cartService.updateCartItemDownloadStatus(selData.data['id'],'downloading');
         }
       }
     }
     this.downloadFile(params).subscribe(blob => {
         saveAs(blob, "download.zip");
         this.showSpinner = false;
+        for (let p of params.getAll('id')){
+          this.cartService.updateCartItemDownloadStatus(p,'downloaded');
+          console.log('params' + p);
+        }
+      this.dataFiles = [];
+      this.getDataCartList();
+      this.createDataCartHierarchy();
       }
     );
+    this.selectedData = [];
   }
 
-  updateCartEntries(row:any,downloadedStatus:boolean) {
+  updateCartEntries(row:any,downloadedStatus:any) {
     console.log("id" + JSON.stringify(row.data));
     this.cartService.updateCartItemDownloadStatus(row.data['id'],downloadedStatus);
     this.cartService.getAllCartEntities().then(function (result) {
       //console.log("result" + result.length);
       this.cartEntities = result;
-      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
       this.createDataCartHierarchy();
 
     }.bind(this), function (err) {
@@ -571,14 +585,14 @@ closeDialog(){
 
   createDataCartHierarchy() {
 
-    console.log("cart ent" + JSON.stringify(this.cartEntities));
+    //console.log("cart ent" + JSON.stringify(this.cartEntities));
 
     let arrayList = this.cartEntities.reduce(function (result, current) {
       result[current.data.resTitle] = result[current.data.resTitle] || [];
       result[current.data.resTitle].push(current);
       return result;
     }, {});
-    console.log("list" + JSON.stringify(arrayList));
+    //console.log("list" + JSON.stringify(arrayList));
     this.dataFiles = [];
     //let arrayList = this.cartEntities;
     //console.log("arraylist" + JSON.stringify(arrayList));
@@ -610,6 +624,10 @@ closeDialog(){
             }
           }
         }
+
+        console.log("final output" + JSON.stringify(parentObj));
+
+        /*
         let tmp:any ={};
         parentObj.children.forEach((o) => {
           const path = o.data.filePath;
@@ -622,13 +640,57 @@ closeDialog(){
 
         });
 
-        let values = Object.keys(tmp).map(key => tmp[key]);
-        parentObj.children = values;
+*/
+
+        //this.walkData(parentObj[0], parentObj,0);
+
+        //let values = Object.keys(tmp).map(key => tmp[key]);
+        //parentObj.children = values;
+        this.walkData(parentObj, parentObj, 0);
+        //parentObj = tmp;
         this.dataFiles.push(parentObj);
+        this.index = {};
+        //this.dataFiles.push(parentObj);
       }
-      //console.log(JSON.stringify(this.dataFiles));
     }
 
+  }
+
+  walkData(inputArray, parent, level){
+    level = level || '';
+    if (inputArray.children) {
+      let copy = inputArray.children.filter((item) => { return true});
+      copy.forEach((item) => {
+        var path = inputArray.data && inputArray.data.filePath ?
+          inputArray.data.filePath : 'root';
+        this.walkData(item, inputArray, level + '/' + path);
+      });
+    }
+    if(inputArray.data && inputArray.data.filePath) {
+      var key = level + inputArray.data.filePath;
+      if (!(key in this.index)) {
+        this.index[key] = inputArray;
+      } else {
+        //debugger;
+        inputArray.children.forEach((item) => {
+          this.index[key].children.push(item);
+        })
+        var indx = 0;
+        var found = false;
+        parent.children.forEach((item) => {
+          if (!found &&
+            item.data.filePath === inputArray.data.filePath &&
+            item.data.id === inputArray.data.id
+          ){
+            found = true;
+          }
+          else if(!found) {
+            indx++;
+          }
+        });
+        parent.children.splice(indx, 1);
+      }
+    }
   }
 
   createDataCartChildrenTree(path: string,id:string,resId:string,resTitle:string,downloadURL:string,resFilePath:string,downloadedStatus:string){
