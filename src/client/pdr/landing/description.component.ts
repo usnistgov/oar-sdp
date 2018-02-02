@@ -38,15 +38,22 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
             </div>
             <div>
 
-             <b>Data Access:</b> {{ record['accessLevel'] }}
-                <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
+             <h3><b>Access To Data:</b></h3><br> 
+             <span *ngIf="record['accessLevel'] === 'public'"><i class="faa faa-globe"></i> 
+                This data is public. 
+             </span>
+             <span *ngIf="record['accessLevel'] === 'restricted public'"><i class="faa faa-lock"></i> 
+                This needs access permissions. 
+             </span>   
+                <span *ngIf="record['rights']"> The access rights are {{ record.rights }} </span>
                 <br>
                 
-                <span style="margin-left:0em" *ngIf="isAccessPage"><b>Data Access Page:</b> Available at the link below
+                <span style="margin-left:0em" *ngIf="isAccessPage">Data Available at the following links
                     <br>   
-                    <span style="padding-left:10em" *ngFor="let title of accessTitles; let i =index">
-                      <a href="{{accessUrls[i]}}">{{title}}</a> 
-                    </span>
+                    <span style="padding-left:2.75em" *ngFor="let title of accessTitles; let i =index">
+                     <i class="faa faa-external-link"> <a href="{{accessUrls[i]}}">{{title}}</a> 
+                     </i><br>
+                     </span>
                 </span>
              <br>
              <br>
