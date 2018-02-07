@@ -183,7 +183,7 @@ export class CartService {
     for (let key in myCartMap) {
       let value = myCartMap[key];
       console.log("status before" + JSON.stringify(value.data.downloadStatus));
-      if (value.data.downloadedStatus == false) {
+      if (value.data.downloadedStatus == null ) {
         console.log("status after" + JSON.stringify(value.data.downloadStatus));
         console.log("value" + JSON.stringify(value.data.resId));
         cartEntities.push(value);
