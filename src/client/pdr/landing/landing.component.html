@@ -171,13 +171,13 @@
           <button type="button" (click)="removeByDownloadStatus()" pButton label="Remove downloaded" type="submit"></button>
         </div>
       </div>
-      <p-treeTable  selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px'}">
+      <p-treeTable selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px'}">
         <p-column styleClass="col-button" [style]="{'width':'65px','word-wrap': 'break-word'}">
           <ng-template let-file="rowData" pTemplate="body">
             <button type="button" *ngIf = "file.data.downloadedStatus === 'downloaded' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-60px" class="small-button" pButton icon="faa faa-check"></button>
+            <button type="button" *ngIf = "file.data.downloadedStatus === 'downloading' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-60px" class="small-button-yellow" pButton icon="faa faa-check"></button>
           </ng-template>
         </p-column>
-
         <p-column field="resTitle" [style]="{'width':'210px','word-wrap': 'break-word'}" header="Name">
             <ng-template let-file="rowData" pTemplate="body">
               <a href="{{file.data.downloadURL}}" target="_blank" *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.resTitle}}</a>

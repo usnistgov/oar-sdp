@@ -20,6 +20,7 @@ import { Observable } from 'rxjs/Observable';
 import {ProgressSpinnerModule, DialogModule} from 'primeng/primeng';
 import * as __ from 'underscore';
 import {isNullOrUndefined} from "util";
+
 //import * as jsPDF  from 'jspdf';
 
 declare var Ultima: any;
@@ -461,22 +462,35 @@ closeDialog(){
           params.append('id', selData.data['id']);
           console.log('params selected' + selData.data['id']);
           this.cartService.updateCartItemDownloadStatus(selData.data['id'],'downloading');
+
         }
       }
     }
     this.downloadFile(params).subscribe(blob => {
         saveAs(blob, "download.zip");
         this.showSpinner = false;
-        for (let p of params.getAll('id')){
-          this.cartService.updateCartItemDownloadStatus(p,'downloaded');
-          console.log('params' + p);
+    });
+
+    for (let selData of this.selectedData) {
+      if (selData.data['filePath'] != null) {
+        if (selData.data['filePath'].split(".").length > 1) {
+          console.log("resId" + selData.data['resId']);
+          console.log("filepath" + selData.data['filePath'])
+          this.cartService.updateCartItemDownloadStatus(selData.data['id'],'downloaded');
         }
-      this.dataFiles = [];
-      this.getDataCartList();
-      this.createDataCartHierarchy();
       }
-    );
-    this.selectedData = [];
+    }
+
+    this.cartService.getAllCartEntities().then(function (result) {
+      //console.log("result" + result.length);
+
+      this.cartEntities = result;
+      console.log("hello" + JSON.stringify(this.cartEntities));
+      this.createDataCartHierarchy();
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+
   }
 
   updateCartEntries(row:any,downloadedStatus:any) {
@@ -653,7 +667,6 @@ closeDialog(){
         //this.dataFiles.push(parentObj);
       }
     }
-
   }
 
   walkData(inputArray, parent, level){
