@@ -11,7 +11,7 @@ distdir=$PACKAGE_DIR/dist
 
 # Update this list with the names of the individual component names
 # 
-DISTNAMES="sdp pdr"
+DISTNAMES="sdp pdr-lps"
 
 # handle command line options
 build_dist=
@@ -38,6 +38,7 @@ while [ "$1" != "" ]; do
     *)
         (echo :${DISTNAMES}: | sed -e 's/ /:/g' | grep -qs :${1}:) || {
             echo "${prog}: ${1}: unrecognized distribution name"
+            echo "${prog}: recognized names:" $DISTNAMES
             false
         }
         build_dist="$build_dist $1"
@@ -67,6 +68,8 @@ npm install
 
 for dist in $build_dist; do
     distname="${dist}-$vers4fn"
+    angproj=$dist
+    [ "$angproj" != "pdr-lps" ] || angproj=pdr
 
     echo '#########################'
     echo '#'
@@ -75,8 +78,8 @@ for dist in $build_dist; do
     echo '#########################'
  
     # build the component
-    echo '+' "npm run build.prod.aot -- --app $dist"
-    npm run build.prod.aot -- --app $dist
+    echo '+' "npm run build.prod.aot -- --app $angproj"
+    npm run build.prod.aot -- --app $angproj
 
     # create the dependency file
     if [ -f "$PACKAGE_DIR/package-lock.json" ]; then
