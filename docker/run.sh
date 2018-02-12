@@ -26,10 +26,14 @@ EOF
 }
 
 set -e
+set -x
 
 doinstall=
 dodockbuild=
+distvol=
+distdir=
 ops=
+args=()
 while [ "$1" != "" ]; do
     case "$1" in
         shell|build|install|test)
@@ -38,13 +42,27 @@ while [ "$1" != "" ]; do
         -d|--docker-build)
             dodockbuild=1
             ;;
+        --dist-dir)
+            shift
+            distdir="$1"
+            mkdir -p $distdir
+            distdir=`(cd $distdir > /dev/null 2>&1; pwd)`
+            distvol="-v ${distdir}:/app/dist"
+            args=(${args[@]} "--dist-dir=/app/dist")
+            ;;
+        --dist-dir=*)
+            distdir=`echo $1 | sed -e 's/[^=]*=//'`
+            mkdir -p $distdir
+            distdir=`(cd $distdir > /dev/null 2>&1; pwd)`
+            distvol="-v ${distdir}:/app/dist"
+            args=(${args[@]} "--dist-dir=/app/dist")
+            ;;
         -h|--help)
             usage
             exit
             ;;
         -*)
-            echo "${prog}: unsupported option:" $1
-            false
+            args=(${args[@]} $1)
             ;;
         *)
             echo "${prog}: unsupported operation:" $1
@@ -64,13 +82,13 @@ build_script=$CODEDIR/docker/build/build.sh
 if echo "$ops" | egrep -qsw 'test|shell'; then
     [ -n "$dodockbuild" ] && $execdir/dockbuild.sh test
 
-    echo '+' docker run $ti --rm $volopt $testopts oarsdp/test "$ops"
-    docker run $ti --rm $volopt $testopts oarsdp/test "$ops"
+    echo '+' docker run $ti --rm $volopt $testopts $distvol oarsdp/test "$ops" "${args[@]}"
+    exec docker run $ti --rm $volopt $testopts $distvol oarsdp/test "$ops" "${args[@]}"
 else
     # build only
     [ -n "$dodockbuild" ] && $execdir/dockbuild.sh build
 
-    echo '+' docker run --rm $volopt oarsdp/build
-    docker run --rm $volopt oarsdp/build
+    echo '+' docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}"
+    exec docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}"
 fi
 

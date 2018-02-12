@@ -7,7 +7,8 @@ prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
-distdir=$PACKAGE_DIR/dist
+DIST_DIR=$PACKAGE_DIR/dist
+builddir=$PACKAGE_DIR/dist
 
 # Update this list with the names of the individual component names
 # 
@@ -49,8 +50,7 @@ done
 [ -n "$build_dist" ] || build_dist=$DISTNAMES
 
 true ${DIST_DIR:=$SOURCE_DIR/dist}
-
-mkdir -p $distdir
+mkdir -p $DIST_DIR $builddir
 
 # set the current version.  This will inject the version into the code, if 
 # needed.
@@ -84,18 +84,18 @@ for dist in $build_dist; do
     # create the dependency file
     if [ -f "$PACKAGE_DIR/package-lock.json" ]; then
         echo '+' $execdir/record_deps.py $dist $version package-lock.json \
-                 $npmvers \> dist/${distname}_dep.json
+                 $npmvers \> $DIST_DIR/${distname}_dep.json
         $execdir/record_deps.py $dist $version package-lock.json $npmvers \
-                                > $PACKAGE_DIR/dist/${distname}_dep.json
+                                > $DIST_DIR/${distname}_dep.json
     else
         echo ${prog}: WARNING: Unable to create dependency file: \
              package-lock.json not found
     fi
 
     # create the distribution file
-    echo '+' '(cd' $PACKAGE_DIR/dist/prod '&&' \
-             "zip -r ../${distname}.zip) *"
-    (cd $PACKAGE_DIR/dist/prod && zip -qr ../${dist}-${vers4fn}.zip *)
+    echo '+' '(cd' $builddir/prod '&&' \
+             "zip -r $DIST_DIR/${distname}.zip) *"
+    (cd $builddir/prod && zip -qr $DIST_DIR/${dist}-${vers4fn}.zip *)
 
 done
 

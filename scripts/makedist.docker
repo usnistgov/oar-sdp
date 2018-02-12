@@ -15,7 +15,8 @@ $docker_dir/dockbuild.sh -q || {
     false
 }
 
-$docker_dir/makedist $@
+echo $docker_dir/makedist "$@"
+$docker_dir/makedist "$@"
 
 
 

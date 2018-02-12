@@ -45,8 +45,9 @@ RUN grep -Pqs ":${devuid}:\d+:" /etc/passwd || \
             --gid $opuid --uid $opuid $opuser
 
 
-RUN mkdir -p /home/build
 VOLUME /home/build
+VOLUME /home/dist
+RUN mkdir -p /home/build /home/dist
 WORKDIR /home/build
 
 ENV CODEDIR /home/build
