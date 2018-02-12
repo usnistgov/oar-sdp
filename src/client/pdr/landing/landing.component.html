@@ -123,11 +123,14 @@
                             <button style="position:relative; float:right;" type="button" pButton icon="faa faa-close" (click)="closeDialog()"></button>
                         </p-header>
 
-                        Copy the recommended text to cite this resource: <br><br>
+                        Copy the recommended text to cite this resource: <br>
+                        <span style="font-size:smaller">Click on the text below to edit if required</span><br><br>
+                        
+                        <!-- <textarea rows="5" cols="30" pInputTextarea autoResize="autoResize">{{ citeString }}</textarea> -->
+                        <p contenteditable="true">{{ citeString }}</p>
+                        <!-- <textarea style="height:120px" #inputTarget class="form-control" [(ngModel)]="citeString" disabled="false" placeholder="{{ citeString }}" >
 
-                        <textarea style="height:120px" #inputTarget class="form-control" [(ngModel)]="citeString" disabled="true" placeholder="{{ citeString }}" >
-
-                        </textarea>
+                        </textarea> -->
                         <!-- <span class="input-group-btn">
                         <button class="copyCite" [class.btn-success]= "isCopied" type="button" [ngxClipboard]="inputTarget" (cbOnSuccess)="isCopied = true">copy</button>
                         </span> -->

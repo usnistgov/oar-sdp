@@ -15,7 +15,6 @@ import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
 import { environment } from '../environment';
 //import * as jsPDF  from 'jspdf';
-
 declare var Ultima: any;
 declare var jQuery: any;
 
@@ -94,6 +93,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     this.createDataHierarchy();
     if(this.recordDisplay['doi'] !== undefined && this.recordDisplay['doi'] !== "" )
       this.isDOI = true;
+      
     if(this.recordDisplay['contactPoint'].hasEmail !== undefined && this.recordDisplay['contactPoint'].hasEmail !== "")
       this.isEmail = true;
 
@@ -230,11 +230,18 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
                         if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
                         this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
                     }
-                    if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== 'undefined' )
+
+                    if(this.recordDisplay['issued'] !==  null && this.recordDisplay['issued'] !==  undefined){
+                      this.citeString += " ("+ this.recordDisplay['issued']+") ";
+                    }
+                    if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== undefined )
                         this.citeString += this.recordDisplay['title'] +", ";
-                    if(this.recordDisplay['doi']!== null && this.recordDisplay['doi']!== 'undefined' )
-                        this.citeString += this.recordDisplay['doi'];
-                    this.citeString += ", access:"+date;
+                    if(this.isDOI)   this.citeString += this.recordDisplay['doi'];
+                    if(this.recordDisplay['publisher']){
+                      if(this.recordDisplay['publisher'].name !== null && this.recordDisplay['publisher'].name !== undefined)
+                      this.citeString += this.recordDisplay['publisher'].name;
+                    }
+                    this.citeString += ", (Accessed: "+date+")";
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
@@ -412,4 +419,5 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       return true;
     }
   }
+  
 }
