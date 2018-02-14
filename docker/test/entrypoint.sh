@@ -12,21 +12,23 @@ set -e
 [ -f "$DOCKERDIR/env.sh" ] && . env.sh
 
 function build {
-    echo '+' $CODEDIR/scripts/makedist
-    $CODEDIR/scripts/makedist
+    echo '+' $CODEDIR/scripts/makedist "$@"
+    $CODEDIR/scripts/makedist "$@"
 }
 
 function test {
-    echo '+' $CODEDIR/scripts/testall
-    $CODEDIR/scripts/testall
+    echo '+' $CODEDIR/scripts/testall "$@"
+    $CODEDIR/scripts/testall "$@"
 }
 
 if echo "$@" | grep -qsw build; then
-    build
+    args=`echo "$@" | sed -re 's/\bbuild\b//g'`
+    build "$args"
 fi
 
 if echo "$@" | grep -qsw test; then
-    test
+    args=`echo "$@" | sed -re 's/\btest\b//g'`
+    test "$args"
 fi
 
 if echo "$@" | grep -qsw shell; then

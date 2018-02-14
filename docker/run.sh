@@ -12,7 +12,8 @@ function usage {
 $prog - build and optionally test the software in this repo
 
 SYNOPSIS
-  $prog [-d|--docker-build] [build|test|install|shell ...]
+  $prog [-d|--docker-build] [build|test|install|shell ...] [ sdp|pdr-lps ... ]
+        
 
 ARGS
   build     build the software
@@ -20,13 +21,15 @@ ARGS
   install   just install the prerequisites (use with shell)
   shell     start a shell in the docker container used to build and test
 
+  sdp|pdr-lps  components to build or test
+
 OPTIONS
   -d        build the required docker containers first
 EOF
 }
 
 set -e
-set -x
+# set -x
 
 doinstall=
 dodockbuild=
@@ -34,10 +37,14 @@ distvol=
 distdir=
 ops=
 args=()
+comps=
 while [ "$1" != "" ]; do
     case "$1" in
         shell|build|install|test)
             ops="$ops $1"
+            ;;
+        sdp|pdr-lps)
+            comps="$comps $1"
             ;;
         -d|--docker-build)
             dodockbuild=1
@@ -82,13 +89,13 @@ build_script=$CODEDIR/docker/build/build.sh
 if echo "$ops" | egrep -qsw 'test|shell'; then
     [ -n "$dodockbuild" ] && $execdir/dockbuild.sh test
 
-    echo '+' docker run $ti --rm $volopt $testopts $distvol oarsdp/test "$ops" "${args[@]}"
-    exec docker run $ti --rm $volopt $testopts $distvol oarsdp/test "$ops" "${args[@]}"
+    echo '+' docker run $ti --rm $volopt $testopts $distvol oarsdp/test $ops "${args[@]}" $comps
+    exec docker run $ti --rm $volopt $testopts $distvol oarsdp/test $ops "${args[@]}" $comps
 else
     # build only
     [ -n "$dodockbuild" ] && $execdir/dockbuild.sh build
 
-    echo '+' docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}"
-    exec docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}"
+    echo '+' docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}" $comps
+    exec docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}" $comps
 fi
 
