@@ -983,6 +983,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.selectedComponents = [];
     this.selectedComponentsNode = [];
     this.selectedAuthorDropdown = false;
+    this.selectedResourceType = [];
+    this.selectedResourceTypeNode = [];
+    this.resourceTypes = this.collectResourceTypes(this.filteredResults);
+    this.collectResourceTypesWithCount();
     this.authors = this.collectAuthors(this.filteredResults);
     this.suggestedKeywords = this.collectKeywords(this.filteredResults);
     this.components = this.collectComponents(this.filteredResults);
@@ -998,6 +1002,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       label: 'Record has -',
       "expanded": true,
       children: this.componentsWithCount
+    }];
+    this.resourceTypeTree = [{
+      label: 'Resource Type -',
+      "expanded": true,
+      children: this.resourceTypesWithCount
     }];
   }
 
