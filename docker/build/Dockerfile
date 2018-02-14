@@ -14,7 +14,7 @@
 FROM node:7.9
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends zip wget ca-certificates
+    apt-get install -y --no-install-recommends zip wget ca-certificates git
 
 ENV GOSU_VERSION 1.10
 RUN set -ex; \
