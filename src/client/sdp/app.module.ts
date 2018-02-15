@@ -22,7 +22,6 @@ import { AdvSearchModule } from './adv_search/adv_search.module';
 import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
 import { TopBarComponent }  from './app.topbar.component';
 import { SearchTopBarComponent }  from './app.searchtopbar.component';
-import {CartService} from '../pdr/datacart/cart.service';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, BrowserAnimationsModule, RouterModule.forRoot(routes ,{ useHash: true })
@@ -35,7 +34,7 @@ import {CartService} from '../pdr/datacart/cart.service';
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
-  }, CartService],
+  }],
 
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
