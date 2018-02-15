@@ -32,6 +32,13 @@ while [ "$1" != "" ]; do
         shift
         PACKAGE_DIR=$1
         ;;
+    --cache-dir=*)
+        CACHE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        ;;
+    -c|--cache-dir)
+        shift
+        CACHE_DIR=$1
+        ;;
     -*)
         echo "$prog: unsupported option:" $1
         false
@@ -50,7 +57,35 @@ done
 [ -n "$build_dist" ] || build_dist=$DISTNAMES
 
 true ${DIST_DIR:=$SOURCE_DIR/dist}
+DIST_DIR=`realpath $DIST_DIR`
 mkdir -p $DIST_DIR $builddir
+cd $PACKAGE_DIR
+
+# Use a CACHE_DIR to set up a share node_modules directory.  When building
+# many different versions of the software, this can speed up the builds by
+# not requiring the software to be downloaded every time.
+#
+[ -z "$CACHE_DIR" ] || {
+    CACHE_DIR=`realpath $CACHE_DIR`
+    if [ -e "node_modules" ]; then
+        if [ -L "node_modules" ]; then
+            { sharednmd=`readlink node_modules` && \
+              sharednmd=`realpath $sharednmd`; } || true
+            [ -n "$sharednmd" -a "$sharednmd" == "$CACHE_DIR/node_modules" ] || {
+                echo ${prog}: node_modules already "established;" \
+                     "ignoring --cache-dir"
+            }
+        else
+            echo ${prog}: node_modules already "established;" \
+                 "ignoring --cache-dir"
+        fi
+    else
+        # make ./node_modules a link to the shared one.
+        mkdir -p $CACHE_DIR/node_modules
+        ln -s $CACHE_DIR/node_modules node_modules
+    fi
+}
+ls -l node_modules && exit
 
 # set the current version.  This will inject the version into the code, if 
 # needed.
@@ -64,7 +99,7 @@ vers4fn=`echo $version | sed -re 's#[/\s]+#_#g'`
 # install required modules
 npmvers=`npm --version`
 echo '+' npm install
-npm install
+npm $npmpfx install
 
 for dist in $build_dist; do
     distname="${dist}-$vers4fn"
