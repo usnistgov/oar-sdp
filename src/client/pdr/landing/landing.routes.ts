@@ -33,7 +33,6 @@ export const LandingRoutes: Routes = [
       {
         path: '',
         component: NoidComponent,
-
       }
     ]
   }

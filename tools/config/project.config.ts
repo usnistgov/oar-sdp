@@ -109,6 +109,10 @@ export class ProjectConfig extends SeedConfig {
          path: 'node_modules/ng2-utils/dist/ng2-utils.umd.js'
        },
        {
+         name: 'ng2-utils',
+         path: 'node_modules/ng2-utils/dist/ng2-utils.umd.js'
+       },
+       {
          name: 'auto-text-rotating',
          path: 'node_modules/jquery.auto-text-rotating/jquery.auto-text-rotating.min.js'
        },

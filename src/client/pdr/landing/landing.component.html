@@ -1,6 +1,14 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
 <script type="text/javascript">
   if (self === top) {
     var antiClickjack = document.getElementById("antiClickjack");
+    if(antiClickjack !== null && antiClickjack !== undefined)
+        antiClickjack.parentNode.removeChild(antiClickjack);
+
   } else {
     top.location = self.location;
   }
@@ -9,14 +17,14 @@
 <div class="ui-grid ui-grid-responsive ui-grid-pad center">
   <div class="card landingcard">
 
-    <div class="" *ngIf="recordDisplay.length == 0">
-      <div class="ui-g">
-        <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%">
-          <b>No Landing page available</b>
-          <p>The requested record id {{ findId }}  does not match with any records in the system</p>
-        </div>
-      </div>
+<div class="" *ngIf="recordDisplay?.length == 0">
+    <div class="ui-g">
+       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%">
+            <b>No Landing page available</b>
+            <p>The requested record id {{ findId }}  does not match with any records in the system</p>
+       </div>
     </div>
+</div>
 
     <div *ngIf="recordDisplay.length !== 0">
       <div class="ui-g" style="padding-bottom: 1%; padding-right:1%;">

@@ -51,6 +51,7 @@
         <a (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#" style="color: #0f4a65;text-decoration: underline;">"SRD 101" </a>&nbsp;
         <a (click)="$event.preventDefault();searchExample('XPDB');" href="#" style="color: #0f4a65;text-decoration: underline;">XPDB </a>&nbsp;
         <a (click)="$event.preventDefault();searchExample('Interatomic Potentials');" href="#" style="color: #0f4a65;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
+
       </div>
     </div>
   </div>
@@ -319,7 +320,7 @@
                   <div class="ui-grid-col-12">
                     <div class="ui-grid ui-grid-responsive" style="text-align: left;width: auto;">
                       <div class="ui-grid-row">
-                        <div class="ui-grid-col-12" ><h4><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL,resultItem.ediid)" >
+                        <div class="ui-grid-col-12" ><h4><b><a href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank" class="title" >
                           {{resultItem.title}}</a></b></h4></div>
                       </div>
                       <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Description') !==-1">

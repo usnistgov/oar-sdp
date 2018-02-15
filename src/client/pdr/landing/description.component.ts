@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input,ChangeDetectorRef } from '@angular/core';
 import {LandingPanelComponent} from './landing.component';
 import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
 import { CartService } from '../datacart/cart.service';
@@ -40,8 +40,25 @@ import { Data } from '../datacart/data';
             </div>
             <div>
 
-             <b>Data Access:</b> {{ record['accessLevel'] }}
-                <span *ngIf="record['rights']">, The access rights are {{ record.rights }} </span>
+             <h3><b>Access To Data:</b></h3><br> 
+             <span *ngIf="record['accessLevel'] === 'public'"><i class="faa faa-globe"></i> 
+                This data is public. 
+             </span>
+             <span *ngIf="record['accessLevel'] === 'restricted public'"><i class="faa faa-lock"></i> 
+                This data has access restrictions. 
+             </span>   
+             <br>
+             <span *ngIf="record['rights']"> 
+                The access rights are {{ record.rights }} 
+             </span>
+             <br>
+             <span style="margin-left:0em" *ngIf="isAccessPage">Data is available via the following locations: 
+             <br>   
+                <span style="padding-left:2.75em" *ngFor="let title of accessTitles; let i =index">
+                    <i class="faa faa-external-link"> <a href="{{accessUrls[i]}}">{{title}}</a> 
+                    </i><br>
+                </span>
+             </span>
              <br>
              <br>
             </div> 
@@ -92,6 +109,10 @@ export class DescriptionComponent {
   isFileDetails: boolean = false;
   isReference: boolean = false;
   selectedFile: TreeNode;
+  isAccessPage : boolean = false;
+  accessPages: Map <string, string> = new Map();
+  accessUrls : string[] =[];
+  accessTitles : string[] =[];
   private dataFiles: TreeNode[] = [];
 
   /**
@@ -130,8 +151,8 @@ export class DescriptionComponent {
     if (Array.isArray(this.record['references'])) {
       for (let ref of this.record['references']) {
         if (ref.refType === 'isDocumentedBy') return true;
+        }
       }
-    }
   }
 
   addFilesToCart() {
@@ -198,8 +219,47 @@ export class DescriptionComponent {
             child.filepath));
       }
     }
+<<<<<<< HEAD
     return testObj;
   }
+=======
+ }
+ checkAccesspages(){
+    if(Array.isArray(this.record['inventory']) ){
+        if(this.record['inventory'][0].forCollection == "") {
+            for(let inv of this.record['inventory'][0].byType ){
+                if(inv.forType == "nrdp:AccessPage")
+                    this.isAccessPage = true;
+            }
+        }
+    }
+    if(this.isAccessPage){
+        this.accessPages = new Map();
+        for(let comp of this.record['components']){
+            if(comp['@type'].includes("nrdp:AccessPage"))
+            {
+                if(comp["title"] !== "" && comp["title"] !== undefined)
+                    this.accessPages.set(comp["title"], comp["accessURL"]);
+                else
+                    this.accessPages.set(comp["accessURL"], comp["accessURL"]);
+            }
+        }
+    }
+
+    this.accessTitles = Array.from(this.accessPages.keys());
+
+    this.accessUrls = Array.from(this.accessPages.values());
+ }
+
+
+ ngOnInit(){
+    this.cdr.detectChanges();
+ }
+ ngOnChanges(){
+    this.checkAccesspages();
+ }
+ constructor(private cdr: ChangeDetectorRef) {}
+>>>>>>> refs/remotes/origin/integration
 
   createTreeObj(label :string, data:string){
     let testObj : TreeNode = {};

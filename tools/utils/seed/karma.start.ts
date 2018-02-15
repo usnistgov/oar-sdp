@@ -7,3 +7,4 @@ export const startKarma = (done: any, config: any = {}) => {
     singleRun: true
   }, config)).start(done);
 };
+
