@@ -88,14 +88,14 @@ for dist in $build_dist; do
         $execdir/record_deps.py $dist $version package-lock.json $npmvers \
                                 > $DIST_DIR/${distname}_dep.json
     else
-        echo ${prog}: WARNING: Unable to create dependency file: \
+        echo ${prog}: WARNING: Unable to create dependency file for ${dist}: \
              package-lock.json not found
     fi
 
     # create the distribution file
     echo '+' '(cd' $builddir/prod '&&' \
-             "zip -r $DIST_DIR/${distname}.zip) *"
-    (cd $builddir/prod && zip -qr $DIST_DIR/${dist}-${vers4fn}.zip *)
+             "zip -qr $DIST_DIR/${distname}.zip *)"
+    (cd $builddir/prod && zip -qr $DIST_DIR/${distname}.zip *)
 
 done
 
