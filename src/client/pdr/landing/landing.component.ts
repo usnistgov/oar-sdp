@@ -223,25 +223,28 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
                             this.citeString +=  author.givenName+' ';
                          if(author.middleName !== null && author.middleName !== undefined) 
                             this.citeString += author.middleName;
-                         this.citeString +=", ";
+                         
                         }
                     } 
                     else if(this.recordDisplay['contactPoint']) {
                         if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
-                        this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
+                        this.citeString += this.recordDisplay['contactPoint'].fn;
                     }
 
                     if(this.recordDisplay['issued'] !==  null && this.recordDisplay['issued'] !==  undefined){
-                      this.citeString += " ("+ this.recordDisplay['issued']+") ";
+      
+                      this.citeString += " ("+ _.split(this.recordDisplay['issued'],"-")[0]+") ";
                     }
+                    if(this.citeString !== "") this.citeString +=", ";
                     if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== undefined )
                         this.citeString += this.recordDisplay['title'] +", ";
-                    if(this.isDOI)   this.citeString += this.recordDisplay['doi'];
                     if(this.recordDisplay['publisher']){
                       if(this.recordDisplay['publisher'].name !== null && this.recordDisplay['publisher'].name !== undefined)
                       this.citeString += this.recordDisplay['publisher'].name;
                     }
-                    this.citeString += ", (Accessed: "+date+")";
+                    if(this.isDOI)   this.citeString += ", "+ this.recordDisplay['doi'];
+                    
+                    this.citeString += " (Accessed: "+ date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+")";
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
