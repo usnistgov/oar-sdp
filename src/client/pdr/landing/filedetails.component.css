@@ -44,3 +44,7 @@
 .filecard{
   padding: 0em;
 }
+
+:host /deep/ .faa-cart-plus:before {
+  color: green;
+}

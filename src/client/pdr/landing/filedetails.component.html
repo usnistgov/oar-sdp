@@ -11,8 +11,8 @@
         <p-progressSpinner [style]="{width: '20px', height: '20px', float: 'right'}" ></p-progressSpinner>
       </span>
 
-      <a style="; float:right;" href="javascript:;" (click)='addtoCart(record["@id"], record["title"], fileDetails["title"], fileDetails["title"],fileDetails["filepath"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource",null)' class="faa faa-cart-plus faa-2x" title="Add to Data cart" ></a>
-      <a style=""  href="{{this.fileDetails['downloadURL']}}" class="faa faa-download " title="Download File" ></a>
+      <a style="float:right;" *ngIf="this.fileDetails['downloadURL'] != null" (click)='addtoCart(record["@id"], record["title"], fileDetails["title"], fileDetails["title"],fileDetails["filepath"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource",null)' class="faa faa-cart-plus faa-2x" title="Add this file to Data cart" ></a>
+      <a style=""  *ngIf="this.fileDetails['downloadURL'] != null" target="_blank" href="{{this.fileDetails['downloadURL']}}" class="faa faa-download " title="Download File" ></a>
       <h4><span *ngIf="fileDetails['title']"> {{ fileDetails["title"]}} </span></h4>
       <br><span class="font10">Path: <b>{{fileDetails["filepath"]}}</b></span>
       <span *ngIf="fileDetails['downloadURL']" class="font8"> <br>Type:<b>{{fileDetails["mediaType"]}}</b></span>

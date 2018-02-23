@@ -71,9 +71,9 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     metadata: boolean = false;
     displayCart: boolean = true;
     showSpinner: boolean = false;
-    cartEntities: CartEntity[];
+    cartEntities: CartEntity[] = [];
     cols: any[];
-    selectedData: TreeNode[];
+    selectedData: TreeNode[] = [];
     dataFiles: TreeNode[] = [];
     childNode: TreeNode = {};
     index:any = {};
@@ -83,7 +83,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     private fileHierarchy : TreeNode;
     private rmmApi : string = environment.RMMAPI;
     private sdpLink : string = environment.SDPAPI;
-    private distApi : string = environment.DISTAPI;
+    //private distApi : string = environment.DISTAPI;
+    private distApi = "http://localhost:8083/oar-dist-service/";
     private metaApi : string = environment.METAPI;
     private landing : string = environment.LANDING;
     private displayIdentifier :string;
@@ -95,6 +96,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
     constructor(private route: ActivatedRoute, private http: Http,private cartService: CartService, private el: ElementRef,public searchService:SearchService, private titleService: Title) {
     this.getDataCartList();
+    this.createDataCartHierarchy();
     this.cartService.watchCart().subscribe(value => {
       this.displayCart = value;
     });
@@ -437,7 +439,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     this.cartService.getAllCartEntities().then(function (result) {
       //console.log("result" + result.length);
       this.cartEntities = result;
-      //console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
+      console.log("cart entities inside datacartlist" );
     }.bind(this), function (err) {
       alert("something went wrong while fetching the products");
     });
@@ -495,6 +497,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       alert("something went wrong while fetching the products");
     });
 
+    this.selectedData.length = 0;
+
   }
 
   updateCartEntries(row:any,downloadedStatus:any) {
@@ -521,7 +525,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
 
   downloadFile(params): Observable<Blob> {
     let options = new RequestOptions({responseType: ResponseContentType.Blob});
-    return this.http.get(this.distApi + "/cart?" + params, options)
+    return this.http.get(this.distApi + "ds/cart?" + params, options)
       .map(res => res.blob())
       .catch((error: any) => Observable.throw(error.json()));
   }
@@ -545,6 +549,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     this.getDataCartList();
     this.createDataCartHierarchy();
     this.cartService.setCartLength(this.dataFiles.length);
+    this.selectedData.length = 0;
   }
 
   /**
@@ -600,10 +605,20 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
 
   }
 
+  loadDataCart() {
+    this.cartService.getAllCartEntities().then(function (result) {
+      //console.log("result" + result.length);
+      this.cartEntities = result;
+      console.log("cart entities inside datacartlist" + JSON.stringify(this.cartEntities));
+      this.createDataCartHierarchy();
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+  }
 
   createDataCartHierarchy() {
 
-    //console.log("cart ent" + JSON.stringify(this.cartEntities));
+    console.log("cart ent" + JSON.stringify(this.cartEntities));
 
     let arrayList = this.cartEntities.reduce(function (result, current) {
       result[current.data.resTitle] = result[current.data.resTitle] || [];

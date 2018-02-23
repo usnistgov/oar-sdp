@@ -156,48 +156,38 @@
       </div>
     </div>
   </div></div>
-<p-dialog header="Data Cart" [(visible)]="displayCart" responsive="true" width = "800px" height = "800px" modal = "modal" [style] = "{'border':'1px solid #bdbdbd','height':'550px','width':'1200px','overflow-y': 'scroll'}" styleClass="active">
+<p-dialog [(visible)]="displayCart" (onShow) = "loadDataCart()" responsive="true" width = "800px" height = "800px" modal = "modal" [style] = "{'border':'1px solid #bdbdbd','height':'550px','width':'900px'}" styleClass="active">
+  <p-header>
+    Data cart <i class="faa faa-shopping-cart faa-1x icon-white" style="color: #fff;"></i>
+  </p-header>
   <div >
     <div style="padding-left: 1%">
-      <!--
-      <p-dataTable [value]="cartEntities"  [(selection)]="selectedData" [loading]="showSpinner" [paginator]="true" [rows]="5" [headerCheckboxToggleAllPages]="true">
-        <p-header>Data Cart</p-header>
-        <p-column [style]="{'width':'10px'}" selectionMode="multiple"></p-column>
-        <p-column [style]="{'width':'200px','word-wrap': 'break-word'}"  field="data.fileName" header="File Name"></p-column>
-        <p-column [style]="{'width':'100px','word-wrap': 'break-word'}"  field="data.fileSize" header="Size"></p-column>
-        <p-column [style]="{'width':'200px','word-wrap': 'break-word'}"  field="data.fileFormat" header="Format"></p-column>
-        <p-column [hidden] = "true" field="data.downloadURL" header="downloadURL"></p-column>
-        <p-column [hidden] = "true" field="data.filePath" header="filePath"></p-column>
-        <p-column [hidden] = "true" field="data.resTitle" header="resTitle"></p-column>
-        <p-column [hidden] = "true" field="data.resId" header="resId"></p-column>
-      </p-dataTable>
-      -->
       <div class="ui-g">
         <div class="ui-g-8 ui-md-8" >
-          <button type="button" (click)="downloadZIP()" pButton label="Download selected" type="submit"></button>
-          <button type="button" (click)="removeByDataId()" pButton label="Remove selected" type="submit"></button>
-          <button type="button" (click)="removeByDownloadStatus()" pButton label="Remove downloaded" type="submit"></button>
+          <button type="button" (click)="downloadZIP()" pButton type="submit" class="btn btn-primary" ><i class="faa faa-download faa-1x icon-white" style="color: #fff;"></i> Download selected <span class="badge badge-notify" >{{selectedData.length}}</span></button>
+          <button type="button" (click)="removeByDataId()" style="background-color: red;" class="btn btn-primary" pButton type="submit"><i class="faa faa-trash faa-1x icon-white" style="color: #fff;"></i> Remove selected <span class="badge badge-notify">{{selectedData.length}}</span></button>
+          <button type="button" (click)="removeByDownloadStatus()" style="background-color: red;" class="btn btn-primary" pButton type="submit"><i class="faa faa-minus-circle faa-1x icon-white" style="color: #fff;"></i> Remove downloaded</button>
         </div>
       </div>
-      <p-treeTable selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px'}">
-        <p-column styleClass="col-button" [style]="{'width':'65px','word-wrap': 'break-word'}">
+      <p-treeTable selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px','overflow-y': 'scroll','height':'400px','width':'700px'}">
+        <p-column styleClass="col-button" [style]="{'width':'50px'}">
           <ng-template let-file="rowData" pTemplate="body">
-            <button type="button" *ngIf = "file.data.downloadedStatus === 'downloaded' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-60px" class="small-button" pButton icon="faa faa-check"></button>
+            <button type="button" *ngIf = "file.data.downloadedStatus === 'downloaded' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-45px" class="small-button" pButton icon="faa faa-check"></button>
             <button type="button" *ngIf = "file.data.downloadedStatus === 'downloading' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-60px" class="small-button-yellow" pButton icon="faa faa-check"></button>
           </ng-template>
         </p-column>
-        <p-column field="resTitle" [style]="{'width':'210px','word-wrap': 'break-word'}" header="Name">
+        <p-column field="resTitle" [style]="{'width':'200px','white-space':'normal'}" header="Name">
             <ng-template let-file="rowData" pTemplate="body">
               <a href="{{file.data.downloadURL}}" target="_blank" *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.resTitle}}</a>
               <span *ngIf = "file.data.resTitle.indexOf('.') < 0">{{file.data.resTitle}}</span>
             </ng-template>
         </p-column>
-        <p-column field="downloadedStatus" [style]="{'width':'50px','word-wrap': 'break-word'}" header="Status">
+        <p-column field="downloadedStatus" [style]="{'width':'50px'}" header="Status">
           <ng-template let-file="rowData" pTemplate="body">
             <span *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.downloadedStatus}}</span>
           </ng-template>
         </p-column>
-        <p-column field="size" [style]="{'width':'200px','word-wrap': 'break-word'}" header="Size"></p-column>
+        <p-column field="size" [style]="{'width':'50px'}" header="Size"></p-column>
         <!--
         <p-column header="Actions" [style]="{'width':'150px','word-wrap': 'break-word'}" styleClass="col-button">
           <ng-template let-file="rowData" #download pTemplate="body">

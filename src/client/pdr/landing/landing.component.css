@@ -162,15 +162,13 @@
 }
 
 .ui-button.small-button {
-  font-size:.5em;
+  font-size:.40em;
   background-color: green;
-  margin-bottom: 1em;
 }
 
 .ui-button.small-button-yellow {
-  font-size:.5em;
+  font-size:.40em;
   background-color: yellow;
-  margin-bottom: 1em;
 }
 
 :host /deep/ .ui-progress-spinner-svg {
@@ -187,15 +185,39 @@
 }
 
 :host /deep/ .ui-treetable .ui-treetable-row td {
-  border:1px solid #bdbdbd;
-}
+  padding:.25em .25em ;
+  table-layout:auto !important;
+;}
 
 :host /deep/ .ui-treetable thead tr th {
   border:1px solid #bdbdbd;
   background-color: lightgrey;
+  table-layout:auto !important;
 }
 
 :host /deep/ .ui-chkbox .ui-chkbox-box {
-  width: 1.4em;
-  height: 1.4em;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+:host /deep/ .faa-cart-plus:before {
+  color: green;
+}
+
+:host /deep/ .ui-widget-content {
+  font-size: .95em ;
+}
+
+.badge-notify{
+  background-color: gray;
+  position:relative;
+  color: #fff;
+}
+
+:host /deep/ .ui-button, body .ui-datepicker-buttonpane button {
+  padding:.4em;
+}
+
+:host /deep/ .ui-treetable thead th, .ui-treetable tbody td, .ui-treetable tfoot td {
+  white-space: normal;
 }

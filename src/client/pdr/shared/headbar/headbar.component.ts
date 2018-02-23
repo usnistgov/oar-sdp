@@ -5,6 +5,8 @@ import { environment } from '../../environment';
 import { CartService } from '../../datacart/cart.service';
 import { CartEntity } from '../../datacart/cart.entity';
 import { DatacartComponent } from '../../datacart/datacart.component';
+//import { LandingPanelComponent } from '../../landing/landing.component';
+
 import {Observable } from 'rxjs';
 
 
@@ -72,6 +74,8 @@ export class HeadbarComponent implements OnInit {
   updateCartStatus()
   {
     this.cartService.updateCartDisplayStatus(true);
+    //this.lgetDataCartList();
+    //this.landingComp.createDataCartHierarchy();
   }
 
   /**
