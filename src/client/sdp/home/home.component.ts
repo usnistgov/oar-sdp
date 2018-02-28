@@ -146,7 +146,7 @@ export class HomeComponent implements OnInit {
    */
   toTaxonomiesItems(taxonomies:any[]) {
     let items: SelectItem[] = [];
-    items.push({label: 'All Research', value: ''});
+    items.push({label: 'ALL RESEARCH', value: ''});
     for (let taxonomy of taxonomies) {
       items.push({label: taxonomy.label, value: taxonomy.label});
     }

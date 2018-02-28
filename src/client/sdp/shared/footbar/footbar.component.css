@@ -1,5 +1,5 @@
 #footer {
-    background: #333333;
+    background: #000;
     /*background-color: white;*/
     color: white;
     position: relative;
@@ -14,7 +14,7 @@
 }
 
 #footer .footer__logo img {
-    width: 286px;
+    width: 200px;
 }
 
 field-items img
@@ -39,9 +39,9 @@ img {
 }
 
 #footer .footer__contact {
-    font-size: 15px;
-    line-height: 17px;
-    border-bottom: 1px solid #595959;
+    font-size: 12px;
+    line-height: 10px;
+    border-bottom: .1px solid #595959;
     padding-bottom : .6rem;
 }
 

@@ -19,3 +19,26 @@ hr {
   padding-bottom: -1px;
   margin: 1.25rem 0;
 }
+
+.labelAbout {
+  font-size: xx-large;
+  float: left;
+  display: block;
+}
+
+.breadCrumb {
+  color: #4b4b4b;
+}
+
+.breadCrumbFirstElement {
+  color: #1f4b71;
+}
+
+:host /deep/ .breadcrumb {
+  background-color: #fff;
+}
+
+.breadCrumb-black {
+  color: #000;
+  font-weight: 300;
+}

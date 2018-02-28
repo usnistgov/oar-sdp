@@ -3161,7 +3161,7 @@
 
 body .ui-widget,
 body .ui-widget .ui-widget {
-  font-family: "Roboto","Helvetica Neue",sans-serif;
+  font-family: "Source Sans Pro",sans-serif;
   text-decoration: none; }
 body .ui-widget-content {
   background-color: #ffffff;
@@ -3230,7 +3230,6 @@ body .ui-inputtext {
   background: transparent;
   border-width: 0 0 1px 0;
   /*padding: 2px 2px 1px 2px;*/
-  font-size: 1em;
   border-color: #bdbdbd;
   border-style: solid;
   -moz-transition: border-color 0.3s;
@@ -3677,7 +3676,7 @@ body .ui-dropdown .ui-dropdown-trigger .fa {
   margin-top: 0;
   margin-left: 0; }
 body .ui-dropdown .ui-dropdown-label.ui-inputtext {
-  font: 1em "Roboto", "Helvetica Neue", sans-serif; }
+  font-family: "Source Sans Pro",sans-serif; }
 body .ui-dropdown.ui-state-focus {
   border-bottom: 2px solid #3F51B5; }
 body .ui-dropdown.ui-state-focus .ui-dropdown-label {
@@ -5986,7 +5985,7 @@ body .ui-draggable-dragging.ui-state-default {
   padding: 0.625em 1em !important;
   background-color: #3F51B5; }
 body .jqplot-target {
-  font-family: "Source Sans Pro" }
+  font-family: "Source Sans Pro",sans-serif; }
 body .ui-progressbar {
   height: .5em;
   background-color: #9fa8da;

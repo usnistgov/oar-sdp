@@ -37,7 +37,7 @@ h2 {
 
 .api
 {
-  background-color:#595959;
+  background-color:#0872B9;
   color: #fff;
 }
 
@@ -47,3 +47,11 @@ h2 {
   transform: translateY(-50%);
 }
 
+:host /deep/ .breadcrumb {
+  background-color: #fff;
+}
+
+.breadCrumb-black {
+  color: #000;
+  font-weight: 300;
+}
