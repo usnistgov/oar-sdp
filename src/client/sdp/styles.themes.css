@@ -50,7 +50,7 @@ body .ui-inputtext:focus, body .ui-inputtext.ui-state-focus {
 body .ui-button, body .ui-datepicker-buttonpane > button {
   background-color: #1471AE;
   height: 1.75em;
-  padding: 0 .3em;}
+  padding: .2em;}
 
 body .ui-button .ui-button-text, body .ui-datepicker-buttonpane > button .ui-button-text {
   line-height: 1.75em; }

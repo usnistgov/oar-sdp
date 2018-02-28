@@ -7,7 +7,9 @@
 }
 
 .layout-container .topbar .topbar-left {
-  background-color: #1471AE;}
+  background-color: #1471AE;
+  padding-top: 10px;
+}
 
 .layout-container .topbar .topbar-right #menu-button {
   background-color: #03A9F4;}
@@ -133,4 +135,3 @@
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink:hover i {
   color: #fff;
 }
-
