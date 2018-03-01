@@ -430,7 +430,7 @@ teststring: string = "Loading !!";
   checkReferences(){
     if(Array.isArray(this.recordDisplay['references']) ){
       for(let ref of this.recordDisplay['references'] ){
-        if(ref.refType == "isDocumentedBy") return true;
+        if(ref.refType == "IsDocumentedBy") return true;
       }
     }
   }

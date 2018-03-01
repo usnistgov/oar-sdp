@@ -89,11 +89,13 @@
                         <span *ngIf="isId">Identifier: </span>
                         <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span>
                         <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
-                        <span *ngIf="checkReferences()">
+                        <span *ngIf="checkReferences()"><br>
                         <span>Described in article: </span>
-                            <small *ngFor="let refs of recordDisplay.references; let i =index">
-                                <span *ngIf="refs.refType == 'IsDocumentedBy'">
-                                    <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a>
+                            <small *ngFor="let refs of recordDisplay['references']; let i =index">
+                               
+                                <span style="padding-left:2.75em" *ngIf="refs.refType == 'IsDocumentedBy'">
+                                    <br><i class="faa faa-external-link">
+                                    <a href={{refs.location}} target="blank" >{{ refs.label }}</a></i>
                                 <span *ngIf="i < recordDisplay.references.length-1 ">,</span>
                                 </span>
                             </small>
