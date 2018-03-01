@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
-import { SearchService } from '../shared/index';
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
@@ -14,6 +13,10 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule ,Title} from '@angular/platform-browser';
 import { Ng2StickyModule } from 'ng2-sticky';
 import { environment } from '../environment';
+
+import { SearchResolve } from "./search-service.resolve";
+import { error } from 'selenium-webdriver';
+
 //import * as jsPDF  from 'jspdf';
 declare var Ultima: any;
 declare var jQuery: any;
@@ -22,8 +25,7 @@ declare var jQuery: any;
   moduleId: module.id,
   selector: 'pdr-landing',
   templateUrl: 'landing.component.html',
-  styleUrls: ['landing.component.css'],
-  providers:[SearchService]
+  styleUrls: ['landing.component.css']
 })
 
 export class LandingPanelComponent implements OnInit, OnDestroy {
@@ -41,7 +43,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   recordDisplay:any[] = [];
   keyword:string;
   summaryCandidate: any[];
-  findId: string;
+  //findId: string;
   leftmenu: MenuItem[];
   rightmenu: MenuItem[];
   similarResources: boolean = false;
@@ -70,12 +72,18 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   private displayIdentifier :string;
   private dataHierarchy: any[]=[];
   isResultAvailable: boolean = true;
-
+  isId : boolean = true;
+teststring: string = "Loading !!";
   /**
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(private route: ActivatedRoute, private el: ElementRef,public searchService:SearchService, private titleService: Title) {
+  constructor(private route: ActivatedRoute, private el: ElementRef, private titleService: Title) {
+    
+    this.route.data.map(data => data.searchService ).subscribe((res)=>{
+      this.onSuccess(res);
+    }, (error) =>{ this.onError(error) } );
+   
   }
 
   /**
@@ -83,11 +91,18 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults:any[]) {
+   this.teststring = "success !!";
 
     if(searchResults["ResultCount"] === undefined || searchResults["ResultCount"] !== 1)
       this.recordDisplay = searchResults;
     else if(searchResults["ResultCount"] !== undefined && searchResults["ResultCount"] === 1)
       this.recordDisplay = searchResults["ResultData"][0];
+
+    if(this.recordDisplay["@id"] === undefined || this.recordDisplay["@id"] === "" ){
+    this.isId = false;
+    return;
+    }
+
     this.type = this.recordDisplay['@type'];
     this.titleService.setTitle(this.recordDisplay['title']);
     this.createDataHierarchy();
@@ -112,14 +127,14 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   }
 
   searchbyid(searchId:string){
-    //console.log(searchId);
-    this.keyword = '';
-    let that = this;
-    return this.searchService.searchById(searchId)
-      .subscribe(
-        async searchResults => await that.onSuccess(searchResults),
-        error => that.onError(error)
-      );
+    // //console.log(searchId);
+    // this.keyword = '';
+    // let that = this;
+    // return this.searchService.searchById(searchId)
+    //   .subscribe(
+    //     async searchResults => await that.onSuccess(searchResults),
+    //     error => that.onError(error)
+    //   );
   }
 
 
@@ -285,28 +300,36 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     ];
   }
 
+   replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+}
   /**
    * Get the params OnInit
    */
   ngOnInit() {
-    this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-      if(_.includes(window.location.href,"ark")){
-        var alength = _.split(window.location.href,'/').length;
-        this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
+    this.files =[];
+    this.searchValue = this.route.pathFromRoot[1].snapshot.url.toString().split('id,').pop();
+    if(_.includes(this.searchValue, 'ark')) 
+     this.searchValue = this.replaceAll(this.searchValue,',','/')
+     
+    // this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+    //   if(_.includes(window.location.href,"ark")){
+    //     var alength = _.split(window.location.href,'/').length;
+    //     this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
 
-      }
-      else if(_.includes(window.location.href,'?')) {
-        this.searchValue = params['id'];
-      } else {
-        var alength = _.split(window.location.href,'/').length;
-        this.searchValue =_.split(window.location.href,'/')[alength-1];
-        //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
-      }
-      //this.onSuccess(this.route.snapshot.data['searchService']);
-      this.findId = this.searchValue;//params['id'];
-      this.searchbyid(this.findId);
-      this.files =[];
-    });
+    //   }
+    //   else if(_.includes(window.location.href,'?')) {
+    //     this.searchValue = params['id'];
+    //   } else {
+    //     var alength = _.split(window.location.href,'/').length;
+    //     this.searchValue =_.split(window.location.href,'/')[alength-1];
+    //     //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
+    //   }
+    //   //this.onSuccess(this.route.snapshot.data['searchService']);
+    //   this.findId = this.searchValue;//params['id'];
+    //   //this.searchbyid(this.findId);
+    //   this.files =[];
+    // });
   }
 
   ngOnDestroy() {
@@ -407,7 +430,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   checkReferences(){
     if(Array.isArray(this.recordDisplay['references']) ){
       for(let ref of this.recordDisplay['references'] ){
-        if(ref.refType == "isDocumentedBy") return true;
+        if(ref.refType == "IsDocumentedBy") return true;
       }
     }
   }
