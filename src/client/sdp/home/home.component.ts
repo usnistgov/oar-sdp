@@ -52,15 +52,33 @@ export class HomeComponent implements OnInit {
    *
    */
   ngOnInit() {
-
-    jQuery('.element').atrotating();
       this.getTaxonomies();
       this.getTaxonomySuggestions();
       this.getSearchFields();
       this.rows =  [{}];
       this.searchOperators();
       console.log("taxonomy" + JSON.stringify(this.suggestedTaxonomies));
+      var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+      /*
+      var time = setInterval(function() {
+        var newKeyword = keyword[Math.floor(Math.random()*keyword.length)];
+        var field = document.getElementById('searchinput');
+        jQuery('#searchinput').attr('placeholder', newKeyword);
+      },2000);
+      */
+      var n=0;
+      var loopLength=placeHolder.length;
 
+      setInterval(function(){
+        if(n<loopLength){
+          var newPlaceholder = placeHolder[n];
+          n++;
+          jQuery('#searchinput').attr('placeholder',newPlaceholder);
+        } else {
+          jQuery('#searchinput').attr('placeholder',placeHolder[0]);
+          n=0;
+        }
+      },2000);
   }
 
   /**
@@ -80,6 +98,19 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  clearText(){
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+      if (!Boolean(this.searchValue.trim())) {
+        field.value = ' ';
+      }
+  }
+
+  addPlaceholder() {
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    if (!Boolean(this.searchValue)) {
+      field.value = '';
+    }
+  }
   /**
    * Advanced Search builder string
    */
@@ -162,7 +193,7 @@ export class HomeComponent implements OnInit {
     this.suggestedTaxonomyList = [];
     for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
       let keyw = this.suggestedTaxonomies[i];
-      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+      if(keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
         this.suggestedTaxonomyList.push(keyw);
       }
     }
