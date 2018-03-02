@@ -64,12 +64,14 @@ hr {
   font-weight: 900;
   font-size: 18px;
   border-radius: 0px;
+  /*
   border-radius-topright: 5px;
   border-radius-bottomright: 5px;
   -moz-border-radius-topright: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
   -webkit-border-top-right-radius: 5px;
+  */
 }
 
 .searchButton:hover{
@@ -157,7 +159,7 @@ hr {
 .frontPanel {
   /*width:100%;*/
   height: 200px;
-  background: url(../../assets/images/front-image.jpg) no-repeat center center fixed;
+  background: no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -188,4 +190,8 @@ hr {
   text-decoration: underline;
   display:table-cell;
   vertical-align: middle;
+}
+
+.feature-data-spacer {
+  margin-bottom: 50px;
 }

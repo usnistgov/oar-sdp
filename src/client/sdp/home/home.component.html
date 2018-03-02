@@ -13,7 +13,7 @@
   }
 </script>
 
-<div class="frontPanel">
+<div class="frontPanel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
 <div class="ui-g header">
   <div class="ui-g-12">
     <div class="EmptyBox10"></div>
@@ -29,17 +29,12 @@
         <div class="ui-g-12 ui-md-2">
         </div>
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
-          <div class="well-sm inner-addon left-addon toggle" [hidden]="!textRotate" (click) = "toggleTextRotate()" >
-            <i class="glyphicon glyphicon-search background-cynablue "></i><span class="element glyphiconText">
-        Kinetics database |Gallium|"SRD 101" | XPDB | Interatomic Potentials
-            </span>
-          </div>
           <label for="searchinput" class="hideLabel">Search Input</label>
-          <div class="inner-addon left-addon element background-white" [hidden]="textRotate" >
-            <i class="glyphicon glyphicon-search background-cynablue" ></i>  <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '900'}"   [(ngModel)]="searchValue" inputId="searchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+          <div class="inner-addon left-addon " style="background-color: #FFFFFF">
+            <i class="glyphicon glyphicon-search"></i>  <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
+        'font-style': 'italic','font-size': '20px'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" placeholder="" [(ngModel)]="searchValue" inputId="searchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
-
         </div>
         <div class="ui-g-12 ui-md-2" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
           <p-dropdown [options]="taxonomies"  [style]="{'width':'100%',
@@ -125,7 +120,7 @@
 <div class="ui-fluid "  style="background-color: #F5F5F5">
   <div class="ui-g">
     <div class="ui-g-12 noTopPadding">
-      <div class="ui-g form-group">
+      <div class="ui-g form-group feature-data-spacer">
         <div class="ui-g-12 ui-md-2 ">
         </div>
         <div class="ui-g-12 ui-md-2">
@@ -165,6 +160,7 @@
           </a>
         </div>
       </div>
+
     </div>
   </div>
 </div>

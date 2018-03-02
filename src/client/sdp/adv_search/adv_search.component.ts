@@ -51,11 +51,24 @@ export class AdvSearchComponent implements OnInit {
    *
    */
   ngOnInit() {
-    jQuery('.element').atrotating();
+    //jQuery('.element').atrotating();
     this.getTaxonomies();
-      this.getSearchFields();
-      this.rows =  [{}];
-      this.searchOperators();
+    this.getSearchFields();
+    this.rows =  [{}];
+    this.searchOperators();
+    var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+    var i=0;
+    var loopLength=placeHolder.length;
+    setInterval(function(){
+      if(i<loopLength){
+        var newPlaceholder = placeHolder[i];
+        i++;
+        jQuery('#advsearchinput').attr('placeholder',newPlaceholder);
+      } else {
+        jQuery('#advsearchinput').attr('placeholder',placeHolder[0]);
+        i=0;
+      }
+    },2000);
   }
 
 
@@ -134,7 +147,7 @@ export class AdvSearchComponent implements OnInit {
     this.suggestedTaxonomyList = [];
     for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
       let keyw = this.suggestedTaxonomies[i];
-      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+      if(keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
         this.suggestedTaxonomyList.push(keyw);
       }
     }
@@ -252,5 +265,20 @@ export class AdvSearchComponent implements OnInit {
       if (this.rows.length === 1) {
         this.showDeleteButton = false;
       }
+  }
+
+
+  clearText(){
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    if (!Boolean(this.searchValue.trim())) {
+      field.value = ' ';
+    }
+  }
+
+  addPlaceholder() {
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    if (!Boolean(this.searchValue)) {
+      field.value = '';
+    }
   }
 }

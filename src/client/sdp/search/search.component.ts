@@ -38,6 +38,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   noResults: boolean;
   checked: boolean = false;
   errorMsg: string;
+  first: number = 0;
   status: string;
   errorMessage: string;
   queryAdvSearch: string;

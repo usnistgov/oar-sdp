@@ -69,12 +69,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
   font-weight: 900;
   font-size: 18px;
   border-radius: 0px;
+  /*
   border-radius-topright: 5px;
   border-radius-bottomright: 5px;
   -moz-border-radius-topright: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
   -webkit-border-top-right-radius: 5px;
+  */
 }
 
 .searchButton:hover{

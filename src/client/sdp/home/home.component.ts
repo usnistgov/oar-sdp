@@ -5,6 +5,8 @@ import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
 import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
+import { Config } from '../shared/config/env.config';
+import { environment } from '../environment';
 declare var jQuery: any
 
 /**
@@ -30,7 +32,6 @@ export class HomeComponent implements OnInit {
     queryAdvSearch:string='';
     showAdvancedSearch: boolean = false;
     textRotate: boolean = true;
-
     rows: any[] ;
     fields: SelectItem[];
     ALL:string='All Fields';
@@ -38,6 +39,9 @@ export class HomeComponent implements OnInit {
     operators:SelectItem[];
     displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword' , 'Publisher', 'Rights' , 'Theme',
                             'Title'];
+    imageURL: string = environment.SDPAPI + 'assets/images/front-image.jpg';
+
+
   /**
    * Create an instance of services for Home
    */
@@ -52,15 +56,33 @@ export class HomeComponent implements OnInit {
    *
    */
   ngOnInit() {
-
-    jQuery('.element').atrotating();
       this.getTaxonomies();
       this.getTaxonomySuggestions();
       this.getSearchFields();
       this.rows =  [{}];
       this.searchOperators();
       console.log("taxonomy" + JSON.stringify(this.suggestedTaxonomies));
+      var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+      /*
+      var time = setInterval(function() {
+        var newKeyword = keyword[Math.floor(Math.random()*keyword.length)];
+        var field = document.getElementById('searchinput');
+        jQuery('#searchinput').attr('placeholder', newKeyword);
+      },2000);
+      */
+      var n=0;
+      var loopLength=placeHolder.length;
 
+      setInterval(function(){
+        if(n<loopLength){
+          var newPlaceholder = placeHolder[n];
+          n++;
+          jQuery('#searchinput').attr('placeholder',newPlaceholder);
+        } else {
+          jQuery('#searchinput').attr('placeholder',placeHolder[0]);
+          n=0;
+        }
+      },2000);
   }
 
   /**
@@ -80,6 +102,25 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  getUrl()
+  {
+    var host = 'https://oardev.nist.gov/sdp/assets/images/front-image.jpg';
+    return "url('host')";
+  }
+
+  clearText(){
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+      if (!Boolean(this.searchValue.trim())) {
+        field.value = ' ';
+      }
+  }
+
+  addPlaceholder() {
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    if (!Boolean(this.searchValue)) {
+      field.value = '';
+    }
+  }
   /**
    * Advanced Search builder string
    */
@@ -162,7 +203,7 @@ export class HomeComponent implements OnInit {
     this.suggestedTaxonomyList = [];
     for(let i = 0; i < this.suggestedTaxonomies.length; i++) {
       let keyw = this.suggestedTaxonomies[i];
-      if(keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+      if(keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
         this.suggestedTaxonomyList.push(keyw);
       }
     }
