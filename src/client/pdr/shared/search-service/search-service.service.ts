@@ -39,10 +39,6 @@ export class SearchService {
 
   searchById(searchValue:string): Observable<string[]> {
 
-    // if(this.landingAccess != "internal")
-    //   this.serviceApi = this.rmmApi+"records/";
-    // else
-    //   this.serviceApi = this.metaApi;
     if (_.includes(this.landingBackend,'rmm') && _.includes(searchValue,'ark'))
       this.landingBackend = this.landingBackend+'records?@id=';
     else if(_.includes(this.landingBackend,'rmm'))
