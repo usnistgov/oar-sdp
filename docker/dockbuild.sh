@@ -31,12 +31,6 @@ DOCKER_IMAGE_DIRS="build test"
 # 
 setup_build
 
-dpkg=`which dpkg`
-[ -z "$dpkg" ] || {
-    GOSU_ARCH=$(dpkg --print-architecture | awk -F- '{ print $NF }')
-    BUILD_OPTS="$BUILD_OPTS --build-arg=gosu_arch=$GOSU_ARCH"
-}
-
 log_intro   # record start of build into log
 
 for container in $BUILD_IMAGES; do 
