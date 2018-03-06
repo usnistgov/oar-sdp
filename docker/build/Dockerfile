@@ -42,7 +42,7 @@ RUN grep -qs :$devuid: /etc/group || \
     groupadd --gid $devuid $devuser
 RUN grep -Pqs ":$devuid:\d+:" /etc/passwd || \
     useradd -m --comment "OAR Developer" --shell /bin/bash \
-            --gid $devuid --uid $devuid $opuser
+            --gid $devuid --uid $devuid $devuser
 
 
 VOLUME /home/build
