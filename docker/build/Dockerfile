@@ -38,11 +38,11 @@ RUN set -ex; \
 RUN sed --in-place -e '/CREATE_MAIL_SPOOL/ s/=yes/=no/' /etc/default/useradd
 ARG devuser=developer
 ARG devuid=1000
-RUN grep -qs :${devuid}: /etc/group || \
+RUN grep -qs :$devuid: /etc/group || \
     groupadd --gid $devuid $devuser
-RUN grep -Pqs ":${devuid}:\d+:" /etc/passwd || \
+RUN grep -Pqs ":$devuid:\d+:" /etc/passwd || \
     useradd -m --comment "OAR Developer" --shell /bin/bash \
-            --gid $opuid --uid $opuid $opuser
+            --gid $devuid --uid $devuid $opuser
 
 
 VOLUME /home/build
