@@ -6,5 +6,11 @@ execdir=`dirname $0`
 export CODEDIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 export DOCKERDIR=$execdir
 
-echo $DOCKERDIR/run.sh build "$@"
-exec $DOCKERDIR/run.sh build "$@"
+dodockbuild=
+(docker images | grep -qs oar-sdp/build) || {
+    echo "${prog}: Docker image oar-sdp/build not found; will build."
+    dodockbuild=-d
+}
+
+echo $DOCKERDIR/run.sh $dodockbuild build "$@"
+exec $DOCKERDIR/run.sh $dodockbuild build "$@"
