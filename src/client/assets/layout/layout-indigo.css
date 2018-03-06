@@ -1059,7 +1059,7 @@ body a {
   position: fixed;
   width: 250px;
   z-index: 99;
-  top: 75px;
+  top: 55px;
   height: 100%;
   background-color: #ffffff;
   box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);

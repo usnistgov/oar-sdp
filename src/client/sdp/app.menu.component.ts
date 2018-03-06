@@ -23,7 +23,7 @@ export class AppMenuComponent implements OnInit {
 
   ngOnInit() {
     this.model = [
-      {icon: 'home', routerLink: ['/']},
+      {label: '"' , icon: 'home', routerLink: ['/']},
       {
         label:'Key Datasets',
         items: [

@@ -8,7 +8,7 @@
 
 .layout-container .topbar .topbar-left {
   background-color: #1471AE;
-  padding-top: 10px;
+  /*padding-top: 10px;*/
 }
 
 .layout-container .topbar .topbar-right #menu-button {
@@ -68,10 +68,12 @@
 
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a {
   color: #fff;
+  padding-right:1.5em;
 }
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a:hover {
   background-color: #02bfe7;
-  color: #fff; }
+  color: #fff;
+}
 
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul {
   background-color: #003366;}
@@ -134,4 +136,8 @@
 
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink:hover i {
   color: #fff;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink {
+  padding-right:1.5em;
 }
