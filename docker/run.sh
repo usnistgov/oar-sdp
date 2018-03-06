@@ -89,13 +89,13 @@ build_script=$CODEDIR/docker/build/build.sh
 if echo "$ops" | egrep -qsw 'test|shell'; then
     [ -n "$dodockbuild" ] && $execdir/dockbuild.sh test
 
-    echo '+' docker run $ti --rm $volopt $testopts $distvol oarsdp/test $ops "${args[@]}" $comps
-    exec docker run $ti --rm $volopt $testopts $distvol oarsdp/test $ops "${args[@]}" $comps
+    echo '+' docker run $ti --rm $volopt $testopts $distvol oar-sdp/test $ops "${args[@]}" $comps
+    exec docker run $ti --rm $volopt $testopts $distvol oar-sdp/test $ops "${args[@]}" $comps
 else
     # build only
     [ -n "$dodockbuild" ] && $execdir/dockbuild.sh build
 
-    echo '+' docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}" $comps
-    exec docker run --rm $volopt $distvol oarsdp/build makedist "${args[@]}" $comps
+    echo '+' docker run --rm $volopt $distvol oar-sdp/build makedist "${args[@]}" $comps
+    exec docker run --rm $volopt $distvol oar-sdp/build makedist "${args[@]}" $comps
 fi
 
