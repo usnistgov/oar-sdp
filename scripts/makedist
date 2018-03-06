@@ -85,7 +85,6 @@ cd $PACKAGE_DIR
         ln -s $CACHE_DIR/node_modules node_modules
     fi
 }
-ls -l node_modules && exit
 
 # set the current version.  This will inject the version into the code, if 
 # needed.
