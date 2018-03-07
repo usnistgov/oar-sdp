@@ -9,6 +9,6 @@ describe('Advanced Search Page', function() {
     browser.sleep(1000);
     var label = element.all(by.css('sdp-advsearch label'));
     expect(label.get(0).getText()).toContain('Advanced Search Builder');
-  });
+  }, 4000);
 
 });
