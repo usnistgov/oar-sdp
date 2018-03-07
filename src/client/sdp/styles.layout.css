@@ -40,7 +40,7 @@
   background-color: #03A5EF; }
 
 .layout-container .ultima-menu li a span {
-  font-weight: 900;
+  font-weight: 400;
   padding-left: .5em; }
 
 .layout-container .ultima-menu li a.active-menuitem-routerlink {

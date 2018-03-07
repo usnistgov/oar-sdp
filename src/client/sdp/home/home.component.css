@@ -104,12 +104,12 @@ hr {
 
 .title
 {
-  font-size: 30.0px;font-weight: 800;
+  font-size: 30.0px;font-weight: 400;
 }
 
 .subTitle
 {
-  font-size: 20.0px;font-weight: 700;
+  font-size: 20.0px;font-weight: 400;
 }
 
 .color-green {
@@ -193,4 +193,18 @@ hr {
 
 .feature-data-spacer {
   margin-bottom: 50px;
+}
+
+.search-panel-spacer {
+  margin-bottom: 90px
+}
+
+.search-container {
+  max-width:600px;
+}
+
+.search-input-container {
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
 }
