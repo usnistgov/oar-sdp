@@ -8,6 +8,7 @@
 
 .layout-container .topbar .topbar-left {
   background-color: #1471AE;
+  padding:10px;
   /*padding-top: 10px;*/
 }
 
@@ -105,7 +106,7 @@
 }
 
 .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
-  padding-top: 110px;
+  padding-top: 90px;
 }
 
 .card {
@@ -140,4 +141,20 @@
 
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink {
   padding-right:1.5em;
+}
+
+.layout-container .topbar {
+  height: 55px;
+}
+
+.layout-container .topbar .topbar-left {
+  height: 55px;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu {
+  top: 55px;
+}
+
+.layout-container .topbar .topbar-right .topbar-items {
+  top: 55px;
 }
