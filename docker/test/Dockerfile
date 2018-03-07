@@ -1,4 +1,4 @@
-FROM oarsdp/build
+FROM oar-sdp/build
 
 # Install Chrome
 

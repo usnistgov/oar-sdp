@@ -9,6 +9,6 @@ describe('Policy Page', function() {
     browser.sleep(1000);
     var label = await element(by.css('sdp-policy label')).getText();
     expect(label).toEqual('Policy');
-  });
+  }, 4000);
 
 });
