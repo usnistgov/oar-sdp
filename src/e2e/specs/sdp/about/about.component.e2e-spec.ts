@@ -9,6 +9,6 @@ describe('About Page', function() {
     browser.sleep(2000);
     var label = await element(by.css('sdp-about label')).getText();
     expect(label).toEqual('About NIST Data');
-  });
+  }, 4000);
 
 });

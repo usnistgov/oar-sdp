@@ -9,6 +9,6 @@ describe('API Page', function() {
     browser.sleep(1000);
     var label = await element(by.css('sdp-api label')).getText();
     expect(label).toEqual('APIs');
-  });
+  }, 4000);
 
 });
