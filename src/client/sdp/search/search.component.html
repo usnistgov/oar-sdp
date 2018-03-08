@@ -141,7 +141,7 @@
                                     [multiple] = "true"
                                     (onSelect)="filterResults($event,'selectauthor')"
                                     (onUnselect)="filterResults($event,'unselectauthor')"
-                                    [minLength]="1" [maxlength]="30" [style]="{'width':'100%',
+                                    [minLength]="1" [maxlength]="30" [inputStyle] = "{'border': '1px solid #bdbdbd'}" [style]="{'width':'100%',
                               'background-color': '#FFFFFF','font-weight': '400','height':'30px',
                               'font-style': 'italic'}">
                     </p-autoComplete>
@@ -159,7 +159,7 @@
                                     (onSelect)="filterResults($event,'selectkeyword')"
                                     (onUnselect)="filterResults($event,'unselectkeyword')"
                                     [minLength]="1" [maxlength] = "30" [style]="{'width':'100%',
-                              'background-color': '#FFFFFF','font-weight': '400','height':'30px',
+                              'background-color': '#000',  'border': '1px solid #bdbdbd','font-weight': '400','height':'30px',
                               'font-style': 'italic'}">
                     </p-autoComplete>
                   </div>
@@ -356,7 +356,8 @@
                       </div>
                       <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('DOI') !==-1">
                         <div class="ui-grid-col-1"><b>DOI: </b> </div>
-                        <div class="ui-grid-col-11" style="color:#1471AE;">{{(resultItem.doi) || "None"}}</div>
+                        <div class="ui-grid-col-11" style="color:#1471AE;" *ngIf = "resultItem.doi != null">{{(resultItem.doi) || "None"}}</div>
+                        <div class="ui-grid-col-11" style="color:#000;" *ngIf = "resultItem.doi == null">None</div>
                       </div>
                       <div class="ui-grid-row">
                         <div class="ui-grid-col-12" style="margin-top:5px">

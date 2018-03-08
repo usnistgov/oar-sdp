@@ -58,6 +58,7 @@ body .ui-button .ui-button-text, body .ui-datepicker-buttonpane > button .ui-but
 
 body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container.ui-inputtext {
   padding: 2px 2px 0px 2px;
+  border: 1px solid #bdbdbd;
   height:auto;
   width:100%;}
 
@@ -157,4 +158,9 @@ body .ui-tree-toggler.fa.fa-fw.fa-caret-down:before {
 body .ui-dropdown .ui-dropdown-trigger
 {
   margin-top: .15em;
+}
+
+body .ui-button.ui-button-icon-only, body .ui-datepicker-buttonpane > button.ui-button-icon-only {
+  width: 2.0em;
+  height: 2.0em;
 }

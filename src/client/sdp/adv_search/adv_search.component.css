@@ -104,12 +104,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 }
 
 :host /deep/ .breadcrumb {
-  background-color: #fff;
+  background-color: #153971;
 }
 
-.breadCrumb-black {
-  color: #000;
+.breadCrumb-text {
+  color: #fff;
   font-weight: 300;
 }
-
-

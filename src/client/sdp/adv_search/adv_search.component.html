@@ -19,8 +19,8 @@
     <div class="EmptyBox20"></div>
     <label style="font-size: x-large;float: left;display: block;"><i class="faa faa-cogs faa-lg"></i> Advanced Search Builder</label>
     <ol class="breadcrumb" style="float: right;">
-      <li><a href="#" style="color: #1f4b71;">Home</a></li>
-      <li class="active breadCrumb-black" >Advanced Search Builder</li>
+      <li><a href="#" style="color: #fff;">Home</a></li>
+      <li class="active breadCrumb-text" >Advanced Search Builder</li>
     </ol>
     <div class="EmptyBox20"></div>
   </div>
@@ -65,20 +65,20 @@
       <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1">
       </div>
       <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1" style="padding-right: 0em;padding-left: 0em" >
-        <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
+        <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
         ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
       </div>
       <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-2">
       </div>
 
-      <div class="ui-g-12 ui-md-4 " style="padding-right: 0em;padding-left: 0em">
+      <div class="ui-g-12 ui-md-4 " >
         <label for="fieldstext" class="hideLabel">Fields text</label>
-        <input type="text" id="fieldstext" pInputText style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 42px;font-weight: 400;
+        <input type="text" id="fieldstext" pInputText style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;
           font-style: italic" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
       </div>
       <div class="ui-g-12 ui-md-2 " style="padding-left: 0em;padding-right: 0em">
-        <p-dropdown [options]="fields"  [style]="{'width':'100%','padding-top': '.5em','background-color': '#FFFFFF','height': '42px'
-        ,'font-weight': '400','font-style': 'italic','border-right':'.5px solid grey','border-top':'.5px solid grey','border-bottom':'.5px solid grey'}" [(ngModel)]="row.column2" (click) = "saveSearch()" >
+        <p-dropdown [options]="fields"  [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
+        ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [(ngModel)]="row.column2" (click) = "saveSearch()" >
         </p-dropdown>
       </div>
       <div class="ui-g-12 ui-md-3  " style="width: 3%;" *ngIf="showDeleteButton == true" >
@@ -88,6 +88,6 @@
         <button type="button" class="addRemoveButton search-builder-button-add" (click)="addRow()" pButton  icon="ui-icon-add"></button>
       </div>
   </div>
-    <div style="height:200px;background-color: #fff"></div>
+    <div style="height:150px;background-color: #fff"></div>
   </div>
 </div>
