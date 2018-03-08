@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChildren } from '@angular/core';
-import { SearchService } from '../shared/index';
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
@@ -22,9 +21,10 @@ import { Observable } from 'rxjs/Observable';
 import {ProgressSpinnerModule, DialogModule} from 'primeng/primeng';
 import * as __ from 'underscore';
 import {isNullOrUndefined} from "util";
+import { SearchResolve } from "./search-service.resolve";
+import { error } from 'selenium-webdriver';
 
 //import * as jsPDF  from 'jspdf';
-
 declare var Ultima: any;
 declare var saveAs: any;
 declare var $: any;
@@ -33,11 +33,11 @@ declare var $: any;
   moduleId: module.id,
   selector: 'pdr-landing',
   templateUrl: 'landing.component.html',
-  styleUrls: ['landing.component.css'],
-  providers:[SearchService]
+  styleUrls: ['landing.component.css']
 })
 
 export class LandingPanelComponent implements OnInit, OnDestroy {
+
     layoutCompact: boolean = true;
     layoutMode: string = 'horizontal';
     profileMode: string = 'inline';
@@ -52,7 +52,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     recordDisplay:any[] = [];
     keyword:string;
     summaryCandidate: any[];
-    findId: string;
+    //findId: string;
     leftmenu: MenuItem[];
     rightmenu: MenuItem[];
     similarResources: boolean = false;
@@ -77,7 +77,10 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     dataFiles: TreeNode[] = [];
     childNode: TreeNode = {};
     index:any = {};
+    pdrApi : string = environment.PDRAPI;
     isResultAvailable: boolean = true;
+    isId : boolean = true;
+    teststring: string = "Loading !!";
     private _routeParamsSubscription: Subscription;
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
@@ -94,29 +97,37 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-    constructor(private route: ActivatedRoute, private http: Http,private cartService: CartService, private el: ElementRef,public searchService:SearchService, private titleService: Title) {
+    constructor(private route: ActivatedRoute, private http: Http,private cartService: CartService, private el: ElementRef, private titleService: Title) {
     this.getDataCartList();
     this.createDataCartHierarchy();
     this.cartService.watchCart().subscribe(value => {
       this.displayCart = value;
     });
-  }
+    }
 
   /**
    * If Search is successful populate list of keywords themes and authors
    */
 
   onSuccess(searchResults:any[]) {
+   this.teststring = "success !!";
 
     if(searchResults["ResultCount"] === undefined || searchResults["ResultCount"] !== 1)
       this.recordDisplay = searchResults;
     else if(searchResults["ResultCount"] !== undefined && searchResults["ResultCount"] === 1)
       this.recordDisplay = searchResults["ResultData"][0];
+
+    if(this.recordDisplay["@id"] === undefined || this.recordDisplay["@id"] === "" ){
+    this.isId = false;
+    return;
+    }
+
     this.type = this.recordDisplay['@type'];
     this.titleService.setTitle(this.recordDisplay['title']);
     this.createDataHierarchy();
     if(this.recordDisplay['doi'] !== undefined && this.recordDisplay['doi'] !== "" )
       this.isDOI = true;
+
     if(this.recordDisplay['contactPoint'].hasEmail !== undefined && this.recordDisplay['contactPoint'].hasEmail !== "")
       this.isEmail = true;
 
@@ -135,14 +146,14 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   }
 
   searchbyid(searchId:string){
-    //console.log(searchId);
-    this.keyword = '';
-    let that = this;
-    return this.searchService.searchById(searchId)
-      .subscribe(
-        async searchResults => await that.onSuccess(searchResults),
-        error => that.onError(error)
-      );
+    // //console.log(searchId);
+    // this.keyword = '';
+    // let that = this;
+    // return this.searchService.searchById(searchId)
+    //   .subscribe(
+    //     async searchResults => await that.onSuccess(searchResults),
+    //     error => that.onError(error)
+    //   );
   }
 
 
@@ -245,18 +256,28 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
                             this.citeString +=  author.givenName+' ';
                          if(author.middleName !== null && author.middleName !== undefined)
                             this.citeString += author.middleName;
-                         this.citeString +=", ";
+
                         }
                     }
                     else if(this.recordDisplay['contactPoint']) {
                         if(this.recordDisplay['contactPoint'].fn !== null && this.recordDisplay['contactPoint'].fn !== undefined)
-                        this.citeString += this.recordDisplay['contactPoint'].fn+ ", ";
+                        this.citeString += this.recordDisplay['contactPoint'].fn;
                     }
-                    if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== 'undefined' )
+
+                    if(this.recordDisplay['issued'] !==  null && this.recordDisplay['issued'] !==  undefined){
+
+                      this.citeString += " ("+ _.split(this.recordDisplay['issued'],"-")[0]+") ";
+                    }
+                    if(this.citeString !== "") this.citeString +=", ";
+                    if(this.recordDisplay['title']!== null && this.recordDisplay['title']!== undefined )
                         this.citeString += this.recordDisplay['title'] +", ";
-                    if(this.recordDisplay['doi']!== null && this.recordDisplay['doi']!== 'undefined' )
-                        this.citeString += this.recordDisplay['doi'];
-                    this.citeString += ", access:"+date;
+                    if(this.recordDisplay['publisher']){
+                      if(this.recordDisplay['publisher'].name !== null && this.recordDisplay['publisher'].name !== undefined)
+                      this.citeString += this.recordDisplay['publisher'].name;
+                    }
+                    if(this.isDOI)   this.citeString += ", "+ this.recordDisplay['doi'];
+
+                    this.citeString += " (Accessed: "+ date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+")";
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
@@ -302,24 +323,37 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
      */
     ngOnInit() {
       this.createDataCartHierarchy();
-      this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-            if(_.includes(window.location.href,"ark")){
-               var alength = _.split(window.location.href,'/').length;
-               this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
+      this.route.data.map(data => data.searchService ).subscribe((res)=>{
+        this.onSuccess(res);
+      }, (error) =>{ this.onError(error) } );
 
-            }
-            else if(_.includes(window.location.href,'?')) {
-              this.searchValue = params['id'];
-            } else {
-              var alength = _.split(window.location.href,'/').length;
-              this.searchValue =_.split(window.location.href,'/')[alength-1];
-              //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
-            }
-            this.findId = this.searchValue;//params['id'];
-            this.searchbyid(this.findId);
-            this.files =[];
-        });
+      /// This part is added because we need to rewrite the url in browser due to # issue and we need a record
+      this.searchValue = this.route.pathFromRoot[1].snapshot.url.toString().split('id,').pop();
+      if(_.includes(this.searchValue, 'ark'))
+        this.searchValue = this.replaceAll(this.searchValue,',','/')
+
+      // this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+      //   if(_.includes(window.location.href,"ark")){
+      //     var alength = _.split(window.location.href,'/').length;
+      //     this.searchValue ="ark"+decodeURIComponent(_.split(window.location.href,'ark')[1]);
+
+      //   }
+      //   else if(_.includes(window.location.href,'?')) {
+      //     this.searchValue = params['id'];
+      //   } else {
+      //     var alength = _.split(window.location.href,'/').length;
+      //     this.searchValue =_.split(window.location.href,'/')[alength-1];
+      //     //console.log(" searchvalue TEST id ***"+_.split(window.location.href,'/')[5]);
+      //   }
+      //   //this.onSuccess(this.route.snapshot.data['searchService']);
+      //   this.findId = this.searchValue;//params['id'];
+      //   //this.searchbyid(this.findId);
+      //   this.files =[];
+      // });
     }
+   replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+}
 
   ngOnDestroy() {
 
@@ -416,7 +450,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   checkReferences(){
     if(Array.isArray(this.recordDisplay['references']) ){
       for(let ref of this.recordDisplay['references'] ){
-        if(ref.refType == "isDocumentedBy") return true;
+        if(ref.refType == "IsDocumentedBy") return true;
       }
     }
   }
@@ -431,6 +465,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       return true;
     }
   }
+
   /**
    * If Search is successful populate list of keywords themes and authors
    */

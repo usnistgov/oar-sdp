@@ -30,16 +30,31 @@ import { Data } from '../datacart/data';
             </div>
             <br>
             <div *ngIf="checkReferences()">
-             <h3 id="reference" name="reference">References</h3>
-               This data is discussed in :
-                <span *ngFor="let refs of record['references']">
-                  <span *ngIf="refs['refType'] == 'IsDocumentedBy'">
-                    <br> <a href={{refs.location}} target="blank">{{ refs.label }}</a>
-                  </span>
+             <h3 id="reference" name="reference"><b>References:</b></h3>
+                <span *ngIf="isDocumentedBy"> 
+                    This data is discussed in :
+                    <span style="padding-left:2.75em" *ngFor="let refs of record['references']">
+                        <span *ngIf="refs['refType'] == 'IsDocumentedBy'">
+                            <br> <i class="faa faa-external-link">
+                                 <a href={{refs.location}} target="blank">{{ refs.label }}</a>
+                                 </i>
+                        </span>
+                    </span>
+                    <br>
+                </span>
+                <span *ngIf="isReferencedBy"> 
+                    This data is referenced in :
+                    <span style="padding-left:2.75em" *ngFor="let refs of record['references']">
+                        <span *ngIf="refs['refType'] == 'IsReferencedBy'">
+                            <br> <i class="faa faa-external-link">
+                            <a href={{refs.location}} target="blank">{{ refs.location }}</a>
+                            </i>
+                        </span>
+                    </span>
                 </span>
             </div>
             <div>
-
+            <br>
              <h3><b>Access To Data:</b></h3><br> 
              <span *ngIf="record['accessLevel'] === 'public'"><i class="faa faa-globe"></i> 
                 This data is public. 
@@ -113,6 +128,8 @@ export class DescriptionComponent {
   accessPages: Map <string, string> = new Map();
   accessUrls : string[] =[];
   accessTitles : string[] =[];
+  isReferencedBy : boolean = false;
+  isDocumentedBy : boolean = false;
   private dataFiles: TreeNode[] = [];
 
   /**
@@ -147,11 +164,14 @@ export class DescriptionComponent {
     return Object.keys(this.fileDetails);
   }
 
-  checkReferences() {
-    if (Array.isArray(this.record['references'])) {
-      for (let ref of this.record['references']) {
-        if (ref.refType === 'isDocumentedBy') return true;
+checkReferences(){
+      if(Array.isArray(this.record['references']) ){
+        for(let ref of this.record['references'] ){
+            if(ref.refType === 'IsDocumentedBy') this.isDocumentedBy = true;
+            if(ref.refType === 'IsReferencedBy') this.isReferencedBy = true;
         }
+        if(this.isDocumentedBy || this.isReferencedBy)
+        return true;
       }
   }
 
@@ -173,16 +193,28 @@ export class DescriptionComponent {
           'fileSize': comp["size"],
           'downloadURL': comp["downloadURL"],
           'fileFormat': comp["mediaType"],
-          'downloadedStatus' : null,
-          'resFilePath':''
+          'downloadedStatus': null,
+          'resFilePath': ''
         };
         this.cartService.addDataToCart(data);
         data = null;
       }
     }
-    setTimeout(()=> {
+    setTimeout(() => {
       this.cartService.updateAllFilesSpinnerStatus(false);
     }, 3000);
+  }
+
+ checkKeywords(){
+    if(Array.isArray(this.record['keyword']) ){
+        if(this.record['keyword'].length > 0)
+            return true;
+        else
+            return false;
+    }
+    else {
+        return false;
+    }
   }
 
   /*

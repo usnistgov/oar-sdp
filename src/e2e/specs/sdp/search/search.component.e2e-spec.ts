@@ -10,5 +10,5 @@ describe('Search Results Page', function() {
     browser.sleep(1000);
     const text = await element(by.css('sdp-search h4')).getText();
     expect(text).toContain("SRD 69");
-  });
+  }, 4000);
 });

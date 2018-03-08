@@ -14,7 +14,7 @@
 FROM node:7.9
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends zip wget ca-certificates
+    apt-get install -y --no-install-recommends zip wget ca-certificates git
 
 ENV GOSU_VERSION 1.10
 RUN set -ex; \
@@ -38,15 +38,16 @@ RUN set -ex; \
 RUN sed --in-place -e '/CREATE_MAIL_SPOOL/ s/=yes/=no/' /etc/default/useradd
 ARG devuser=developer
 ARG devuid=1000
-RUN grep -qs :${devuid}: /etc/group || \
+RUN grep -qs :$devuid: /etc/group || \
     groupadd --gid $devuid $devuser
-RUN grep -Pqs ":${devuid}:\d+:" /etc/passwd || \
+RUN grep -Pqs ":$devuid:\d+:" /etc/passwd || \
     useradd -m --comment "OAR Developer" --shell /bin/bash \
-            --gid $opuid --uid $opuid $opuser
+            --gid $devuid --uid $devuid $devuser
 
 
-RUN mkdir -p /home/build
 VOLUME /home/build
+VOLUME /home/dist
+RUN mkdir -p /home/build /home/dist
 WORKDIR /home/build
 
 ENV CODEDIR /home/build
