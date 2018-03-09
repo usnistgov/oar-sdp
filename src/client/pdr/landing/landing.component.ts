@@ -29,6 +29,7 @@ declare var Ultima: any;
 declare var saveAs: any;
 declare var $: any;
 
+
 @Component ({
   moduleId: module.id,
   selector: 'pdr-landing',
@@ -71,6 +72,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     metadata: boolean = false;
     displayCart: boolean = true;
     showSpinner: boolean = false;
+    showDownloadFileSpinner: boolean = false;
+    displayFiles:any = [];
     cartEntities: CartEntity[] = [];
     cols: any[];
     selectedData: TreeNode[] = [];
@@ -81,6 +84,8 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     isResultAvailable: boolean = true;
     isId : boolean = true;
     teststring: string = "Loading !!";
+    minimum: number = 1;
+    maximum: number = 100000;
     private _routeParamsSubscription: Subscription;
     private files: TreeNode[] = [];
     private fileHierarchy : TreeNode;
@@ -507,9 +512,20 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
         }
       }
     }
+    var randomnumber = Math.floor(Math.random() * (this.maximum - this.minimum + 1)) + this.minimum;
+
+    var downloadFileName = "download" + randomnumber + ".zip";
+    this["showDownloadFileSpinner"+randomnumber] = true;
+    this.displayFiles.push({key: downloadFileName, value: this["showDownloadFileSpinner"+randomnumber]});
     this.downloadFile(params).subscribe(blob => {
-        saveAs(blob, "download.zip");
+        saveAs(blob, downloadFileName);
         this.showSpinner = false;
+        this["showDownloadFileSpinner"+randomnumber] = false;
+        this.displayFiles.forEach(function(item) {
+          if (item.key === downloadFileName) {
+            item.value = this["showDownloadFileSpinner"+randomnumber];
+          }
+        },1000);
     });
 
     for (let selData of this.selectedData) {

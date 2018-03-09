@@ -156,10 +156,13 @@
   <div >
     <div style="padding-left: 1%">
       <div class="ui-g">
-        <div class="ui-g-8 ui-md-8" >
+        <div class="ui-g-12 ui-md-12" >
           <button type="button" (click)="downloadZIP()" pButton type="submit" class="btn btn-primary" ><i class="faa faa-download faa-1x icon-white" style="color: #fff;"></i> Download selected <span class="badge badge-notify" >{{selectedData.length}}</span></button>
           <button type="button" (click)="removeByDataId()" style="background-color: red;" class="btn btn-primary" pButton type="submit"><i class="faa faa-trash faa-1x icon-white" style="color: #fff;"></i> Remove selected <span class="badge badge-notify">{{selectedData.length}}</span></button>
           <button type="button" (click)="removeByDownloadStatus()" style="background-color: red;" class="btn btn-primary" pButton type="submit"><i class="faa faa-minus-circle faa-1x icon-white" style="color: #fff;"></i> Remove downloaded</button>
+        </div>
+        <div class="ui-g-2 ui-md-2" *ngFor="let item of displayFiles  ">
+          {{item.key}}-<p-progressSpinner *ngIf ="item.value === true" [style]="{width: '12px', height: '12px'}" ></p-progressSpinner><i class="faa faa-check" *ngIf ="item.value !== true"></i>
         </div>
       </div>
       <p-treeTable selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px','overflow-y': 'scroll','height':'400px','width':'700px'}">
