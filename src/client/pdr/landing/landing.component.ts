@@ -79,11 +79,7 @@ teststring: string = "Loading !!";
    *
    */
   constructor(private route: ActivatedRoute, private el: ElementRef, private titleService: Title) {
-    
-    this.route.data.map(data => data.searchService ).subscribe((res)=>{
-      this.onSuccess(res);
-    }, (error) =>{ this.onError(error) } );
-   
+  
   }
 
   /**
@@ -307,7 +303,12 @@ teststring: string = "Loading !!";
    * Get the params OnInit
    */
   ngOnInit() {
-    this.files =[];
+   
+    this.route.data.map(data => data.searchService ).subscribe((res)=>{
+      this.onSuccess(res);
+    }, (error) =>{ this.onError(error) } );
+   
+    /// This part is added because we need to rewrite the url in browser due to # issue and we need a record 
     this.searchValue = this.route.pathFromRoot[1].snapshot.url.toString().split('id,').pop();
     if(_.includes(this.searchValue, 'ark')) 
      this.searchValue = this.replaceAll(this.searchValue,',','/')
