@@ -358,7 +358,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
     }
    replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
-}
+  }
 
   ngOnDestroy() {
 
