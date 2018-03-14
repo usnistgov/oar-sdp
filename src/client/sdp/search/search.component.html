@@ -14,7 +14,6 @@
 <head>
   <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NIST&pua=UA-66610693-14&yt=true&exts=ppsx,pps,f90,sch,rtf,wrl,txz,m1v,xlsm,msi,xsd,f,tif,eps,mpg,xml,pl,xlt,c"></script>
 </head>
-<p-messages [(value)]="msgs" ></p-messages>
 <div class="ui-fluid searchColor">
   <div class="ui-g">
     <div class="ui-g-12 background-gray">
@@ -56,7 +55,9 @@
   <div *ngIf="noResults">
     <div class="ui-g-12" style="background-color: #FFFFFF;" >
       <div class="ui-g-2"></div>
-      <div class="ui-g-10"><p-messages [(value)]="searchResultsError" style="text-align:center"></p-messages>
+      <div class="ui-g-10">
+        <p-messages [(value)]="searchResultsError" style="text-align:center"></p-messages>
+        <p-messages [(value)]="msgs" style="text-align:center"></p-messages>
       </div>
     </div>
     <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>

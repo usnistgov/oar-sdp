@@ -29,6 +29,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 }
 
 .cardDiv:hover{
+  height:75px;
   background-color: #0071BC;
   color: #fff;
   border: 1px solid #0071BC;
@@ -37,6 +38,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 .cardDiv
 {
  /* background-color: #1471AE;*/
+  height:75px;
   -webkit-box-shadow: 0;
   -moz-box-shadow: 0;
   box-shadow: 0;
@@ -142,7 +144,7 @@ hr {
 }
 
 .cardDivHeight {
-  height: 100%;
+  height: 75px;
   display: flex;
   align-items: center; /* horizontal */
   justify-content: center; /* vertical */
@@ -153,7 +155,6 @@ hr {
 }
 
 .noTopPadding {
-  padding-top: 0em;
 }
 
 .frontPanel {
