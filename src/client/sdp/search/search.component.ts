@@ -3,12 +3,15 @@ import { SearchService, TaxonomyListService, SearchFieldsListService } from '../
 import { ActivatedRoute }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
+import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { MenuItem } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
+import { Data } from '../shared/search-query/data';
+import { SearchQueryService } from '../shared/search-query/search-query.service';
+
 declare var jQuery: any;
 
 /**
@@ -107,7 +110,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   isActive: boolean = true;
   filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
-
+  displayQuery: boolean = false;
+  displayQueryList: boolean = false;
   private _routeParamsSubscription: Subscription;
   private PDRAPIURL: string = environment.PDRAPI;
 
@@ -115,7 +119,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(ngZone:NgZone , private route: ActivatedRoute, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService) {
+  constructor(ngZone:NgZone , private route: ActivatedRoute, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService, public searchQueryService: SearchQueryService) {
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -138,6 +142,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
         error => this.errorMessage = <any>error
       );
+  }
+
+  saveSearchQuery (queryName:any,queryValue:any) {
+
+    let data : Data;
+
+    data = {'queryName':queryName,'queryValue':queryValue,'id':queryName};
+
+    this.searchQueryService.saveSearchQuery(data);
+
+
   }
 
   /**
@@ -193,6 +208,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     }
     return themes;
+  }
+
+
+  showDialog() {
+    this.displayQuery = true;
   }
 
   /**

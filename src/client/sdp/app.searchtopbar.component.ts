@@ -1,5 +1,6 @@
 import { Component,Inject,forwardRef } from '@angular/core';
 import { AppComponent } from './app.component';
+import { SearchQueryService } from '../sdp/shared/search-query/search-query.service';
 
 @Component({
     selector: 'app-searchtopbar',
@@ -17,6 +18,8 @@ import { AppComponent } from './app.component';
               <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                     <i></i>
                 </a>
+          <a style="float:right;padding-top:10px" href="javascript:;" (click) = "updateQueryStatus()" ><span class="textlinks"><b>Queries </b></span>
+            <i class="faa faa-shopping-cart faa-2x icon-white" style="color: #fff;"></i><span class="badge badge-notify" >{{queryLength}}</span></a>
          </div>
       </div>
     `
@@ -24,6 +27,19 @@ import { AppComponent } from './app.component';
 
 export class SearchTopBarComponent {
 
-  constructor(public app: AppComponent) {}
+  queryLength : number;
+  constructor(public app: AppComponent, public searchQueryService: SearchQueryService) {
+
+  this.searchQueryService.watchStorage().subscribe(value => {
+    this.queryLength = value;
+  });
+}
+
+
+  updateQueryStatus()
+  {
+    this.searchQueryService.updateQueryDisplayStatus(true);
+    this.app.getSearchQueryList();
+  }
 
 }

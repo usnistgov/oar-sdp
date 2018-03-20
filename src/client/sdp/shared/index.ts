@@ -5,4 +5,5 @@ export * from './footbar/index';
 export * from './search-service/index';
 export * from './taxonomy-list/index';
 export * from './searchfields-list/index';
+export * from './search-query/index';
 export * from './config/env.config';

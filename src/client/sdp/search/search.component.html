@@ -289,6 +289,12 @@
                   </div>
                   <div class="ui-g-12 ui-md-6 ui-sm-6">
                     <div style="float: right;padding-right:10px;padding-top: 10px">
+                      <button type="button" (click)="showDialog()" pButton icon="fa-external-link-square" label="Show"></button>
+                      <p-dialog header="Save Query" [(visible)]="displayQuery" modal="modal" [responsive]="true" [width]="350" [minWidth]="200">
+                        <h3 class="first">Name</h3> <input type="text"  [(ngModel)]="queryName" pInputText />
+                        <h3 class="first">Content</h3><input type="text"  [(ngModel)]="queryValue" pInputText />
+                        <button class="searchButton" (click)="saveSearchQuery(queryName, queryValue)" pButton label="Save" type="submit" ></button>
+                      </p-dialog>
                       <button type="text" style="background-color: #606165;font-weight: 900" pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
                       <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
                         <div style="width: 100%;margin-top:0em;text-align: left;">

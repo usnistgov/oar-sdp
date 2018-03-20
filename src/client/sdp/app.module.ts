@@ -22,9 +22,10 @@ import { AdvSearchModule } from './adv_search/adv_search.module';
 import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
 import { TopBarComponent }  from './app.topbar.component';
 import { SearchTopBarComponent }  from './app.searchtopbar.component';
+import {DataTableModule} from "primeng/primeng";
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, BrowserAnimationsModule, RouterModule.forRoot(routes ,{ useHash: true })
+  imports: [BrowserModule, HttpModule, DataTableModule, BrowserAnimationsModule, RouterModule.forRoot(routes ,{ useHash: true })
   , AboutModule, HomeModule, HelpModule, PolicyModule, FaqModule, ApiModule, SearchModule, AdvSearchModule, SharedModule.forRoot()
   ],
   declarations: [AppComponent,

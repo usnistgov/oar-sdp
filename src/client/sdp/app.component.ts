@@ -1,6 +1,12 @@
 import {Component,AfterViewInit,ElementRef,Renderer,ViewChild} from '@angular/core';
 import './operators';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { SearchQueryService } from '../sdp/shared/search-query/search-query.service';
+import { SearchEntity } from '../sdp/shared/search-query/search.entity';
+
+import {DataTableModule} from 'primeng/primeng';
+
+
 
 
 enum MenuOrientation {
@@ -22,6 +28,7 @@ export class AppComponent implements AfterViewInit {
   layoutCompact: boolean = true;
 
   layoutMode: MenuOrientation = MenuOrientation.HORIZONTAL;
+
 
   darkMenu: boolean = false;
 
@@ -54,12 +61,20 @@ export class AppComponent implements AfterViewInit {
   resetMenu: boolean;
 
   menuHoverActive: boolean;
+  displayQueryList: boolean = false;
+  searchEntities: SearchEntity[];
 
   @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
 
   @ViewChild('layoutMenuScroller') layoutMenuScrollerViewChild: ElementRef;
 
-  constructor(public renderer: Renderer) {}
+  constructor(public renderer: Renderer,public searchQueryService: SearchQueryService) {
+
+    this.searchQueryService.watchQuery().subscribe(value => {
+      this.displayQueryList = value;
+    });
+    this.getSearchQueryList();
+  }
 
   ngAfterViewInit() {
     this.layoutContainer = <HTMLDivElement> this.layourContainerViewChild.nativeElement;
@@ -68,6 +83,35 @@ export class AppComponent implements AfterViewInit {
     setTimeout(() => {
       jQuery(this.layoutMenuScroller).nanoScroller({flash:true});
     }, 10);
+  }
+
+
+  removeItem(row:any) {
+    console.log("row" + JSON.stringify(row));
+    let dataId: any;
+    // convert the map to an array
+    let delRow = this.searchEntities.indexOf(row);
+    this.searchEntities.splice(delRow,1);
+    this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+    this.getSearchQueryList();
+  }
+
+  getSearchQueryList() {
+
+    this.searchQueryService.getAllSearchEntities().then(function (result) {
+
+      //console.log("result" + result.length);
+
+      this.searchEntities = result;
+
+      console.log("cart entities inside datacartlist" + JSON.stringify(this.searchEntities));
+
+    }.bind(this), function (err) {
+
+      alert("something went wrong while fetching the products");
+
+    });
+
   }
 
   onLayoutClick() {
