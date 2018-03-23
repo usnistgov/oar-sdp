@@ -114,6 +114,10 @@ export class AppComponent implements AfterViewInit {
 
   }
 
+  closeWindow() {
+    this.displayQueryList = false;
+  }
+
   onLayoutClick() {
     if(!this.topbarItemClick) {
       this.activeTopbarItem = null;

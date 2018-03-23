@@ -4,6 +4,8 @@ import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
 import { Router, NavigationExtras } from '@angular/router';
+import { Data } from '../shared/search-query/data';
+import { SearchQueryService } from '../shared/search-query/search-query.service';
 import * as _ from 'lodash';
 declare var jQuery: any
 
@@ -31,6 +33,7 @@ export class AdvSearchComponent implements OnInit {
     display: boolean = false;
     queryAdvSearch:string= '';
     showAdvancedSearch: boolean = false;
+    queryName:string='';
     rows: any[] ;
     fields: SelectItem[];
     ALL:string='ALL FIELDS';
@@ -42,7 +45,7 @@ export class AdvSearchComponent implements OnInit {
    * Create an instance of services for Home
    */
   constructor(public taxonomyListService: TaxonomyListService, public searchFieldsListService :
-    SearchFieldsListService, public searchService:SearchService, private router:Router) {
+    SearchFieldsListService, public searchService:SearchService, private router:Router,public searchQueryService: SearchQueryService) {
              this.taxonomies = [];
              this.fields = [];
     }
@@ -280,5 +283,12 @@ export class AdvSearchComponent implements OnInit {
     if (!Boolean(this.searchValue)) {
       field.value = '';
     }
+  }
+
+
+  saveAdvSearchQuery (queryName:any) {
+    let data : Data;
+    data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName};
+    this.searchQueryService.saveAdvSearchQuery(data);
   }
 }

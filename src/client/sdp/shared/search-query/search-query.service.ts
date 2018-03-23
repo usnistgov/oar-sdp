@@ -20,10 +20,14 @@ export class SearchQueryService {
 
   public searchEntities : SearchEntity[];
   storageSub= new BehaviorSubject<number>(0);
+  storageAdvSub= new BehaviorSubject<number>(0);
   addCartSpinnerSub = new BehaviorSubject<boolean>(false);
   addAllCartSpinnerSub = new BehaviorSubject<boolean>(false);
   displayQuerySub = new BehaviorSubject<boolean>(false);
+  displayAdvQuerySub = new BehaviorSubject<boolean>(false);
   cartSize: number ;
+  querySize: number ;
+  advQuerySize: number ;
   showAddCartSpinner : boolean = false;
   showAddAllCartSpinner : boolean = false;
   displayCart : boolean = false;
@@ -35,6 +39,8 @@ export class SearchQueryService {
   constructor(private http: Http) {
     this.initCart();
     this.getAllSearchEntities();
+    this.getAllAdvSearchEntities();
+
     //this.setCartLength (this.cartSize);
   }
 
@@ -54,14 +60,24 @@ export class SearchQueryService {
     return this.displayQuerySub.asObservable();
   }
 
+  watchAdvQuery(): Observable<any> {
+    return this.displayAdvQuerySub.asObservable();
+  }
+
 
   initCart () {
 
     // if we dont have  any cart history, create a empty cart
-    if(!this._storage.getItem('cart')) {
+    if(!this._storage.getItem('query')) {
 
       let emptyMap : { [key:string]:number; } = {};
       this.setQuery(emptyMap);
+
+    }
+    if(!this._storage.getItem('advquery')) {
+
+      let emptyMap : { [key:string]:number; } = {};
+      this.setAdvQuery(emptyMap);
 
     }
   }
@@ -76,8 +92,8 @@ export class SearchQueryService {
     // persist the map
     this.setQuery(cartMap);
     let cart  = this.getAllSearchEntities();
-    console.log("cart length" + this.cartSize);
-    this.setQueryLength (this.cartSize);
+    console.log("cart length" + this.querySize);
+    this.setQueryLength (this.querySize);
   }
 
   /**
@@ -95,7 +111,28 @@ export class SearchQueryService {
       searchEntities.push(value);
     }
 
-    this.cartSize = searchEntities.length;
+    this.querySize = searchEntities.length;
+    // return the array
+    return Promise.resolve(searchEntities);
+
+  }
+
+  /**
+   * Returns all the products in the cart form the local storage
+   *
+   **/
+  getAllAdvSearchEntities()  {
+    // get the cart
+    let myCartMap = this.getAdvQuery();
+    let searchEntities : SearchEntity[] = [];
+
+    // convert the map to an array
+    for (let key in myCartMap) {
+      let value = myCartMap[key];
+      searchEntities.push(value);
+    }
+
+    this.advQuerySize = searchEntities.length;
     // return the array
     return Promise.resolve(searchEntities);
 
@@ -155,6 +192,12 @@ export class SearchQueryService {
     this.storageSub.next(value);
     console.log("cart size inside method" + this.storageSub.getValue());
   }
+
+  setAdvQueryLength(value: number) {
+    this.storageAdvSub.next(value);
+    console.log("cart size inside method" + this.storageAdvSub.getValue());
+  }
+
   /**
    * Will persist the product to local storage
    *
@@ -191,10 +234,53 @@ export class SearchQueryService {
     }
     // save the map
     this.setQuery(cartMap);
-    let cart  = this.getAllSearchEntities();
-    this.setQueryLength (this.cartSize);
+    let query  = this.getAllSearchEntities();
+    this.setQueryLength (this.querySize);
     //this.updateFileSpinnerStatus(false);
     this.getQuery();
+  }
+
+
+  /**
+   * Will persist the product to local storage
+   *
+   **/
+  saveAdvSearchQuery(data: Data) : void {
+    // product id , quantity
+    let cartMap = this.getAdvQuery();
+
+    // if we dont have  any cart history, create a empty cart
+    if (!this._storage.getItem('advquery')) {
+      let emptyMap: { [key: string]: number; } = {};
+      this.setAdvQuery(emptyMap);
+      let cartMap = this.getAdvQuery();
+      // if not, set default value
+      cartMap[data.id] = {
+        'data': data,
+      }
+      // save the map
+      this.setAdvQuery(cartMap);
+    }
+
+    cartMap = this.getAdvQuery();
+
+    // if the current key exists in the map , append value
+    if (cartMap[data.id] != undefined) {
+
+      console.log("key exists");
+      console.log("data id - " + data.id);
+    } else {
+      // if not, set default value
+      cartMap[data.id] = {
+        'data': data,
+      }
+    }
+    // save the map
+    this.setAdvQuery(cartMap);
+    let advQuery  = this.getAllAdvSearchEntities();
+    this.setAdvQueryLength (this.advQuerySize);
+    //this.updateFileSpinnerStatus(false);
+    this.getAdvQuery();
   }
 
   updateFileSpinnerStatus(addFileSpinner:boolean)
@@ -221,6 +307,18 @@ export class SearchQueryService {
     return JSON.parse(queryAsString);
 
   }
+
+  /**
+   * Retrive the cart from local storage
+   **/
+  private getAdvQuery() {
+
+    let queryAsString = this._storage.getItem('advquery');
+    console.log("query" + JSON.stringify(queryAsString));
+    return JSON.parse(queryAsString);
+
+  }
+
   /**
    * Persists the cart to local storage
    **/
@@ -229,4 +327,11 @@ export class SearchQueryService {
     //this.storageSub.next(true);
   }
 
+  /**
+   * Persists the cart to local storage
+   **/
+  private setAdvQuery(cartMap) : void{
+    this._storage.setItem('advquery',JSON.stringify(cartMap));
+    //this.storageSub.next(true);
+  }
 }

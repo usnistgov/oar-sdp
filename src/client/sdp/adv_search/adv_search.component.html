@@ -61,6 +61,13 @@
         <a class="examples" (click)="searchExample('Interatomic Potentials');" href="#!" >Interatomic Potentials </a>&nbsp;
       </div>
     </div>
+    <div  class="ui-g-12 search-builder-background" >
+      <div class="ui-g-12 ui-md-2">
+      </div>
+      <div class="ui-g-12 ui-md-2">
+        Query Name : <input type="text" style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;" [(ngModel)]="queryName" pInputText /><br>
+      </div>
+    </div>
     <div  class="ui-g-12 search-builder-background"  *ngFor='let row of rows; let rowIndex = index'>
       <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1">
       </div>
@@ -88,6 +95,13 @@
         <button type="button" class="addRemoveButton search-builder-button-add" (click)="addRow()" pButton  icon="ui-icon-add"></button>
       </div>
   </div>
+    <div  class="ui-g-12 search-builder-background" >
+      <div class="ui-g-12 ui-md-2">
+      </div>
+    <div class="ui-g-12 ui-md-1 ui-sm-1">
+      <button class="searchButton" (click)="saveAdvSearchQuery(queryName)" pButton label="Save" type="submit" ></button>
+    </div>
+    </div>
     <div style="height:150px;background-color: #fff"></div>
   </div>
 </div>

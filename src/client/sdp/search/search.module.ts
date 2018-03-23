@@ -11,12 +11,12 @@ import { SearchQueryService } from '../shared/search-query/index';
 
 import {
   DropdownModule, AccordionModule, TreeModule, PanelMenuModule, AutoCompleteModule,
-  MessagesModule, DialogModule, InputTextModule, MultiSelectModule, DataTableModule, DataListModule,  OverlayPanelModule, CheckboxModule, TooltipModule
+  MessagesModule, DialogModule, InputTextareaModule, InputTextModule, MultiSelectModule, DataTableModule, DataListModule,  OverlayPanelModule, CheckboxModule, TooltipModule
 } from 'primeng/primeng';
 
 @NgModule({
     imports: [HttpModule,CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-      DropdownModule,DataTableModule, DialogModule, InputTextModule, DataListModule,TreeModule, PanelMenuModule, OverlayPanelModule, CheckboxModule, TooltipModule],
+      DropdownModule,DataTableModule, InputTextareaModule, DialogModule, InputTextModule, DataListModule,TreeModule, PanelMenuModule, OverlayPanelModule, CheckboxModule, TooltipModule],
     declarations: [SearchPanelComponent,ReadMoreComponent],
     exports: [SearchPanelComponent,ReadMoreComponent],
     providers: [TaxonomyListService, SearchFieldsListService, SearchQueryService ]

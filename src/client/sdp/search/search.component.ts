@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem, InputTextareaModule } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
@@ -110,6 +110,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   isActive: boolean = true;
   filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
+  queryName:string;
+  queryValue:string;
   displayQuery: boolean = false;
   displayQueryList: boolean = false;
   private _routeParamsSubscription: Subscription;
@@ -213,6 +215,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   showDialog() {
     this.displayQuery = true;
+    this.queryValue = this.searchValue;
   }
 
   /**

@@ -36,14 +36,14 @@
     </div>
 
     <div class="layout-main">
-      <p-dialog header="Save Query" [(visible)]="displayQueryList" modal="modal" [responsive]="true" [width]="550" [minWidth]="200">
+      <p-dialog header="Queries" [(visible)]="displayQueryList" modal="modal" [responsive]="true" [width]="550" [minWidth]="200">
         <p-dataTable [value]="searchEntities" [loading]="loading">
-          <p-column field="data.queryName" header="name">
+          <p-column field="data.queryName" header="Name">
             <ng-template let-row="rowData" pTemplate type="body">
-              <a routerLink="/search?q={{row.data.queryValue}}&key=&queryAdvSearch=" target="_parent">{{row.data.queryName}}</a>
+              <a href="/#/search?q={{row.data.queryValue}}&key=&queryAdvSearch=" (click) = "closeWindow()" target="_parent">{{row.data.queryName}}</a>
             </ng-template>
           </p-column>
-          <p-column field="data.queryValue" header="content"></p-column>
+          <p-column field="data.queryValue" header="Content"></p-column>
           <p-column header="Actions" styleClass="col-button">
             <ng-template let-file="rowData" pTemplate="body">
               <button type="button" style="width:70%" pButton (click)="removeItem(file)" label="Delete" icon="ui-icon-delete"></button>

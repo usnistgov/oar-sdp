@@ -289,14 +289,41 @@
                   </div>
                   <div class="ui-g-12 ui-md-6 ui-sm-6">
                     <div style="float: right;padding-right:10px;padding-top: 10px">
-                      <button type="button" (click)="showDialog()" pButton icon="fa-external-link-square" label="Show"></button>
-                      <p-dialog header="Save Query" [(visible)]="displayQuery" modal="modal" [responsive]="true" [width]="350" [minWidth]="200">
-                        <h3 class="first">Name</h3> <input type="text"  [(ngModel)]="queryName" pInputText />
-                        <h3 class="first">Content</h3><input type="text"  [(ngModel)]="queryValue" pInputText />
-                        <button class="searchButton" (click)="saveSearchQuery(queryName, queryValue)" pButton label="Save" type="submit" ></button>
+                      <p-dialog header="Save Query" [(visible)]="displayQuery" modal="modal" [responsive]="true" [width]="450" [minWidth]="200">
+                       <div class="ui-g">
+                         <div class="ui-g-12 ui-md-2 ui-sm-2">
+                           <label>   Name:</label>
+                         </div>
+                         <div class="ui-g-12 ui-md-8 ui-sm-8">
+                          <input type="text"  [(ngModel)]="queryName" pInputText /><br>
+                        </div>
+                         <div class="ui-g-12 ui-md-2 ui-sm-2">
+                         </div>
+                        <div class="ui-g-12 ui-md-2 ui-sm-2">
+                          <label>Content:</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-8 ui-sm-8">
+                          <textarea pInputTextarea [rows]="5" [cols]="42" [(ngModel)]="queryValue"></textarea>
+                        </div>
+                          <div class="ui-g-12 ui-md-5 ui-sm-5">
+                          </div>
+                          <div class="ui-g-12 ui-md-3 ui-sm-3">
+                            <button class="searchButton" (click)="saveSearchQuery(queryName, queryValue)" pButton label="Save" type="submit" ></button>
+                          </div>
+                         <div class="ui-g-12 ui-md-4 ui-sm-4">
+                         </div>
+                       </div>
+
                       </p-dialog>
-                      <button type="text" style="background-color: #606165;font-weight: 900" pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
-                      <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
+                      <div class="ui-g-6 ui-md-6 ui-sm-6">
+
+                      <button type="button" style="background-color: #606165;font-weight: 900" (click)="showDialog()" pButton icon="fa-external-link-square" label="Save Query">
+                      </button>
+                      </div>
+                      <div class="ui-g-6 ui-md-6 ui-sm-6">
+                        <button type="text" style="background-color: #606165;font-weight: 900" pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+                      </div>
+                        <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
                         <div style="width: 100%;margin-top:0em;text-align: left;">
                           <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                           <b>Display Fields</b> <a href="#" (click) = "$event.preventDefault();ResetSelectedFields()" style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
