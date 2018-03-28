@@ -33,7 +33,7 @@ export class AdvSearchComponent implements OnInit {
     showAdvancedSearch: boolean = false;
     rows: any[] ;
     fields: SelectItem[];
-    ALL:string='All Fields';
+    ALL:string='ALL FIELDS';
     showDeleteButton:boolean = false;
     operators:SelectItem[];
     displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword' , 'Publisher', 'Rights' , 'Theme',
@@ -170,7 +170,7 @@ export class AdvSearchComponent implements OnInit {
    */
   toTaxonomiesItems(taxonomies:any[]) {
     let items: SelectItem[] = [];
-    items.push({label: 'All Research', value: ''});
+    items.push({label: 'ALL RESEARCH', value: ''});
     for (let taxonomy of taxonomies) {
       items.push({label: taxonomy.label, value: taxonomy.label});
     }

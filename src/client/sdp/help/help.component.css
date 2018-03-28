@@ -9,3 +9,12 @@ h2 {
   margin-bottom: 0;
   margin-top: 0.83em;
 }
+
+:host /deep/ .breadcrumb {
+  background-color: #153971;
+}
+
+.breadCrumb-text {
+  color: #fff;
+  font-weight: 300;
+}

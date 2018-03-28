@@ -31,13 +31,13 @@ h2 {
 
 .api:hover
 {
-  background-color: #808080;
+  background-color: #112E51;
   color: #fff;
 }
 
 .api
 {
-  background-color:#595959;
+  background-color:#0872B9;
   color: #fff;
 }
 
@@ -47,3 +47,11 @@ h2 {
   transform: translateY(-50%);
 }
 
+:host /deep/ .breadcrumb {
+  background-color: #153971;
+}
+
+.breadCrumb-text {
+  color: #fff;
+  font-weight: 300;
+}
