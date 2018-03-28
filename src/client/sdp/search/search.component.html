@@ -172,7 +172,8 @@
         <div *ngIf = "mobWidth >641" class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" [hidden]="!isActive" id="demo" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
           <div  class="ui-g-12 "   style="padding: 0px;" >
             <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
-              <a style="color: #FFFFFF;font-weight: 900">Filters </a> <a class="btn-sm collapse1 in" (click) = "setResultsWidth()"  data-toggle="collapse" style="border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo"><i class="faa faa-angle-double-left" style="zoom: 100%;color: #fff;"></i></a>
+
+              <a style="color: #FFFFFF;font-weight: 900;text-decoration:none">Filters </a> <a class="btn-sm collapse1 in" (click) = "setResultsWidth()"  data-toggle="collapse" style="border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo"><i class="faa faa-angle-double-left" style="zoom: 100%;color: #fff;cursor: pointer;"></i></a>
               <a href="#" style="float: right;font-weight:900;vertical-align: middle;color: #FFFFFF" (click)="$event.preventDefault();clearFilters()" >
                 <i style="vertical-align: middle;zoom: 70%" class="material-icons"> clear
                 </i>Clear All</a>
