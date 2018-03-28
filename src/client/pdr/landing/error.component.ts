@@ -11,9 +11,9 @@ import { ActivatedRoute }     from '@angular/router';
         <div>
     
         The landing page for the given ID cannot be displayed due to an internal error.  <br>
-        Please contact ITAC (x5375)
-        <a href="mailto:datasupport@nist.gov?subject=PDR: {{ searchid }}&body= ">datasupport@nist.gov </a>to report the problem. If possible, include the 
-        string "PDR: {{ searchid }}" in your query report.  
+        Please contact us at 
+        <a href="mailto:datasupport@nist.gov?subject=PDR: {{ searchid }}&body= ">datasupport@nist.gov</a> to report the problem. If possible, include the 
+        string "PDR: {{ searchid }}" in your email report.  
         </div>
       </div>
    </div>
