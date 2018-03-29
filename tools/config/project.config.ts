@@ -20,7 +20,7 @@ export class ProjectConfig extends SeedConfig {
       `${this.APP_SRC}/libs/ultima-ng/layout/fonts/MaterialIcons**`,
       `${this.APP_SRC}/libs/font-awesome/fonts/**`,
       `${this.APP_SRC}/assets/fonts/**`,
-      //'node_modules/bootstrap/dist/fonts/**'
+      'node_modules/bootstrap/dist/fonts/**'
     ];
 
   constructor() {

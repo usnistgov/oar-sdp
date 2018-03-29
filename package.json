@@ -181,7 +181,7 @@
     "nanoscroller": "0.8.7",
     "ng2-sticky": "^0.5.0",
     "ng2-utils": "^0.6.1",
-    "primeng": "4.2.2",
+    "primeng": "4.3.0",
     "rxjs": "5.4.3",
 
     "systemjs": "0.20.14",

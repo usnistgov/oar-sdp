@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { MenuItem, InputTextareaModule } from 'primeng/primeng';
+import { MenuItem, InputTextareaModule, ProgressSpinner } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
@@ -397,6 +397,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     if (this.filteredResults.length < 5) {
       this.rows = 20;
     }
+    this.searching = false;
   }
 
   /**
@@ -413,6 +414,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.errorMsg = (<any>error).message;
     this.status = (<any>error).httpStatus;
     this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
+    this.searching = false;
   }
 
   showMoreResTopics() {
