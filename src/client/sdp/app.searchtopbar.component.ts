@@ -18,8 +18,8 @@ import { SearchQueryService } from '../sdp/shared/search-query/search-query.serv
               <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                     <i></i>
                 </a>
-          <a style="float:right;padding-top:10px" href="javascript:;" (click) = "updateQueryStatus()" ><span class="textlinks"><b>Queries </b></span>
-            <i class="faa faa-shopping-cart faa-2x icon-white" style="color: #fff;"></i><span class="badge badge-notify" >{{queryLength}}</span></a>
+          <a style="float:right;padding-top:15px" href="javascript:;" (click) = "updateQueryStatus()" ><span class="textlinks" style="vertical-align:5px;font-size:1.2em"><b>Queries </b></span>
+            <i class="faa faa-bars faa-2x icon-white" style="color: #fff;"></i><span class="badge badge-notify" >{{queryLength}}</span></a>
          </div>
       </div>
     `
