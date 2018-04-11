@@ -1025,43 +1025,33 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let compNoData: boolean = false;
 
     // Resource Features selected
-    if (typeof this.selectedResourceTypeNode != 'undefined') {
-      if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        for (let res of this.selectedResourceTypeNode) {
-          if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
-            resourceTypesSelected = true;
-            this.selectedResourceType.push(res.data);
-            console.log("restype" + JSON.stringify(res.data));
-          }
-        }
-        console.log("inside resource type" + this.selectedResourceType);
 
-        this.filteredResults = this.filterByResourceTypes(this.filteredResults, this.selectedResourceType);
-        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-
-        this.themes = this.collectThemes(this.filteredResults);
-        this.collectThemesWithCount();
-
-        this.components = this.collectComponents(this.filteredResults);
-        this.collectComponentsWithCount();
-
-        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-          console.log("inside author not null");
-        } else {
-          console.log("inside author null");
-
-          this.authors = this.collectAuthors(this.filteredResults);
+    if (!_.isEmpty(this.selectedResourceTypeNode)) {
+      for (let res of this.selectedResourceTypeNode) {
+        if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
+          resourceTypesSelected = true;
+          this.selectedResourceType.push(res.data);
+          console.log("restype" + JSON.stringify(res.data));
         }
       }
-      if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-      } else {
-        this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-      }
+      console.log("inside resource type" + this.selectedResourceType);
+
+      this.filteredResults = this.filterByResourceTypes(this.filteredResults, this.selectedResourceType);
+      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+
+      this.themes = this.collectThemes(this.filteredResults);
+      this.collectThemesWithCount();
+
+      this.components = this.collectComponents(this.filteredResults);
+      this.collectComponentsWithCount();
+
+      this.authors = this.collectAuthors(this.filteredResults);
+      this.suggestedKeywords = this.collectKeywords(this.filteredResults);
     }
 
+
     // Research Topics selected
-    if (typeof this.selectedThemesNode != 'undefined') {
-      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+    if (!_.isEmpty(this.selectedThemesNode)) {
         console.log("inside themes");
 
         for (let theme of this.selectedThemesNode) {
@@ -1073,25 +1063,18 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         console.log("selected theme +++++++" + this.selectedThemes);
         this.filteredResults = this.filterByThemes(this.filteredResults, this.selectedThemes);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedAuthor)) {
           this.authors = this.collectAuthors(this.filteredResults);
         }
-        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedKeywords)) {
           this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         }
-        //if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-        //} else {
-          this.components = this.collectComponents(this.filteredResults);
-          this.collectComponentsWithCount();
-        //}
-        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        } else {
+        this.components = this.collectComponents(this.filteredResults);
+        this.collectComponentsWithCount();
+        if (_.isEmpty(this.selectedResourceTypeNode)) {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
         }
-      }
     }
 
     // Resource Features selected
@@ -1108,22 +1091,18 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
         this.filteredResults = this.filterByComponents(this.filteredResults, this.selectedComponents);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedAuthor)) {
           this.authors = this.collectAuthors(this.filteredResults);
         }
-        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedKeywords)) {
           this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         }
-        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedThemesNode)) {
           console.log("collect themes");
           this.themes = this.collectThemes(this.filteredResults);
           this.collectThemesWithCount();
         }
-        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedResourceTypeNode)) {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
         }
@@ -1135,24 +1114,18 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
         authorSelected = true;
         this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
-        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-        } else {
-          console.log("collect themes");
-
+        if (_.isEmpty(this.selectedThemesNode)) {
           this.themes = this.collectThemes(this.filteredResults);
           this.collectThemesWithCount();
         }
-        if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedComponentsNode)) {
           this.components = this.collectComponents(this.filteredResults);
           this.collectComponentsWithCount();
         }
-        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedKeywords)) {
           this.suggestedKeywords = this.collectKeywords(this.filteredResults);
         }
-        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedResourceTypeNode)) {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
         }
@@ -1163,32 +1136,20 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
         keywordSelected = true;
         this.filteredResults = this.filterByKeyword(this.filteredResults, this.selectedKeywords);
-        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-        } else {
-          console.log("collect themes");
-
+        if (_.isEmpty(this.selectedThemesNode)) {
           this.themes = this.collectThemes(this.filteredResults);
           this.collectThemesWithCount();
         }
-        if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedComponentsNode)) {
           this.components = this.collectComponents(this.filteredResults);
           this.collectComponentsWithCount();
         }
-        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-        } else {
+        if (_.isEmpty(this.selectedAuthor)) {
           this.authors = this.collectAuthors(this.filteredResults);
         }
-
-        if (typeof this.selectedResourceTypeNode != 'undefined') {
-          if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-            console.log("resource type not null");
-        } else {
-          console.log("resource type null");
-          console.log("length" + this.filteredResults.length);
+        if (_.isEmpty(this.selectedResourceTypeNode)) {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
-        }
         }
       }
     }
@@ -1242,7 +1203,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
     this.themesTree[0].children = this.themesWithCount;
     this.resourceTypeTree[0].children = this.resourceTypesWithCount;
-
   }
 
 
@@ -1509,20 +1469,28 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           console.log('authors inside init' + params['authors']);
 
           setTimeout(() => {
-            this.setResourceTypeSelection(this.resourceTypesWithCount, params['resType']);
-            this.setAuthorsSelection(params['authors']);
-            this.setKeywordsSelection(params['keywords']);
             this.filterQueryParamResults();
-            this.setThemesSelection(this.themesWithCount,params['themes']);
-            this.setComponentsSelection(this.componentsWithCount,params['compType']);
-
-          }, 2000);
+            if ((!_.isEmpty(this.searchResType))) {
+              this.setResourceTypeSelection(this.resourceTypesWithCount, this.searchResType);
+            }
+            if ((!_.isEmpty(this.searchResTopics))) {
+              this.setThemesSelection(this.themesWithCount, this.searchResTopics);
+            }
+            if ((!_.isEmpty(this.searchRecord))) {
+              this.setComponentsSelection(this.componentsWithCount, this.searchRecord);
+            }
+            if ((!_.isEmpty(this.searchAuthors))) {
+              this.setAuthorsSelection(this.searchAuthors);
+            }
+            if (!_.isEmpty(this.searchKeywords)) {
+              this.setKeywordsSelection(this.searchKeywords);
+            }
+          }, 1000);
         });
   }
 
   setResourceTypeSelection(node:TreeNode, resType:string) {
     this.selectedResourceTypeNode = [];
-    if (resType != "") {
       let resTypeParam = resType.split(',');
       for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
         if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
@@ -1536,12 +1504,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       else {
         this.resourceTypeTree[0].partialSelected = true;
       }
-    }
   }
 
   setThemesSelection(node:TreeNode, themes:string) {
     this.selectedThemesNode = [];
-    if (themes != "") {
       let themesParam = themes.split(',');
       for (var i = 0; i < this.themesWithCount.length; i++) {
         if (themesParam.includes(this.themesTree[0].children[i].data)) {
@@ -1555,30 +1521,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       else {
         this.themesTree[0].partialSelected = true;
       }
-    }
   }
 
   setAuthorsSelection(authors:string) {
-    if (authors != "") {
       let authorsParam = authors.toString().split(',');
       for (var i = 0; i < authorsParam.length; i++) {
         this.selectedAuthor.push(authorsParam[i]);
         }
-      }
   }
 
   setKeywordsSelection(keywords:string) {
-    if (keywords != "") {
       let keywordsParam = keywords.toString().split(',');
       for (var i = 0; i < keywordsParam.length; i++) {
         this.selectedKeywords.push(keywordsParam[i]);
       }
-    }
   }
 
   setComponentsSelection(node:TreeNode, components:string) {
     this.selectedComponentsNode = [];
-    if (components != "") {
       let compsParam = components.split(',');
       for (var i = 0; i < this.componentsWithCount.length; i++) {
         if (compsParam.includes(this.componentsTree[0].children[i].data)) {
@@ -1593,7 +1553,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.componentsTree[0].partialSelected = true;
       }
     }
-  }
 
   ngOnDestroy() {
     if ( this._routeParamsSubscription) {
