@@ -103,7 +103,7 @@
                         <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
                         <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
                     </div>
-                </div>
+
                 <div  *ngIf="recordDisplay.length !== 0" class="ui-sm-1 visible-xs-block visible-sm-block ">
                     <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
                      <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>
