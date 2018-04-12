@@ -43,6 +43,8 @@ export class ProjectConfig extends SeedConfig {
       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
       {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
+      {src: 'file-saver/FileSaver.min.js', inject: 'libs'},
+      {src: 'underscore/underscore-min.js', inject: 'libs'},
     // inject into css section
   ];
 
@@ -83,8 +85,32 @@ export class ProjectConfig extends SeedConfig {
        }
        ,
        {
+         name: 'file-saver',
+         path: 'node_modules/file-saver/FileSaver.min.js'
+       }
+       ,
+       {
+         name: 'jquery',
+         path: 'node_modules/jquery/dist/jquery.min.js'
+       }
+       ,
+       {
+         name: 'underscore',
+         path: 'node_modules/underscore/underscore-min.js'
+       }
+       ,
+       {
          name: 'ng2-sticky',
          path: 'node_modules/ng2-sticky/dist/ng2-sticky.umd.js'
+       },
+       ,
+       {
+         name: 'ng2-utils',
+         path: 'node_modules/ng2-utils/dist/ng2-utils.umd.js'
+       },
+       {
+         name: 'ng2-utils',
+         path: 'node_modules/ng2-utils/dist/ng2-utils.umd.js'
        },
        {
          name: 'auto-text-rotating',

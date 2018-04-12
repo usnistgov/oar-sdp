@@ -1,6 +1,14 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
 <script type="text/javascript">
   if (self === top) {
     var antiClickjack = document.getElementById("antiClickjack");
+    if(antiClickjack !== null && antiClickjack !== undefined)
+      antiClickjack.parentNode.removeChild(antiClickjack);
+
   } else {
     top.location = self.location;
   }
@@ -9,84 +17,85 @@
 <div class="ui-grid ui-grid-responsive ui-grid-pad center">
   <div class="card landingcard">
 
-<div class="" *ngIf="recordDisplay.length == 0">
-    <div class="ui-g">
-       <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%">
-            <b>No Landing page available</b>
-            <p>The requested record id {{ findId }}  does not match with any records in the system</p>
-       </div>
+    <div class="" *ngIf="recordDisplay?.length == 0 || isId === false">
+      <div class="ui-g">
+        <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12" style="padding-left: 1%">
+          <b>No Landing page available</b>
+          <p>The requested record id {{ searchValue }}  does not match with any records in the system</p>
+        </div>
+      </div>
     </div>
-</div>
-
- <div *ngIf="recordDisplay.length !== 0">
-    <div class="ui-g" style="padding-bottom: 1%; padding-right:1%;">
+    <div *ngIf="recordDisplay.length !== 0">
+      <div class="ui-g" style="padding-bottom: 1%; padding-right:1%;">
         <div class="ui-g-10 ui-md-10 ui-lg-10 ui-sm-12">
-            <div class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-11">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-11">
                     <span class="recordType" [ngSwitch]="recordDisplay['@type'][0]">
                         <b *ngSwitchCase="'nrd:SRD'">Standard Reference Data</b>
                         <b *ngSwitchCase="'nrdp:DataPublication'">Data Publication</b>
                         <b *ngSwitchCase="'nrdp:PublicDataResource'">Public Data Resource</b>
                         <b *ngSwitchDefault></b>
                     </span><br>
-                    <span class="title" style="text-align: left; vertical-align: top; ">
+              <span class="title" style="text-align: left; vertical-align: top; ">
                         <h2>{{recordDisplay.title}}</h2>
                     </span>
-                    <div class="" *ngIf="recordDisplay.authors">
+              <div class="" *ngIf="recordDisplay.authors">
                         <span *ngFor="let author of recordDisplay.authors; let i = index">
                             {{ author.fn}}<span *ngIf="i < recordDisplay.authors.length-1 ">,</span>
                         </span>
-                        <i style="cursor: pointer;" class ="faa" [ngClass]="{'faa-plus-square-o': !clickAuthors, 'faa-minus-square-o': clickAuthors}" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent; clickAuthors = expandClick();"></i>
-                    </div>
-                    <div [collapse]="!isCollapsedContent" class="card card-block card-header">
-                        <div class="" *ngIf="recordDisplay.authors">
-                            <span><b>Authors:</b></span>
-                            <div *ngFor="let author of recordDisplay.authors; let i = index">
-                                <span>{{ author.fn}}</span>,
-                                <span *ngFor="let aff of author.affiliation">
+                <i style="cursor: pointer;" class ="faa" [ngClass]="{'faa-plus-square-o': !clickAuthors, 'faa-minus-square-o': clickAuthors}" aria-hidden="true" (click)="isCollapsedContent = !isCollapsedContent; clickAuthors = expandClick();"></i>
+              </div>
+              <div [collapse]="!isCollapsedContent" class="card card-block card-header">
+                <div class="" *ngIf="recordDisplay.authors">
+                  <span><b>Authors:</b></span>
+                  <div *ngFor="let author of recordDisplay.authors; let i = index">
+                    <span>{{ author.fn}}</span>,
+                    <span *ngFor="let aff of author.affiliation">
                                      <br>{{aff.title}}
                                 </span>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="" *ngIf="recordDisplay.contactPoint">
-                        Contact:
-                        <strong>
-                            <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
-                                {{recordDisplay.contactPoint.fn}}</a>
-                            <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
-                        </strong>..
-                        <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}"
-                        aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
-                        <div [collapse]="!closeContent">
-                            <div class="card">
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="" *ngIf="recordDisplay.contactPoint">
+                Contact:
+                <strong>
+                  <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
+                    {{recordDisplay.contactPoint.fn}}</a>
+                  <span *ngIf="!isEmail">{{recordDisplay.contactPoint.fn}}</span>
+                </strong>..
+                <i style="cursor: pointer;" class="faa" [ngClass]="{'faa-plus-square-o': !clickContact, 'faa-minus-square-o': clickContact}"
+                   aria-hidden="true" (click)="closeContent = !closeContent; clickContact=expandContact();"></i>
+                <div [collapse]="!closeContent">
+                  <div class="card">
                                 <span class="" *ngIf="recordDisplay.contactPoint.fn">
                                     <span>{{recordDisplay.contactPoint.fn}}</span>
                                 </span>
-                                <br><strong>Email:</strong>
-                                <span class="" *ngIf="isEmail">
+                    <br><strong>Email:</strong>
+                    <span class="" *ngIf="isEmail">
                                     <a *ngIf="isEmail" href="{{recordDisplay.contactPoint.hasEmail}}" target="_top">
                                      {{recordDisplay.contactPoint.hasEmail.split(":")[1]}}</a>
                                 </span>
-                                <div class="" *ngIf="recordDisplay.contactPoint.address">
-                                    <span><b>Address:</b></span>
-                                     <div *ngFor="let address of recordDisplay.contactPoint.address">
-                                        {{address}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="" *ngIf="recordDisplay.contactPoint.address">
+                      <span><b>Address:</b></span>
+                      <div *ngFor="let address of recordDisplay.contactPoint.address">
+                        {{address}}
+                      </div>
                     </div>
-                    <div>
-                        <span>Identifier: </span>
-                        <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span>
-                        <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
-                        <span *ngIf="checkReferences()">
+                  </div>
+                </div>
+              </div>
+              <div>
+                <span *ngIf="isId">Identifier: </span>
+                <span *ngIf="isDOI" ><i>  <a href="http://doi.org/{{recordDisplay.doi.split(':')[1]}}">{{recordDisplay.doi}}</a></i></span>
+                <span  *ngIf="!isDOI"><i> <a href="{{pdrApi}}{{recordDisplay['@id']}}">{{recordDisplay["@id"]}}</a></i> </span>
+                <span *ngIf="checkReferences()"><br>
                         <span>Described in article: </span>
-                            <small *ngFor="let refs of recordDisplay.references; let i =index">
-                                <span *ngIf="refs.refType == 'IsDocumentedBy'">
-                                    <br><a href={{refs.location}} target="blank" >{{ refs.label }}</a>
+                            <small *ngFor="let refs of recordDisplay['references']; let i =index">
+
+                                <span style="padding-left:2.75em" *ngIf="refs.refType == 'IsDocumentedBy'">
+                                    <br><i class="faa faa-external-link">
+                                    <a href={{refs.location}} target="blank" >{{ refs.label }}</a></i>
                                 <span *ngIf="i < recordDisplay.references.length-1 ">,</span>
                                 </span>
                             </small>
@@ -94,57 +103,107 @@
                         <span class="" *ngIf="recordDisplay.issued">  First Released: <strong>{{recordDisplay.issued}}</strong></span>
                         <span class="" *ngIf="recordDisplay.modified"> Last modified: <strong>{{recordDisplay.modified}}</strong></span>
                     </div>
-                </div>
-                <div class="ui-sm-1 visible-xs-block visible-sm-block ">
+
+                <div  *ngIf="recordDisplay.length !== 0" class="ui-sm-1 visible-xs-block visible-sm-block ">
                     <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
                      <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>
                 </div>
             </div>
-            <div class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-                    <div *ngIf="metadata != true && similarResources != true ">
-                        <description-resources [record]="recordDisplay" [files]="files" [distdownload]="distdownload" ></description-resources>
-                    </div>
-                    <div *ngIf="metadata == true && similarResources != true ">
-                        <metadata-detail [recordDisplay]="recordDisplay" [serviceApi]="serviceApi" ></metadata-detail>
-                    </div>
-                </div>
-                <div *ngIf="recordDisplay.length !== 0">
-                    <p-dialog  class="citationDialog" [closable]="false" [(visible)]="display" modal="modal" width="310" height="310" responsive="true" #citeDialog>
-                        <p-header> Citation
-                            <button style="position:relative; float:right;" type="button" pButton icon="faa faa-close" (click)="closeDialog()"></button>
-                        </p-header>
-
-                        Copy the recommended text to cite this resource: <br><br>
-
-                        <textarea style="height:120px" #inputTarget class="form-control" [(ngModel)]="citeString" disabled="true" placeholder="{{ citeString }}" >
-
-                        </textarea>
-                        <!-- <span class="input-group-btn">
-                        <button class="copyCite" [class.btn-success]= "isCopied" type="button" [ngxClipboard]="inputTarget" (cbOnSuccess)="isCopied = true">copy</button>
-                        </span> -->
-                        <br><br>
-
-                        <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
-                    </p-dialog>
-                </div>
+            <div class="ui-sm-1 visible-xs-block visible-sm-block ">
+              <button type="button" pButton icon="faa faa-list" (click)="menu3.toggle($event)"></button>
+              <p-menu #menu3 class="rightMenuStyle" popup="popup" [model]="rightmenu" appendTo="body"></p-menu>
             </div>
+          </div>
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+              <div *ngIf="metadata != true && similarResources != true ">
+                <description-resources [record]="recordDisplay" [files]="files" [distdownload]="distdownload" ></description-resources>
+              </div>
+              <div *ngIf="metadata == true && similarResources != true ">
+                <metadata-detail [recordDisplay]="recordDisplay" [serviceApi]="serviceApi" ></metadata-detail>
+              </div>
+            </div>
+            <div *ngIf="recordDisplay.length !== 0">
+              <p-dialog  class="citationDialog" [closable]="false" [(visible)]="display" modal="modal" width="310" height="310" responsive="true" #citeDialog>
+                <p-header> Citation
+                  <button style="position:relative; float:right;" type="button" pButton icon="faa faa-close" (click)="closeDialog()"></button>
+                </p-header>
+                <span>Copy the recommended text to cite this resource:</span> <br><br>
+                <p contenteditable="false">{{ citeString }}</p>
+                <br><br>
+                <a href="https://www.nist.gov/director/licensing">See also NIST Citation Recommendations</a>
+              </p-dialog>
+            </div>
+          </div>
         </div>
         <div class="ui-g-2 ui-md-2 ui-lg-2 ui-sm-12">
-            <div class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-                   <div class="visible-lg-block visible-md-block ">
-                        <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>
-                   </div>
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+              <div class="visible-lg-block visible-md-block ">
+                <p-menu  class="rightMenuStyle" [model]="rightmenu"></p-menu>
+              </div>
 
-                </div>
             </div>
-            <div ng2-sticky class="ui-g">
-                <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-                    <div ng2-sticky><p-menu class="leftMenuStyle" [model]="leftmenu" ></p-menu> </div>
-                </div>
+          </div>
+          <div ng2-sticky class="ui-g">
+            <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+              <div ng2-sticky><p-menu class="leftMenuStyle" [model]="leftmenu" ></p-menu> </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
- </div>
-</div></div>
+  </div></div>
+<p-dialog [(visible)]="displayCart" (onShow) = "loadDataCart()" responsive="true" width = "750px" height = "800px" modal = "modal" [style] = "{'border':'1px solid #bdbdbd','height':'550px','width':'750px'}" styleClass="active">
+  <p-header>
+    Data cart <i class="faa faa-shopping-cart faa-1x icon-white" style="color: #fff;"></i>
+  </p-header>
+  <div >
+    <div style="padding-left: 1%">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-md-12" >
+          <button type="button" (click)="downloadZIP()" pButton type="submit" class="btn btn-primary" ><i class="faa faa-download faa-1x icon-white" style="color: #fff;"></i> Download selected <span class="badge badge-notify" >{{selectedData.length}}</span></button>
+          <button type="button" (click)="removeByDataId()" style="background-color: red;" class="btn btn-primary" pButton type="submit"><i class="faa faa-trash faa-1x icon-white" style="color: #fff;"></i> Remove selected <span class="badge badge-notify">{{selectedData.length}}</span></button>
+          <button type="button" (click)="removeByDownloadStatus()" style="background-color: red;" class="btn btn-primary" pButton type="submit"><i class="faa faa-minus-circle faa-1x icon-white" style="color: #fff;"></i> Remove downloaded</button>
+        </div>
+        <div class="ui-g-2 ui-md-2" *ngFor="let item of displayFiles  ">
+          {{item.key}}-<p-progressSpinner *ngIf ="item.value === true" [style]="{width: '12px', height: '12px'}" ></p-progressSpinner><i class="faa faa-check" *ngIf ="item.value !== true"></i>
+        </div>
+      </div>
+      <p-treeTable selectionMode="checkbox" [value]="dataFiles" [(selection)]="selectedData" [style]="{'margin-top':'10px','overflow-y': 'scroll','height':'400px','width':'700px'}">
+        <p-column styleClass="col-button" [style]="{'width':'50px'}">
+          <ng-template let-file="rowData" pTemplate="body">
+            <button type="button" *ngIf = "file.data.downloadedStatus === 'downloaded' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-45px" class="small-button" pButton icon="faa faa-check"></button>
+            <button type="button" *ngIf = "file.data.downloadedStatus === 'downloading' && file.data.resTitle.indexOf('.') > 0 " style="margin-left:-60px" class="small-button-yellow" pButton icon="faa faa-check"></button>
+          </ng-template>
+        </p-column>
+        <p-column field="resTitle" [style]="{'width':'200px','white-space':'normal'}" header="Name">
+          <ng-template let-file="rowData" pTemplate="body">
+            <a href="{{file.data.downloadURL}}" target="_blank" *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.resTitle}}</a>
+            <span *ngIf = "file.data.resTitle.indexOf('.') < 0">{{file.data.resTitle}}</span>
+          </ng-template>
+        </p-column>
+        <p-column field="downloadedStatus" [style]="{'width':'50px'}" header="Status">
+          <ng-template let-file="rowData" pTemplate="body">
+            <span *ngIf = "file.data.resTitle.indexOf('.') > 0">{{file.data.downloadedStatus}}</span>
+          </ng-template>
+        </p-column>
+        <p-column field="size" [style]="{'width':'50px'}" header="Size"></p-column>
+        <!--
+        <p-column header="Actions" [style]="{'width':'150px','word-wrap': 'break-word'}" styleClass="col-button">
+          <ng-template let-file="rowData" #download pTemplate="body">
+            <button type="button"  *ngIf = "file.data.resTitle.indexOf('.') > 0" pButton (click)="updateCartEntries(file,false)" label="Clear Item Status" icon="faa faa-times"></button>
+            <button type="button" pButton *ngIf = "file.data.resTitle.indexOf('.') > 0" (click)="removeItem(file)" label="Delete" icon="faa faa-trash"></button>
+          </ng-template>
+        </p-column>
+        -->
+      </p-treeTable>
+      <!--
+      <div *ngIf="showSpinner === true" style="left: 50%">
+        <p-progressSpinner [style]="{width: '50px', height: '50px',left: '50%'}" ></p-progressSpinner>
+      </div>
+      -->
+    </div>
+  </div>
+</p-dialog>
+

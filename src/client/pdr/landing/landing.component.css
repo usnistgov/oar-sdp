@@ -1,3 +1,7 @@
+:host /deep/ .ui-widget-content {
+  border: 0px;
+}
+
 .style-horizontal {
   border: 0;
   height: 1px;
@@ -22,8 +26,8 @@
 }
 
 .recordType{
-  font-family: Arial, Helvetica, sans-serif; 
-  color:#707070; 
+  font-family: Arial, Helvetica, sans-serif;
+  color:#707070;
   font-size: 14;
 }
 
@@ -129,14 +133,14 @@
   text-align: left;
   color: white;
 }
-:host /deep/ citationDialog > button.ui-button-icon-only{  
+:host /deep/ citationDialog > button.ui-button-icon-only{
   border-radius: 50%;
   width: 1.5em;
   height: 1.5em;
 }
 
 .fileinfosection{
-  background-color:#F3F3F3; 
+  background-color:#F3F3F3;
   padding: 2.5rem 2.5rem 2.5rem 2.5rem;
 }
 
@@ -149,10 +153,71 @@
 .citeString{
   font-family:  Franklin Gothic Urw;
   font-style:italic;
-  color:#484646; 
+  color:#484646;
   font-size: 12;
 }
 .copyCite{
   position:relative;
   float:right;
+}
+
+.ui-button.small-button {
+  font-size:.40em;
+  background-color: green;
+}
+
+.ui-button.small-button-yellow {
+  font-size:.40em;
+  background-color: yellow;
+}
+
+:host /deep/ .ui-progress-spinner-svg {
+  top:50%;
+}
+
+:host /deep/ p-dialog .ui-dialog {
+  background-color: #ebffff;
+}
+
+:host /deep/ .ui-dialog .ui-dialog-titlebar{
+  background-color: #232F3E;
+  color: #fff;
+}
+
+:host /deep/ .ui-treetable .ui-treetable-row td {
+  padding:.25em .25em ;
+  table-layout:auto !important;
+;}
+
+:host /deep/ .ui-treetable thead tr th {
+  border:1px solid #bdbdbd;
+  background-color: lightgrey;
+  table-layout:auto !important;
+}
+
+:host /deep/ .ui-chkbox .ui-chkbox-box {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+:host /deep/ .faa-cart-plus:before {
+  color: green;
+}
+
+:host /deep/ .ui-widget-content {
+  font-size: .95em ;
+}
+
+.badge-notify{
+  background-color: gray;
+  position:relative;
+  color: #fff;
+}
+
+:host /deep/ .ui-button, body .ui-datepicker-buttonpane button {
+  padding:.4em;
+}
+
+:host /deep/ .ui-treetable thead th, .ui-treetable tbody td, .ui-treetable tfoot td {
+  white-space: normal;
 }

@@ -35,6 +35,7 @@ import { SearchTopBarComponent }  from './app.searchtopbar.component';
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
   }],
+
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

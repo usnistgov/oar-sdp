@@ -39,3 +39,4 @@ export function clean(paths: string|string[]): (done: () => void) => void {
       .catch(e => util.log(util.colors.red(`Error while removing files "${[].concat(paths).join(', ')}", ${e}`)));
   };
 }
+

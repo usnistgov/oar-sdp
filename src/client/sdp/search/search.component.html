@@ -24,7 +24,7 @@
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
           <div class="inner-addon left-addon element " style="background-color: #FFFFFF" >
             <i class="glyphicon glyphicon-search"></i><label for="searchinput" class="hideLabel">Search Input</label><p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue"  inputId="searchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+        'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
@@ -51,6 +51,7 @@
         <a (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#" style="color: #0f4a65;text-decoration: underline;">"SRD 101" </a>&nbsp;
         <a (click)="$event.preventDefault();searchExample('XPDB');" href="#" style="color: #0f4a65;text-decoration: underline;">XPDB </a>&nbsp;
         <a (click)="$event.preventDefault();searchExample('Interatomic Potentials');" href="#" style="color: #0f4a65;text-decoration: underline;">Interatomic Potentials </a>&nbsp;
+
       </div>
     </div>
   </div>
@@ -183,7 +184,7 @@
                         [style]="{'width':'auto','font-size': '12px','padding-top': '.5em','padding-right': '.5em',
                           'padding-bottom': '.5em','background-color': '#F8F9F9'}"
                         [(selection)]="selectedResourceTypeNode" (onNodeUnselect)="filterResults($event,'')"
-                        (onNodeSelect)="filterResults($event,'')" >
+                        (onNodeSelect)="filterResults($event,'')">
                   <ng-template let-node  pTemplate="default">
                     <span> {{node.label.split("-")[0]}}&nbsp;</span>
                     <span class="badge" style="background-color: #515151" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
@@ -280,7 +281,7 @@
         </div>
         <div [className]="resultsClass" style="padding: 0px;background-color: #FFFFFF">
           <p-dataList [value]="filteredResults" #results responsive = "true" [paginator]="true" paginatorPosition = "top" [rows]="5"
-                      [style]="{'padding-right': '.5em','height':'auto'}">
+                      [style]="{'padding-right': '.5em','height':'auto'}" >
             <p-header >
               <div class="ui-g ui-grid-responsive" style="padding: 0em;">
                 <div class="ui-g-12" style="padding: 0em">
@@ -319,7 +320,7 @@
                   <div class="ui-grid-col-12">
                     <div class="ui-grid ui-grid-responsive" style="text-align: left;width: auto;">
                       <div class="ui-grid-row">
-                        <div class="ui-grid-col-12" ><h4><b><a href="javascript:;" class="title" (click)="encodeString(PDRAPIURL,resultItem.ediid)" >
+                        <div class="ui-grid-col-12" ><h4><b><a href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank" class="title" >
                           {{resultItem.title}}</a></b></h4></div>
                       </div>
                       <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Description') !==-1">

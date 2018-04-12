@@ -1,29 +1,35 @@
 
-  <div class="card filecard">
-    <div class="ui-g filesection">
-        <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-10">
+<div class="card filecard">
+  <div class="ui-g filesection">
+    <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-10">
           <span class="textstyle1 fDetailsfFont">
             <span *ngIf="fileDetails['downloadURL']"> File </span>
             <span *ngIf="!fileDetails['downloadURL']"> Subcollection</span>
           </span>
+      <!-- <button pButton style="position:relative; float:right;" class="ui-button-success" type="button" (click)="download()" label="Download"></button> -->
+      <span [hidden] ="!addFileSpinner" style="float:right;">
+        <p-progressSpinner [style]="{width: '20px', height: '20px', float: 'right'}" ></p-progressSpinner>
+      </span>
+
+      <a style="float:right;" *ngIf="this.fileDetails['downloadURL'] != null" (click)='addtoCart(record["@id"], record["title"], fileDetails["title"], fileDetails["title"],fileDetails["filepath"],fileDetails["filepath"],fileDetails["size"],fileDetails["downloadURL"], fileDetails["mediaType"],"resource",null)' class="faa faa-cart-plus faa-2x" title="Add this file to Data cart" ></a>
+      <a style=""  *ngIf="this.fileDetails['downloadURL'] != null" target="_blank" href="{{this.fileDetails['downloadURL']}}" class="faa faa-download " title="Download File" ></a>
+      <h4><span *ngIf="fileDetails['title']"> {{ fileDetails["title"]}} </span></h4>
+      <br><span class="font10">Path: <b>{{fileDetails["filepath"]}}</b></span>
+      <span *ngIf="fileDetails['downloadURL']" class="font8"> <br>Type:<b>{{fileDetails["mediaType"]}}</b></span>
+      <span class="font8"><br>Size:
+             <span *ngIf="fileDetails['size']" >{{fileDetails["size"]}} bytes</span>
           <!-- <button pButton style="position:relative; float:right;" class="ui-button-success" type="button" (click)="download()" label="Download"></button> -->
-          <a style="position:relative; float:right;"  href="{{this.fileDetails['downloadURL']}}" class="faa faa-download faa-2x" title="Download File" ></a>
-          <h4><span *ngIf="fileDetails['title']"> {{ fileDetails["title"]}} </span></h4>
-          <br><span class="font10">Path: <b>{{fileDetails["filepath"]}}</b></span>
-          <span *ngIf="fileDetails['downloadURL']" class="font8"> <br>Type:<b>{{fileDetails["mediaType"]}}</b></span>
-          <span class="font8"><br>Size:
-             <span *ngIf="fileDetails['size']" >{{fileDetails["size"]}} </span>
              <span *ngIf="!fileDetails['size']" >Not specified</span>
 
          </span>
-        </div>
+    </div>
 
-        <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
-            <span *ngIf="fileDetails['description']" class="font10"><b>Description:</b> </span>
-            <div *ngIf="fileDetails['description']" class="well filedesc" >
-                {{ fileDetails["description"] }}
-            </div>
-            <span *ngIf="fileDetails['Keyword']" class="font10"><b>Topic Keyword:</b>
+    <div class="ui-g-12 ui-md-12 ui-lg-12 ui-sm-12">
+      <span *ngIf="fileDetails['description']" class="font10"><b>Description:</b> </span>
+      <div *ngIf="fileDetails['description']" class="well filedesc" >
+        {{ fileDetails["description"] }}
+      </div>
+      <span *ngIf="fileDetails['Keyword']" class="font10"><b>Topic Keyword:</b>
                  {{ fileDetails["Keyword"] }}
             </span>
       <br>
