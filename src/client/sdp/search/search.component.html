@@ -387,11 +387,14 @@
 
           <div class="ui-g ui-grid-responsive" style="padding: 0em;">
             <div class="ui-g-12" style="padding: 0em">
-              <div class="ui-g-12 ui-md-6 ui-sm-6">
+              <div class="ui-g-12 ui-md-4 ui-sm-12">
                 <div style="color: #000;font-weight: 800;float: left;padding-top: 10px;padding-left:40px"> &nbsp;&nbsp;{{filteredResults.length}} records found</div>
               </div>
-              <div class="ui-g-12 ui-md-6 ui-sm-6">
-                <div style="float: right;padding-right:10px;padding-top: 10px">
+              <div class="ui-g-12 ui-md-8 ui-sm-12">
+                <div style="float:left;padding-top:10px;">
+                  <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
+                </div>
+                <div style="float: right;padding-right:10px;padding-top:10px;">
                   <button type="text" style="background-color: #606165;font-weight: 900" pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
                   <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
                     <div style="width: 100%;margin-top:0em;text-align: left;">
@@ -415,10 +418,7 @@
               </div>
             </div>
           </div>
-          <div style="text-align:center">
-            <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
-          </div>
-          <ul  style="list-style-type: none">
+          <ul  style="list-style-type: none;padding-left:0">
             <li *ngFor="let resultItem of filteredResults | paginate: { itemsPerPage: 10, currentPage: page }">
               <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:.5px solid #e6e6e6;">
                 <div class="ui-grid-row nowrap" >

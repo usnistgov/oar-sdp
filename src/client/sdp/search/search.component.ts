@@ -11,6 +11,7 @@ import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
 import { Location } from '@angular/common';
 
+
 declare var jQuery: any;
 
 /**
@@ -29,8 +30,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
   darkMenu: boolean = false;
-  selectedThemesNode: TreeNode[];
-  selectedComponentsNode: TreeNode[];
+  selectedThemesNode: TreeNode[] = [];
+  selectedComponentsNode: TreeNode[] = [];
   selectedResourceTypeNode: TreeNode[] = [];
   profileMode: string = 'inline';
   msgs: Message[] = [];
@@ -47,8 +48,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   searchResults: any[] = [];
   errorMessageArray: string[];
   searchResultsError: Message[] = [];
-  themesTree: TreeNode[];
-  componentsTree: TreeNode[];
+  themesTree: TreeNode[] = [];
+  componentsTree: TreeNode[] = [];
   resourceTypeTree: TreeNode[] = [];
   searchValue: string;
   taxonomies: SelectItem[];
@@ -75,9 +76,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   searching: boolean = false;
   keywords: string[];
   themes: SelectItem[] = [];
-  themesWithCount: TreeNode[];
-  componentsWithCount: TreeNode[];
-  resourceTypesWithCount: TreeNode[];
+  themesWithCount: TreeNode[] = [];
+  componentsWithCount: TreeNode[] = [];
+  resourceTypesWithCount: TreeNode[] = [];
   components: SelectItem[] = [];
   resourceTypes: SelectItem[] = [];
   authors: string[] = [];
@@ -755,7 +756,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   filterResults(event: any,type: string) {
 
-    //this.filteredResults = this.searchResults;
+    this.filteredResults = this.searchResults;
     if (type === 'unselectauthor') {
       if (typeof this.selectedAuthor != 'undefined') {
         let selAuthorIndex = this.selectedAuthor.indexOf(event);
@@ -797,7 +798,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             resourceType += res.data + ',';
           }
         }
-        /*
+
         this.filteredResults = this.filterByResourceTypes(this.filteredResults, this.selectedResourceType);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
 
@@ -820,7 +821,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.themes = this.collectThemes(this.filteredResults);
           this.collectThemesWithCount();
         }
-        */
+
       }
     }
 
@@ -836,7 +837,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           }
         }
 
-        /*
+
         this.filteredResults = this.filterByThemes(this.filteredResults, this.selectedThemes);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
         if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
@@ -857,7 +858,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
         }
-        */
+
       }
     }
     // Resource Features selected
@@ -872,7 +873,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           }
         }
 
-        /*
+
         this.filteredResults = this.filterByComponents(this.filteredResults, this.selectedComponents);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
         if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
@@ -919,11 +920,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
         }
-        */
+
       }
     }
 
-    /*
+
     if (typeof this.selectedKeywords != 'undefined') {
       if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
         keywordSelected = true;
@@ -996,215 +997,38 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
     this.themesTree[0].children = this.themesWithCount;
-    */
 
-    this.router.navigate(['/search'], { queryParams: { themes: themeType, compType: compType,resType: resourceType, authors: this.selectedAuthor, keywords: this.selectedKeywords },  queryParamsHandling: "merge" });
 
+      if (event) {
+        //window.history.replaceState(null, null, "/search?page=4");
+        let params = new URLSearchParams();
+        if (!_.isEmpty(themeType)) {
+          params.append('themes', themeType);
+        }
+        if (!_.isEmpty(compType)) {
+          params.append('compType', compType);
+        }
+
+        if (!_.isEmpty(resourceType)) {
+          params.append('resType', resourceType);
+        }
+
+        if (!_.isEmpty(this.selectedAuthor)) {
+          params.append('authors', this.selectedAuthor.toString());
+        }
+
+        if (!_.isEmpty(this.selectedKeywords)) {
+          params.append('keywords', this.selectedKeywords.toString());
+        }
+
+        window.history.pushState(null, null, "#" + this.router.url + "&" + params);
+      }
   }
 
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
-
-  /**
-   * filter results
-   */
-  filterQueryParamResults() {
-
-    this.filteredResults = this.searchResults;
-    console.log("inside filter query parameters");
-    this.selectedThemes = [];
-    this.selectedComponents = [];
-    this.selectedResourceType = [];
-    let themeSelected: boolean = false;
-    let componentSelected: boolean = false;
-    let resourceTypesSelected: boolean = false;
-    let authorSelected: boolean = false;
-    let keywordSelected: boolean = false;
-    let compNoData: boolean = false;
-
-    // Resource Features selected
-
-    if (!_.isEmpty(this.selectedResourceTypeNode)) {
-      for (let res of this.selectedResourceTypeNode) {
-        if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
-          resourceTypesSelected = true;
-          this.selectedResourceType.push(res.data);
-          console.log("restype" + JSON.stringify(res.data));
-        }
-      }
-      console.log("inside resource type" + this.selectedResourceType);
-
-      this.filteredResults = this.filterByResourceTypes(this.filteredResults, this.selectedResourceType);
-      this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-
-      this.themes = this.collectThemes(this.filteredResults);
-      this.collectThemesWithCount();
-
-      this.components = this.collectComponents(this.filteredResults);
-      this.collectComponentsWithCount();
-
-      this.authors = this.collectAuthors(this.filteredResults);
-      this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-    }
-
-
-    // Research Topics selected
-    if (!_.isEmpty(this.selectedThemesNode)) {
-        console.log("inside themes");
-
-        for (let theme of this.selectedThemesNode) {
-          if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
-            themeSelected = true;
-            this.selectedThemes.push(theme.data);
-          }
-        }
-        console.log("selected theme +++++++" + this.selectedThemes);
-        this.filteredResults = this.filterByThemes(this.filteredResults, this.selectedThemes);
-        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-        if (_.isEmpty(this.selectedAuthor)) {
-          this.authors = this.collectAuthors(this.filteredResults);
-        }
-        if (_.isEmpty(this.selectedKeywords)) {
-          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        }
-        this.components = this.collectComponents(this.filteredResults);
-        this.collectComponentsWithCount();
-        if (_.isEmpty(this.selectedResourceTypeNode)) {
-          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-          this.collectResourceTypesWithCount();
-        }
-    }
-
-    // Resource Features selected
-    if (typeof this.selectedComponentsNode != 'undefined') {
-      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-        console.log("inside components");
-
-        for (let comp of this.selectedComponentsNode) {
-          if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
-            componentSelected = true;
-            this.selectedComponents.push(comp.data);
-          }
-        }
-
-        this.filteredResults = this.filterByComponents(this.filteredResults, this.selectedComponents);
-        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-        if (_.isEmpty(this.selectedAuthor)) {
-          this.authors = this.collectAuthors(this.filteredResults);
-        }
-        if (_.isEmpty(this.selectedKeywords)) {
-          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        }
-        if (_.isEmpty(this.selectedThemesNode)) {
-          console.log("collect themes");
-          this.themes = this.collectThemes(this.filteredResults);
-          this.collectThemesWithCount();
-        }
-        if (_.isEmpty(this.selectedResourceTypeNode)) {
-          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-          this.collectResourceTypesWithCount();
-        }
-      }
-    }
-
-
-    if (typeof this.selectedAuthor != 'undefined') {
-      if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
-        authorSelected = true;
-        this.filteredResults = this.filterByAuthor(this.filteredResults, this.selectedAuthor);
-        if (_.isEmpty(this.selectedThemesNode)) {
-          this.themes = this.collectThemes(this.filteredResults);
-          this.collectThemesWithCount();
-        }
-        if (_.isEmpty(this.selectedComponentsNode)) {
-          this.components = this.collectComponents(this.filteredResults);
-          this.collectComponentsWithCount();
-        }
-        if (_.isEmpty(this.selectedKeywords)) {
-          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        }
-        if (_.isEmpty(this.selectedResourceTypeNode)) {
-          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-          this.collectResourceTypesWithCount();
-        }
-      }
-    }
-
-    if (typeof this.selectedKeywords != 'undefined') {
-      if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
-        keywordSelected = true;
-        this.filteredResults = this.filterByKeyword(this.filteredResults, this.selectedKeywords);
-        if (_.isEmpty(this.selectedThemesNode)) {
-          this.themes = this.collectThemes(this.filteredResults);
-          this.collectThemesWithCount();
-        }
-        if (_.isEmpty(this.selectedComponentsNode)) {
-          this.components = this.collectComponents(this.filteredResults);
-          this.collectComponentsWithCount();
-        }
-        if (_.isEmpty(this.selectedAuthor)) {
-          this.authors = this.collectAuthors(this.filteredResults);
-        }
-        if (_.isEmpty(this.selectedResourceTypeNode)) {
-          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-          this.collectResourceTypesWithCount();
-        }
-      }
-    }
-
-
-    if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected && !resourceTypesSelected) {
-      this.filteredResults = this.searchResults;
-      console.log("nothing selected");
-      this.suggestedThemes = [];
-      this.suggestedKeywords = [];
-      this.suggestedAuthors = [];
-      this.selectedAuthor = null;
-      this.selectedKeywords = [];
-      this.selectedThemes = [];
-      this.selectedThemesNode = [];
-      this.selectedComponents = [];
-      this.selectedComponentsNode = [];
-      this.selectedResourceType = [];
-      this.selectedResourceTypeNode = [];
-      this.selectedAuthorDropdown = false;
-      this.authors = this.collectAuthors(this.filteredResults);
-      this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-      this.components = this.collectComponents(this.filteredResults);
-      this.collectComponentsWithCount();
-      this.themes = this.collectThemes(this.filteredResults);
-      this.collectThemesWithCount();
-      this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-      this.collectResourceTypesWithCount();
-    }
-
-    if (this.componentsWithCount.length == 0)
-    {
-      compNoData = true;
-      this.componentsWithCount = [];
-      this.componentsWithCount.push({label: "DataFile - 0", data: "DataFile"});
-      this.componentsWithCount.push({label: "AccessPage - 0", data: "AccessPage"});
-      this.componentsWithCount.push({label: "SubCollection - 0", data: "Subcollection"});
-      this.componentsTree[0].children = this.componentsWithCount;
-      this.componentsTree[0].selectable = false;
-      for (var i=0; i<this.componentsWithCount.length; i++) {
-        this.componentsTree[0].children[i].selectable = false;
-      }
-    } else {
-      this.componentsTree[0].selectable = true;
-    }
-    if (!compNoData) {
-      this.componentsTree[0].children = this.componentsWithCount;
-      for (var i=0; i<this.componentsWithCount.length; i++) {
-        this.componentsTree[0].children[i].selectable = true;
-      }
-    }
-    this.themesTree[0].children = this.themesWithCount;
-    this.resourceTypeTree[0].children = this.resourceTypesWithCount;
-  }
-
 
   /**
    * clear filters
@@ -1440,9 +1264,41 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.page = number;
     let params = new URLSearchParams();
     params.append('page', number);
+    let url = this.removeURLParameter(window.location.href,'page');
+    var paramStr = url.split("?")[1];
 
-    this.router.navigate(['/search'], { queryParams: { page: number },  queryParamsHandling: "merge" });
-    //this.location.go(this.router.createUrlTree([this.router.url], { queryParams: { page: number } }).toString())
+    window.history.pushState(null, null, "#/search?" + paramStr + "&page=" + number);
+  }
+
+  removeURLParameter(url, parameter) {
+    //prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+
+      var prefix= encodeURIComponent(parameter)+'=';
+      var pars= urlparts[1].split(/[&;]/g);
+
+      //reverse iteration as may be destructive
+      for (var i= pars.length; i-- > 0;) {
+        //idiom for string.startsWith
+        if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+          pars.splice(i, 1);
+        }
+      }
+
+      url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+      return url;
+    } else {
+      return url;
+    }
+  }
+
+ onPopState(event) {
+    setTimeout(function() {
+      window.addEventListener('popstate', function() {
+        window.history.go(-1);
+      });
+    }, 100);
   }
 
   /**
@@ -1467,32 +1323,39 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
           this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
           console.log('authors inside init' + params['authors']);
-
-          setTimeout(() => {
-            this.filterQueryParamResults();
+          this.selectedResourceTypeNode = [];
+          this.selectedThemesNode = [];
+          this.selectedComponentsNode = [];
+          setTimeout(()=> {
             if ((!_.isEmpty(this.searchResType))) {
-              this.setResourceTypeSelection(this.resourceTypesWithCount, this.searchResType);
+              this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
             }
             if ((!_.isEmpty(this.searchResTopics))) {
-              this.setThemesSelection(this.themesWithCount, this.searchResTopics);
+              this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
             }
             if ((!_.isEmpty(this.searchRecord))) {
-              this.setComponentsSelection(this.componentsWithCount, this.searchRecord);
+              this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
             }
             if ((!_.isEmpty(this.searchAuthors))) {
-              this.setAuthorsSelection(this.searchAuthors);
+              this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
             }
             if (!_.isEmpty(this.searchKeywords)) {
-              this.setKeywordsSelection(this.searchKeywords);
+              this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
             }
-          }, 1000);
+          },2000);
+          setTimeout(()=> {
+            this.filterResults('','');
+          },2000);
+
         });
   }
 
   setResourceTypeSelection(node:TreeNode, resType:string) {
-    this.selectedResourceTypeNode = [];
-      let resTypeParam = resType.split(',');
+      let resTypeParam = resType.toString().split(',');
       for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
+        console.log('helloooo11111' + this.resourceTypeTree[0].children[i].data);
+        console.log('helloooo22222' + resTypeParam);
+
         if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
           console.log('helloooo' + this.resourceTypeTree[0].children[i].data);
           this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);
@@ -1507,14 +1370,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   setThemesSelection(node:TreeNode, themes:string) {
-    this.selectedThemesNode = [];
       let themesParam = themes.split(',');
       for (var i = 0; i < this.themesWithCount.length; i++) {
         if (themesParam.includes(this.themesTree[0].children[i].data)) {
-          console.log('helloooo themes' + this.themesTree[0].children[i].data);
           this.selectedThemesNode.push(this.themesTree[0].children[i]);
         }
       }
+
       if (this.themesWithCount.length == this.selectedThemesNode.length) {
         this.selectedThemesNode.push(this.themesTree[0]);
       }
@@ -1538,11 +1400,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   setComponentsSelection(node:TreeNode, components:string) {
-    this.selectedComponentsNode = [];
       let compsParam = components.split(',');
       for (var i = 0; i < this.componentsWithCount.length; i++) {
         if (compsParam.includes(this.componentsTree[0].children[i].data)) {
-          console.log('helloooo components' + this.componentsTree[0].children[i].data);
           this.selectedComponentsNode.push(this.componentsTree[0].children[i]);
         }
       }
