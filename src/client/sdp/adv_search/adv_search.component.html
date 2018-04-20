@@ -61,13 +61,36 @@
         <a class="examples" (click)="searchExample('Interatomic Potentials');" href="#!" >Interatomic Potentials </a>&nbsp;
       </div>
     </div>
-    <div  class="ui-g-12 search-builder-background" >
-      <div class="ui-g-12 ui-md-2">
+    <p-dialog header="Save Query" [(visible)]="showQueryName" modal="modal" [responsive]="true" [width]="450" [height]="200" [minWidth]="200">
+    <div  class="ui-g-12 search-builder-background" *ngIf = "showQueryName == true" >
+      <div class="ui-g-12 ui-md-3">
+        Query Name :
       </div>
-      <div class="ui-g-12 ui-md-2">
-        Query Name : <input type="text" style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;" [(ngModel)]="queryName" pInputText /><br>
+      <div class="ui-g-12 ui-md-6">
+        <input type="text" style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;" [(ngModel)]="queryName" pInputText />
+      </div>
+      <div class="ui-g-12 ui-md-3">
       </div>
     </div>
+      <div  class="ui-g-12 search-builder-background" *ngIf = "showQueryName == true" >
+        <div class="ui-g-12 ui-md-3">
+        </div>
+        <div class="ui-g-12 ui-md-12 ui-sm-12" style="width:30%">
+          <button class="searchButton" (click)="saveAdvSearchQuery(queryName)" pButton label="Save" type="submit" icon="ui-icon-save"></button>
+        </div>
+      </div>
+    </p-dialog>
+    <div  class="ui-g-12 search-builder-background">
+      <div class="ui-g-12 ui-md-2">
+      </div>
+      <div class="ui-g-12 ui-md-4">
+        <b>Build</b> : <p-dropdown [options]="advSearchList" (onChange) = "showAdvSearch()" [style]="{'width':'50%',
+        'background-color': '#FFFFFF','height': '32px'
+        ,'font-weight': '900','font-style': 'italic','align-items':'center'}" [(ngModel)]="selectedAdvSearch"></p-dropdown>
+      </div>
+    </div>
+    <div class="EmptyBox20" style="background-color:#fff" *ngIf = "selectedAdvSearch == ''"></div>
+    <div class="ui-g-12 search-builder-background" *ngIf = "showAdvSearchBuilder" >
     <div  class="ui-g-12 search-builder-background"  *ngFor='let row of rows; let rowIndex = index'>
       <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1">
       </div>
@@ -77,15 +100,14 @@
       </div>
       <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-2">
       </div>
-
       <div class="ui-g-12 ui-md-4 " >
         <label for="fieldstext" class="hideLabel">Fields text</label>
         <input type="text" id="fieldstext" pInputText style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;
-          font-style: italic" [(ngModel)]="row.column3" (keyup)="saveSearch()" placeholder="Fields text..."   />
+          font-style: italic" [(ngModel)]="row.column2" (keyup)="saveSearch()" placeholder="Fields text..."   />
       </div>
       <div class="ui-g-12 ui-md-2 " style="padding-left: 0em;padding-right: 0em">
         <p-dropdown [options]="fields"  [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
-        ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [(ngModel)]="row.column2" (click) = "saveSearch()" >
+        ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [(ngModel)]="row.column3" (click) = "saveSearch()" >
         </p-dropdown>
       </div>
       <div class="ui-g-12 ui-md-3  " style="width: 3%;" *ngIf="showDeleteButton == true" >
@@ -98,10 +120,21 @@
     <div  class="ui-g-12 search-builder-background" >
       <div class="ui-g-12 ui-md-2">
       </div>
-    <div class="ui-g-12 ui-md-1 ui-sm-1">
-      <button class="searchButton" (click)="saveAdvSearchQuery(queryName)" pButton label="Save" type="submit" ></button>
-    </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
+        <button class="searchButton" *ngIf = "selectedAdvSearch != 'add'" (click)="deleteAdvSearchQuery(selectedAdvSearch)" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
+      </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
+        <button class="searchButton" *ngIf = "selectedAdvSearch != 'add'" (click)="resetAdvSearchQuery()" pButton label="Reset" icon="ui-icon-warning" type="submit" ></button>
+      </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
+        <button class="searchButton" (click)="displayQuery()" *ngIf = "selectedAdvSearch == 'add'" pButton label="Save" type="submit" icon="ui-icon-save"></button>
+        <button class="searchButton" (click)="saveAdvSearchQuery(selectedAdvSearch)" *ngIf = "selectedAdvSearch != 'add'"  pButton label="Save" icon="ui-icon-save" type="submit" ></button>
+      </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
+        <button class="searchButton" (click)="cancelAdvSearchQuery()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
+      </div>
     </div>
     <div style="height:150px;background-color: #fff"></div>
+  </div>
   </div>
 </div>

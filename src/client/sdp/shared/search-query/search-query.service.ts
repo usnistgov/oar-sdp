@@ -96,6 +96,22 @@ export class SearchQueryService {
     this.setQueryLength (this.querySize);
   }
 
+  saveListOfAdvSearchEntities(listOfCartEntries : SearchEntity[]) {
+    console.log("inside list of adv search entities" + JSON.stringify(listOfCartEntries));
+    // reduce all the entities to a map
+    let cartMap = listOfCartEntries.reduce(function(map, cartEntry, i) {
+      map[cartEntry.data.queryName] = cartEntry;
+      return map;
+    }, {});
+
+    // save the map
+    this.setAdvQuery(cartMap);
+    let advQuery  = this.getAllAdvSearchEntities();
+    this.setAdvQueryLength (this.advQuerySize);
+    //this.updateFileSpinnerStatus(false);
+    this.getAdvQuery();
+  }
+
   /**
    * Returns all the products in the cart form the local storage
    *
@@ -264,9 +280,14 @@ export class SearchQueryService {
 
     cartMap = this.getAdvQuery();
 
+    cartMap[data.id] = {
+      'data': data,
+    }
+
+    /*
     // if the current key exists in the map , append value
     if (cartMap[data.id] != undefined) {
-
+      cartMap[data.id] =
       console.log("key exists");
       console.log("data id - " + data.id);
     } else {
@@ -275,6 +296,7 @@ export class SearchQueryService {
         'data': data,
       }
     }
+    */
     // save the map
     this.setAdvQuery(cartMap);
     let advQuery  = this.getAllAdvSearchEntities();
