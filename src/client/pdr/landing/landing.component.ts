@@ -255,7 +255,7 @@ teststring: string = "Loading !!";
                     }
                     if(this.isDOI)   this.citeString += ", "+ this.recordDisplay['doi'];
                     
-                    this.citeString += " (Accessed: "+ date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()+")";
+                    this.citeString += " (Accessed: "+ date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+")";
                     this.showDialog();
               }},
              {label: 'License Statement', icon: "faa faa-external-link",command: (event)=>{
