@@ -39,7 +39,17 @@ export class AppMenuComponent implements OnInit {
           {label: 'World Trade Center Disaster Investigation Material', url: 'http://wtcdata.nist.gov/', target:'_blank'},
         ]
       },
-      {label: 'Standard Reference Data(SRDs)', url: 'https://www.nist.gov/srd', target:'_blank'},
+      {label: 'Standard Reference Data(SRDs)',
+        items: [
+          {label: 'SRD Catalog', url: 'https://www.nist.gov/srd/catalog-all-srd-databases',target:'_blank'},
+          {label: 'Free SRDs', url: 'https://www.nist.gov/srd/free-srd-databases',target:'_blank'},
+          {label: 'Fee-Based SRDs', url: 'https://www.nist.gov/srd/fee-based-srd-database',target:'_blank'},
+          {label: 'Topic Search', url: 'https://www.nist.gov/srd/catalog-all-srd-databases/nist-database-topic-area',target:'_blank'},
+          {label: 'Public Law', url: 'https://www.nist.gov/srd/public-law',target:'_blank'},
+          {label: 'Definition', url: 'https://www.nist.gov/srd/srd-definition',target:'_blank'},
+          {label: 'Criteria for SRD', url: 'https://www.nist.gov/srd/critical-evaluation-criteria-data',target:'_blank'}
+        ]
+      },
       {
         label: 'Developer',
         items: [
