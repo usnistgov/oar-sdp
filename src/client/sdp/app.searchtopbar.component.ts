@@ -50,8 +50,8 @@ export class SearchTopBarComponent {
 
   this.searchQueryService.watchStorage().subscribe(value => {
     this.queryLength = value;
+    this.getSearchQueryList();
   });
-  this.getSearchQueryList();
 
   }
 

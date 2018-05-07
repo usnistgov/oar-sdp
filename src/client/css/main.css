@@ -635,12 +635,13 @@ ul.line-separated
 
   background-color: #bdbdbd;
   padding: 0;
-  margin-left: 1em;
+  margin: 1em;
+  margin-bottom: 1em;
 }
 ul.line-separated li
 {
   background-color: white;
   margin: 1px 0 0 0;
-  padding: 0;
+  padding:.5em;
   list-style-type: none;
 }

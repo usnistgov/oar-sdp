@@ -210,6 +210,7 @@ export class AdvSearchComponent implements OnInit {
 
    displayBuilder() {
      this.displayQueryBuilder = true;
+     this.queryName = '';
    }
 
   /**
