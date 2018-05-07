@@ -324,21 +324,17 @@
 
                       </p-dialog>
                       <div class="ui-g-6 ui-md-6 ui-sm-6">
-                        <button type="text" style="background-color: #606165;font-weight: 900" (click)="showDialog()" pButton ><i class="faa faa-save"></i> Save Query
+                        <button type="text" style="background-color: #606165;font-weight: 900;" (click)="showDialog()" pButton icon="ui-icon-save" label="Save Query" >
                       </button>
                       </div>
                       <div class="ui-g-6 ui-md-6 ui-sm-6">
-                        <button type="text" style="background-color: #606165;font-weight: 900" pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+                        <button type="text" style="background-color: #606165;font-weight: 900;" pButton (click)="op1.toggle($event)" icon="ui-icon-settings" label="Customize Fields"></button>
                       </div>
                         <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
                         <div style="width: 100%;margin-top:0em;text-align: left;">
                           <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                           <b>Display Fields</b> <a href="#" (click) = "$event.preventDefault();ResetSelectedFields()" style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
                         </div>
-                        <!--
-                        <div style="text-align: left" >
-                          <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
-                        </div> -->
                         <div *ngFor="let fields of displayFields" style="text-align: left" >
                           <p-checkbox inputId={{fields}} name={{fields}} class = "label" value={{fields}} label={{fields}} [(ngModel)]="selectedFields"></p-checkbox>
                         </div>

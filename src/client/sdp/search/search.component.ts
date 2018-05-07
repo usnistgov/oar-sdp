@@ -147,14 +147,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   saveSearchQuery (queryName:any,queryValue:any) {
-
     let data : Data;
-
-    data = {'queryName':queryName,'queryValue':queryValue,'id':queryName};
-
+    var date  = new Date();
+    data = {'queryName':queryName,'queryValue':queryValue,'id':queryName,'date': date.getTime()};
     this.searchQueryService.saveSearchQuery(data);
-
-
   }
 
   /**

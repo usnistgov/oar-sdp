@@ -54,7 +54,7 @@ body .ui-button, body .ui-datepicker-buttonpane > button {
   padding: .2em;}
 
 body .ui-button .ui-button-text, body .ui-datepicker-buttonpane > button .ui-button-text {
-  line-height: 1.75em; }
+  line-height: 0.75em; }
 
 body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container.ui-inputtext {
   padding: 2px 2px 0px 2px;

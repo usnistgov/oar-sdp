@@ -2,16 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { AdvSearchComponent } from './adv_search.component';
-import { DropdownModule } from 'primeng/primeng';
+import { DropdownModule, DataTableModule, PanelModule, ConfirmDialogModule, ConfirmationService, MessageModule } from 'primeng/primeng';
 import { SearchQueryService } from '../shared/search-query/index';
 
 
 
+
 @NgModule({
-    imports: [CommonModule, SharedModule,DropdownModule],
+    imports: [CommonModule, SharedModule,DropdownModule, DataTableModule, PanelModule,ConfirmDialogModule],
     declarations: [AdvSearchComponent],
     exports: [AdvSearchComponent],
-    providers: [ SearchQueryService ]
+    providers: [ SearchQueryService,ConfirmationService ]
 
 })
 

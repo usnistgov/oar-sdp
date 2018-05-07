@@ -76,65 +76,102 @@
         <div class="ui-g-12 ui-md-3">
         </div>
         <div class="ui-g-12 ui-md-12 ui-sm-12" style="width:30%">
-          <button class="searchButton" (click)="saveAdvSearchQuery(queryName)" pButton label="Save" type="submit" icon="ui-icon-save"></button>
+          <button class="searchButton" (click)="saveAdvSearchQuery(queryName,false)" pButton label="Save" type="submit" icon="ui-icon-save"></button>
         </div>
       </div>
     </p-dialog>
-    <div  class="ui-g-12 search-builder-background">
-      <div class="ui-g-12 ui-md-2">
-      </div>
-      <div class="ui-g-12 ui-md-4">
-        <b>Build</b> : <p-dropdown [options]="advSearchList" (onChange) = "showAdvSearch()" [style]="{'width':'50%',
-        'background-color': '#FFFFFF','height': '32px'
-        ,'font-weight': '900','font-style': 'italic','align-items':'center'}" [(ngModel)]="selectedAdvSearch"></p-dropdown>
+    <div *ngIf = "mobWidth >641" [className]="filterClass" [hidden]="isActive" style="text-align:center;float: right;padding: 0px;background-color: #696666;color: #fff;"> <br>
+      <div class="ui-g-12">
+        <button type="button" (click) = "setResultsWidth()" class="btn-sm collapsed" data-toggle="collapse" style="background-color: #696666;border-color: #696666; padding: 0em;border: 0em;align:left;color: #FFF;" data-target="#demo"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>
+        <div class="rotate" style="display: block; right:-30px;color: #fff;"> Queries </div>
       </div>
     </div>
-    <div class="EmptyBox20" style="background-color:#fff" *ngIf = "selectedAdvSearch == ''"></div>
-    <div class="ui-g-12 search-builder-background" *ngIf = "showAdvSearchBuilder" >
-    <div  class="ui-g-12 search-builder-background"  *ngFor='let row of rows; let rowIndex = index'>
-      <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1">
+    <div *ngIf = "mobWidth >641" class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" [hidden]="!isActive" id="demo" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
+      <div  class="ui-g-12 "   style="padding: 0px;" >
+        <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
+
+          <a style="color: #FFFFFF;font-weight: 900;text-decoration:none">Queries </a> <a class="btn-sm collapse1 in" (click) = "setResultsWidth()"  data-toggle="collapse" style="border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo"></a>
+          <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="$event.preventDefault();displayBuilder()" >
+            <i style="vertical-align: middle;zoom: 80%" class="material-icons"> add
+            </i>Create Query</a>
+        </div>
+    <div  class="ui-g-12 ">
+      <div class="ui-g-12 ui-md-12">
+          <p-dataTable [value]="searchEntities" [loading]="loading" emptyMessage="No entry found">
+            <p-column field="data.queryName" [style]="{'width':'30%','font-weight':'700'}" header="Name">
+              <ng-template let-row="rowData" pTemplate type="body">
+                <a href="/#/search?q={{row.data.queryValue}}&key=&queryAdvSearch=" (click) = "closeWindow()" target="_parent">{{row.data.queryName}}</a>
+              </ng-template>
+            </p-column>
+            <p-column header="Actions" [style]="{'width':'25%','font-weight':'700'}" styleClass="col-button">
+              <ng-template let-row="rowData" pTemplate="body">
+                <button type="button" pButton class="buttonSize" (click)="showAdvSearch(row.data.queryName,true)" icon="ui-icon-edit"></button>
+                <button type="button" class="buttonSize" pButton (click)="copyQuery(row.data.queryValue)" icon="ui-icon-content-copy"></button>
+                <button type="button" class="buttonSize" style="background-color:red" pButton (click)="removeItem(row)" icon="ui-icon-delete"></button>
+              </ng-template>
+            </p-column>
+          </p-dataTable>
       </div>
-      <div *ngIf='rowIndex > 0' class="ui-g-12 ui-md-1" style="padding-right: 0em;padding-left: 0em" >
-        <p-dropdown  (click) = "saveSearch()" [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
-        ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [options]="operators" [(ngModel)]="row.column1" ></p-dropdown>
-      </div>
-      <div *ngIf='rowIndex == 0' class="ui-g-12 ui-md-2">
-      </div>
-      <div class="ui-g-12 ui-md-4 " >
-        <label for="fieldstext" class="hideLabel">Fields text</label>
-        <input type="text" id="fieldstext" pInputText style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;
+      <button type="button" pButton class="buttonSize" (click)="exportList()" label="Export" ></button>
+    </div>
+        </div>
+    </div>
+
+      <div [className]="resultsClass" style="background-color:white" *ngIf="displayQueryBuilder">
+        <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;" (click)="$event.preventDefault();addRow()" >
+          <i style="vertical-align: middle;zoom: 80%" class="material-icons"> add
+          </i>Create New Field</a>
+        <div class="EmptyBox10"></div>
+        <div  class="ui-g-12 ui-md-12 search-builder-background">
+        <p-dataTable [value]="rows" [loading]="loading" emptyMessage="No entry found" [style]="{'border-width':'.1px'}">
+        <p-column field="data.queryName" header="Operator" [style]="{'width':'15%','font-weight':'700'}">
+          <ng-template let-row="rowData" let-i="rowIndex" pTemplate type="body">
+              <p-dropdown  *ngIf = "i != 0" (click) = "saveSearch()" [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
+        ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [options]="operators" [(ngModel)]="row.column1" >
+              </p-dropdown>
+          </ng-template>
+        </p-column>
+        <p-column field="data.queryName" header="Field Text" [style]="{'width':'35%','font-weight':'700'}">
+          <ng-template let-row="rowData" pTemplate type="body">
+            <input type="text" id="fieldstext" style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;
           font-style: italic" [(ngModel)]="row.column2" (keyup)="saveSearch()" placeholder="Fields text..."   />
-      </div>
-      <div class="ui-g-12 ui-md-2 " style="padding-left: 0em;padding-right: 0em">
-        <p-dropdown [options]="fields"  [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
+          </ng-template>
+        </p-column>
+        <p-column field="data.queryName" header="Field Type" [style]="{'width':'35%','font-weight':'700'}">
+          <ng-template let-row="rowData" pTemplate type="body">
+            <p-dropdown [options]="fields"  [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
         ,'font-weight': '400','font-style': 'italic','border':'.5px solid grey'}" [(ngModel)]="row.column3" (click) = "saveSearch()" >
-        </p-dropdown>
-      </div>
-      <div class="ui-g-12 ui-md-3  " style="width: 3%;" *ngIf="showDeleteButton == true" >
-        <button type="button" class="addRemoveButton search-builder-button-remove" (click)="deleteRow(rowIndex)" pButton icon="ui-icon-remove"></button>
-      </div>
-      <div *ngIf="rowIndex == rows.length -1 " class="ui-g-12 ui-md-3">
-        <button type="button" class="addRemoveButton search-builder-button-add" (click)="addRow()" pButton  icon="ui-icon-add"></button>
-      </div>
-  </div>
+            </p-dropdown>
+          </ng-template>
+        </p-column>
+
+        <p-column header="Actions" styleClass="col-button" [style]="{'width':'10%','font-weight':'700'}">
+          <ng-template let-rowIndex="rowIndex" let-row="rowData" pTemplate="body">
+            <button type="button" class="buttonSize background-red" pButton (click)="deleteRow(rowIndex)" icon="ui-icon-delete"></button>
+            <button type="button" class="buttonSize" pButton (click)="copyRow(row)" icon="ui-icon-content-copy"></button>
+          </ng-template>
+        </p-column>
+      </p-dataTable>
+    </div>
+   <p-confirmDialog></p-confirmDialog>
     <div  class="ui-g-12 search-builder-background" >
       <div class="ui-g-12 ui-md-2">
       </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
-        <button class="searchButton" *ngIf = "selectedAdvSearch != 'add'" (click)="deleteAdvSearchQuery(selectedAdvSearch)" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
+      <div class="ui-g-12 ui-md-2 ui-sm-2">
+        <button style= "background-color:red;width:75%;" (click)="deleteConfirm()" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
       </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
-        <button class="searchButton" *ngIf = "selectedAdvSearch != 'add'" (click)="resetAdvSearchQuery()" pButton label="Reset" icon="ui-icon-warning" type="submit" ></button>
+      <div class="ui-g-12 ui-md-2 ui-sm-2">
+        <button style= "background-color:orange;width:75%" (click)="resetConfirm()" pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
       </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
-        <button class="searchButton" (click)="displayQuery()" *ngIf = "selectedAdvSearch == 'add'" pButton label="Save" type="submit" icon="ui-icon-save"></button>
-        <button class="searchButton" (click)="saveAdvSearchQuery(selectedAdvSearch)" *ngIf = "selectedAdvSearch != 'add'"  pButton label="Save" icon="ui-icon-save" type="submit" ></button>
+      <div class="ui-g-12 ui-md-2 ui-sm-2">
+        <button style= "background-color:green;width:75%" (click)="displayQuery()" pButton label="Save" type="submit" icon="ui-icon-save"></button>
       </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2" style="width:10%">
-        <button class="searchButton" (click)="cancelAdvSearchQuery()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
+      <div class="ui-g-12 ui-md-2 ui-sm-2">
+        <button style="background-color:gray;width:75%"(click)="cancelConfirm()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
       </div>
     </div>
     <div style="height:150px;background-color: #fff"></div>
   </div>
+    </div>
   </div>
-</div>
+

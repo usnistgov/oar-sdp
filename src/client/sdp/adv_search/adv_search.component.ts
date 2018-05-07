@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { SelectItem, DropdownModule } from 'primeng/primeng';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { SelectItem, DropdownModule, ConfirmationService,Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
@@ -19,8 +19,10 @@ declare var jQuery: any
   moduleId: module.id,
   selector: 'sdp-advsearch',
   templateUrl: 'adv_search.component.html',
-  styleUrls: ['adv_search.component.css']
- })
+  styleUrls: ['adv_search.component.css'],
+  providers: [ConfirmationService]
+
+})
 
 export class AdvSearchComponent implements OnInit {
 
@@ -34,12 +36,13 @@ export class AdvSearchComponent implements OnInit {
     textRotate: boolean = true;
     searchTaxonomyKey: string;
     display: boolean = false;
+    displayQueryBuilder: boolean = false;
     queryAdvSearch:string= '';
     showAdvancedSearch: boolean = false;
     showAdvSearchBuilder: boolean = false;
     queryName:string='';
     showQueryName:boolean = false;
-    rows: any[] ;
+    rows: any[] = [];
     fields: SelectItem[];
     ALL:string='ALL FIELDS';
     showDeleteButton:boolean = false;
@@ -47,6 +50,15 @@ export class AdvSearchComponent implements OnInit {
     searchEntities: SearchEntity[] = [];
     selectedAdvSearch : string = '';
     queryValue: string[];
+    editQuery:boolean = false;
+    mobHeight: number;
+    mobWidth: number;
+    width:string;
+    isActive: boolean = true;
+    filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
+    resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
+    msgs: Message[] = [];
+
 
 
   displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword' , 'Publisher', 'Rights' , 'Theme',
@@ -54,12 +66,12 @@ export class AdvSearchComponent implements OnInit {
   /**
    * Create an instance of services for Home
    */
-  constructor(public taxonomyListService: TaxonomyListService, public searchFieldsListService :
-    SearchFieldsListService, public searchService:SearchService, private router:Router,public searchQueryService: SearchQueryService) {
+  constructor(ngZone:NgZone,public taxonomyListService: TaxonomyListService, public searchFieldsListService :
+    SearchFieldsListService, public searchService:SearchService, private router:Router,public searchQueryService: SearchQueryService, private confirmationService: ConfirmationService) {
     this.taxonomies = [];
     this.fields = [];
     setTimeout(() => {
-      this.getAdvSearchQueryList();
+      this.getSearchQueryList();
       console.log("+++++++++++length+++++++" + this.searchEntities.length);
     },1000);
 
@@ -73,7 +85,87 @@ export class AdvSearchComponent implements OnInit {
       }
     },1000);
 
-}
+    this.mobHeight = (window.innerHeight);
+    this.mobWidth = (window.innerWidth);
+
+    window.onresize = (e) =>
+    {
+      ngZone.run(() => {
+        this.mobWidth = window.innerWidth;
+        this.mobHeight = window.innerHeight;
+      });
+    };
+
+
+  }
+
+  deleteConfirm() {
+    this.confirmationService.confirm({
+      message: 'Do you want to delete this record?',
+      header: 'Delete Confirmation',
+      accept: () => {
+        //this.msgs = [{severity:'info', summary:'Confirmed', detail:'Record deleted'}];
+        this.deleteAdvSearchQuery();
+        this.displayQueryBuilder = false;
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  cancelConfirm() {
+    this.confirmationService.confirm({
+      message: 'Do you want to cancel this request?',
+      header: 'Cancel Confirmation',
+      accept: () => {
+        //this.msgs = [{severity:'info', summary:'Confirmed', detail:'Record deleted'}];
+        this.cancelAdvSearchQuery();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  resetConfirm() {
+    this.confirmationService.confirm({
+      message: 'Do you want to reset this record?',
+      header: 'Reset Confirmation',
+      accept: () => {
+        this.resetAdvSearchQuery();
+      },
+      reject: () => {
+        //this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
+      }
+    });
+  }
+
+  removeItem(row:any) {
+    console.log("row" + JSON.stringify(row));
+    let dataId: any;
+    // convert the map to an array
+    let delRow = this.searchEntities.indexOf(row);
+    this.searchEntities.splice(delRow,1);
+    this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+    this.getSearchQueryList();
+  }
+
+  getSearchQueryList() {
+    this.searchQueryService.getAllSearchEntities().then(function (result) {
+    this.searchEntities = result;
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+  }
+
+  setResultsWidth () {
+    this.isActive = !this.isActive;
+    if (!this.isActive) {
+      this.resultsClass = "ui-g-12 ui-md-11 ui-lgc-11";
+      this.filterClass = "ui-g-12 ui-md-11 ui-lgc-1";
+    } else {
+      this.resultsClass = "ui-g-12 ui-md-9 ui-lg-9";
+    }
+  }
 
   /**
    *
@@ -82,7 +174,7 @@ export class AdvSearchComponent implements OnInit {
     //jQuery('.element').atrotating();
     this.getTaxonomies();
     this.getSearchFields();
-    this.rows =  [{}];
+    this.rows =  [];
     this.searchOperators();
     var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
     var i=0;
@@ -109,38 +201,34 @@ export class AdvSearchComponent implements OnInit {
     ]; */
   }
 
-  getAdvSearchQueryList() {
-    this.searchQueryService.getAllAdvSearchEntities().then(function (result) {
-    this.searchEntities = result;
-    console.log("cart entities inside datacartlist _______" + JSON.stringify(this.searchEntities));
-    }.bind(this), function (err) {
-    });
-  }
-
-
   /**
    * Set the display to show the examples dialog
    */
    showDialog() {
         this.display = true;
-    }
+   }
+
+   displayBuilder() {
+     this.displayQueryBuilder = true;
+   }
 
   /**
    * Set the display to show the examples dialog
    */
-  showAdvSearch() {
-    if (this.selectedAdvSearch == "") {
-      this.showAdvSearchBuilder = false;
-    } else {
-      console.log("adv search----" + this.selectedAdvSearch);
-      this.showAdvSearchBuilder = true;
+  showAdvSearch(queryName:any,editQuery:boolean) {
+    if (editQuery) {
+      this.queryName = queryName;
+      this.editQuery = editQuery;
+    }
+      console.log("adv search----" + JSON.stringify(this.searchEntities));
+      this.displayQueryBuilder = true;
       this.rows = [{}];
       for (let resultItem of this.searchEntities) {
-        if (this.selectedAdvSearch.includes(resultItem.data.queryName)) {
+        if (queryName.includes(resultItem.data.queryName)) {
           this.queryValue = resultItem.data.queryValue.split('&');
           console.log("query value++ " + this.queryValue);
-          for (var i = 0; i <  this.queryValue.length; i++) {
-            if (i==0) {
+          for (var i = 0; i < this.queryValue.length; i++) {
+            if (i == 0) {
               this.rows[i] = [{}];
               let row = this.queryValue[i].split('=');
               if (row[0].includes('searchphrase')) {
@@ -151,7 +239,7 @@ export class AdvSearchComponent implements OnInit {
               this.rows[i].column2 = row[1];
             }
 
-            if (i!= 0 ) {
+            if (i != 0) {
               if (i % 2 != 0) {
                 this.rows[i] = [{}];
                 let row = this.queryValue[i].split('=');
@@ -161,11 +249,11 @@ export class AdvSearchComponent implements OnInit {
               if (i % 2 == 0) {
                 let row = this.queryValue[i].split('=');
                 if (row[0].includes('searchphrase')) {
-                  this.rows[i-1].column3 = 'All'
+                  this.rows[i - 1].column3 = 'All'
                 } else {
-                  this.rows[i-1].column3 = row[0];
+                  this.rows[i - 1].column3 = row[0];
                 }
-                this.rows[i-1].column2 = row[1];
+                this.rows[i - 1].column2 = row[1];
                 this.showDeleteButton = true;
               }
             }
@@ -173,7 +261,6 @@ export class AdvSearchComponent implements OnInit {
         }
       }
       this.saveSearch();
-    }
   }
   /**
    * Advanced Search builder string
@@ -347,8 +434,9 @@ export class AdvSearchComponent implements OnInit {
    * Add rows - Advanced Search block
    */
   addRow () {
-      this.rows.push({});
-      this.showDeleteButton = true;
+    let rows = [...this.rows,{}];
+    this.rows = rows;
+     //this.showDeleteButton = true;
   }
 
   /**
@@ -356,13 +444,17 @@ export class AdvSearchComponent implements OnInit {
    */
 
   deleteRow (rowIndex:number) {
-      if (this.rows.length > 1) {
-        this.rows.splice(rowIndex, 1);
-        this.saveSearch();
-      }
-      if (this.rows.length === 1) {
-        this.showDeleteButton = false;
-      }
+    this.rows = this.rows.filter((val,i) => i!=rowIndex);
+    this.saveSearch();
+  }
+
+  /**
+   * Delete rows - Advanced Search block
+   */
+
+  copyRow (row:any[]) {
+    let rows = [...this.rows,row];
+    this.rows = rows;
   }
 
 
@@ -387,42 +479,46 @@ export class AdvSearchComponent implements OnInit {
 
   }
 
-  saveAdvSearchQuery (queryName:any) {
+  copyQuery (queryValue:string) {
+    this.showQueryName = true;
+    this.searchValue = queryValue;
+    //data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName};
+    //this.searchQueryService.saveAdvSearchQuery(data);
+
+  }
+
+  exportList()
+  {
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:attachment/text,' + encodeURI(JSON.stringify(this.searchEntities));
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'searchQueries.json';
+    hiddenElement.click();
+  }
+
+  saveAdvSearchQuery (queryName:any,editQuery:boolean) {
+    if (editQuery) {
+      queryName = this.queryName;
+    }
+    console.log("query name--" + queryName);
+    console.log("query value--" + this.searchValue);
     let data : Data;
-    data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName};
-    this.searchQueryService.saveAdvSearchQuery(data);
-    this.getAdvSearchQueryList();
+    var date  = new Date();
+    data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
+    this.searchQueryService.saveSearchQuery(data);
+    this.getSearchQueryList();
     this.showQueryName = false;
   }
 
-  deleteAdvSearchQuery (queryName:any) {
-    this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
-    this.searchQueryService.saveListOfAdvSearchEntities(this.searchEntities);
-    this.advSearchList = [];
-    setTimeout(() => {
-      this.advSearchList.push({label:'Create New', value:'add'})
-      for (let resultItem of this.searchEntities) {
-        if (!_.isEmpty(resultItem.data.queryName)) {
-          console.log("query name++++++" + resultItem.data.queryName);
-          this.advSearchList.push({label: resultItem.data.queryName, value: resultItem.data.queryName});
-        }
-      }
-    },1000);
-    this.showAdvSearchBuilder = false;
+  deleteAdvSearchQuery () {
+    this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.queryName);
+    this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+    this.rows = [];
   }
 
   cancelAdvSearchQuery () {
-    this.advSearchList = [];
-    setTimeout(() => {
-      this.advSearchList.push({label:'Create New', value:'add'})
-      for (let resultItem of this.searchEntities) {
-        if (!_.isEmpty(resultItem.data.queryName)) {
-          console.log("query name++++++" + resultItem.data.queryName);
-          this.advSearchList.push({label: resultItem.data.queryName, value: resultItem.data.queryName});
-        }
-      }
-    },1000);
-    this.showAdvSearchBuilder = false;
+    this.rows = [];
+    this.displayQueryBuilder = false;
   }
 
   resetAdvSearchQuery(){
