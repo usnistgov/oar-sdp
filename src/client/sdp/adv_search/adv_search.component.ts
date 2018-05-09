@@ -224,8 +224,10 @@ export class AdvSearchComponent implements OnInit {
       console.log("adv search----" + JSON.stringify(this.searchEntities));
       this.displayQueryBuilder = true;
       this.rows = [{}];
+      let k = 1;
       for (let resultItem of this.searchEntities) {
         if (queryName.includes(resultItem.data.queryName)) {
+          this.searchValue = resultItem.data.queryValue;
           this.queryValue = resultItem.data.queryValue.split('&');
           console.log("query value++ " + this.queryValue);
           for (var i = 0; i < this.queryValue.length; i++) {
@@ -242,26 +244,23 @@ export class AdvSearchComponent implements OnInit {
 
             if (i != 0) {
               if (i % 2 != 0) {
-                this.rows[i] = [{}];
-                let row = this.queryValue[i].split('=');
-                this.rows[i].column1 = row[1];
-              }
-
-              if (i % 2 == 0) {
-                let row = this.queryValue[i].split('=');
-                if (row[0].includes('searchphrase')) {
-                  this.rows[i - 1].column3 = 'All'
-                } else {
-                  this.rows[i - 1].column3 = row[0];
-                }
-                this.rows[i - 1].column2 = row[1];
-                this.showDeleteButton = true;
+                  this.rows[k] = [{}];
+                  let row = this.queryValue[i].split('=');
+                  this.rows[k].column1 = row[1];
+                  i++;
+                  row = this.queryValue[i].split('=');
+                  if (row[0].includes('searchphrase')) {
+                    this.rows[k].column3 = 'All'
+                  } else {
+                    this.rows[k].column3 = row[0];
+                  }
+                  this.rows[k].column2 = row[1];
+                  k++;
               }
             }
           }
         }
       }
-      this.saveSearch();
   }
   /**
    * Advanced Search builder string
@@ -454,10 +453,21 @@ export class AdvSearchComponent implements OnInit {
    */
 
   copyRow (row:any[]) {
-    let rows = [...this.rows,row];
+    let rows = [...this.rows,this.clone(row)];
+    //let rows = [...this.rows,row];
     this.rows = rows;
   }
 
+  clone(obj){
+    if(obj == null || typeof(obj) != 'object')
+      return obj;
+
+    var temp = new obj.constructor();
+    for(var key in obj)
+      temp[key] = this.clone(obj[key]);
+
+    return temp;
+  }
 
   clearText(){
     var field = (<HTMLInputElement>document.getElementById('searchinput'));
@@ -495,6 +505,36 @@ export class AdvSearchComponent implements OnInit {
     hiddenElement.target = '_blank';
     hiddenElement.download = 'searchQueries.json';
     hiddenElement.click();
+  }
+
+  importList(event) {
+    var files = event.srcElement.files;
+    files = files[0];
+    var dataFile = [];
+    var read:FileReader = new FileReader();
+    read.readAsText(files);
+    read.onloadend = function(){
+      let fileData = read.result;
+      let fileJson = JSON.parse(fileData);
+      for (let i in fileJson) {
+        let dataset = fileJson[i].data;
+        var dataQuery = JSON.stringify(dataset)
+        dataFile.push(dataQuery);
+      }
+    }
+    setTimeout(() => {
+      for (let i=0;i<dataFile.length;i++) {
+        let data = dataFile[i];    //voila!
+        console.log(data);
+
+       this.searchQueryService.saveSearchQuery(JSON.parse(data));
+        console.log(data);
+      }
+    }, 100);
+    setTimeout(() => {
+      this.getSearchQueryList();
+      console.log("+++++++++++length+++++++" + this.searchEntities.length);
+    },100);
   }
 
   saveAdvSearchQuery (queryName:any,editQuery:boolean) {

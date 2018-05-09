@@ -112,7 +112,11 @@
             </p-column>
           </p-dataTable>
       </div>
-      <button type="button" pButton class="buttonSize" (click)="exportList()" label="Export" ></button>
+      <button type="button" pButton class="buttonSize" (click)="exportList()" label="Export"></button>
+      <label class="buttonSize ui-button ui-button-text ui-corner-all ui-widget" style="font-weight:normal;line-height:1.25em">
+        <input type="file" id="fileInput" (change)="importList($event)"/>
+        Import
+      </label>
     </div>
         </div>
     </div>

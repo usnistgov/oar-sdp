@@ -143,3 +143,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
   float:right;
   margin-right:10%;
 }
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  color:#fff;
+  cursor: pointer;
+  background-color: #1471AE;
+  height: 1.75em;
+  padding: .2em;
+}
