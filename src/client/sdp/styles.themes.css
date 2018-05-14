@@ -171,6 +171,11 @@ body .ui-button.ui-button-icon-only, body .ui-datepicker-buttonpane > button.ui-
 }
 
 body .ui-datatable .ui-datatable-thead > tr th {
-  background-color:#232F3F;
+  background-color:#0872B9;
+  color:#ffffff;
+}
+
+body .ui-dialog .ui-dialog-titlebar {
+  background-color:#232F3E;
   color:#ffffff;
 }

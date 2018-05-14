@@ -61,22 +61,24 @@
         <a class="examples" (click)="searchExample('Interatomic Potentials');" href="#!" >Interatomic Potentials </a>&nbsp;
       </div>
     </div>
-    <p-dialog header="Save Query" [(visible)]="showQueryName" modal="modal" [responsive]="true" [width]="450" [height]="200" [minWidth]="200">
+    <p-dialog header="Save Query" [(visible)]="showQueryName" modal="modal" [responsive]="true" [width]="450" [height]="225" [minWidth]="200">
+      <p-message severity="error" text="Field is required" *ngIf = "queryNameReq" ></p-message>
     <div  class="ui-g-12 search-builder-background" *ngIf = "showQueryName == true" >
       <div class="ui-g-12 ui-md-3">
-        Query Name :
+        Query Name* :
       </div>
       <div class="ui-g-12 ui-md-6">
-        <input type="text" style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;font-weight: 400;" [(ngModel)]="queryName" pInputText />
+        <input type="text" style="width: 100%;border:.5px solid grey;background-color: #FFFFFF;height: 30px;
+        font-weight: 400;" [(ngModel)]="queryName" />
       </div>
-      <div class="ui-g-12 ui-md-3">
+      <div class="ui-g-12 ui-md-3"> * Required
       </div>
     </div>
       <div  class="ui-g-12 search-builder-background" *ngIf = "showQueryName == true" >
         <div class="ui-g-12 ui-md-3">
         </div>
         <div class="ui-g-12 ui-md-12 ui-sm-12" style="width:30%;float:right;margin-right:18%">
-          <button style="width:75%" (click)="saveAdvSearchQuery(queryName,false)" pButton label="Save" type="submit" icon="ui-icon-save"></button>
+          <button style="background-color:green;width:75%" (keyup.enter) = "saveAdvSearchQuery(queryName,false)" (click) = "saveAdvSearchQuery(queryName,false)" pButton label="Save" type="submit" icon="ui-icon-save"></button>
         </div>
       </div>
     </p-dialog>
@@ -98,7 +100,7 @@
     <div  class="ui-g-12 ">
       <div class="ui-g-12 ui-md-12">
           <p-dataTable [value]="searchEntities" [style]="{'border':'.5px solid #e6e6e6'}" [loading]="loading" emptyMessage="No entry found">
-            <p-column field="data.queryName" [style]="{'width':'30%','font-weight':'700','border':'.5px solid #e6e6e6'}" header="Name">
+            <p-column field="data.queryName" [style]="{'word-wrap': 'break-word','width':'30%','font-weight':'700','border':'.5px solid #e6e6e6'}" header="Name">
               <ng-template let-row="rowData" pTemplate type="body">
                 <a href="/#/search?q={{row.data.queryValue}}&key=&queryAdvSearch=" (click) = "closeWindow()" target="_parent">{{row.data.queryName}}</a>
               </ng-template>
@@ -112,8 +114,8 @@
             </p-column>
           </p-dataTable>
       </div>
-      <button type="button" pButton class="buttonSize" (click)="exportList()" label="Export"></button>
-      <label class="buttonSize ui-button ui-button-text ui-corner-all ui-widget" style="font-weight:normal;line-height:1.25em">
+      <button type="button" pButton class="buttonSize" (click)="exportList()" label="Export" style="float:right"></button>
+      <label class="buttonSize ui-button ui-button-text ui-corner-all ui-widget" style="font-weight:normal;line-height:1.25em;float:right">
         <input type="file" id="fileInput" (change)="importList($event)"/>
         Import
       </label>
@@ -122,6 +124,7 @@
     </div>
 
       <div [className]="resultsClass" style="background-color:white" *ngIf="displayQueryBuilder">
+        <div style="float:left"> &nbsp;&nbsp;&nbsp;&nbsp;<b>Query Name :</b> {{this.queryName}} </div>
         <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;" (click)="$event.preventDefault();addRow()" >
           <i style="vertical-align: middle;zoom: 80%" class="material-icons"> add
           </i>Create New Field</a>
@@ -157,24 +160,18 @@
         </p-column>
       </p-dataTable>
     </div>
-   <p-confirmDialog></p-confirmDialog>
+   <p-confirmDialog ></p-confirmDialog>
     <div  class="ui-g-12 search-builder-background" >
-      <div class="ui-g-12 ui-md-2">
+      <div class="ui-g-12 ui-md-6 ui-sm-6">
       </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2">
-        <button style= "background-color:red;width:75%;" (click)="deleteConfirm()" *ngIf = "rows.length==0" disabled pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
-        <button style= "background-color:red;width:75%;" (click)="deleteConfirm()" *ngIf = "rows.length>0" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
-      </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2">
-        <button style= "background-color:orange;width:75%" (click)="resetConfirm()" *ngIf = "rows.length==0" disabled pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
-        <button style= "background-color:orange;width:75%" (click)="resetConfirm()" *ngIf = "rows.length>0" pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
-      </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2">
-        <button style= "background-color:green;width:75%" (click)="displayQuery()" *ngIf = "rows.length==0" disabled  pButton label="Save" type="submit" icon="ui-icon-save"></button>
-        <button style= "background-color:green;width:75%" (click)="displayQuery()" *ngIf = "rows.length>0" pButton label="Save" type="submit" icon="ui-icon-save"></button>
-      </div>
-      <div class="ui-g-12 ui-md-2 ui-sm-2">
-        <button style="background-color:gray;width:75%"(click)="cancelConfirm()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
+      <div class="ui-g-12 ui-md-6 ui-sm-6" style="float:right" >
+        <button style= "background-color:red;width:20%;" (click)="deleteConfirm()" *ngIf = "rows.length==0" disabled pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
+        <button style= "background-color:red;width:20%;" (click)="deleteConfirm()" *ngIf = "rows.length>0" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
+        <button style= "background-color:orange;width:20%;" (click)="resetConfirm()" *ngIf = "rows.length==0" disabled pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
+        <button style= "background-color:orange;width:20%;" (click)="resetConfirm()" *ngIf = "rows.length>0" pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
+        <button style= "background-color:green;width:20%;" (click)="displayQuery()" *ngIf = "rows.length==0" disabled  pButton label="Save" type="submit" icon="ui-icon-save"></button>
+        <button style= "background-color:green;width:20%;" (click)="displayQuery()" *ngIf = "rows.length>0" pButton label="Save" type="submit" icon="ui-icon-save"></button>
+        <button style="background-color:gray;width:20%;"(click)="cancelConfirm()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
       </div>
     </div>
     <div style="height:150px;background-color: #fff"></div>

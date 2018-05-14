@@ -156,3 +156,7 @@ input[type="file"] {
   height: 1.75em;
   padding: .2em;
 }
+
+:host /deep/ .ui-message-text {
+  vertical-align:top
+}

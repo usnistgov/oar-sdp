@@ -58,6 +58,7 @@ export class AdvSearchComponent implements OnInit {
     filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
     resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
     msgs: Message[] = [];
+    queryNameReq:boolean = false;
 
 
 
@@ -131,7 +132,7 @@ export class AdvSearchComponent implements OnInit {
       message: 'Do you want to reset this record?',
       header: 'Reset Confirmation',
       accept: () => {
-        this.resetAdvSearchQuery();
+        this.showAdvSearch(this.queryName,true);
       },
       reject: () => {
         //this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
@@ -147,6 +148,7 @@ export class AdvSearchComponent implements OnInit {
     this.searchEntities.splice(delRow,1);
     this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
     this.getSearchQueryList();
+    this.displayQueryBuilder = false;
   }
 
   getSearchQueryList() {
@@ -189,16 +191,6 @@ export class AdvSearchComponent implements OnInit {
         i=0;
       }
     },2000);
-      /*
-      this.advSearchList = [
-      {label:'', value:null},
-      {label:'Create New', value:'add'},
-      {label:'Rome', value:{id:2, name: 'Rome', code: 'RM'}},
-      {label:'London', value:{id:3, name: 'London', code: 'LDN'}},
-      {label:'Istanbul', value:{id:4, name: 'Istanbul', code: 'IST'}},
-      {label:'Paris', value:{id:5, name: 'Paris', code: 'PRS'}}
-
-    ]; */
   }
 
   /**
@@ -211,6 +203,7 @@ export class AdvSearchComponent implements OnInit {
    displayBuilder() {
      this.displayQueryBuilder = true;
      this.queryName = '';
+     this.rows = [];
    }
 
   /**
@@ -226,7 +219,7 @@ export class AdvSearchComponent implements OnInit {
       this.rows = [{}];
       let k = 1;
       for (let resultItem of this.searchEntities) {
-        if (queryName.includes(resultItem.data.queryName)) {
+        if (queryName == resultItem.data.queryName) {
           this.searchValue = resultItem.data.queryValue;
           this.queryValue = resultItem.data.queryValue.split('&');
           console.log("query value++ " + this.queryValue);
@@ -485,6 +478,7 @@ export class AdvSearchComponent implements OnInit {
 
   displayQuery () {
     this.showQueryName = true;
+    this.queryNameReq = false;
     //data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName};
     //this.searchQueryService.saveAdvSearchQuery(data);
 
@@ -503,7 +497,7 @@ export class AdvSearchComponent implements OnInit {
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:attachment/text,' + encodeURI(JSON.stringify(this.searchEntities));
     hiddenElement.target = '_blank';
-    hiddenElement.download = 'searchQueries.json';
+    hiddenElement.download = 'NIST-SDP-Queries.json';
     hiddenElement.click();
   }
 
@@ -541,14 +535,18 @@ export class AdvSearchComponent implements OnInit {
     if (editQuery) {
       queryName = this.queryName;
     }
-    console.log("query name--" + queryName);
-    console.log("query value--" + this.searchValue);
-    let data : Data;
-    var date  = new Date();
-    data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
-    this.searchQueryService.saveSearchQuery(data);
-    this.getSearchQueryList();
-    this.showQueryName = false;
+    if (_.isEmpty(queryName)) {
+      this.queryNameReq = true;
+    } else  {
+      console.log("query name--" + queryName);
+      console.log("query value--" + this.searchValue);
+      let data : Data;
+      var date  = new Date();
+      data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
+      this.searchQueryService.saveSearchQuery(data);
+      this.getSearchQueryList();
+      this.showQueryName = false;
+    }
   }
 
   deleteAdvSearchQuery () {
