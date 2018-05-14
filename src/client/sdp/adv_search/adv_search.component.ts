@@ -44,6 +44,7 @@ export class AdvSearchComponent implements OnInit {
     showQueryName:boolean = false;
     rows: any[] = [];
     fields: SelectItem[];
+    duplicateQuery:boolean = false;
     ALL:string='ALL FIELDS';
     showDeleteButton:boolean = false;
     operators:SelectItem[];
@@ -540,12 +541,23 @@ export class AdvSearchComponent implements OnInit {
     } else  {
       console.log("query name--" + queryName);
       console.log("query value--" + this.searchValue);
-      let data : Data;
-      var date  = new Date();
-      data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
-      this.searchQueryService.saveSearchQuery(data);
       this.getSearchQueryList();
-      this.showQueryName = false;
+      this.duplicateQuery = false;
+      for (let resultItem of this.searchEntities) {
+        if (queryName == resultItem.data.queryName) {
+          this.duplicateQuery = true;
+        }
+      }
+      if (!this.duplicateQuery) {
+          let data : Data;
+          var date  = new Date();
+          data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
+          this.searchQueryService.saveSearchQuery(data);
+          this.getSearchQueryList();
+          this.showQueryName = false;
+          this.duplicateQuery = false;
+        }
+      this.queryNameReq = false;
     }
   }
 

@@ -63,6 +63,7 @@
     </div>
     <p-dialog header="Save Query" [(visible)]="showQueryName" modal="modal" [responsive]="true" [width]="450" [height]="225" [minWidth]="200">
       <p-message severity="error" text="Field is required" *ngIf = "queryNameReq" ></p-message>
+      <p-message severity="error" text="Query name already exists" *ngIf = "duplicateQuery" ></p-message>
     <div  class="ui-g-12 search-builder-background" *ngIf = "showQueryName == true" >
       <div class="ui-g-12 ui-md-3">
         Query Name* :
@@ -82,13 +83,7 @@
         </div>
       </div>
     </p-dialog>
-    <div *ngIf = "mobWidth >641" [className]="filterClass" [hidden]="isActive" style="text-align:center;float: right;padding: 0px;background-color: #696666;color: #fff;"> <br>
-      <div class="ui-g-12">
-        <button type="button" (click) = "setResultsWidth()" class="btn-sm collapsed" data-toggle="collapse" style="background-color: #696666;border-color: #696666; padding: 0em;border: 0em;align:left;color: #FFF;" data-target="#demo"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>
-        <div class="rotate" style="display: block; right:-30px;color: #fff;"> Queries </div>
-      </div>
-    </div>
-    <div *ngIf = "mobWidth >641" class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" [hidden]="!isActive" id="demo" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
+    <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="demo" style="background-color: #F8F9F9;padding-left: 5px;" >
       <div  class="ui-g-12 "   style="padding: 0px;" >
         <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
 
@@ -152,7 +147,7 @@
           </ng-template>
         </p-column>
 
-        <p-column header="Actions" styleClass="col-button" [style]="{'width':'10%','font-weight':'700'}">
+        <p-column header="Actions" styleClass="col-button" [style]="{'width':'15%','font-weight':'700'}">
           <ng-template let-rowIndex="rowIndex" let-row="rowData" pTemplate="body">
             <button type="button" class="buttonSize background-red" pButton (click)="deleteRow(rowIndex)" icon="ui-icon-delete"></button>
             <button type="button" class="buttonSize" pButton (click)="copyRow(row)" icon="ui-icon-content-copy"></button>
@@ -164,14 +159,22 @@
     <div  class="ui-g-12 search-builder-background" >
       <div class="ui-g-12 ui-md-6 ui-sm-6">
       </div>
-      <div class="ui-g-12 ui-md-6 ui-sm-6" style="float:right" >
-        <button style= "background-color:red;width:20%;" (click)="deleteConfirm()" *ngIf = "rows.length==0" disabled pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
-        <button style= "background-color:red;width:20%;" (click)="deleteConfirm()" *ngIf = "rows.length>0" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
-        <button style= "background-color:orange;width:20%;" (click)="resetConfirm()" *ngIf = "rows.length==0" disabled pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
-        <button style= "background-color:orange;width:20%;" (click)="resetConfirm()" *ngIf = "rows.length>0" pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
-        <button style= "background-color:green;width:20%;" (click)="displayQuery()" *ngIf = "rows.length==0" disabled  pButton label="Save" type="submit" icon="ui-icon-save"></button>
-        <button style= "background-color:green;width:20%;" (click)="displayQuery()" *ngIf = "rows.length>0" pButton label="Save" type="submit" icon="ui-icon-save"></button>
-        <button style="background-color:gray;width:20%;"(click)="cancelConfirm()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
+      <div class="ui-g-12 ui-md-6 ui-sm-6" style="float:right">
+        <div class="ui-g-12 ui-md-3 ui-sm-12" >
+          <button style= "background-color:red" (click)="deleteConfirm()" *ngIf = "rows.length==0" disabled pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
+          <button style= "background-color:red" (click)="deleteConfirm()" *ngIf = "rows.length>0" pButton icon="ui-icon-delete" label="Delete" type="submit" ></button>
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-sm-12" >
+          <button style= "background-color:orange" (click)="resetConfirm()" *ngIf = "rows.length==0" disabled pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
+          <button style= "background-color:orange" (click)="resetConfirm()" *ngIf = "rows.length>0" pButton label="Reset" icon="ui-icon-warning" type="reset" ></button>
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-sm-12">
+          <button style= "background-color:green" (click)="displayQuery()" *ngIf = "rows.length==0" disabled  pButton label="Save" type="submit" icon="ui-icon-save"></button>
+          <button style= "background-color:green" (click)="displayQuery()" *ngIf = "rows.length>0" pButton label="Save" type="submit" icon="ui-icon-save"></button>
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-sm-12">
+          <button style="background-color:gray" (click)="cancelConfirm()" pButton label="Cancel" type="submit" icon="ui-icon-cancel" ></button>
+        </div>
       </div>
     </div>
     <div style="height:150px;background-color: #fff"></div>
