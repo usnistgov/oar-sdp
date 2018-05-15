@@ -28,9 +28,9 @@ import * as _ from 'lodash';
       </div>
     <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
       <ul class="line-separated" style="list-style-type: none;margin-right:20px">
-      <li *ngFor="let entities of searchEntities;let i = index" >
-        <div *ngIf = "i < 5">
-          <a href="/#/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.queryName}}</a>
+      <li *ngFor="let entities of searchEntities| slice:0:5;let i = index">
+        <div>
+          <a href="/#/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a>
         </div>
       </li>
       </ul>

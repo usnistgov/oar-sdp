@@ -11,6 +11,7 @@ import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
 import { Data } from '../shared/search-query/data';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
+import { SearchEntity } from '../shared/search-query/search.entity';
 
 declare var jQuery: any;
 
@@ -35,12 +36,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   selectedResourceTypeNode: TreeNode[];
   profileMode: string = 'inline';
   msgs: Message[] = [];
+  searchEntities: SearchEntity[] = [];
   exception: string;
   textRotate: boolean = true;
   display: boolean = false;
   noResults: boolean;
   checked: boolean = false;
   errorMsg: string;
+  showQueryName:boolean = false;
   first: number = 0;
   status: string;
   errorMessage: string;
@@ -114,6 +117,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   queryValue:string;
   displayQuery: boolean = false;
   displayQueryList: boolean = false;
+  queryNameReq:boolean = false;
+  duplicateQuery:boolean = false;
   private _routeParamsSubscription: Subscription;
   private PDRAPIURL: string = environment.PDRAPI;
 
@@ -147,11 +152,40 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   saveSearchQuery (queryName:any,queryValue:any) {
-    let data : Data;
-    var date  = new Date();
-    data = {'queryName':queryName,'queryValue':queryValue,'id':queryName,'date': date.getTime()};
-    this.searchQueryService.saveSearchQuery(data);
+    if (_.isEmpty(queryName)) {
+      this.queryNameReq = true;
+    } else {
+      console.log("query name--" + queryName);
+      console.log("query value--" + this.searchValue);
+      this.getSearchQueryList();
+      this.duplicateQuery = false;
+      for (let resultItem of this.searchEntities) {
+        if (queryName == resultItem.data.queryName) {
+          this.duplicateQuery = true;
+        }
+      }
+      if (!this.duplicateQuery) {
+        let data: Data;
+        var date = new Date();
+        data = {'queryName': queryName, 'queryValue': queryValue, 'id': queryName, 'date': date.getTime()};
+        this.searchQueryService.saveSearchQuery(data);
+        this.getSearchQueryList();
+        this.duplicateQuery = false;
+      }
+      this.queryNameReq = false;
+      this.showQueryName = false;
+    }
   }
+
+
+  getSearchQueryList() {
+    this.searchQueryService.getAllSearchEntities().then(function (result) {
+      this.searchEntities = result;
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+  }
+
 
   /**
    * Populate taxonomy items
@@ -210,7 +244,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
 
   showDialog() {
-    this.displayQuery = true;
+    this.showQueryName = true;
     this.queryValue = this.searchValue;
   }
 

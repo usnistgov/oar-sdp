@@ -75,18 +75,8 @@ export class AdvSearchComponent implements OnInit {
     setTimeout(() => {
       this.getSearchQueryList();
       console.log("+++++++++++length+++++++" + this.searchEntities.length);
-    },1000);
-
-    setTimeout(() => {
-      this.advSearchList.push({label:'Create New', value:'add'})
-      for (let resultItem of this.searchEntities) {
-        if (!_.isEmpty(resultItem.data.queryName)) {
-          console.log("query name++++++" + resultItem.data.queryName);
-          this.advSearchList.push({label: resultItem.data.queryName, value: resultItem.data.queryName});
-        }
-      }
-    },1000);
-
+    },100);
+    
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -97,8 +87,15 @@ export class AdvSearchComponent implements OnInit {
         this.mobHeight = window.innerHeight;
       });
     };
+  }
 
-
+  getSearchQueryList() {
+    this.searchQueryService.getAllSearchEntities().then(function (result) {
+      this.searchEntities = _.sortBy(result,[function(o) { return o.date; }]);
+      this.searchEntities = _.reverse(this.searchEntities);
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
   }
 
   deleteConfirm() {
@@ -150,14 +147,6 @@ export class AdvSearchComponent implements OnInit {
     this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
     this.getSearchQueryList();
     this.displayQueryBuilder = false;
-  }
-
-  getSearchQueryList() {
-    this.searchQueryService.getAllSearchEntities().then(function (result) {
-    this.searchEntities = result;
-    }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
-    });
   }
 
   setResultsWidth () {
@@ -224,20 +213,21 @@ export class AdvSearchComponent implements OnInit {
           this.searchValue = resultItem.data.queryValue;
           this.queryValue = resultItem.data.queryValue.split('&');
           console.log("query value++ " + this.queryValue);
-          for (var i = 0; i < this.queryValue.length; i++) {
-            if (i == 0) {
-              this.rows[i] = [{}];
-              let row = this.queryValue[i].split('=');
-              if (row[0].includes('searchphrase')) {
-                this.rows[i].column3 = 'All'
-              } else {
-                this.rows[i].column3 = row[0];
+          if (this.queryValue.length > 1) {
+            for (var i = 0; i < this.queryValue.length; i++) {
+              if (i == 0) {
+                this.rows[i] = [{}];
+                let row = this.queryValue[i].split('=');
+                if (row[0].includes('searchphrase')) {
+                  this.rows[i].column3 = 'All'
+                } else {
+                  this.rows[i].column3 = row[0];
+                }
+                this.rows[i].column2 = row[1];
               }
-              this.rows[i].column2 = row[1];
-            }
 
-            if (i != 0) {
-              if (i % 2 != 0) {
+              if (i != 0) {
+                if (i % 2 != 0) {
                   this.rows[k] = [{}];
                   let row = this.queryValue[i].split('=');
                   this.rows[k].column1 = row[1];
@@ -250,8 +240,11 @@ export class AdvSearchComponent implements OnInit {
                   }
                   this.rows[k].column2 = row[1];
                   k++;
+                }
               }
             }
+          } else  {
+            this.rows[0].column2 = this.searchValue;
           }
         }
       }
@@ -554,10 +547,9 @@ export class AdvSearchComponent implements OnInit {
           data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
           this.searchQueryService.saveSearchQuery(data);
           this.getSearchQueryList();
-          this.showQueryName = false;
           this.duplicateQuery = false;
         }
-      this.queryNameReq = false;
+      this.showQueryName = false;
     }
   }
 

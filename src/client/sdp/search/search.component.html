@@ -297,8 +297,10 @@
                   </div>
                   <div class="ui-g-12 ui-md-6 ui-sm-6">
                     <div style="float: right;padding-right:10px;padding-top: 10px">
-                      <p-dialog header="Save Query" [(visible)]="displayQuery" modal="modal" [responsive]="true" [width]="450" [minWidth]="200">
-                       <div class="ui-g">
+                      <p-dialog header="Save Query" [(visible)]="showQueryName" modal="modal" [responsive]="true" [width]="450" [minWidth]="200">
+                        <p-message severity="error" text="Field is required" *ngIf = "queryNameReq" ></p-message>
+                        <p-message severity="error" text="Query name already exists" *ngIf = "duplicateQuery" ></p-message>
+                        <div class="ui-g">
                          <div class="ui-g-12 ui-md-2 ui-sm-2">
                            <label>   Name:</label>
                          </div>
@@ -313,13 +315,13 @@
                         <div class="ui-g-12 ui-md-8 ui-sm-8">
                           <textarea pInputTextarea [rows]="5" [cols]="42" [(ngModel)]="queryValue"></textarea>
                         </div>
-                          <div class="ui-g-12 ui-md-5 ui-sm-5">
+                          <div class="ui-g-12 ui-md-7 ui-sm-7">
                           </div>
                           <div class="ui-g-12 ui-md-3 ui-sm-3">
-                            <button class="searchButton" (click)="saveSearchQuery(queryName, queryValue)" pButton label="Save" type="submit" ></button>
+                            <button style="background-color:green;width:75%" (keyup.enter) = "saveSearchQuery(queryName, queryValue)" (click) = "saveSearchQuery(queryName, queryValue)" pButton label="Save" type="submit" icon="ui-icon-save"></button>
                           </div>
-                         <div class="ui-g-12 ui-md-4 ui-sm-4">
-                         </div>
+                          <div class="ui-g-12 ui-md-2 ui-sm-2">
+                          </div>
                        </div>
 
                       </p-dialog>
