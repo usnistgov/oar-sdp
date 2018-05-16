@@ -14,7 +14,7 @@ import { KeyValuePipe } from './keyvalue.pipe';
 import { MetadataView } from './metadataview.component';
 import { NoidComponent } from './noid.component';
 import { NerdmComponent } from './nerdm.component';
-
+import { ErrorComponent,UserErrorComponent } from './error.component';
 import { SearchService } from '../shared/search-service/index';
 import { SearchResolve } from './search-service.resolve';
 
@@ -32,9 +32,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ContextMenuModule,MenuModule,OverlayPanelModule,
     Ng2StickyModule, FieldsetModule, PanelModule,BrowserAnimationsModule, FormsModule],
   declarations: [LandingPanelComponent,Collaspe,MetadataComponent,FileDetailsComponent,
-    DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent,NerdmComponent ],
+    DescriptionComponent, SanitizeHtmlDirective, KeyValuePipe, MetadataView, NoidComponent,NerdmComponent,
+    ErrorComponent,UserErrorComponent ],
   exports: [LandingPanelComponent],
-  providers: [Title, SearchService,SearchResolve ],
+  providers: [Title, SearchService,SearchResolve
+  ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA]
 
 })

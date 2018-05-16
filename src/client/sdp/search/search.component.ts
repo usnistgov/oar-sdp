@@ -1,14 +1,17 @@
 import { Component, OnInit, OnDestroy, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
 import { SearchService, TaxonomyListService, SearchFieldsListService } from '../shared/index';
-import { ActivatedRoute }     from '@angular/router';
+import { ActivatedRoute,Router }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
 import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem, ProgressSpinner } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
+import { Location } from '@angular/common';
+
+
 declare var jQuery: any;
 
 /**
@@ -27,9 +30,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
   darkMenu: boolean = false;
-  selectedThemesNode: TreeNode[];
-  selectedComponentsNode: TreeNode[];
-  selectedResourceTypeNode: TreeNode[];
+  selectedThemesNode: TreeNode[] = [];
+  selectedComponentsNode: TreeNode[] = [];
+  selectedResourceTypeNode: TreeNode[] = [];
   profileMode: string = 'inline';
   msgs: Message[] = [];
   exception: string;
@@ -38,16 +41,16 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   noResults: boolean;
   checked: boolean = false;
   errorMsg: string;
-  first: number = 0;
   status: string;
+  page: number = 1;
   errorMessage: string;
   queryAdvSearch: string;
   searchResults: any[] = [];
   errorMessageArray: string[];
   searchResultsError: Message[] = [];
-  themesTree: TreeNode[];
-  componentsTree: TreeNode[];
-  resourceTypeTree: TreeNode[];
+  themesTree: TreeNode[] = [];
+  componentsTree: TreeNode[] = [];
+  resourceTypeTree: TreeNode[] = [];
   searchValue: string;
   taxonomies: SelectItem[];
   sortItems: SelectItem[];
@@ -56,6 +59,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   displayFields: string[] = [];
   selectedFields: string[] = ['Resource Description','Subject keywords'];
   searchTaxonomyKey: string;
+  searchResType : string;
+  searchResTopics: string;
+  searchRecord: string;
+  searchAuthors: string;
+  searchKeywords:string;
   suggestedTaxonomies: string[];
   suggestedTaxonomyList: string[];
   nodeExpanded: boolean = true;
@@ -63,13 +71,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   showMoreLink: boolean = false;
   cols: any[];
   rows: number = 5;
+  first: number = 10;
   columnOptions: SelectItem[];
   searching: boolean = false;
   keywords: string[];
   themes: SelectItem[] = [];
-  themesWithCount: TreeNode[];
-  componentsWithCount: TreeNode[];
-  resourceTypesWithCount: TreeNode[];
+  themesWithCount: TreeNode[] = [];
+  componentsWithCount: TreeNode[] = [];
+  resourceTypesWithCount: TreeNode[] = [];
   components: SelectItem[] = [];
   resourceTypes: SelectItem[] = [];
   authors: string[] = [];
@@ -105,6 +114,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   mobWidth: number;
   width:string;
   isActive: boolean = true;
+
   filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
 
@@ -115,7 +125,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(ngZone:NgZone , private route: ActivatedRoute, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService) {
+  constructor(ngZone:NgZone , private route: ActivatedRoute, private location: Location, private router : Router, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService) {
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -145,11 +155,15 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   toTaxonomiesItems(taxonomies: any[]) {
     let items: SelectItem[] = [];
-    items.push({label: 'All Research', value: ''});
+    items.push({label: 'ALL RESEARCH', value: ''});
     for (let taxonomy of taxonomies) {
       items.push({label: taxonomy.label, value: taxonomy.label});
     }
     return items;
+  }
+
+  reset() {
+    this.first = 0;
   }
 
   setResultsWidth () {
@@ -358,11 +372,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       "expanded": true,
       children: this.themesWithCount
     }];
+    console.log("before");
     this.resourceTypeTree = [{
       label: 'Resource Type -',
       "expanded": true,
       children: this.resourceTypesWithCount
     }];
+    console.log("after" + this.resourceTypeTree);
     if (!compNoData) {
       this.componentsTree = [{
         label: 'Record has -',
@@ -374,6 +390,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     if (this.filteredResults.length < 5) {
       this.rows = 20;
     }
+    this.searching = false;
   }
 
   /**
@@ -390,6 +407,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.errorMsg = (<any>error).message;
     this.status = (<any>error).httpStatus;
     this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
+    this.searching = false;
   }
 
   showMoreResTopics() {
@@ -648,7 +666,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   filterByResourceTypes(searchResults: any[], selectedComponents: string[]) {
     var filteredResults: any[] = [];
-
     if (this.selectedResourceType.length > 0) {
       if (searchResults !== null && searchResults.length > 0) {
         let resourceTypes: SelectItem[] = [];
@@ -668,6 +685,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           }
         }
       }
+
       return filteredResults;
     } else {
       return searchResults;
@@ -746,6 +764,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+    console.log("author" + this.selectedAuthor);
+
     if (type === 'unselectkeyword') {
       if (typeof this.selectedKeywords != 'undefined') {
         let selKeywordsIndex = this.selectedKeywords.indexOf(event);
@@ -755,89 +775,30 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     this.selectedThemes = [];
     this.selectedComponents = [];
+    this.selectedResourceType = [];
     let themeSelected: boolean = false;
     let componentSelected: boolean = false;
     let resourceTypesSelected: boolean = false;
     let authorSelected: boolean = false;
     let keywordSelected: boolean = false;
     let compNoData: boolean = false;
+    let themeType = '';
+    let compType = '';
+    let resourceType = '';
 
-    // Research Topics selected
-    if (typeof this.selectedThemesNode != 'undefined') {
-      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-        for (let theme of this.selectedThemesNode) {
-          if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
-            themeSelected = true;
 
-            this.selectedThemes.push(theme.data);
-
-          }
-        }
-
-        this.filteredResults = this.filterByThemes(this.filteredResults, this.selectedThemes);
-        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-        } else {
-          this.authors = this.collectAuthors(this.filteredResults);
-        }
-        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-        } else {
-          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        }
-        if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-        } else {
-          this.components = this.collectComponents(this.filteredResults);
-          this.collectComponentsWithCount();
-        }
-        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        } else {
-          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-          this.collectResourceTypesWithCount();
-        }
-      }
-    }
-    // Resource Features selected
-    if (typeof this.selectedComponentsNode != 'undefined') {
-      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
-        for (let comp of this.selectedComponentsNode) {
-          if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
-            componentSelected = true;
-            this.selectedComponents.push(comp.data);
-          }
-        }
-
-        this.filteredResults = this.filterByComponents(this.filteredResults, this.selectedComponents);
-        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
-        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
-        } else {
-          this.authors = this.collectAuthors(this.filteredResults);
-        }
-        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
-        } else {
-          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
-        }
-        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
-        } else {
-          this.themes = this.collectThemes(this.filteredResults);
-          this.collectThemesWithCount();
-        }
-        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        } else {
-          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
-          this.collectResourceTypesWithCount();
-        }
-      }
-    }
-
-    // Resource Features selected
+    // Resource types selected
     if (typeof this.selectedResourceTypeNode != 'undefined') {
       if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
         for (let res of this.selectedResourceTypeNode) {
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
+            console.log("restype" + JSON.stringify(res.data));
+            resourceType += res.data + ',';
           }
         }
+
         this.filteredResults = this.filterByResourceTypes(this.filteredResults, this.selectedResourceType);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
 
@@ -859,6 +820,79 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         } else {
           this.themes = this.collectThemes(this.filteredResults);
           this.collectThemesWithCount();
+        }
+
+      }
+    }
+
+    // Research Topics selected
+    if (typeof this.selectedThemesNode != 'undefined') {
+      if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+        for (let theme of this.selectedThemesNode) {
+          if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
+            themeSelected = true;
+            this.selectedThemes.push(theme.data);
+            console.log('theme' + theme.data);
+            themeType += theme.data + ',';
+          }
+        }
+
+
+        this.filteredResults = this.filterByThemes(this.filteredResults, this.selectedThemes);
+        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
+        } else {
+          this.authors = this.collectAuthors(this.filteredResults);
+        }
+        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+        } else {
+          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+        }
+        if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+        } else {
+          this.components = this.collectComponents(this.filteredResults);
+          this.collectComponentsWithCount();
+        }
+        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
+        } else {
+          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
+          this.collectResourceTypesWithCount();
+        }
+
+      }
+    }
+    // Resource Features selected
+    if (typeof this.selectedComponentsNode != 'undefined') {
+      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+        for (let comp of this.selectedComponentsNode) {
+          if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
+            componentSelected = true;
+            console.log("inside components" + comp.data);
+            this.selectedComponents.push(comp.data);
+            compType += comp.data + ',';
+          }
+        }
+
+
+        this.filteredResults = this.filterByComponents(this.filteredResults, this.selectedComponents);
+        this.filteredResults = this.filteredResults.filter(this.onlyUnique);
+        if (this.selectedAuthor != null && this.selectedAuthor.length > 0) {
+        } else {
+          this.authors = this.collectAuthors(this.filteredResults);
+        }
+        if (this.selectedKeywords != null && this.selectedKeywords.length > 0) {
+        } else {
+          this.suggestedKeywords = this.collectKeywords(this.filteredResults);
+        }
+        if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
+        } else {
+          this.themes = this.collectThemes(this.filteredResults);
+          this.collectThemesWithCount();
+        }
+        if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
+        } else {
+          this.resourceTypes = this.collectResourceTypes(this.filteredResults);
+          this.collectResourceTypesWithCount();
         }
       }
     }
@@ -886,8 +920,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.resourceTypes = this.collectResourceTypes(this.filteredResults);
           this.collectResourceTypesWithCount();
         }
+
       }
     }
+
 
     if (typeof this.selectedKeywords != 'undefined') {
       if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
@@ -961,13 +997,38 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
     this.themesTree[0].children = this.themesWithCount;
+
+
+      if (event) {
+        //window.history.replaceState(null, null, "/search?page=4");
+        let params = new URLSearchParams();
+        if (!_.isEmpty(themeType)) {
+          params.append('themes', themeType);
+        }
+        if (!_.isEmpty(compType)) {
+          params.append('compType', compType);
+        }
+
+        if (!_.isEmpty(resourceType)) {
+          params.append('resType', resourceType);
+        }
+
+        if (!_.isEmpty(this.selectedAuthor)) {
+          params.append('authors', this.selectedAuthor.toString());
+        }
+
+        if (!_.isEmpty(this.selectedKeywords)) {
+          params.append('keywords', this.selectedKeywords.toString());
+        }
+
+        window.history.pushState(null, null, "#" + this.router.url + "&" + params);
+      }
   }
 
 
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
-
 
   /**
    * clear filters
@@ -1199,6 +1260,46 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  onPageChange(number : any) {
+    this.page = number;
+    let params = new URLSearchParams();
+    params.append('page', number);
+    let url = this.removeURLParameter(window.location.href,'page');
+    var paramStr = url.split("?")[1];
+
+    window.history.pushState(null, null, "#/search?" + paramStr + "&page=" + number);
+  }
+
+  removeURLParameter(url, parameter) {
+    //prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+
+      var prefix= encodeURIComponent(parameter)+'=';
+      var pars= urlparts[1].split(/[&;]/g);
+
+      //reverse iteration as may be destructive
+      for (var i= pars.length; i-- > 0;) {
+        //idiom for string.startsWith
+        if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+          pars.splice(i, 1);
+        }
+      }
+
+      url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+      return url;
+    } else {
+      return url;
+    }
+  }
+
+ onPopState(event) {
+    setTimeout(function() {
+      window.addEventListener('popstate', function() {
+        window.history.go(-1);
+      });
+    }, 100);
+  }
 
   /**
    * Get the params OnInit
@@ -1206,14 +1307,112 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
-    this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
-      this.searchValue =params['q'];
-      this.searchTaxonomyKey=params['key'];
-      this.queryAdvSearch = params['queryAdvSearch'];
-      this.getTaxonomies();
-      this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
-    });
+        this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+          this.searchValue =params['q'];
+          this.searchTaxonomyKey=params['key'];
+          this.queryAdvSearch = params['queryAdvSearch'];
+          this.page = params['page'];
+          this.searchResType = params['resType'];
+          this.searchResTopics = params['themes'];
+          this.searchRecord = params['compType'];
+          this.searchAuthors = params['authors'];
+          this.searchKeywords = params['keywords'];
+
+          //this.resourceTypeTree.push(params['resType']);
+          this.getTaxonomies();
+
+          this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
+          console.log('authors inside init' + params['authors']);
+          this.selectedResourceTypeNode = [];
+          this.selectedThemesNode = [];
+          this.selectedComponentsNode = [];
+          setTimeout(()=> {
+            if ((!_.isEmpty(this.searchResType))) {
+              this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
+            }
+            if ((!_.isEmpty(this.searchResTopics))) {
+              this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
+            }
+            if ((!_.isEmpty(this.searchRecord))) {
+              this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
+            }
+            if ((!_.isEmpty(this.searchAuthors))) {
+              this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
+            }
+            if (!_.isEmpty(this.searchKeywords)) {
+              this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
+            }
+          },2000);
+          setTimeout(()=> {
+            this.filterResults('','');
+          },2000);
+
+        });
   }
+
+  setResourceTypeSelection(node:TreeNode, resType:string) {
+      let resTypeParam = resType.toString().split(',');
+      for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
+        console.log('helloooo11111' + this.resourceTypeTree[0].children[i].data);
+        console.log('helloooo22222' + resTypeParam);
+
+        if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
+          console.log('helloooo' + this.resourceTypeTree[0].children[i].data);
+          this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);
+        }
+      }
+      if (this.resourceTypesWithCount.length == this.selectedResourceTypeNode.length) {
+        this.selectedResourceTypeNode.push(this.resourceTypeTree[0]);
+      }
+      else {
+        this.resourceTypeTree[0].partialSelected = true;
+      }
+  }
+
+  setThemesSelection(node:TreeNode, themes:string) {
+      let themesParam = themes.split(',');
+      for (var i = 0; i < this.themesWithCount.length; i++) {
+        if (themesParam.includes(this.themesTree[0].children[i].data)) {
+          this.selectedThemesNode.push(this.themesTree[0].children[i]);
+        }
+      }
+
+      if (this.themesWithCount.length == this.selectedThemesNode.length) {
+        this.selectedThemesNode.push(this.themesTree[0]);
+      }
+      else {
+        this.themesTree[0].partialSelected = true;
+      }
+  }
+
+  setAuthorsSelection(authors:string) {
+      let authorsParam = authors.toString().split(',');
+      for (var i = 0; i < authorsParam.length; i++) {
+        this.selectedAuthor.push(authorsParam[i]);
+        }
+  }
+
+  setKeywordsSelection(keywords:string) {
+      let keywordsParam = keywords.toString().split(',');
+      for (var i = 0; i < keywordsParam.length; i++) {
+        this.selectedKeywords.push(keywordsParam[i]);
+      }
+  }
+
+  setComponentsSelection(node:TreeNode, components:string) {
+      let compsParam = components.split(',');
+      for (var i = 0; i < this.componentsWithCount.length; i++) {
+        if (compsParam.includes(this.componentsTree[0].children[i].data)) {
+          this.selectedComponentsNode.push(this.componentsTree[0].children[i]);
+        }
+      }
+      if (this.componentsWithCount.length == this.selectedComponentsNode.length) {
+        this.selectedComponentsNode.push(this.componentsTree[0]);
+      }
+      else {
+        this.componentsTree[0].partialSelected = true;
+      }
+    }
 
   ngOnDestroy() {
     if ( this._routeParamsSubscription) {

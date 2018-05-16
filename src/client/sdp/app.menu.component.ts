@@ -23,7 +23,7 @@ export class AppMenuComponent implements OnInit {
 
   ngOnInit() {
     this.model = [
-      {label: '', icon: 'home', routerLink: ['/']},
+      {label: '"' , icon: 'home', routerLink: ['/']},
       {
         label:'Key Datasets',
         items: [
@@ -39,7 +39,7 @@ export class AppMenuComponent implements OnInit {
           {label: 'World Trade Center Disaster Investigation Material', url: 'http://wtcdata.nist.gov/', target:'_blank'},
         ]
       },
-      {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd', target:'_blank'},
+      {label: 'Standard Reference Data(SRDs)', url: 'https://www.nist.gov/srd', target:'_blank'},
       {
         label: 'Developer',
         items: [

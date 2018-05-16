@@ -17,8 +17,9 @@ export class ProjectConfig extends SeedConfig {
     FONTS_DEST = `${this.APP_DEST}/fonts`;
 
     FONTS_SRC = [
-      `${this.APP_SRC}/libs/ultima-ng/layout/fonts/**`,
+      `${this.APP_SRC}/libs/ultima-ng/layout/fonts/MaterialIcons**`,
       `${this.APP_SRC}/libs/font-awesome/fonts/**`,
+      `${this.APP_SRC}/assets/fonts/**`,
       'node_modules/bootstrap/dist/fonts/**'
     ];
 
@@ -41,6 +42,7 @@ export class ProjectConfig extends SeedConfig {
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
       {src: 'jquery.auto-text-rotating/jquery.auto-text-rotating.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
+      {src: 'ngx-pagination/dist/ngx-pagination.umd.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
       {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
     // inject into css section
@@ -50,14 +52,19 @@ export class ProjectConfig extends SeedConfig {
     // Add `local` third-party libraries to be injected/bundled.
     this.APP_ASSETS = [
       ...this.APP_ASSETS,
-      {src: `${this.APP_SRC}/css/main.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/ripple.js`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/libs/ultima-ng/layout/js/nanoscroller.js`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng/theme/theme-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/ultima-ng/layout/css/layout-indigo.css`, inject: true, vendor: false},
-      {src: `${this.APP_SRC}/libs/font-awesome/css/font-awesome.min.css`, inject: true, vendor: false},
+       {src: `${this.APP_SRC}/libs/font-awesome/css/font-awesome.min.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/css/main.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/assets/css/uswds-sdp.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/assets/theme/theme-indigo.css`, inject: true, vendor: false},
+      {src: `${this.APP_SRC}/assets/layout/layout-indigo.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/${this.BOOTSTRAP_DIR}/styles.layout.css`, inject: true, vendor: false},
       {src: `${this.APP_SRC}/${this.BOOTSTRAP_DIR}/styles.themes.css`, inject: true, vendor: false},
+
+
+
+
 
 // {src: `${this.CSS_SRC}/path-to-lib/test-lib.css`, inject: true, vendor: false},
     ];
@@ -89,6 +96,10 @@ export class ProjectConfig extends SeedConfig {
        {
          name: 'ng2-utils',
          path: 'node_modules/ng2-utils/dist/ng2-utils.umd.js'
+       },
+       {
+         name: 'ngx-pagination',
+         path: 'node_modules/ngx-pagination/dist/ngx-pagination.umd.js'
        },
        {
          name: 'auto-text-rotating',

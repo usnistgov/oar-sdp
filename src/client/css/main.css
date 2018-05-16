@@ -18,7 +18,9 @@ div {
 
 /*html { text-rendering: optimizeLegibility !important; -webkit-font-smoothing: antialiased !important;}*/
 
-body{height:100%; width:100%;}
+body{height:100%; width:100%;
+  background-color: #000;
+}
 
 
 /* CORE LAYOUT STANDART STYLES ********************************************************************************************************** */
@@ -488,16 +490,6 @@ img {
   color: white;font-size: 38.4px;font-family: 'Lato',Arial,sans-serif;margin-top: 20px;margin-left:40%;
 }
 
-.homeTitle
-{
-  font-size: 30.0px;font-family: 'Lato',Arial,sans-serif;
-}
-
-.homeSubTitle
-{
-  font-size: 20.0px;font-family: 'Lato',Arial,sans-serif;
-}
-
 .background-black
 {
   background-color: #000000;
@@ -532,4 +524,8 @@ img {
 
 .hideLabel {
   display: none;
+}
+
+.top_bar img {
+  width: 200px;
 }

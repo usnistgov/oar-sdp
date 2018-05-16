@@ -12,5 +12,5 @@ describe('App', () => {
     browser.sleep(1000);
     const title = await browser.getTitle();
     expect(title).toEqual('NIST Data Repository Page');
-  });
+  }, 4000);
 });

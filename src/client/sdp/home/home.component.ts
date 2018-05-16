@@ -5,6 +5,8 @@ import { SearchFieldsListService } from '../shared/searchfields-list/index';
 import { SearchService } from '../shared/search-service/index';
 import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
+import { Config } from '../shared/config/env.config';
+import { environment } from '../environment';
 declare var jQuery: any
 
 /**
@@ -30,7 +32,6 @@ export class HomeComponent implements OnInit {
     queryAdvSearch:string='';
     showAdvancedSearch: boolean = false;
     textRotate: boolean = true;
-
     rows: any[] ;
     fields: SelectItem[];
     ALL:string='All Fields';
@@ -38,6 +39,9 @@ export class HomeComponent implements OnInit {
     operators:SelectItem[];
     displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword' , 'Publisher', 'Rights' , 'Theme',
                             'Title'];
+    imageURL: string = environment.SDPAPI + 'assets/images/front-image.jpg';
+
+
   /**
    * Create an instance of services for Home
    */
@@ -96,6 +100,12 @@ export class HomeComponent implements OnInit {
     if (this.searchValue == "") {
       this.textRotate = !this.textRotate;
     }
+  }
+
+  getUrl()
+  {
+    var host = 'https://oardev.nist.gov/sdp/assets/images/front-image.jpg';
+    return "url('host')";
   }
 
   clearText(){
@@ -177,7 +187,7 @@ export class HomeComponent implements OnInit {
    */
   toTaxonomiesItems(taxonomies:any[]) {
     let items: SelectItem[] = [];
-    items.push({label: 'All Research', value: ''});
+    items.push({label: 'ALL RESEARCH', value: ''});
     for (let taxonomy of taxonomies) {
       items.push({label: taxonomy.label, value: taxonomy.label});
     }

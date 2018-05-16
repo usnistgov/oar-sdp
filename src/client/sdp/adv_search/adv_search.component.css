@@ -61,3 +61,53 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 /* add padding  */
 .left-addon input p-autoComplete { padding-left:  30px; }
 .right-addon input { padding-right: 30px; }
+
+.searchButton{
+  background-color:#0872B9;
+  width: 100%;
+  height: 42px;
+  font-weight: 900;
+  font-size: 18px;
+  border-radius: 0px;
+  /*
+  border-radius-topright: 5px;
+  border-radius-bottomright: 5px;
+  -moz-border-radius-topright: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  */
+}
+
+.searchButton:hover{
+  background-color:#1F5593;
+}
+
+.addRemoveButton {
+}
+
+.examples {
+  color: #0f4a65;
+  text-decoration: underline;
+}
+
+.search-builder-background {
+  background-color: #fff;
+}
+
+.search-builder-button-add {
+  background-color: #2e8540 !important;
+}
+
+.search-builder-button-remove {
+  background-color: #cd2026 !important;
+}
+
+:host /deep/ .breadcrumb {
+  background-color: #153971;
+}
+
+.breadCrumb-text {
+  color: #fff;
+  font-weight: 300;
+}
