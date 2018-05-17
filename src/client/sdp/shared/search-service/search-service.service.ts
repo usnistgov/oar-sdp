@@ -29,6 +29,34 @@ export class SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string): Observable<string[]> {
+    let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+    let opArray = ['AND','NOT','OR','and','not','or']
+    let filteredArray = _.difference(parameters, opArray);
+    parameters = filteredArray;
+    let searchPhraseValue = '';
+    let searchKeyValue = '';
+    let newSearchValue = ''
+    if (!_.isEmpty(parameters)) {
+      for (var i = 0; i < parameters.length; i++) {
+        console.log("parameters" + parameters[i]);
+        if (parameters[i].includes("=")) {
+          searchKeyValue += parameters[i] + '&';
+        } else {
+          searchPhraseValue += parameters[i] + '&';
+        }
+      }
+    }
+    if (_.isEmpty(searchPhraseValue)) {
+      searchPhraseValue = '&';
+    }
+    searchKeyValue = searchKeyValue.replace(/"/g, '');
+    console.log('url' + this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue  + searchKeyValue + 'topic.tag=' + searchTaxonomyKey);
+    return this.http.get(this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue + searchKeyValue + 'topic.tag=' + searchTaxonomyKey )
+      .map((res: Response) => res.json().ResultData)
+      .catch((error: any) => Observable.throw(error.json()));
+
+    /*
+
     if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase'))))) {
       return this.http.get(this.RMMAPIURL + 'records?' + searchValue)
     .map((res: Response) => res.json().ResultData)
@@ -46,6 +74,7 @@ export class SearchService {
           .map((res: Response) => res.json().ResultData)
           .catch((error: any) => Observable.throw(error.json()));
       }
+      */
     }
 
   /**

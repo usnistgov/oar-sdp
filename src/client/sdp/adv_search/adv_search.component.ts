@@ -25,7 +25,7 @@ export class AdvSearchComponent implements OnInit {
     advSearchValue:string[];
     taxonomies: SelectItem[];
     suggestedTaxonomyList: string[];
-    suggestedTaxonomies: string[];
+    suggestedTaxonomies: string[] = [];
     textRotate: boolean = true;
     searchTaxonomyKey: string;
     display: boolean = false;
@@ -91,7 +91,7 @@ export class AdvSearchComponent implements OnInit {
           this.rows[i].column1 = 'AND';
         }
         if (typeof this.rows[i].column2 === 'undefined' || this.rows[i].column2 === 'All') {
-          this.rows[i].column2 = 'searchphrase';
+          this.rows[i].column2 = '';
         }
         if (typeof this.rows[i].column3 === 'undefined') {
           this.rows[i].column3 = '';
@@ -102,9 +102,13 @@ export class AdvSearchComponent implements OnInit {
         fieldValue = fieldValue.replace(/\s+/g, '');
 
         if (i > 0) {
-          this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' + fieldValue + '=' + this.rows[i].column3;
+          if (_.isEmpty(this.rows[i].column2)) {
+            this.searchValue += ' ' + this.rows[i].column1 + ' ' + this.rows[i].column3 ;
+          } else {
+            this.searchValue += ' ' + this.rows[i].column1 + ' ' + fieldValue + '=' + this.rows[i].column3;
+          }
         } else {
-          this.searchValue += fieldValue + '=' + this.rows[i].column3;
+          this.searchValue += fieldValue  + this.rows[i].column3;
         }
       }
     }
@@ -269,14 +273,14 @@ export class AdvSearchComponent implements OnInit {
 
 
   clearText(){
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    var field = (<HTMLInputElement>document.getElementById('advsearchinput'));
     if (!Boolean(this.searchValue.trim())) {
       field.value = ' ';
     }
   }
 
   addPlaceholder() {
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    var field = (<HTMLInputElement>document.getElementById('advsearchinput'));
     if (!Boolean(this.searchValue)) {
       field.value = '';
     }
