@@ -60,6 +60,7 @@ export class AdvSearchComponent implements OnInit {
     resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
     msgs: Message[] = [];
     queryNameReq:boolean = false;
+    oldQueryName:string='';
 
 
 
@@ -76,7 +77,7 @@ export class AdvSearchComponent implements OnInit {
       this.getSearchQueryList();
       console.log("+++++++++++length+++++++" + this.searchEntities.length);
     },100);
-    
+
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -137,6 +138,22 @@ export class AdvSearchComponent implements OnInit {
       }
     });
   }
+
+  deleteConfirmQuery(queryName:string) {
+    this.confirmationService.confirm({
+      message: 'Do you want to delete this record?',
+      header: 'Delete Confirmation',
+      key: "queryDelete",
+      accept: () => {
+        //this.msgs = [{severity:'info', summary:'Confirmed', detail:'Record deleted'}];
+        this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
+        this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+      },
+      reject: () => {
+      }
+    });
+  }
+
 
   removeItem(row:any) {
     console.log("row" + JSON.stringify(row));
@@ -202,6 +219,7 @@ export class AdvSearchComponent implements OnInit {
   showAdvSearch(queryName:any,editQuery:boolean) {
     if (editQuery) {
       this.queryName = queryName;
+      this.oldQueryName = queryName;
       this.editQuery = editQuery;
     }
       console.log("adv search----" + JSON.stringify(this.searchEntities));
@@ -526,6 +544,7 @@ export class AdvSearchComponent implements OnInit {
   }
 
   saveAdvSearchQuery (queryName:any,editQuery:boolean) {
+
     if (editQuery) {
       queryName = this.queryName;
     }
@@ -539,17 +558,21 @@ export class AdvSearchComponent implements OnInit {
       for (let resultItem of this.searchEntities) {
         if (queryName == resultItem.data.queryName) {
           this.duplicateQuery = true;
+          this.showQueryName = true;
+
         }
       }
       if (!this.duplicateQuery) {
           let data : Data;
           var date  = new Date();
           data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName,'date': date.getTime()};
+          this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
+          this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
           this.searchQueryService.saveSearchQuery(data);
           this.getSearchQueryList();
           this.duplicateQuery = false;
-        }
-      this.showQueryName = false;
+          this.showQueryName = false;
+      }
     }
   }
 

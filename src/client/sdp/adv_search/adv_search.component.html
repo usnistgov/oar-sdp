@@ -83,6 +83,7 @@
         </div>
       </div>
     </p-dialog>
+    <p-confirmDialog key="queryDelete"></p-confirmDialog>
     <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="demo" style="background-color: #F8F9F9;padding-left: 5px;" >
       <div  class="ui-g-12 "   style="padding: 0px;" >
         <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
@@ -104,15 +105,17 @@
               <ng-template let-row="rowData" pTemplate="body">
                 <button type="button" pButton class="buttonSize" (click)="showAdvSearch(row.data.queryName,true)" icon="ui-icon-edit"></button>
                 <button type="button" class="buttonSize" pButton (click)="copyQuery(row.data.queryValue)" icon="ui-icon-content-copy"></button>
-                <button type="button" class="buttonSize" style="background-color:red" pButton (click)="removeItem(row)" icon="ui-icon-delete"></button>
+                <button type="button" class="buttonSize" style="background-color:red" pButton (click)="deleteConfirmQuery(row.data.queryName)" icon="ui-icon-delete"></button>
               </ng-template>
             </p-column>
           </p-dataTable>
       </div>
-      <button type="button" pButton class="buttonSize" (click)="exportList()" label="Export" style="float:right"></button>
-      <label class="buttonSize ui-button ui-button-text ui-corner-all ui-widget" style="font-weight:normal;line-height:1.25em;float:right">
-        <input type="file" id="fileInput" (change)="importList($event)"/>
-        Import
+      <button type="button" pButton class="buttonSize" *ngIf = "searchEntities.length == 0" (click)="exportList()" disabled style="font-weight:normal;line-height:1.6em;float:right" ><i style="vertical-align: middle;zoom: 80%" class="material-icons"> import_export
+      </i>Export</button>
+      <button type="button" pButton class="buttonSize" *ngIf = "searchEntities.length > 0" (click)="exportList()" style="font-weight:normal;line-height:1.6em;float:right"><i style="vertical-align: middle;zoom: 80%" class="material-icons"> import_export </i> Export</button>
+      <label class="buttonSize ui-button ui-button-text ui-corner-all ui-widget" style="font-weight:normal;line-height:1.7em;float:right"  >
+        <input type="file" id="fileInput" label="Import" (change)="importList($event)"/>
+        <i style="vertical-align: middle;zoom: 80%" class="material-icons" label="Import"> import_export</i> Import
       </label>
     </div>
         </div>
