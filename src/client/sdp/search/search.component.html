@@ -116,7 +116,7 @@
                           [style]="{'width':'100%','padding-top': '.5em',
                         'height': 'auto','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
-                          (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
+                          (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
                     <ng-template let-node  pTemplate="default">
                       <span> {{node.label.split("-")[0]}}&nbsp;</span>
                       <span class="badge" style="background-color: #515151" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
@@ -130,8 +130,8 @@
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
                           [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em',
                           'padding-bottom': '.5em','background-color': '#F8F9F9'}"
-                          [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event)"
-                          (onNodeSelect)="filterResults($event)" >
+                          [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event,'')"
+                          (onNodeSelect)="filterResults($event,'')" >
                     <ng-template let-node  pTemplate="default">
                       <span> {{node.label.split("-")[0]}}&nbsp;</span>
                       <span class="badge" style="background-color: #515151" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
@@ -204,7 +204,7 @@
                         [style]="{'width':'100%','height': '155px','padding-top': '.5em',
                         'padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
-                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
+                        (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
                   <ng-template let-node  pTemplate="default">
                     <span class="invisible-scrollbar"> {{node.label.split("-")[0]}}&nbsp;</span>
                     <span class="badge invisible-scrollbar" style="background-color: #1471AE" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
@@ -220,7 +220,7 @@
                         [style]="{'width':'100%','padding-top': '.5em',
                         'padding-bottom': '.5em','height':'auto',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
-                        (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)" >
+                        (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')" >
                   <ng-template let-node  pTemplate="default">
                     <span> {{node.label.split("-")[0]}}&nbsp;</span>
                     <span class="badge" style="background-color: #1471AE" *ngIf = "node.label.split('-')[1] !=''" > {{node.label.split("-")[1]}}</span>
@@ -287,9 +287,10 @@
           </div>
         </div>
         <div [className]="resultsClass" style="padding: 0px;background-color: #FFFFFF">
-          <p-dataList [value]="filteredResults" #results responsive = "true" [paginator]="true" paginatorPosition = "top" [rows]="5"
+<!--          <p-dataList [value]="filteredResults" #results responsive = "true" [paginator]="true" paginatorPosition = "top" [rows]="5"
                       [style]="{'padding-right': '.5em','padding-bottom':'50px','height':'auto'}" >
             <p-header >
+
               <div class="ui-g ui-grid-responsive" style="padding: 0em;">
                 <div class="ui-g-12" style="padding: 0em">
                   <div class="ui-g-12 ui-md-6 ui-sm-6">
@@ -336,6 +337,10 @@
                         <div style="width: 100%;margin-top:0em;text-align: left;">
                           <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                           <b>Display Fields</b> <a href="#" (click) = "$event.preventDefault();ResetSelectedFields()" style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
+                        </div>
+                        &lt;!&ndash;
+                        <div style="text-align: left" >
+                          <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                         </div>
                         <div *ngFor="let fields of displayFields" style="text-align: left" >
                           <p-checkbox inputId={{fields}} name={{fields}} class = "label" value={{fields}} label={{fields}} [(ngModel)]="selectedFields"></p-checkbox>
@@ -412,6 +417,102 @@
               </div>
             </ng-template>
           </p-dataList>
+          &ndash;&gt;-->
+
+          <div class="ui-g ui-grid-responsive" style="padding: 0em;">
+            <div class="ui-g-12" style="padding: 0em">
+              <div class="ui-g-12 ui-md-4 ui-sm-12">
+                <div style="color: #000;font-weight: 800;float: left;padding-top: 10px"> &nbsp;&nbsp;{{filteredResults.length}} records found</div>
+              </div>
+              <div class="ui-g-12 ui-md-8 ui-sm-12">
+                <div style="float:left;padding-top:10px;">
+                  <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
+                </div>
+                <div style="float: right;padding-right:10px;padding-top:10px;">
+                  <button type="text" style="background-color: #606165;font-weight: 900" pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+                  <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
+                    <div style="width: 100%;margin-top:0em;text-align: left;">
+                      <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
+                      <b>Display Fields</b> <a href="#" (click) = "$event.preventDefault();ResetSelectedFields()" style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
+                    </div>
+                    <div style="text-align: left" >
+                      <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All" (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
+                    </div>
+                    <div *ngFor="let fields of displayFields" style="text-align: left" >
+                      <p-checkbox inputId={{fields}} name={{fields}} class = "label" value={{fields}} label={{fields}} [(ngModel)]="selectedFields"></p-checkbox>
+                    </div>
+                    <div style="border-top:.5px solid #e6e6e6;margin-top:5px;padding-top:5px;text-align: left">
+                      <b>Sort Results</b> <br><p-dropdown
+                      [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name" (onChange) = "SortByFields()"
+                      [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
+                    </p-dropdown></div>
+                    <div class="EmptyBox20"></div>
+                  </p-overlayPanel>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul  style="list-style-type: none;padding-left:0">
+            <li *ngFor="let resultItem of filteredResults | paginate: { itemsPerPage: 10, currentPage: page }">
+              <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:.5px solid #e6e6e6;">
+                <div class="ui-grid-row nowrap" >
+                  <div class="ui-grid-col-12">
+                    <div class="ui-grid ui-grid-responsive" style="text-align: left;width: auto;">
+                      <div class="ui-grid-row">
+                        <div class="ui-grid-col-12" ><h4><b><a href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank" class="title" >
+                          {{resultItem.title}}</a></b></h4></div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Description') !==-1">
+                        <read-more [text]="resultItem.description" [maxLength]="270" ></read-more>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Point of Contact') !==-1">
+                        <div class="ui-grid-col-12"><b>Point of Contact: </b> <i style="color: gray;"> {{resultItem.contactPoint}}
+                        </i>
+                        </div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Contact\'s full name') !==-1">
+                        <div class="ui-grid-col-12"><b>Contact Full Name: </b> <i style="color: gray;"> {{resultItem.contactPoint.fn}}
+                        </i>
+                        </div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Home Page') !==-1">
+                        <div class="ui-grid-col-12"><b>Resource Home Page: </b> <i style="color: gray;"> {{resultItem.landingPage}}
+                        </i>
+                        </div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Research Topic') !==-1">
+                        <div class="ui-grid-col-12"><b>Research Topic: </b> <i style="color: gray;"> {{resultItem.topic[0].tag}}
+                        </i>
+                        </div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('research topic') !==-1">
+                        <div class="ui-grid-col-12"><b>Research Topic - Component: </b>
+                        </div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Subject keywords') !==-1">
+                        <div class="ui-grid-col-12"><b>Subject Keywords: </b> <i style="color:#515151;"> <read-more [text]="resultItem.keyword.join(', ')" [maxLength]="110" ></read-more>
+                        </i>
+                        </div>
+                      </div>
+                      <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('DOI') !==-1">
+                        <div class="ui-grid-col-1"><b>DOI: </b> </div>
+                        <div class="ui-grid-col-11" style="color:#1471AE;" *ngIf = "resultItem.doi != null">{{(resultItem.doi) || "None"}}</div>
+                        <div class="ui-grid-col-11" style="color:#000;" *ngIf = "resultItem.doi == null">None</div>
+                      </div>
+                      <div class="ui-grid-row">
+                        <div class="ui-grid-col-12" style="margin-top:5px">
+                          <a [(href)]="resultItem.landingPage" target="_blank">
+                            <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Visit Home Page"
+                                    type="button" icon="ui-icon-launch" style="width: 150px;background-color: #277E2F"></button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
