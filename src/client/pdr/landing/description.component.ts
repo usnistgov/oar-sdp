@@ -11,7 +11,11 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
           <div class = "ui-g-12 ui-md-12 ui-lg-12 ui-sm-12"-->
           <h3 id="description" name="desscription"><b>Description</b></h3><br>
             <div id="recordDescription" class="well welldesc">
-                {{ record["description"] }}
+            <p  *ngFor="let topic of record['description']; let i =index">
+            {{ record["description"][i] }}
+            </p>
+            
+                
             </div>
             <div *ngIf="checkTopics()">
             <strong>Research Topics:</strong>
