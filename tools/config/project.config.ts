@@ -42,6 +42,7 @@ export class ProjectConfig extends SeedConfig {
       {src: 'primeui/primeui-ng-all.min.js', inject: 'libs'},
       {src: 'jquery.auto-text-rotating/jquery.auto-text-rotating.min.js', inject: 'libs'},
       {src: 'bootstrap/dist/js/bootstrap.min.js', inject: 'libs'},
+      {src: 'ngx-pagination/dist/ngx-pagination.umd.js', inject: 'libs'},
       {src: 'bootstrap/dist/css/bootstrap.css', inject: true},
       {src: 'jspdf/dist/jspdf.min.js', inject: 'libs'},
     // inject into css section
@@ -95,6 +96,10 @@ export class ProjectConfig extends SeedConfig {
        {
          name: 'ng2-utils',
          path: 'node_modules/ng2-utils/dist/ng2-utils.umd.js'
+       },
+       {
+         name: 'ngx-pagination',
+         path: 'node_modules/ngx-pagination/dist/ngx-pagination.umd.js'
        },
        {
          name: 'auto-text-rotating',
