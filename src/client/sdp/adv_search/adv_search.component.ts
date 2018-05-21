@@ -108,7 +108,11 @@ export class AdvSearchComponent implements OnInit {
             this.searchValue += ' ' + this.rows[i].column1 + ' ' + fieldValue + '=' + this.rows[i].column3;
           }
         } else {
-          this.searchValue += fieldValue  + this.rows[i].column3;
+          if (_.isEmpty(this.rows[i].column2)) {
+            this.searchValue += fieldValue  + this.rows[i].column3;
+          } else {
+            this.searchValue += fieldValue  + "=" + this.rows[i].column3;
+          }
         }
       }
     }
