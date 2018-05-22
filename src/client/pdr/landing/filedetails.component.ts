@@ -21,7 +21,7 @@ export class FileDetailsComponent {
    **/ 
   formatBytes(a,b){
        if(0==a)return"0 Bytes";
-       var c=1024,
+       var c=1000,
        d=b||2,
        e=["Bytes","kB","MB","GB","TB","PB","EB","ZB","YB"],
        f=Math.floor(Math.log(a)/Math.log(c));
