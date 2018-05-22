@@ -15,6 +15,24 @@ export class FileDetailsComponent {
        window.open(this.fileDetails["downloadURL"]);
        //alert("download here");
    }
+  
+   /**
+    * Function to display bytes in appropriate format.
+    **/ 
+   formatBytes(bytes, numAfterDecimal) {
+       if (0==bytes) return"0 Bytes";
+        
+       var base = 1000,
+           e=["Bytes","kB","MB","GB","TB","PB","EB","ZB","YB"],
+           d = numAfterDecimal||1,
+           f = Math.floor(Math.log(bytes)/Math.log(base));
+           
+       var v = bytes/Math.pow(base,f);
+       if (numAfterDecimal == null && v < 10.0)
+           d = 2;
+
+       return v.toFixed(d)+" "+e[f];
+   }
 
    addtoCart(){
       alert("Coming soon");
