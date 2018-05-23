@@ -28,7 +28,10 @@ export class FileDetailsComponent {
            f = Math.floor(Math.log(bytes)/Math.log(base));
            
        var v = bytes/Math.pow(base,f);
-       if (numAfterDecimal == null && v < 10.0)
+       if (f == 0)
+           // less than 1 kiloByte
+           d = 0;
+       else if (numAfterDecimal == null && v < 10.0)
            d = 2;
 
        return v.toFixed(d)+" "+e[f];
