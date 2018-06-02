@@ -141,7 +141,6 @@ export class AdvSearchComponent implements OnInit {
    * Set the display to show the examples dialog
    */
   toggleTextRotate() {
-    console.log("hello" + this.textRotate);
     if (this.searchValue == "") {
       this.textRotate = !this.textRotate;
     }
@@ -201,7 +200,7 @@ export class AdvSearchComponent implements OnInit {
    */
   toFieldItems(fields:any[]) {
     let items :SelectItem[] = [];
-    items.push({label:this.ALL, value:'All'});
+    //items.push({label:this.ALL, value:'All'});
     let fieldItems: SelectItem[] = [];
     for (let field of fields) {
       if (_.includes(field.tags,'searchable')) {
@@ -209,7 +208,7 @@ export class AdvSearchComponent implements OnInit {
       }
     };
     fieldItems = _.sortBy(fieldItems, ['label','value']);
-    fieldItems.unshift({label:this.ALL, value:'All'});
+    //fieldItems.unshift({label:this.ALL, value:'All'});
 
     return fieldItems;
   }

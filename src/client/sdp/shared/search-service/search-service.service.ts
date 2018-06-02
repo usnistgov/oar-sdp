@@ -29,52 +29,66 @@ export class SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string): Observable<string[]> {
-    let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-    let opArray = ['AND','NOT','OR','and','not','or']
-    let filteredArray = _.difference(parameters, opArray);
-    parameters = filteredArray;
     let searchPhraseValue = '';
-    let searchKeyValue = '';
-    let newSearchValue = ''
-    if (!_.isEmpty(parameters)) {
-      for (var i = 0; i < parameters.length; i++) {
-        console.log("parameters" + parameters[i]);
-        if (parameters[i].includes("=")) {
-          searchKeyValue += parameters[i] + '&';
-        } else {
-          searchPhraseValue += parameters[i] + '&';
+    let finalKeyValueStr = '';
+    if (!_.isEmpty(searchValue)) {
+      let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+      //let opArray = ['AND','NOT','OR','and','not','or']
+      //let filteredArray = _.difference(parameters, opArray);
+      //parameters = filteredArray;
+      let searchKeyValue = '';
+      let newSearchValue = ''
+      if (!_.isEmpty(parameters)) {
+        for (var i = 0; i < parameters.length; i++) {
+          if (parameters[i].includes("=") || parameters[i].includes("OR") || parameters[i].includes("AND")) {
+            searchKeyValue += parameters[i] + '&';
+          } else {
+            searchPhraseValue += parameters[i] + '&';
+          }
         }
       }
+      if (_.isEmpty(searchPhraseValue)) {
+        searchPhraseValue = '&';
+      }
+      searchKeyValue = searchKeyValue.replace(/"/g, '');
+      let newSearchKeyValue = '';
+      let searchKeyValueStr = searchKeyValue.split("&");
+      for (var i = 0; i < searchKeyValueStr.length; i++) {
+        let value = searchKeyValueStr[i];
+        if (i == 0 || i == searchKeyValueStr.length - 2) {
+          if (_.includes(['AND', 'NOT', 'OR', 'and', 'not', 'or'], value)) {
+          } else {
+            newSearchKeyValue += searchKeyValueStr[i] + '&';
+          }
+        } else {
+          newSearchKeyValue += searchKeyValueStr[i] + '&';
+        }
+      }
+
+      let searchKeyValueParam = newSearchKeyValue.split("&");
+      for (var i = 0; i < searchKeyValueParam.length; i++) {
+        let value = searchKeyValueParam[i];
+        if (i % 2 == 1 && i != searchKeyValueParam.length - 2) {
+          if (_.includes(['AND', 'OR', 'and', 'or'], value)) {
+            finalKeyValueStr += value + '&';
+          } else {
+            finalKeyValueStr += '&OR&' + value + '&';
+          }
+        } else {
+          finalKeyValueStr += value + '&';
+        }
+      }
+      if (_.isEmpty(searchPhraseValue)) {
+        finalKeyValueStr = finalKeyValueStr.replace(/OR/g, '');
+      } else {
+        finalKeyValueStr = finalKeyValueStr.replace(/OR/g, 'logicalOp=OR');
+      }
+      finalKeyValueStr = finalKeyValueStr.replace(/and/g, 'logicalOp=AND');
     }
-    if (_.isEmpty(searchPhraseValue)) {
-      searchPhraseValue = '&';
-    }
-    searchKeyValue = searchKeyValue.replace(/"/g, '');
-    console.log('url' + this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue  + searchKeyValue + 'topic.tag=' + searchTaxonomyKey);
-    return this.http.get(this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue + searchKeyValue + 'topic.tag=' + searchTaxonomyKey )
+      console.log('url' + this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue  + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey);
+      return this.http.get(this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey )
       .map((res: Response) => res.json().ResultData)
       .catch((error: any) => Observable.throw(error.json()));
-
-    /*
-
-    if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase'))))) {
-      return this.http.get(this.RMMAPIURL + 'records?' + searchValue)
-    .map((res: Response) => res.json().ResultData)
-        .catch((error: any) => Observable.throw(error.json()));
-    } else {
-      let params: URLSearchParams = new URLSearchParams();
-        params.set('searchphrase', searchValue);
-        params.set('topic.tag', searchTaxonomyKey);
-
-        return this.http.get(this.RMMAPIURL + 'records?',
-        {
-            search: params
-
-      })
-          .map((res: Response) => res.json().ResultData)
-          .catch((error: any) => Observable.throw(error.json()));
-      }
-      */
     }
 
   /**

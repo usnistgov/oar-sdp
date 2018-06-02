@@ -73,7 +73,7 @@
     "@types/jasmine": "^2.5.52",
     "@types/jquery": "^3.2.12",
     "@types/jspdf": "^1.1.31",
-    "@types/lodash": "^4.14.76",
+    "@types/lodash": "^4.14.109",
     "@types/node": "^8.0.25",
     "@types/rimraf": "2.0.2",
     "@types/run-sequence": "^0.0.29",

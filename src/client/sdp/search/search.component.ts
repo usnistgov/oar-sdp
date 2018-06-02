@@ -372,13 +372,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       "expanded": true,
       children: this.themesWithCount
     }];
-    console.log("before");
     this.resourceTypeTree = [{
       label: 'Resource Type -',
       "expanded": true,
       children: this.resourceTypesWithCount
     }];
-    console.log("after" + this.resourceTypeTree);
     if (!compNoData) {
       this.componentsTree = [{
         label: 'Record has -',
@@ -764,8 +762,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log("author" + this.selectedAuthor);
-
     if (type === 'unselectkeyword') {
       if (typeof this.selectedKeywords != 'undefined') {
         let selKeywordsIndex = this.selectedKeywords.indexOf(event);
@@ -794,7 +790,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
-            console.log("restype" + JSON.stringify(res.data));
             resourceType += res.data + ',';
           }
         }
@@ -832,7 +827,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
             themeSelected = true;
             this.selectedThemes.push(theme.data);
-            console.log('theme' + theme.data);
             themeType += theme.data + ',';
           }
         }
@@ -867,7 +861,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let comp of this.selectedComponentsNode) {
           if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
             componentSelected = true;
-            console.log("inside components" + comp.data);
             this.selectedComponents.push(comp.data);
             compType += comp.data + ',';
           }
@@ -974,8 +967,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.resourceTypes = this.collectResourceTypes(this.filteredResults);
       this.collectResourceTypesWithCount();
     }
-
-    if (this.componentsWithCount.length == 0)
+    if (_.isEmpty(this.componentsWithCount))
     {
       compNoData = true;
       this.componentsWithCount = [];
@@ -1117,7 +1109,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     for (let keyw of keywords) {
       if (resultKeywords.indexOf(keyw) === -1)
         return false;
-      console.log("keyword not matched" + keywords);
     }
     return true;
   }
@@ -1159,7 +1150,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let resultItem of searchResults) {
           if (resultItem.keyword && resultItem.keyword !== null &&
             this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
-            console.log("keyword matched");
             filteredResults.push(resultItem);
           }
         }
@@ -1322,7 +1312,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.getTaxonomies();
 
           this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
-          console.log('authors inside init' + params['authors']);
           this.selectedResourceTypeNode = [];
           this.selectedThemesNode = [];
           this.selectedComponentsNode = [];
@@ -1342,10 +1331,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             if (!_.isEmpty(this.searchKeywords)) {
               this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
             }
-          },2000);
+          },4000);
           setTimeout(()=> {
             this.filterResults('','');
-          },2000);
+          },4000);
 
         });
   }
@@ -1353,11 +1342,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   setResourceTypeSelection(node:TreeNode, resType:string) {
       let resTypeParam = resType.toString().split(',');
       for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
-        console.log('helloooo11111' + this.resourceTypeTree[0].children[i].data);
-        console.log('helloooo22222' + resTypeParam);
-
         if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
-          console.log('helloooo' + this.resourceTypeTree[0].children[i].data);
           this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);
         }
       }
