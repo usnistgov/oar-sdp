@@ -3,14 +3,16 @@ import { SearchService, TaxonomyListService, SearchFieldsListService } from '../
 import { ActivatedRoute,Router }     from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
+import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
-import { MenuItem, ProgressSpinner } from 'primeng/primeng';
+import { MenuItem, InputTextareaModule, ProgressSpinner } from 'primeng/primeng';
 import * as _ from 'lodash';
 import { Config } from '../shared/config/env.config';
 import { environment } from '../environment';
+import { Data } from '../shared/search-query/data';
+import { SearchQueryService } from '../shared/search-query/search-query.service';
+import { SearchEntity } from '../shared/search-query/search.entity';
 import { Location } from '@angular/common';
-
 
 declare var jQuery: any;
 
@@ -35,12 +37,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   selectedResourceTypeNode: TreeNode[] = [];
   profileMode: string = 'inline';
   msgs: Message[] = [];
+  searchEntities: SearchEntity[] = [];
   exception: string;
   textRotate: boolean = true;
   display: boolean = false;
   noResults: boolean;
   checked: boolean = false;
   errorMsg: string;
+  showQueryName:boolean = false;
   status: string;
   page: number = 1;
   errorMessage: string;
@@ -117,7 +121,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
-
+  queryName:string;
+  queryValue:string;
+  displayQuery: boolean = false;
+  displayQueryList: boolean = false;
+  queryNameReq:boolean = false;
+  duplicateQuery:boolean = false;
   private _routeParamsSubscription: Subscription;
   private PDRAPIURL: string = environment.PDRAPI;
 
@@ -125,7 +134,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(ngZone:NgZone , private route: ActivatedRoute, private location: Location, private router : Router, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService) {
+  constructor(ngZone:NgZone , private router: ActivatedRoute, private location: Location, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService, public searchQueryService: SearchQueryService) {
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -149,6 +158,42 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         error => this.errorMessage = <any>error
       );
   }
+
+  saveSearchQuery (queryName:any,queryValue:any) {
+    if (_.isEmpty(queryName)) {
+      this.queryNameReq = true;
+    } else {
+      console.log("query name--" + queryName);
+      console.log("query value--" + this.searchValue);
+      this.getSearchQueryList();
+      this.duplicateQuery = false;
+      for (let resultItem of this.searchEntities) {
+        if (queryName == resultItem.data.queryName) {
+          this.duplicateQuery = true;
+        }
+      }
+      if (!this.duplicateQuery) {
+        let data: Data;
+        var date = new Date();
+        data = {'queryName': queryName, 'queryValue': queryValue, 'id': queryName, 'date': date.getTime()};
+        this.searchQueryService.saveSearchQuery(data);
+        this.getSearchQueryList();
+        this.duplicateQuery = false;
+      }
+      this.queryNameReq = false;
+      this.showQueryName = false;
+    }
+  }
+
+
+  getSearchQueryList() {
+    this.searchQueryService.getAllSearchEntities().then(function (result) {
+      this.searchEntities = result;
+    }.bind(this), function (err) {
+      alert("something went wrong while fetching the products");
+    });
+  }
+
 
   /**
    * Populate taxonomy items
@@ -207,6 +252,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     }
     return themes;
+  }
+
+
+  showDialog() {
+    this.showQueryName = true;
+    this.queryValue = this.searchValue;
   }
 
   /**
@@ -1307,7 +1358,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
-        this._routeParamsSubscription = this.route.queryParams.subscribe(params => {
+        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
           this.searchValue =params['q'];
           this.searchTaxonomyKey=params['key'];
           this.queryAdvSearch = params['queryAdvSearch'];
