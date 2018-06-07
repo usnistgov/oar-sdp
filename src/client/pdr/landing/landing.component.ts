@@ -16,6 +16,7 @@ import { environment } from '../environment';
 
 import { SearchResolve } from "./search-service.resolve";
 import { error } from 'selenium-webdriver';
+import { ResComponents, DataHierarchy } from "./datacomponents";
 
 //import * as jsPDF  from 'jspdf';
 declare var Ultima: any;
@@ -348,6 +349,30 @@ teststring: string = "Loading !!";
     return (Object.keys(obj).length === 0);
   }
 
+  createNode4Hierarchy(dnode : DataHierarchy) : object {
+      let fp = dnode.data.filepath.split('/');
+      let label = fp[fp.length-1];
+      
+      if (dnode.is_subcol()) {
+          let out = createTreeObj(label, dnode.data.filepath);
+          out.children = [];
+          for(let i=0; i < dnode.children.length; i++) 
+              out.children.push(this.createNod4Hierarchy(dnode.children[i]));
+          return out;
+      }
+      else {
+          return this.createFileNode(label, dnode.data.filepath);
+      }
+  }
+
+  createDataHierarchy() {
+      if (this.recordDisplay['components'] == null)
+          return;
+      let dh = new ResComponents(this.recordDisplay['components']).dataHierarchy();
+      this.files = createNode4Hierarchy(dh).children;
+  }
+
+  /*
   createDataHierarchy(){
     if (this.recordDisplay['dataHierarchy'] == null )
       return;
@@ -364,7 +389,6 @@ teststring: string = "Loading !!";
 
 
   }
-
 
   createChildrenTree(children:any[], filepath:string){
     let testObj:TreeNode = {};
@@ -383,6 +407,8 @@ teststring: string = "Loading !!";
     }
     return testObj;
   }
+  */
+
 
   createTreeObj(label :string, data:string){
     let testObj : TreeNode = {};
