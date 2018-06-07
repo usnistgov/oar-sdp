@@ -356,7 +356,7 @@ teststring: string = "Loading !!";
       this.files = this.createNode4Hierarchy(dh).children;
   }
 
-  createNode4Hierarchy(dnode : DataHierarchy) : object {
+  createNode4Hierarchy(dnode : DataHierarchy) {
       let fp = dnode.data.filepath.split('/');
       let label = fp[fp.length-1];
       
