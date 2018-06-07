@@ -349,12 +349,19 @@ teststring: string = "Loading !!";
     return (Object.keys(obj).length === 0);
   }
 
+  createDataHierarchy() {
+      if (this.recordDisplay['components'] == null)
+          return;
+      let dh = new ResComponents(this.recordDisplay['components']).dataHierarchy();
+      this.files = this.createNode4Hierarchy(dh).children;
+  }
+
   createNode4Hierarchy(dnode : DataHierarchy) : object {
       let fp = dnode.data.filepath.split('/');
       let label = fp[fp.length-1];
       
       if (dnode.is_subcoll()) {
-          let out = createTreeObj(label, dnode.data.filepath);
+          let out = this.createTreeObj(label, dnode.data.filepath);
           out.children = [];
           for(let i=0; i < dnode.children.length; i++) 
               out.children.push(this.createNode4Hierarchy(dnode.children[i]));
@@ -363,13 +370,6 @@ teststring: string = "Loading !!";
       else {
           return this.createFileNode(label, dnode.data.filepath);
       }
-  }
-
-  createDataHierarchy() {
-      if (this.recordDisplay['components'] == null)
-          return;
-      let dh = new ResComponents(this.recordDisplay['components']).dataHierarchy();
-      this.files = createNode4Hierarchy(dh).children;
   }
 
   /*
