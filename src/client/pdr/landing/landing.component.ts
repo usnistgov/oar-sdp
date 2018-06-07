@@ -353,11 +353,11 @@ teststring: string = "Loading !!";
       let fp = dnode.data.filepath.split('/');
       let label = fp[fp.length-1];
       
-      if (dnode.is_subcol()) {
+      if (dnode.is_subcoll()) {
           let out = createTreeObj(label, dnode.data.filepath);
           out.children = [];
           for(let i=0; i < dnode.children.length; i++) 
-              out.children.push(this.createNod4Hierarchy(dnode.children[i]));
+              out.children.push(this.createNode4Hierarchy(dnode.children[i]));
           return out;
       }
       else {
