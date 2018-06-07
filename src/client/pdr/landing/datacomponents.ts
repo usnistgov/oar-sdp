@@ -51,7 +51,7 @@ export function prefer_readme(a: DataHierarchy, b: DataHierarchy) {
 
     if (fna.toUpperCase().startsWith('README')) {
         if (fnb.toUpperCase().startsWith('README')) 
-            return fna.localeCompare(fna, fnb);
+            return fna.localeCompare(fnb);
         return -1;
     }
     else if (fnb.toUpperCase().startsWith('README')) 
