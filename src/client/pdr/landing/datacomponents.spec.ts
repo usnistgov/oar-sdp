@@ -3,11 +3,11 @@ import * as dc from "./datacomponents";
 export function main() {
     let datacomps = [
         {
-            "@type": ["nrdp:DataFile"],
+            "@type": ["nrdp:Subcollection"],
             filepath: "a/b"
         },
         {
-            "@type": ["nrdp:Subcollection"],
+            "@type": ["nrdp:DataFile"],
             filepath: "a/c"
         },
         {
@@ -67,8 +67,8 @@ export function main() {
             expect(dh.children[1].data.filepath).toBe("b");
 
             let cdh = dh.children[0]
-            expect(cdh.children[0].data.filepath).toBe("a/b");
-            expect(cdh.children[1].data.filepath).toBe("a/c");
+            expect(cdh.children[0].data.filepath).toBe("a/c");
+            expect(cdh.children[1].data.filepath).toBe("a/b");
             expect(cdh.children.length).toBe(2);
 
             cdh = dh.children[1]
