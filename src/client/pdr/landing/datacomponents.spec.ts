@@ -3,11 +3,11 @@ import * as dc from "./datacomponents";
 export function main() {
     let datacomps = [
         {
-            "@type": ["nrdp:DataFile"],
+            "@type": ["nrdp:Subcollection"],
             filepath: "a/b"
         },
         {
-            "@type": ["nrdp:Subcollection"],
+            "@type": ["nrdp:DataFile"],
             filepath: "a/c"
         },
         {
@@ -81,8 +81,8 @@ export function main() {
         it("can identifiy subcollections", function() {
             expect(dh.is_subcoll()).toBe(true);
             expect(dh.children[0].is_subcoll()).toBe(true);
-            expect(dh.children[0].children[0].is_subcoll()).toBe(true);
-            expect(dh.children[0].children[1].is_subcoll()).toBe(false);
+            expect(dh.children[0].children[0].is_subcoll()).toBe(false);
+            expect(dh.children[0].children[1].is_subcoll()).toBe(true);
             expect(dh.children[1].children[0].is_subcoll()).toBe(false);
         });
     });

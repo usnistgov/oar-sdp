@@ -22,11 +22,20 @@ export interface DataComponentDesc extends ComponentDesc {
 }
 
 /**
+ * compare two strings for sorting.  string.localeCompare() cannot be used 
+ * because needed options are not universally supported. This function may 
+ * do unexpected things when the string contains non-English letters.  
+ */
+export function compare_strings(a: string, b: string) {
+    return ((a == b) ? 0 : ((a < b) ? -1 : +1));
+}
+
+/**
  * a compare function for ordering DataCompoentDesc objects alphabeticaly
  * by their "filepath" properties
  */
 export function compare_by_filepath(a: DataComponentDesc, b: DataComponentDesc) {
-    return a.filepath.localeCompare(b.filepath);
+    return compare_strings(a.filepath, b.filepath);
 }
 
 /**
@@ -34,15 +43,23 @@ export function compare_by_filepath(a: DataComponentDesc, b: DataComponentDesc) 
  * preferences
  */
 export function compare_for_display(a: DataHierarchy, b: DataHierarchy) {
-    let c = prefer_readme(a, b);
+    let c = prefer_datafiles(a, b);
     if (c != 0) return c
 
-    c = prefer_subcollections(a, b);
-    if (c != 0) return c
-
-    return a.data.filepath.localeCompare(b.data.filepath)
+    return compare_strings(a.data.filepath, b.data.filepath);
 }
 
+/**
+ * a compare function for a DataHierarchy object that will return a value 
+ * signalling that the one that features a filename beginning with "README"
+ * should go first.  If both begin with README, an alphabetically comparison
+ * sets the returned value.  If neither begin with README, zero is returned.
+ *
+ * This compare function is intended for use in combination with other 
+ * compare functions that look at other characcteristics.
+ *
+ * This is not currently used. 
+ *
 export function prefer_readme(a: DataHierarchy, b: DataHierarchy) {
     let fp = a.data.filepath.split('/');
     let fna = fp[fp.length-1];
@@ -51,25 +68,30 @@ export function prefer_readme(a: DataHierarchy, b: DataHierarchy) {
 
     if (fna.toUpperCase().startsWith('README')) {
         if (fnb.toUpperCase().startsWith('README')) 
-            return fna.localeCompare(fnb);
+            return compare_strings(fna, fnb);
         return -1;
     }
     else if (fnb.toUpperCase().startsWith('README')) 
         return +1;
     return 0;
 }
+ */
 
 function type_is_subcol(e: string,i: number,a: string[]) {
     return e.endsWith(":Subcollection");
 }
 
-export function prefer_subcollections(a: DataHierarchy, b: DataHierarchy) {
-    let ta = a.data["@type"].filter(type_is_subcol);
-    let tb = b.data["@type"].filter(type_is_subcol);
+function type_is_datafile(e: string,i: number,a: string[]) {
+    return (e.endsWith(":DownloadableFile") || e.endsWith(":DataFile"));
+}
+
+export function prefer_datafiles(a: DataHierarchy, b: DataHierarchy) {
+    let ta = a.data["@type"].filter(type_is_datafile);
+    let tb = b.data["@type"].filter(type_is_datafile);
 
     if (ta.length > 0) {
         if (tb.length > 0)
-            return a.data.filepath.localeCompare(b.data.filepath);
+            return compare_strings(a.data.filepath, b.data.filepath); 
         return -1;
     }
     else if (tb.length > 0)
