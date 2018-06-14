@@ -16,6 +16,7 @@ import { environment } from '../environment';
 
 import { SearchResolve } from "./search-service.resolve";
 import { error } from 'selenium-webdriver';
+import { ResComponents, DataHierarchy } from "./datacomponents";
 
 //import * as jsPDF  from 'jspdf';
 declare var Ultima: any;
@@ -348,40 +349,27 @@ teststring: string = "Loading !!";
     return (Object.keys(obj).length === 0);
   }
 
-  createDataHierarchy(){
-    if (this.recordDisplay['dataHierarchy'] == null )
-      return;
-    for(let fields of this.recordDisplay['dataHierarchy']){
-      if( fields.filepath != null) {
-        if(fields.children != null)
-          this.files.push(this.createChildrenTree(fields.children,
-            fields.filepath));
-        else
-          this.files.push(this.createFileNode(fields.filepath,
-            fields.filepath));
-      }
-    }
-
-
+  createDataHierarchy() {
+      if (this.recordDisplay['components'] == null)
+          return;
+      let dh = new ResComponents(this.recordDisplay['components']).dataHierarchy();
+      this.files = this.createNode4Hierarchy(dh).children;
   }
 
-
-  createChildrenTree(children:any[], filepath:string){
-    let testObj:TreeNode = {};
-    testObj= this.createTreeObj(filepath.split("/")[filepath.split("/").length-1],filepath);
-    testObj.children=[];
-    for(let child of children){
-      let fname = child.filepath.split("/")[child.filepath.split("/").length-1];
-      if( child.filepath != null) {
-        if(child.children != null)
-          testObj.children.push(this.createChildrenTree(child.children,
-            child.filepath));
-        else
-          testObj.children.push(this.createFileNode(fname,
-            child.filepath));
+  createNode4Hierarchy(dnode : DataHierarchy) {
+      let fp = dnode.data.filepath.split('/');
+      let label = fp[fp.length-1];
+      
+      if (dnode.is_subcoll()) {
+          let out = this.createTreeObj(label, dnode.data.filepath);
+          out.children = [];
+          for(let i=0; i < dnode.children.length; i++) 
+              out.children.push(this.createNode4Hierarchy(dnode.children[i]));
+          return out;
       }
-    }
-    return testObj;
+      else {
+          return this.createFileNode(label, dnode.data.filepath);
+      }
   }
 
   createTreeObj(label :string, data:string){
