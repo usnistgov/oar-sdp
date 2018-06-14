@@ -67,8 +67,8 @@ export function main() {
             expect(dh.children[1].data.filepath).toBe("b");
 
             let cdh = dh.children[0]
-            expect(cdh.children[0].data.filepath).toBe("a/c");
-            expect(cdh.children[1].data.filepath).toBe("a/b");
+            expect(cdh.children[0].data.filepath).toBe("a/b");
+            expect(cdh.children[1].data.filepath).toBe("a/c");
             expect(cdh.children.length).toBe(2);
 
             cdh = dh.children[1]
@@ -81,8 +81,8 @@ export function main() {
         it("can identifiy subcollections", function() {
             expect(dh.is_subcoll()).toBe(true);
             expect(dh.children[0].is_subcoll()).toBe(true);
-            expect(dh.children[0].children[0].is_subcoll()).toBe(true);
-            expect(dh.children[0].children[1].is_subcoll()).toBe(false);
+            expect(dh.children[0].children[0].is_subcoll()).toBe(false);
+            expect(dh.children[0].children[1].is_subcoll()).toBe(true);
             expect(dh.children[1].children[0].is_subcoll()).toBe(false);
         });
     });
