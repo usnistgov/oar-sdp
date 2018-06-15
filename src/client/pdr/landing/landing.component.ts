@@ -22,6 +22,69 @@ import { ResComponents, DataHierarchy } from "./datacomponents";
 declare var Ultima: any;
 declare var jQuery: any;
 
+interface reference {
+    refType? : string,
+    "@id"? : string,
+    label? : string,
+    location? : string
+}
+
+function compare_versions(a: string, b: string) : number {
+    let aflds : any[] = a.split(".");
+    let bflds : any[] = b.split(".");
+    let toint = function(el, i, a) {
+        let e = null;
+        try {
+            return parseInt(el);
+        } catch (e) {
+            return el;
+        }
+    }
+    aflds = aflds.map(toint);
+    aflds = bflds.map(toint);
+
+    let i :number = 0;
+    let out : number = 0;
+    for (i=0; i < aflds.length && i < bflds.length; i++) {
+        if (typeof aflds[i] === "number") {
+            if (typeof bflds[i] === "number") {
+                out = <number>aflds[i] - <number>bflds[i];
+                if (out == 0) continue;
+            }
+            else 
+                return +1;
+        }
+        else if (typeof bflds[i] === "number") 
+            return -1;
+        return a.localeCompare(b);
+    }
+    return out;
+}
+
+function compare_dates(a : string, b : string) : number {
+    if (a.includes("Z"))
+        a = a.substring(0, a.indexOf("Z"));
+    if (a.includes("Z"))
+        b = b.substring(0, a.indexOf("Z"));
+
+    let asc = -1, bsc = -1;
+    try {
+        asc = Date.parse(a);
+        bsc = Date.parse(b);
+    } catch (e) { return 0; }
+
+    return asc - bsc;
+}
+
+function compare_histories(a, b) {
+    let out = 0;
+    if (a.issued && b.issued)
+        out = compare_dates(a.issued, b.issued);
+    if (out == 0)
+        out = compare_versions(a.version, b.version);
+    return out;
+}
+
 @Component ({
   moduleId: module.id,
   selector: 'pdr-landing',
@@ -74,7 +137,9 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
   private dataHierarchy: any[]=[];
   isResultAvailable: boolean = true;
   isId : boolean = true;
-teststring: string = "Loading !!";
+  private newer : reference = {};  
+  teststring: string = "Loading !!";
+    
   /**
    * Creates an instance of the SearchPanel
    *
@@ -96,8 +161,8 @@ teststring: string = "Loading !!";
       this.recordDisplay = searchResults["ResultData"][0];
 
     if(this.recordDisplay["@id"] === undefined || this.recordDisplay["@id"] === "" ){
-    this.isId = false;
-    return;
+      this.isId = false;
+      return;
     }
 
     this.type = this.recordDisplay['@type'];
@@ -109,6 +174,7 @@ teststring: string = "Loading !!";
     if(this.recordDisplay['contactPoint'].hasEmail !== undefined && this.recordDisplay['contactPoint'].hasEmail !== "")
       this.isEmail = true;
 
+    this.assessNewer();
     this.updateLeftMenu();
     this.updateRightMenu();
   }
@@ -142,6 +208,63 @@ teststring: string = "Loading !!";
 
   openURL(url:string) {
     window.open(url);
+  }
+
+  /**
+   * analyze the given resource metadata to determine if a newer version is 
+   * available.  Currently, this looks in three places (in order) within the 
+   * NERDm record:
+   * <ol>
+   *   <li> the 'isReplacedBy' property </li>
+   *   <li> as a 'isPreviousVersionOf' reference in the references list.
+   *   <li> in the 'versionHistory' property </li>
+   * </ol>
+   * The checks for last two places may be removed in a future release. 
+   */
+  assessNewer() {
+      if (! this.recordDisplay) return;
+
+      // look for the 'isReplacedBy'; this is expected to be inserted into the
+      // record on the fly by the server based on the values of 'replaces' in
+      // all other resources.
+      if (this.recordDisplay['isReplacedBy']) {
+          this.newer = this.recordDisplay['isReplacedBy'];
+          if (! this.newer['refid']) this.newer['refid'] = this.newer['@id'];
+          return;
+      }
+
+      // look for a reference with refType="isPreviousVersionOf"; the
+      // referenced resource is a newer version. 
+      if (this.recordDisplay['references']) {
+          for (let ref of this.recordDisplay['references']) {
+              if (ref.refType == "IsPreviousVersionOf" && (ref.label || ref.refid)) {
+                  this.newer = ref;
+                  if (! this.newer['refid']) this.newer['refid'] = this.newer['@id'];
+                  if (! this.newer.label) this.newer.label = ref.newer.refid;
+                  return;
+              }
+          }
+      }
+
+      // look at the version history to see if there is a newer version listed
+      if (this.recordDisplay['version'] && this.recordDisplay['versionHistory']) {
+          let history = this.recordDisplay['versionHistory'];
+          history.sort(compare_histories);
+          if (compare_histories(history[history.length-1],
+                                { version: this.recordDisplay['version'], 
+                                  issued: this.recordDisplay['modified']  }) > 0)
+          {
+              this.newer = history[history.length-1];
+              if (! this.newer['refid']) this.newer['refid'] = this.newer['@id'];
+              this.newer['label'] = this.newer['version'];
+              if (! this.newer['location'] && this.newer['refid']) {
+                  if (this.newer['refid'].startsWith("doi:"))
+                      this.newer.location = 'https://doi.org/'+this.newer['refid'].substring(4);
+                  else if (this.newer['refid'].startsWith("ark:/88434/"))
+                      this.newer.location = 'https://data.nist.gov/od/id/'+this.newer['refid'].substring(4);
+              }
+          }
+      }
   }
 
   /**
@@ -391,6 +514,51 @@ teststring: string = "Loading !!";
     endFileNode.expandedIcon = "faa faa-folder-open";
     endFileNode.collapsedIcon =  "faa fa-folder";
     return endFileNode;
+  }
+
+  visibleHistory = false;
+  expandHistory() {
+    this.visibleHistory = ! this.visibleHistory;
+    return this.visibleHistory;
+  }
+
+  /**
+   * create an HTML rendering of a version string for a NERDm VersionRelease.  
+   * If there is information available for linking to version's home page, a 
+   * link is returned.  Otherwise, just the version is returned (prepended 
+   * with a "v").
+   */
+  renderRelVer(relinfo, thisversion) {
+      if (thisversion == relinfo.version)
+          return "v"+relinfo.version;
+      return this.renderRelAsLink(relinfo, "v"+relinfo.version);
+  }
+
+  renderRelAsLink(relinfo, linktext) {
+      let out : string = linktext;
+      if (relinfo.location) 
+          out = '<a href="'+relinfo.location+'">'+linktext+'</a>';
+      else if (relinfo.refid) {
+          if (relinfo.refid.startsWith("doi:"))
+              out = '<a href="https://doi.org/'+relinfo.refid.substring(4)+'">'+linktext+'</a>';
+          else if (relinfo.refid.startsWith("ark:/88434/"))
+              out = '<a href="https://data.nist.gov/od/id/'+relinfo.refid+'">'+linktext+'</a>';
+      }
+      return out;
+  }
+
+  /**
+   * return a rendering of a release's ID.  If possible, the ID will be 
+   * rendered as a link.  If there is no ID, a link with the text "View..." 
+   * is returned. 
+   */
+  renderRelId(relinfo, thisversion) {
+      if (thisversion == relinfo.version)
+          return "this version";
+
+      let id : string = "View...";
+      if (relinfo.refid) id = relinfo.refid;
+      return this.renderRelAsLink(relinfo, id);
   }
 
   clicked = false;
