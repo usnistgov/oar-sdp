@@ -41,7 +41,7 @@ function compare_versions(a: string, b: string) : number {
         }
     }
     aflds = aflds.map(toint);
-    aflds = bflds.map(toint);
+    bflds = bflds.map(toint);
 
     let i :number = 0;
     let out : number = 0;
@@ -58,6 +58,7 @@ function compare_versions(a: string, b: string) : number {
             return -1;
         return a.localeCompare(b);
     }
+
     return out;
 }
 
@@ -80,7 +81,7 @@ function compare_histories(a, b) {
     let out = 0;
     if (a.issued && b.issued)
         out = compare_dates(a.issued, b.issued);
-    if (out == 0)
+    if (out == 0) 
         out = compare_versions(a.version, b.version);
     return out;
 }
@@ -261,7 +262,7 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
                   if (this.newer['refid'].startsWith("doi:"))
                       this.newer.location = 'https://doi.org/'+this.newer['refid'].substring(4);
                   else if (this.newer['refid'].startsWith("ark:/88434/"))
-                      this.newer.location = 'https://data.nist.gov/od/id/'+this.newer['refid'].substring(4);
+                      this.newer.location = 'https://data.nist.gov/od/id/'+this.newer['refid'];
               }
           }
       }
