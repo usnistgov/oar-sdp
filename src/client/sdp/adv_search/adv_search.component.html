@@ -95,7 +95,7 @@
         </div>
     <div  class="ui-g-12 ">
       <div class="ui-g-12 ui-md-12">
-          <p-dataTable [value]="searchEntities" [style]="{'border':'.5px solid #e6e6e6'}" [loading]="loading" emptyMessage="No entry found">
+          <p-dataTable [value]="searchEntities" [style]="{'border':'.5px solid #e6e6e6'}" emptyMessage="No entry found">
             <p-column field="data.queryName" [style]="{'word-wrap': 'break-word','width':'30%','font-weight':'700','border':'.5px solid #e6e6e6'}" header="Name">
               <ng-template let-row="rowData" pTemplate type="body">
                 <a href="/#/search?q={{row.data.queryValue}}&key=&queryAdvSearch=" (click) = "closeWindow()" target="_parent">{{row.data.queryName}}</a>
@@ -128,7 +128,7 @@
           </i>Create New Field</a>
         <div class="EmptyBox20"></div>
         <div  class="ui-g-12 ui-md-12 search-builder-background">
-        <p-dataTable [value]="rows" [loading]="loading" emptyMessage="No entry found" [style]="{'border':'.5px solid #e6e6e6'}">
+        <p-dataTable [value]="rows" emptyMessage="No entry found" [style]="{'border':'.5px solid #e6e6e6'}">
         <p-column field="data.queryName" header="Operator" [style]="{'width':'15%','font-weight':'700'}">
           <ng-template let-row="rowData" let-i="rowIndex" pTemplate type="body">
               <p-dropdown  *ngIf = "i != 0" (click) = "saveSearch()" [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px'
