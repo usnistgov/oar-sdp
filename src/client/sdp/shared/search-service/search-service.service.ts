@@ -44,7 +44,7 @@ export class SearchService {
 
       if (!_.isEmpty(parameters)) {
         for (var i = 0; i < parameters.length; i++) {
-          if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and") {
+          if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and")) {
             if (parameters[i].includes("searchphrase")) {
               searchPhraseValue += parameters[i] + '&';
             } else {
