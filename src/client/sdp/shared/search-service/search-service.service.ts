@@ -44,7 +44,7 @@ export class SearchService {
 
       if (!_.isEmpty(parameters)) {
         for (var i = 0; i < parameters.length; i++) {
-          if (parameters[i].includes("=") || parameters[i].includes("OR") || parameters[i].includes("AND")) {
+          if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and") {
             if (parameters[i].includes("searchphrase")) {
               searchPhraseValue += parameters[i] + '&';
             } else {
@@ -64,14 +64,13 @@ export class SearchService {
       let searchKeyValueStr = searchKeyValue.split("&");
       for (var i = 0; i < searchKeyValueStr.length; i++) {
         let value = searchKeyValueStr[i];
-        if (value == 'OR' || value == 'or') {
-          value = value.replace(/OR/g, 'logicalOp=OR');
-        } else if (value == 'AND' || value == 'and') {
-          value = value.replace(/and/g, 'logicalOp=AND');
+        if (value.toLowerCase() == 'or') {
+          value = value.replace(/OR/ig, 'logicalOp=OR');
+        } else if (value.toLowerCase() == 'and') {
+          value = value.replace(/AND/ig, 'logicalOp=AND');
         }
         finalKeyValueStr += value + '&';
       }
-
 
       /*
 

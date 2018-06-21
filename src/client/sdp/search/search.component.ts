@@ -486,7 +486,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     if (!_.isEmpty(parameters)) {
       for (var i = 0; i < parameters.length; i++) {
-        if (parameters[i].includes("=") || parameters[i].includes("OR") || parameters[i].includes("AND")) {
+        if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and")) {
           if (parameters[i].includes("searchphrase")) {
             searchPhraseValue += parameters[i] + '&';
           } else {
@@ -498,6 +498,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+    console.log("searchphrase value" + searchPhraseValue);
 
     if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
       this.searching = false;
