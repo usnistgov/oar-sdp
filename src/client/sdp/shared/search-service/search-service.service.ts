@@ -31,39 +31,49 @@ export class SearchService {
   searchPhrase(searchValue:string, searchTaxonomyKey:string, queryAdvSearch:string): Observable<string[]> {
     let searchPhraseValue = '';
     let finalKeyValueStr = '';
+    if (searchValue.includes('&')) {
+      searchValue = searchValue.split("&").join(' ');
+    }
+
     if (!_.isEmpty(searchValue)) {
       let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
       //let opArray = ['AND','NOT','OR','and','not','or']
       //let filteredArray = _.difference(parameters, opArray);
       //parameters = filteredArray;
       let searchKeyValue = '';
-      let newSearchValue = ''
+
       if (!_.isEmpty(parameters)) {
         for (var i = 0; i < parameters.length; i++) {
           if (parameters[i].includes("=") || parameters[i].includes("OR") || parameters[i].includes("AND")) {
-            searchKeyValue += parameters[i] + '&';
+            if (parameters[i].includes("searchphrase")) {
+              searchPhraseValue += parameters[i] + '&';
+            } else {
+              searchKeyValue += parameters[i] + '&';
+            }
           } else {
             searchPhraseValue += parameters[i] + '&';
           }
         }
       }
+
+
       if (_.isEmpty(searchPhraseValue)) {
         searchPhraseValue = '&';
       }
       searchKeyValue = searchKeyValue.replace(/"/g, '');
-      let newSearchKeyValue = '';
       let searchKeyValueStr = searchKeyValue.split("&");
       for (var i = 0; i < searchKeyValueStr.length; i++) {
         let value = searchKeyValueStr[i];
-        if (i == 0 || i == searchKeyValueStr.length - 2) {
-          if (_.includes(['AND', 'NOT', 'OR', 'and', 'not', 'or'], value)) {
-          } else {
-            newSearchKeyValue += searchKeyValueStr[i] + '&';
-          }
-        } else {
-          newSearchKeyValue += searchKeyValueStr[i] + '&';
+        if (value == 'OR' || value == 'or') {
+          value = value.replace(/OR/g, 'logicalOp=OR');
+        } else if (value == 'AND' || value == 'and') {
+          value = value.replace(/and/g, 'logicalOp=AND');
         }
+        finalKeyValueStr += value + '&';
       }
+
+
+      /*
 
       let searchKeyValueParam = newSearchKeyValue.split("&");
       for (var i = 0; i < searchKeyValueParam.length; i++) {
@@ -78,18 +88,19 @@ export class SearchService {
           finalKeyValueStr += value + '&';
         }
       }
-      if (_.isEmpty(searchPhraseValue)) {
-        finalKeyValueStr = finalKeyValueStr.replace(/OR/g, '');
-      } else {
-        finalKeyValueStr = finalKeyValueStr.replace(/OR/g, 'logicalOp=OR');
+      */
+
+
+      if (!searchPhraseValue.includes('searchphrase')) {
+        searchPhraseValue = 'searchphrase=' + searchPhraseValue;
       }
-      finalKeyValueStr = finalKeyValueStr.replace(/and/g, 'logicalOp=AND');
+
+      console.log('url' + this.RMMAPIURL + 'records?' + searchPhraseValue + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey);
+      return this.http.get(this.RMMAPIURL + 'records?' + searchPhraseValue + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey)
+        .map((res: Response) => res.json().ResultData)
+        .catch((error: any) => Observable.throw(error.json()));
     }
-      console.log('url' + this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue  + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey);
-      return this.http.get(this.RMMAPIURL + 'records?searchphrase=' + searchPhraseValue + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey )
-      .map((res: Response) => res.json().ResultData)
-      .catch((error: any) => Observable.throw(error.json()));
-    }
+  }
 
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.

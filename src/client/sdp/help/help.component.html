@@ -27,8 +27,126 @@
   <div class="ui-g">
     <div class="ui-g-12">
       <div class="ui-g-12 ui-md-8 ui-lg-8">
-        <p> For comments or questions, please contact the support team at <a href="mailto:datasupport@nist.gov?Subject=SDP">datasupport@nist.gov</a>.
-        </p>
+        <div id="contents">
+          <table>
+            <tr>
+              <td>
+                <ul class="links">
+                  <li class="links"> <a href="#howtosearch"> How to Search</a> <br>
+                    <span class="description"> Syntax Rules for Search </span>
+                  </li>
+                  <li class="links"> <a href="#!"> FAQ</a> <br>
+                    <span class="description"> Frequently asked questions </span>
+                  </li>
+                  <li class="links"> <a href="#contactus"> Contact Us</a> <br>
+                    <span class="description"> Site feedback and Support</span>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="howtosearch">
+          <p align="left"><strong>SDP Search Rules</strong></p>
+          <p>These rules govern the syntax for a search typed into the SDP search box.</p>
+          <ol class="sr">
+            <li>A query is made up of a series of tokens delimited (in the absense of quotes) by one or more spaces. A pair of quotes (containing other text) delimits a single token.&nbsp; An unpaired quote is taken a literal quote character that does not affect the delimiting of tokens.</li>
+            <li>Each token represents a constraint on the query; the format determines the type of query:
+              <ol class="sr">
+                <li>single word &ndash; this is interpreted as a term to be matched to any word in the record</li>
+                <li>quoted phrase &ndash; the characters between the quotes are treated as a phrase that must appear exactly in the record in order to match</li>
+                <li><em>and</em>, <em>AND</em>, <em>or</em>, <em>OR</em> &ndash; these literal words correspond to constraint joining operators (see 3.)</li>
+                <li>key=value &ndash; this is interpreted as constraint against a specific field in the record.
+                  <ol class="sr">
+                    <li>The value is either a single word or a quoted phrase</li>
+                    <li>For a record to match, the field given by key must contain the value.</li>
+                  </ol>
+                </li>
+              </ol>
+            <li>The constraints are joined together as follows:*
+              <ol class="sr">
+                <li>All single words and quoted phrase constraints (2.2) are joined together via a space (which means AND in this context) and set as the value to the searchphrase constraint.*
+                  <ol class="sr">
+                    <li>*this is a current limitation of the RMM service</li>
+                  </ol>
+                </li>
+                <li>If a joining operator token appears between two other tokens, those constraints are joined by that logical operator.
+                  <ol class="sr">
+                    <li>AND, and &ndash; intrepreted as a logical AND of the two constraints</li>
+                    <li>OR, or &ndash; interpreted as a logical OR of the two constraints</li>
+                  </ol>
+                </li>
+                <li>Two non-joining operator tokens next to each other are implicitly joined by a logical OR. <br /> </li>
+              </ol>
+            </li>
+          </ol>
+          <p>Examples</p>
+          <table width="623" border="1">
+            <tbody>
+            <tr>
+              <td width="112">
+                <p><strong>Search Criteria</strong></p>
+              </td>
+              <td width="131">
+                <p><strong>Keywords</strong></p>
+              </td>
+              <td width="380">
+                <p><strong>Description</strong></p>
+              </td>
+            </tr>
+            <tr>
+              <td width="112">
+                <p>Individual terms</p>
+              </td>
+              <td width="131">
+                <p>NIST Chemistry</p>
+              </td>
+              <td width="380">
+                <p>Records that include either &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo; are returned.</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="112">
+                <p>Phrase</p>
+              </td>
+              <td width="131">
+                <p>&ldquo;NIST Chemistry&rdquo;</p>
+              </td>
+              <td width="380">
+                <p>Records that contain the phrase &ldquo;NIST Chemistry&rdquo; (the two words adjacent to each other in that order) will be returned.&nbsp;</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="112">
+                <p>Phrase with Individual terms</p>
+              </td>
+              <td width="131">
+                <p>&ldquo;NIST Chemistry&rdquo; Physics</p>
+              </td>
+              <td width="380">
+                <p>Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND (&ldquo;Physics&rdquo; OR &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo;); That is, returned records will contain the phrase &ldquo;NIST Chemistry&rdquo;; they may contain &ldquo;Physics&rdquo;.</p>
+              </td>
+            </tr>
+            <tr>
+              <td width="112">
+                <p>Key Value pair</p>
+              </td>
+              <td width="131">
+                <p>ContactPoint.fn = &ldquo;Peter Linstrom&rdquo;</p>
+              </td>
+              <td width="380">
+                <p>Records whose field, ContactPoint.fn, contains &ldquo;Peter Linstrom&rdquo; are returned.</p>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <p>&nbsp;</p>
+        </div>
+        <div id="contactus">
+          <p align="left"><strong>Contact Us</strong></p>
+          <p> For comments or questions, please contact the support team at <a href="mailto:datasupport@nist.gov?Subject=SDP">datasupport@nist.gov</a>.
+           </p>
+        </div>
       </div>
       <div class="EmptyBox40"></div>
       <div class="ui-g-12 ui-md-6 ui-lg-1">

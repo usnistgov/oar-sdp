@@ -7,18 +7,19 @@ import { HttpModule } from '@angular/http';
 
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchFieldsListService } from '../shared/searchfields-list/index';
+import { SearchQueryService } from '../shared/search-query/index';
 import {NgxPaginationModule} from 'ngx-pagination'; // <-- import the module
 import {
   DropdownModule, AccordionModule, TreeModule, PanelMenuModule, AutoCompleteModule,
-  MessagesModule, MultiSelectModule, ProgressSpinnerModule, DataTableModule, DataListModule,  OverlayPanelModule, CheckboxModule, TooltipModule
+  MessagesModule,MessageModule, DialogModule, InputTextareaModule, ProgressSpinnerModule, InputTextModule, MultiSelectModule, DataTableModule, DataListModule,  OverlayPanelModule, CheckboxModule, TooltipModule
 } from 'primeng/primeng';
 
 @NgModule({
-    imports: [HttpModule,CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MultiSelectModule,
-      DropdownModule,DataTableModule, DataListModule,TreeModule, PanelMenuModule, OverlayPanelModule, CheckboxModule, TooltipModule, ProgressSpinnerModule, NgxPaginationModule],
+    imports: [HttpModule,CommonModule, SharedModule, AccordionModule,AutoCompleteModule,MessagesModule,MessageModule, MultiSelectModule,
+      DropdownModule,DataTableModule, DataListModule,TreeModule, DialogModule, InputTextModule, PanelMenuModule, OverlayPanelModule, CheckboxModule, TooltipModule, ProgressSpinnerModule, NgxPaginationModule,InputTextareaModule],
     declarations: [SearchPanelComponent,ReadMoreComponent],
     exports: [SearchPanelComponent,ReadMoreComponent],
-    providers: [TaxonomyListService, SearchFieldsListService ]
+    providers: [TaxonomyListService, SearchFieldsListService, SearchQueryService ]
 })
 
 export class SearchModule { }

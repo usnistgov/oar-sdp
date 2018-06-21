@@ -529,3 +529,119 @@ img {
 .top_bar img {
   width: 200px;
 }
+
+
+
+.textlinks{
+
+  color:white;
+
+}
+
+*.icon-blue {color: #0088cc}
+
+*.icon-grey {color: grey}
+
+
+
+i {
+
+  width:20px;
+
+  text-align:left;
+
+}
+
+
+
+.faa {
+
+  position: relative;
+
+}
+
+
+
+.badgesm{
+
+  font-size: 10px;
+
+  color: #fff;
+
+  padding: 0 5px;
+
+  vertical-align: top;
+
+  margin-top: -3.0em;
+
+  margin-right: -2.0em;
+
+  height:20px;
+
+  width:20px;
+
+  display: inline-block;
+
+  min-width: 10px;
+
+  z-index: 10;
+
+  padding: 3px 7px;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  line-height: 1;
+
+  color: #fff;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+  vertical-align: middle;
+
+  background-color: #777;
+
+  border-radius: 10px;
+
+}
+
+
+
+.badge-notify{
+
+  background-color: green;
+
+  position:relative;
+
+  top: -15px;
+
+  left: -5px;
+
+  font-size: 9px;
+
+  height:20px;
+
+  width:20px;
+
+  padding:5px 3px 3px 3px ;
+
+}
+
+ul.line-separated
+{
+
+  background-color: #bdbdbd;
+  padding: 0;
+  margin: 1em;
+  margin-bottom: 1em;
+}
+ul.line-separated li
+{
+  background-color: white;
+  margin: 1px 0 0 0;
+  padding:.5em;
+  list-style-type: none;
+}

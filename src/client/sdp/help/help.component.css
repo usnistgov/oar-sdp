@@ -18,3 +18,44 @@ h2 {
   color: #fff;
   font-weight: 300;
 }
+
+/* override some styles */
+body {
+  font-family: Arial, Helvetica, Geneva, sans-serif;
+}
+
+a:link, a:visited {
+  font-weight: bold;
+}
+
+div#footer a:link, div#footer a:visited {
+  font-weight: normal;
+}
+
+div#contents {
+  margin-left: 0px;
+  clear: both;
+}
+div#contents ul.links {
+  list-style-type: disc;
+}
+div#contents li.links {
+  margin: 0 0 0.8em 0;
+}
+
+.description {
+  color: gray;
+  font-size: 90%;
+}
+
+ol.sr {
+  counter-reset: item
+}
+
+li.sr {
+  display: block
+}
+
+li.sr:before {
+  content: counters(item, ".") " "; counter-increment: item
+}

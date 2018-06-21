@@ -50,11 +50,11 @@ body .ui-inputtext:focus, body .ui-inputtext.ui-state-focus {
 
 body .ui-button, body .ui-datepicker-buttonpane > button {
   background-color: #1471AE;
-  height: 1.75em;
+  height: 1.5em;
   padding: .2em;}
 
 body .ui-button .ui-button-text, body .ui-datepicker-buttonpane > button .ui-button-text {
-  line-height: 1.75em; }
+  line-height: 0.75em; }
 
 body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container.ui-inputtext {
   padding: 2px 2px 0px 2px;
@@ -163,4 +163,19 @@ body .ui-dropdown .ui-dropdown-trigger
 body .ui-button.ui-button-icon-only, body .ui-datepicker-buttonpane > button.ui-button-icon-only {
   width: 2.0em;
   height: 2.0em;
+}
+
+.ui-datatable .ui-datatable-thead > tr > th, .ui-datatable .ui-datatable-tfoot > tr > td, .ui-datatable .ui-datatable-data > tr > td
+{
+  border:0.5px solid #e6e6e6;
+}
+
+body .ui-datatable .ui-datatable-thead > tr th {
+  background-color:#0872B9;
+  color:#ffffff;
+}
+
+body .ui-dialog .ui-dialog-titlebar {
+  background-color:#232F3E;
+  color:#ffffff;
 }
