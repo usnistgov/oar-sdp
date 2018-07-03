@@ -506,15 +506,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.noResults = true;
       //this.msgs.push('');
       return this.msgs.push({severity: 'error', summary: 'Unsupported syntax' + ':', detail: 'Please click on the link <a href="#help" style="color: #fff;"> Search Rules</a> for more information.'});
-    } else {
-      return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
-        .subscribe(
-          searchResults => that.onSuccess(searchResults),
-          error => that.onError(error)
-        );
     }
 
-
+    return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
+      .subscribe(
+        searchResults => that.onSuccess(searchResults),
+        error => that.onError(error)
+      );
   }
 
   getTaxonomySuggestions() {
