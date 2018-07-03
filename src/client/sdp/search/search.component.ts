@@ -500,7 +500,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     console.log("searchphrase value" + searchPhraseValue);
 
-    /*
 
     if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
       this.searching = false;
@@ -514,7 +513,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           error => that.onError(error)
         );
     }
-*/
+
 
   }
 
