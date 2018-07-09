@@ -252,3 +252,8 @@ background-cyanblue {
 :host /deep/ .breadcrumb {
   background-color: #fff;
 }
+
+:host /deep/ .color-white {
+  color: #fff;
+  font-weight: bold;
+}
