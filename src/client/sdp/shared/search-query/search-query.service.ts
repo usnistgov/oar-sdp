@@ -34,8 +34,6 @@ export class SearchQueryService {
   private _storage = localStorage;
 
 
-
-
   constructor(private http: Http) {
     this.initCart();
     this.getAllSearchEntities();
@@ -62,10 +60,12 @@ export class SearchQueryService {
     return this.displayAdvQuerySub.asObservable();
   }
 
-
+  /**
+   * Initialize the cart
+   */
   initCart () {
 
-    // if we dont have  any cart history, create a empty cart
+    // if we don't have any cart history, create a empty cart
     if(!this._storage.getItem('query')) {
 
       let emptyMap : { [key:string]:number; } = {};
@@ -80,6 +80,9 @@ export class SearchQueryService {
     }
   }
 
+  /**
+   * Save search entities in local storage the params OnInit
+   */
   saveListOfSearchEntities(listOfCartEntries : SearchEntity[]) {
     // reduce all the entities to a map
     let cartMap = listOfCartEntries.reduce(function(map, cartEntry, i) {
@@ -95,7 +98,7 @@ export class SearchQueryService {
   }
 
   /**
-   * Returns all the products in the cart form the local storage
+   * Returns all the search entities in the cart from the local storage
    *
    **/
   getAllSearchEntities()  {
@@ -116,7 +119,7 @@ export class SearchQueryService {
   }
 
   /**
-   * Returns all the products in the cart form the local storage
+   * Remove the cart items with status downloaded
    *
    **/
   removeDownloadStatus()  {
@@ -127,14 +130,10 @@ export class SearchQueryService {
     // convert the map to an array
     for (let key in myCartMap) {
       let value = myCartMap[key];
-      console.log("status before" + JSON.stringify(value.data.downloadStatus));
       if (value.data.downloadedStatus == null ) {
-        console.log("status after" + JSON.stringify(value.data.downloadStatus));
-        console.log("value" + JSON.stringify(value.data.resId));
         searchEntities.push(value);
       }
     }
-    console.log("cart" + JSON.stringify(searchEntities));
     let cartMap = searchEntities.reduce(function(map, cartEntry, i) {
       map[cartEntry.data.id] = cartEntry;
       return map;
@@ -149,9 +148,12 @@ export class SearchQueryService {
 
   }
 
+  /**
+   * clear the cart
+   *
+   **/
   clearTheCart() {
     this._storage.clear();
-    //this.storageSub.next(true);
   }
 
   /**
@@ -164,18 +166,22 @@ export class SearchQueryService {
 
   }
 
+  /**
+   * set the number of items in cart to a variable
+   **/
   setQueryLength(value: number) {
     this.storageSub.next(value);
-    console.log("query size inside method" + this.storageSub.getValue());
-  }
-
-  setAdvQueryLength(value: number) {
-    this.storageAdvSub.next(value);
-    console.log("cart size inside method" + this.storageAdvSub.getValue());
   }
 
   /**
-   * Will persist the product to local storage
+   * set the number of items in cart to a variable
+   **/
+  setAdvQueryLength(value: number) {
+    this.storageAdvSub.next(value);
+  }
+
+  /**
+   *  persist the data to local storage
    *
    **/
   saveSearchQuery(data: Data) : void {
@@ -199,9 +205,6 @@ export class SearchQueryService {
 
     // if the current key exists in the map , append value
     if (cartMap[data.id] != undefined) {
-
-      console.log("key exists");
-      console.log("data id - " + data.id);
       cartMap[data.id] = {
         'data': data,
       }
@@ -219,27 +222,39 @@ export class SearchQueryService {
     this.getQuery();
   }
 
+  /**
+   * Update File spinner status
+   *
+   **/
   updateFileSpinnerStatus(addFileSpinner:boolean)
   {
     this.addCartSpinnerSub.next(addFileSpinner);
   }
 
+  /**
+   * Update All Files spinner status
+   *
+   **/
   updateAllFilesSpinnerStatus(addAllFilesSpinner:boolean)
   {
     this.addAllCartSpinnerSub.next(addAllFilesSpinner);
   }
 
+  /**
+   * Update display query status
+   *
+   **/
   updateQueryDisplayStatus(displayQuery:boolean)
   {
     this.displayQuerySub.next(displayQuery);
   }
+
   /**
    * Retrive the cart from local storage
    **/
   private getQuery() {
 
     let queryAsString = this._storage.getItem('query');
-    console.log("query" + JSON.stringify(queryAsString));
     return JSON.parse(queryAsString);
 
   }
@@ -250,7 +265,6 @@ export class SearchQueryService {
   private getAdvQuery() {
 
     let queryAsString = this._storage.getItem('advquery');
-    console.log("query" + JSON.stringify(queryAsString));
     return JSON.parse(queryAsString);
 
   }

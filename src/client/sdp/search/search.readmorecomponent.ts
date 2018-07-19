@@ -19,12 +19,19 @@ export class ReadMoreComponent implements AfterViewInit   {
   constructor(private elementRef: ElementRef) {
 
   }
+
+  /**
+   * Toggle the view
+   */
   toggleView() {
     this.isCollapsed = !this.isCollapsed;
     this.determineView();
   }
-  determineView() {
 
+  /**
+   * determine the current view
+   */
+  determineView() {
     if (this.text.toString().length <= this.maxLength) {
       this.currentText = this.text;
       this.isCollapsed = false;
@@ -38,6 +45,7 @@ export class ReadMoreComponent implements AfterViewInit   {
       this.currentText = this.text;
     }
   }
+
   ngAfterViewInit() {
     setTimeout(() => {
       this.determineView();

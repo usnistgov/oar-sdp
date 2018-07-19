@@ -159,12 +159,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * Save query using localstorage
+   */
   saveSearchQuery (queryName:any,queryValue:any) {
     if (_.isEmpty(queryName)) {
       this.queryNameReq = true;
     } else {
-      console.log("query name--" + queryName);
-      console.log("query value--" + this.searchValue);
       this.getSearchQueryList();
       this.duplicateQuery = false;
       for (let resultItem of this.searchEntities) {
@@ -185,12 +186,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  /**
+   * get query list from localstorage
+   */
   getSearchQueryList() {
     this.searchQueryService.getAllSearchEntities().then(function (result) {
       this.searchEntities = result;
     }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
+      alert("something went wrong while fetching the list");
     });
   }
 
@@ -211,6 +214,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.first = 0;
   }
 
+  /**
+   * Set filter and results panel width
+   */
   setResultsWidth () {
     this.isActive = !this.isActive;
     if (!this.isActive) {
@@ -224,7 +230,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Populate list of themes from Search results
    */
-
   collectThemes(searchResults: any[]) {
     let themes: SelectItem[] = [];
     let themesArray: string[] = [];
@@ -261,9 +266,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Populate list of themes from Search results
+   * Populate list of components from Search results
    */
-
   collectComponents(searchResults: any[]) {
     let components: SelectItem[] = [];
     let componentsArray: string[] = [];
@@ -303,9 +307,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Populate list of themes from Search results
+   * Populate list of resource types from Search results
    */
-
   collectResourceTypes(searchResults: any[]) {
     let resourceTypes: SelectItem[] = [];
     let resourceTypesArray: string[] = [];
@@ -339,7 +342,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Populate list of Authors from Search results
    */
-
   collectAuthors(searchResults: any[]) {
     let authors: string[] = [];
     for (let resultItem of searchResults) {
@@ -355,7 +357,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Populate list of keywords from search results
    */
-
   collectKeywords(searchResults: any[]) {
     let kwords: string[] = [];
     for (let resultItem of searchResults) {
@@ -371,9 +372,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * If Search is successful populate list of keywords themes and authors
+   * If Search is successful populate list of keywords themes components resource types and authors
    */
-
   onSuccess(searchResults: any[]) {
     this.noResults = false;
     this.themesWithCount = [];
@@ -483,6 +483,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       );
   }
 
+  /**
+   * populate taxonomy suggestions
+   */
   getTaxonomySuggestions() {
     this.taxonomyListService.get()
       .subscribe(
@@ -503,7 +506,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filter keywords for suggestive search
+   * Filter taxonomies for suggestive search
    */
   filterTaxonomies(event: any) {
     let suggTaxonomy = event.query;
@@ -517,19 +520,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filter keywords for suggestive search
+   * set the node expanded property
    */
   nodeExpand(event: any) {
     this.nodeExpanded = true;
 
   }
 
+  /**
+   * set the node selected property
+   */
   nodeSelect(event) {
     //event.node = selected node
   }
 
   /**
-   * Filter keywords for suggestive search
+   * set the node expanded property
    */
   nodeCollapse(event: any) {
     this.nodeExpanded = false;
@@ -545,7 +551,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.textRotate = !this.textRotate;
   }
 
-
+  /**
+   * Collect themes with their count
+   */
   collectThemesWithCount() {
     this.sortable = [];
     this.themesWithCount = [];
@@ -573,6 +581,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Collect components with their count
+   */
   collectComponentsWithCount() {
     this.componentsWithCount = [];
     for (let comp of this.components) {
@@ -582,6 +593,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Collect resouce types with their count
+   */
   collectResourceTypesWithCount() {
     this.resourceTypesWithCount = [];
     for (let res of this.resourceTypes) {
@@ -610,7 +624,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * Filter authors for suggestive search
    */
-
   filterAuthors(event: any) {
     let author = event.query;
     this.suggestedAuthors = [];
@@ -713,7 +726,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filter Components
+   * Filter resource types
    */
   filterByResourceTypes(searchResults: any[], selectedComponents: string[]) {
     var filteredResults: any[] = [];
@@ -744,7 +757,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filter Components
+   * Filter themes
    */
   filterByThemes(searchResults: any[], selectedThemes: string[]) {
     var filteredResults: any[] = [];
@@ -948,6 +961,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+    // author selected
     if (typeof this.selectedAuthor != 'undefined') {
       if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
         authorSelected = true;
@@ -975,7 +989,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
-
+    // keywords selected
     if (typeof this.selectedKeywords != 'undefined') {
       if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
         keywordSelected = true;
@@ -1002,6 +1016,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+    // nothing selected from filters
     if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected && !resourceTypesSelected) {
       this.filteredResults = this.searchResults;
       this.suggestedThemes = [];
@@ -1051,7 +1066,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
 
       if (event) {
-        //window.history.replaceState(null, null, "/search?page=4");
         let params = new URLSearchParams();
         if (!_.isEmpty(themeType)) {
           params.append('themes', themeType);
@@ -1076,7 +1090,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
   }
 
-
+  /**
+   * return unique values
+   */
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
@@ -1159,10 +1175,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   * @param resultKeywords
-   * @param keywords
-   * @returns {boolean}
+   * check if a keyword exists in result keywords
    */
   containsAllKeywords(resultKeywords: string[], keywords: string[]) {
     for (let keyw of keywords) {
@@ -1174,10 +1187,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
-   * @param resultAuthors
-   * @param Authors
-   * @returns {boolean}
+   * check if a author exists in result authors
    */
   containsAllAuthors(resultAuthors: string[], authors: string[]) {
     for (let keyw of authors) {
@@ -1187,7 +1197,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     return true;
   }
 
-
+  /**
+   * check if a theme exists in result themes
+   */
   containsAllThemes(resultThemes: any[], themes: string[]) {
     for (let theme of themes) {
       if (resultThemes !== null) {
@@ -1203,6 +1215,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  /**
+   * filter by keyword
+   */
   filterByKeyword(searchResults: any[], selectedKeywords: any[]) {
     var filteredResults: any[] = [];
     if (selectedKeywords.length > 0 && selectedKeywords.indexOf(this.ALL) < 0) {
@@ -1221,15 +1236,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * encode url string
+   */
   encodeString(url: string, param: string) {
     var urlString = url + encodeURIComponent(param);
     window.open(urlString);
   }
 
+  /**
+   * open url
+   */
   openURL(url: string) {
     window.open(url);
   }
 
+  /**
+   * get search fields list
+   */
   getSearchFields() {
     this.searchFieldsListService.get()
       .subscribe(
@@ -1265,6 +1289,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     return sortItems;
   }
 
+  /**
+   * sort by fields
+   */
   SortByFields() {
     let sortField :string[] = [];
     this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
@@ -1277,23 +1304,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   }
 
-  SortByFieldsTest(filteredResults,sortItemKey) {
-    let sortField :string[] = [];
-    filteredResults = _.sortBy(filteredResults, sortItemKey);
-    for (let field of this.fieldsArray) {
-      if (field.name === sortItemKey) {
-        this.selectedFields = [...this.selectedFields,field.label];
-      }
-    }
-    return filteredResults;
-  }
-
-
+  /**
+   * reset selected fields
+   */
   ResetSelectedFields() {
     this.selectedFields = ['Resource Description','Subject keywords'];
     this.checked = false;
   }
 
+  /**
+   * select all fields
+   */
   SelectAllFields() {
     this.selectedFields = [];
     if (this.checked) {
@@ -1311,6 +1332,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * save the current url state to history
+   */
   onPageChange(number : any) {
     this.page = number;
     let params = new URLSearchParams();
@@ -1321,6 +1345,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     window.history.pushState(null, null, "#/search?" + paramStr + "&page=" + number);
   }
 
+
+  /**
+   * remove parameter from url
+   */
   removeURLParameter(url, parameter) {
     //prefer to use l.search if you have a location/link object
     var urlparts= url.split('?');
@@ -1344,6 +1372,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * browser back button event
+   */
  onPopState(event) {
     setTimeout(function() {
       window.addEventListener('popstate', function() {
@@ -1401,14 +1432,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         });
   }
 
+  /**
+   * Resource type is selected
+   */
   setResourceTypeSelection(node:TreeNode, resType:string) {
       let resTypeParam = resType.toString().split(',');
       for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
-        console.log('helloooo11111' + this.resourceTypeTree[0].children[i].data);
-        console.log('helloooo22222' + resTypeParam);
-
         if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
-          console.log('helloooo' + this.resourceTypeTree[0].children[i].data);
           this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);
         }
       }
@@ -1420,6 +1450,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
   }
 
+  /**
+   * Theme is selected
+   */
   setThemesSelection(node:TreeNode, themes:string) {
       let themesParam = themes.split(',');
       for (var i = 0; i < this.themesWithCount.length; i++) {
@@ -1436,6 +1469,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
   }
 
+  /**
+   * Author is selected
+   */
   setAuthorsSelection(authors:string) {
       let authorsParam = authors.toString().split(',');
       for (var i = 0; i < authorsParam.length; i++) {
@@ -1443,6 +1479,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         }
   }
 
+  /**
+   * Keyword is selected
+   */
   setKeywordsSelection(keywords:string) {
       let keywordsParam = keywords.toString().split(',');
       for (var i = 0; i < keywordsParam.length; i++) {
@@ -1450,6 +1489,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
   }
 
+  /**
+   * Component is selected
+   */
   setComponentsSelection(node:TreeNode, components:string) {
       let compsParam = components.split(',');
       for (var i = 0; i < this.componentsWithCount.length; i++) {
@@ -1465,6 +1507,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+  /**
+   * Unsubscribe router params when the page is destroyed
+   */
   ngOnDestroy() {
     if ( this._routeParamsSubscription) {
       this._routeParamsSubscription.unsubscribe();
