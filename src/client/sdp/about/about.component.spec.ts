@@ -22,8 +22,8 @@ export function main() {
           let fixture = TestBed.createComponent(TestComponent);
           let aboutDOMEl = fixture.debugElement.children[0].nativeElement;
 
-          expect(aboutDOMEl.querySelectorAll('label')[0].textContent).toEqual(
-            ' About NIST Data'
+          expect(aboutDOMEl.querySelectorAll('label')[0].textContent.trim()).toEqual(
+            'About NIST Data'
           );
         });
       })
