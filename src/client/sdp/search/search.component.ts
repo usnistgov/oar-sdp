@@ -441,13 +441,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     if (this.filteredResults.length < 5) {
       this.rows = 20;
     }
-    if (!_.isEmpty(this.searchTaxonomyKey))
-    {
-        this.searchResTopics = this.searchTaxonomyKey;
-    }
-    if ((!_.isEmpty(this.searchResTopics))) {
-      this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
-    }
     this.searching = false;
   }
 
@@ -488,7 +481,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         searchResults => that.onSuccess(searchResults),
         error => that.onError(error)
       );
-
   }
 
   getTaxonomySuggestions() {
@@ -1364,7 +1356,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Get the params OnInit
    */
   ngOnInit() {
-
     this.getSearchFields();
     this.getTaxonomySuggestions();
         this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
@@ -1377,15 +1368,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           this.searchRecord = params['compType'];
           this.searchAuthors = params['authors'];
           this.searchKeywords = params['keywords'];
-          if (!_.isEmpty(this.searchTaxonomyKey))
-          {
-            if (!_.isEmpty(this.searchResTopics)) {
-              this.searchResTopics += this.searchTaxonomyKey;
-            } else {
-              this.searchResTopics = this.searchTaxonomyKey;
-            }
-          }
-          console.log("theme" + this.searchResTopics);
+
           //this.resourceTypeTree.push(params['resType']);
           this.getTaxonomies();
 
