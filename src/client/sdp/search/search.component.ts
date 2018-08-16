@@ -445,7 +445,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   /**
    * If search is unsuccessful push the error message
    */
-  onError(error: any[]) {
+  onError(error: any[],searchValue:any, searchPhraseValue:any) {
     this.searchResults = [];
     this.filteredResults = [];
     this.keywords = [];
@@ -455,7 +455,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.exception = (<any>error).ex;
     this.errorMsg = (<any>error).message;
     this.status = (<any>error).httpStatus;
-    this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
+    if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
+      this.msgs.push({severity: 'error', summary: 'Unsupported syntax' + ':', detail: 'Please click on the link <a href="#help" style="color: #fff;"> Search Rules</a> for more information.'});
+    } else {
+      this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
+    }
     this.searching = false;
   }
 
@@ -500,18 +504,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     console.log("searchphrase value" + searchPhraseValue);
 
-    if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
-      this.searching = false;
-      this.noResults = true;
-      return this.msgs.push({severity: 'error', summary: 'Unsupported syntax' + ':', detail: 'Please click on the link <a href="#help" class="color-white"> Search Rules</a> for more information.'});
-    }
-
     return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
       .subscribe(
         searchResults => that.onSuccess(searchResults),
-        error => that.onError(error)
+        error => that.onError(error,this.searchValue,searchPhraseValue)
       );
-
   }
 
   getTaxonomySuggestions() {
