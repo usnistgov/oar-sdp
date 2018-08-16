@@ -35,7 +35,6 @@ export class SearchService {
       searchValue = searchValue.split("&").join(' ');
     }
 
-    if (!_.isEmpty(searchValue)) {
       let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
       //let opArray = ['AND','NOT','OR','and','not','or']
       //let filteredArray = _.difference(parameters, opArray);
@@ -98,7 +97,6 @@ export class SearchService {
       return this.http.get(this.RMMAPIURL + 'records?' + searchPhraseValue + finalKeyValueStr + 'topic.tag=' + searchTaxonomyKey)
         .map((res: Response) => res.json().ResultData)
         .catch((error: any) => Observable.throw(error.json()));
-    }
   }
 
   /**
