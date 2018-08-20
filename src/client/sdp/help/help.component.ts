@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild, ElementRef} from '@angular/core';
 import { Config } from '../shared/index';
 
 /**
@@ -10,4 +10,27 @@ import { Config } from '../shared/index';
   templateUrl: 'help.component.html',
   styleUrls: ['help.component.css']
 })
-export class HelpComponent { }
+export class HelpComponent {
+
+  @ViewChild('howToSearch') public howToSearch:ElementRef;
+  @ViewChild('contactUs') public contactUs:ElementRef;
+
+  public HelpComponent () {
+    this.goToHowToSearch();
+  }
+
+  public goToContactUs():void {
+    setImmediate(() => {
+      this.contactUs.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+    });
+  }
+  public goToHowToSearch():void {
+    setImmediate(() => {
+      this.howToSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+    });
+  }
+
+
+
+
+}

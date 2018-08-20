@@ -160,3 +160,14 @@ input[type="file"] {
 :host /deep/ .ui-message-text {
   vertical-align:top
 }
+
+.how-to-build-link{
+  color: #0f4a65;
+  text-decoration: underline;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.how-to-build {
+  padding-top:15px;
+}

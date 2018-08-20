@@ -26,28 +26,27 @@
 <div class="card">
   <div class="ui-g">
     <div class="ui-g-12">
-      <div class="ui-g-12 ui-md-8 ui-lg-8">
-        <div id="contents">
-          <table>
-            <tr>
-              <td>
-                <ul class="links">
-                  <li class="links"> <a href="#howtosearch"> How to Search</a> <br>
-                    <span class="description"> Syntax Rules for Search </span>
-                  </li>
-                  <li class="links"> <a href="#!"> FAQ</a> <br>
-                    <span class="description"> Frequently asked questions </span>
-                  </li>
-                  <li class="links"> <a href="#contactus"> Contact Us</a> <br>
-                    <span class="description"> Site feedback and Support</span>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div id="howtosearch">
-          <p align="left"><strong>SDP Search Rules</strong></p>
+
+      <div class="ui-g-12 ui-md-3 ui-lg-4">
+        <ul class="links">
+          <li class="links" (click)="goToHowToSearch()"> <a> How to Search</a> <br>
+            <span class="description"> Syntax Rules for Search </span>
+          </li>
+          <li class="links"> <a> FAQ</a> <br>
+            <span class="description"> Frequently Asked Questions </span>
+          </li>
+          <li class="links" (click)="goToContactUs()"> <a> Contact Us</a> <br>
+            <span class="description"> Site Feedback and Support</span>
+          </li>
+        </ul>
+      </div>
+
+
+      <div class="ui-g-12 ui-md-9 ui-lg-8">
+        <div #howToSearch id="howToSearch" class="section">
+          <h1>Advanced Search Rules</h1>
+          <hr />
+          <div class="content">
           <p>These rules govern the syntax for a search typed into the SDP search box.</p>
           <ol class="sr">
             <li>A query is made up of a series of tokens delimited (in the absense of quotes) by one or more spaces. A pair of quotes (containing other text) delimits a single token.&nbsp; An unpaired quote is taken a literal quote character that does not affect the delimiting of tokens.</li>
@@ -80,75 +79,80 @@
               </ol>
             </li>
           </ol>
-          <p>Examples</p>
-          <table width="623" border="1">
+            <h2><i>Examples</i></h2>
+          <table width="90%" border="1" id="examples">
+            <thead>
+            <tr>
+              <th width="20%">
+               Search Criteria
+              </th>
+              <th width="30%">
+                Keywords
+              </th>
+              <th width="50%">
+                Description
+              </th>
+            </tr>
+            </thead>
             <tbody>
             <tr>
-              <td width="112">
-                <p><strong>Search Criteria</strong></p>
-              </td>
-              <td width="131">
-                <p><strong>Keywords</strong></p>
-              </td>
-              <td width="380">
-                <p><strong>Description</strong></p>
-              </td>
-            </tr>
-            <tr>
-              <td width="112">
+              <td width="20%">
                 <p>Individual terms</p>
               </td>
-              <td width="131">
+              <td width="30%">
                 <p>NIST Chemistry</p>
               </td>
-              <td width="380">
+              <td width="50%">
                 <p>Records that include either &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo; are returned.</p>
               </td>
             </tr>
             <tr>
-              <td width="112">
+              <td width="20%">
                 <p>Phrase</p>
               </td>
-              <td width="131">
+              <td width="30%">
                 <p>&ldquo;NIST Chemistry&rdquo;</p>
               </td>
-              <td width="380">
+              <td width="50%">
                 <p>Records that contain the phrase &ldquo;NIST Chemistry&rdquo; (the two words adjacent to each other in that order) will be returned.&nbsp;</p>
               </td>
             </tr>
             <tr>
-              <td width="112">
+              <td width="20%">
                 <p>Phrase with Individual terms</p>
               </td>
-              <td width="131">
+              <td width="30%">
                 <p>&ldquo;NIST Chemistry&rdquo; Physics</p>
               </td>
-              <td width="380">
+              <td width="50%">
                 <p>Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND (&ldquo;Physics&rdquo; OR &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo;); That is, returned records will contain the phrase &ldquo;NIST Chemistry&rdquo;; they may contain &ldquo;Physics&rdquo;.</p>
               </td>
             </tr>
             <tr>
-              <td width="112">
+              <td width="20%">
                 <p>Key Value pair</p>
               </td>
-              <td width="131">
+              <td width="30%">
                 <p>ContactPoint.fn = &ldquo;Peter Linstrom&rdquo;</p>
               </td>
-              <td width="380">
+              <td width="50%">
                 <p>Records whose field, ContactPoint.fn, contains &ldquo;Peter Linstrom&rdquo; are returned.</p>
               </td>
             </tr>
             </tbody>
           </table>
-          <p>&nbsp;</p>
+          </div>
         </div>
-        <div id="contactus">
-          <p align="left"><strong>Contact Us</strong></p>
+        <div #contactUs id="contactUs" class="section">
+          <h1>Contact Us</h1>
+          <hr />
+          <div class="content">
           <p> For comments or questions, please contact the support team at <a href="mailto:datasupport@nist.gov?Subject=SDP">datasupport@nist.gov</a>.
            </p>
+          </div>
         </div>
       </div>
-      <div class="EmptyBox40"></div>
+       <div class="EmptyBox40"></div>
       <div class="ui-g-12 ui-md-6 ui-lg-1">
       </div>
     </div>

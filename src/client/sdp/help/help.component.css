@@ -1,14 +1,16 @@
-:host {
-  display: block;
+
+
+#examples thead {
+  background-color: #c7c7c7;
+  color: white;
+  font-weight: bold;
+  border-color:grey;
 }
 
-h2 {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.005em;
-  margin-bottom: 0;
-  margin-top: 0.83em;
+#examples thead tr {
+  height:30px;
 }
+
 
 :host /deep/ .breadcrumb {
   background-color: #153971;
@@ -19,27 +21,23 @@ h2 {
   font-weight: 300;
 }
 
-/* override some styles */
-body {
-  font-family: Arial, Helvetica, Geneva, sans-serif;
-}
-
 a:link, a:visited {
   font-weight: bold;
 }
 
-div#footer a:link, div#footer a:visited {
-  font-weight: normal;
+ul.links li {
+  font-size:20px;
+  margin-top:10px;
 }
 
-div#contents {
-  margin-left: 0px;
-  clear: both;
+ol.sr li {
+  margin-top:10px
 }
-div#contents ul.links {
+
+ul.links {
   list-style-type: disc;
 }
-div#contents li.links {
+li.links {
   margin: 0 0 0.8em 0;
 }
 
@@ -48,14 +46,20 @@ div#contents li.links {
   font-size: 90%;
 }
 
-ol.sr {
-  counter-reset: item
+div.section h1 {
+  font-weight:600;
+  font-size: 30px;
 }
 
-li.sr {
-  display: block
+
+div.section .content *{
+  font-size:20px
 }
 
-li.sr:before {
-  content: counters(item, ".") " "; counter-increment: item
+div.section {
+  margin-bottom: 20px;
+}
+
+li {
+  cursor:pointer;
 }
