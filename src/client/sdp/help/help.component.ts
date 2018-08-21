@@ -24,19 +24,19 @@ export class HelpComponent {
 
   public goToContactUs():void {
     setImmediate(() => {
-      this.contactUs.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+      this.contactUs.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     });
   }
   public goToHowToSearch():void {
     setImmediate(() => {
-      this.howToSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+      this.howToSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     });
   }
 
 
   public goToHowToAdvancedSearch():void {
     setImmediate(() => {
-      this.howToBuildAdvanceSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+      this.howToBuildAdvanceSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
     });
   }
 
