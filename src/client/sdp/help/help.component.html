@@ -12,6 +12,7 @@
   }
 </script>
 
+<div class="sdp-help-page">
 <div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
   <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em">
     <label style="font-size: xx-large;float: left;display: block;"><i class="faa faa-question faa-lg"></i> Help</label>
@@ -27,134 +28,216 @@
   <div class="ui-g">
     <div class="ui-g-12">
 
-      <div class="ui-g-12 ui-md-3 ui-lg-4">
+      <div class="ui-g-12 ui-md-3 ui-lg-3 help-menu">
         <ul class="links">
-          <li class="links" (click)="goToHowToSearch()"> <a> How to Search</a> <br>
+
+          <li class="links" (click)="goToHowToAdvancedSearch()"><a> How to build Advanced Search Queries</a> <br>
+            <span class="description"> Using the Advanced Search Builder</span>
+          </li>
+          <li class="links" (click)="goToHowToSearch()"><a> How to Search</a> <br>
             <span class="description"> Syntax Rules for Search </span>
           </li>
-          <li class="links"> <a> FAQ</a> <br>
+          <li class="links"><a> FAQ</a> <br>
             <span class="description"> Frequently Asked Questions </span>
           </li>
-          <li class="links" (click)="goToContactUs()"> <a> Contact Us</a> <br>
+          <li class="links" (click)="goToContactUs()"><a> Contact Us</a> <br>
             <span class="description"> Site Feedback and Support</span>
           </li>
         </ul>
       </div>
 
 
-      <div class="ui-g-12 ui-md-9 ui-lg-8">
-        <div #howToSearch id="howToSearch" class="section">
-          <h1>Advanced Search Rules</h1>
-          <hr />
+      <div class="ui-g-12 ui-md-9 ui-lg-9 help-content">
+
+        <div #howToBuildAdvanceSearch id="howToBuildAdvanceSearch" class="section">
+          <h1>How to build Advanced Search Queries</h1>
+          <hr/>
           <div class="content">
-          <p>These rules govern the syntax for a search typed into the SDP search box.</p>
-          <ol class="sr">
-            <li>A query is made up of a series of tokens delimited (in the absense of quotes) by one or more spaces. A pair of quotes (containing other text) delimits a single token.&nbsp; An unpaired quote is taken a literal quote character that does not affect the delimiting of tokens.</li>
-            <li>Each token represents a constraint on the query; the format determines the type of query:
-              <ol class="sr">
-                <li>single word &ndash; this is interpreted as a term to be matched to any word in the record</li>
-                <li>quoted phrase &ndash; the characters between the quotes are treated as a phrase that must appear exactly in the record in order to match</li>
-                <li><em>and</em>, <em>AND</em>, <em>or</em>, <em>OR</em> &ndash; these literal words correspond to constraint joining operators (see 3.)</li>
-                <li>key=value &ndash; this is interpreted as constraint against a specific field in the record.
-                  <ol class="sr">
-                    <li>The value is either a single word or a quoted phrase</li>
-                    <li>For a record to match, the field given by key must contain the value.</li>
-                  </ol>
-                </li>
-              </ol>
-            <li>The constraints are joined together as follows:*
-              <ol class="sr">
-                <li>All single words and quoted phrase constraints (2.2) are joined together via a space (which means AND in this context) and set as the value to the searchphrase constraint.*
-                  <ol class="sr">
-                    <li>*this is a current limitation of the RMM service</li>
-                  </ol>
-                </li>
-                <li>If a joining operator token appears between two other tokens, those constraints are joined by that logical operator.
-                  <ol class="sr">
-                    <li>AND, and &ndash; intrepreted as a logical AND of the two constraints</li>
-                    <li>OR, or &ndash; interpreted as a logical OR of the two constraints</li>
-                  </ol>
-                </li>
-                <li>Two non-joining operator tokens next to each other are implicitly joined by a logical OR. <br /> </li>
-              </ol>
-            </li>
-          </ol>
-            <h2><i>Examples</i></h2>
-          <table width="90%" border="1" id="examples">
-            <thead>
-            <tr>
-              <th width="20%">
-               Search Criteria
-              </th>
-              <th width="30%">
-                Keywords
-              </th>
-              <th width="50%">
-                Description
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td width="20%">
-                <p>Individual terms</p>
-              </td>
-              <td width="30%">
-                <p>NIST Chemistry</p>
-              </td>
-              <td width="50%">
-                <p>Records that include either &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo; are returned.</p>
-              </td>
-            </tr>
-            <tr>
-              <td width="20%">
-                <p>Phrase</p>
-              </td>
-              <td width="30%">
-                <p>&ldquo;NIST Chemistry&rdquo;</p>
-              </td>
-              <td width="50%">
-                <p>Records that contain the phrase &ldquo;NIST Chemistry&rdquo; (the two words adjacent to each other in that order) will be returned.&nbsp;</p>
-              </td>
-            </tr>
-            <tr>
-              <td width="20%">
-                <p>Phrase with Individual terms</p>
-              </td>
-              <td width="30%">
-                <p>&ldquo;NIST Chemistry&rdquo; Physics</p>
-              </td>
-              <td width="50%">
-                <p>Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND (&ldquo;Physics&rdquo; OR &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo;); That is, returned records will contain the phrase &ldquo;NIST Chemistry&rdquo;; they may contain &ldquo;Physics&rdquo;.</p>
-              </td>
-            </tr>
-            <tr>
-              <td width="20%">
-                <p>Key Value pair</p>
-              </td>
-              <td width="30%">
-                <p>ContactPoint.fn = &ldquo;Peter Linstrom&rdquo;</p>
-              </td>
-              <td width="50%">
-                <p>Records whose field, ContactPoint.fn, contains &ldquo;Peter Linstrom&rdquo; are returned.</p>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+            <div class="adv-step">
+              <p>
+                The Science Data Portal provides an advanced query building feature for more specifically directed
+                searches to the underlying NIST public data repository records through a web interface. Through the
+                Advanced Search Builder interface, users have the capability of constructing a query and if desired,
+                saving this in their browser cache. To create an Advanced Query, the user must first Click on the +
+                Create Query as shown below.
+              </p>
+              <img class="adv-img" srcset="./assets/images/advSearch1.png" alt="How to build Advanced Search Step 1">
+            </div>
+
+            <div class="adv-step">
+              <p>
+                Selecting the +Create New Field will open up the editor for the query entry boxes in the table.  This will open a query construction table that allows users to select a <b>Field Type</b> from a drop down list of field names,  and enter the value in the <b>Field Text</b> box.
+              </p>
+              <img class="adv-img" srcset="./assets/images/advSearch2.png" alt="How to build Advanced Search Step 2">
+            </div>
+
+            <div class="adv-step">
+              <p>
+                Select the <b>Field Type</b> from the drop down box ,   then type in the interested search text in <b>Field Text</b> box.   The Query will automatically be populated in the main Search box in the top middle of the page.    Multiple fields can be queried by selecting the Action button to add another row,  i.e. another field.    Similarly,   fields may be removed from the query by Selecting the Action remove button to the right of the row.
+              </p>
+             <img class="adv-img" srcset="./assets/images/advSearch3.png" alt="How to build Advanced Search Step 3">
+            </div>
+
+            <div class="adv-step">
+              <p>
+                Learning from the patterns using the Advanced Search Builder,   in addition to the <b>Search Query Rules</b>,   users may enter their advanced query directly in the Search box.   Users may also Save their queries for future use by selecting the Save button below the Query construction table.   The user may name their query,   save it,   and then it will appear in the Queries table on the left side for future selection or modification.  The saved query will remain available through the application browser window until the user browser cache is cleared.  A Saved Query will show in the top banner with a count.
+              </p>
+              <img class="adv-img" srcset="./assets/images/advSearch4.png" alt="How to build Advanced Search Step 4">
+            </div>
+
+
+            <div class="adv-step">
+              <p>
+                To execute the Advanced Query,   a user should click on the main Search button to see the results.   Upon execution the search results page listing will appear.              </p>
+             <img class="adv-img" srcset="./assets/images/advSearch5.png" alt="How to build Advanced Search Step 5">
+            </div>
+
+            <div class="adv-step">
+              <p>
+                A user can go directly to their query by selecting on Queries and then selecting the More button to go to the query builder interface.    An existing query may be modified,  deleted or saved again to change the field value and conduct additional searches.
+              </p>
+              <img class="adv-img" srcset="./assets/images/advSearch6.png" alt="How to build Advanced Search Step 6">
+            </div>
+
+
+
           </div>
         </div>
+
+
+        <div #howToSearch id="howToSearch" class="section">
+
+          <h1>Advanced Search Rules</h1>
+          <hr/>
+          <div class="content">
+            <p>These rules govern the syntax for a search typed into the SDP search box.</p>
+            <ol class="sr">
+              <li>A query is made up of a series of tokens delimited (in the absense of quotes) by one or more spaces. A
+                pair of quotes (containing other text) delimits a single token.&nbsp; An unpaired quote is taken a
+                literal quote character that does not affect the delimiting of tokens.
+              </li>
+              <li>Each token represents a constraint on the query; the format determines the type of query:
+                <ol class="sr">
+                  <li>single word &ndash; this is interpreted as a term to be matched to any word in the record</li>
+                  <li>quoted phrase &ndash; the characters between the quotes are treated as a phrase that must appear
+                    exactly in the record in order to match
+                  </li>
+                  <li><em>and</em>, <em>AND</em>, <em>or</em>, <em>OR</em> &ndash; these literal words correspond to
+                    constraint joining operators (see 3.)
+                  </li>
+                  <li>key=value &ndash; this is interpreted as constraint against a specific field in the record.
+                    <ol class="sr">
+                      <li>The value is either a single word or a quoted phrase</li>
+                      <li>For a record to match, the field given by key must contain the value.</li>
+                    </ol>
+                  </li>
+                </ol>
+              <li>The constraints are joined together as follows:*
+                <ol class="sr">
+                  <li>All single words and quoted phrase constraints (2.2) are joined together via a space (which means
+                    AND in this context) and set as the value to the searchphrase constraint.*
+                    <ol class="sr">
+                      <li>*this is a current limitation of the RMM service</li>
+                    </ol>
+                  </li>
+                  <li>If a joining operator token appears between two other tokens, those constraints are joined by that
+                    logical operator.
+                    <ol class="sr">
+                      <li>AND, and &ndash; intrepreted as a logical AND of the two constraints</li>
+                      <li>OR, or &ndash; interpreted as a logical OR of the two constraints</li>
+                    </ol>
+                  </li>
+                  <li>Two non-joining operator tokens next to each other are implicitly joined by a logical OR. <br/>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+            <h2><i>Examples</i></h2>
+            <table width="90%" border="1" id="examples">
+              <thead>
+              <tr>
+                <th width="20%">
+                  Search Criteria
+                </th>
+                <th width="30%">
+                  Keywords
+                </th>
+                <th width="50%">
+                  Description
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td width="20%">
+                  <p>Individual terms</p>
+                </td>
+                <td width="30%">
+                  <p>NIST Chemistry</p>
+                </td>
+                <td width="50%">
+                  <p>Records that include either &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo; are returned.</p>
+                </td>
+              </tr>
+              <tr>
+                <td width="20%">
+                  <p>Phrase</p>
+                </td>
+                <td width="30%">
+                  <p>&ldquo;NIST Chemistry&rdquo;</p>
+                </td>
+                <td width="50%">
+                  <p>Records that contain the phrase &ldquo;NIST Chemistry&rdquo; (the two words adjacent to each other
+                    in that order) will be returned.&nbsp;</p>
+                </td>
+              </tr>
+              <tr>
+                <td width="20%">
+                  <p>Phrase with Individual terms</p>
+                </td>
+                <td width="30%">
+                  <p>&ldquo;NIST Chemistry&rdquo; Physics</p>
+                </td>
+                <td width="50%">
+                  <p>Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND (&ldquo;Physics&rdquo;
+                    OR &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo;); That is, returned records will contain the
+                    phrase &ldquo;NIST Chemistry&rdquo;; they may contain &ldquo;Physics&rdquo;.</p>
+                </td>
+              </tr>
+              <tr>
+                <td width="20%">
+                  <p>Key Value pair</p>
+                </td>
+                <td width="30%">
+                  <p>ContactPoint.fn = &ldquo;Peter Linstrom&rdquo;</p>
+                </td>
+                <td width="50%">
+                  <p>Records whose field, ContactPoint.fn, contains &ldquo;Peter Linstrom&rdquo; are returned.</p>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
         <div #contactUs id="contactUs" class="section">
           <h1>Contact Us</h1>
-          <hr />
+          <hr/>
           <div class="content">
-          <p> For comments or questions, please contact the support team at <a href="mailto:datasupport@nist.gov?Subject=SDP">datasupport@nist.gov</a>.
-           </p>
+            <p> For comments or questions, please contact the support team at <a
+              href="mailto:datasupport@nist.gov?Subject=SDP">datasupport@nist.gov</a>.
+            </p>
           </div>
         </div>
-      </div>
-       <div class="EmptyBox40"></div>
-      <div class="ui-g-12 ui-md-6 ui-lg-1">
+
+
+        <div class="EmptyBox40"></div>
+        <div class="ui-g-12 ui-md-6 ui-lg-1">
+        </div>
       </div>
     </div>
   </div>
+</div>
 </div>

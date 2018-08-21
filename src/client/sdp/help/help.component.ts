@@ -1,5 +1,6 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import { Config } from '../shared/index';
+import { environment } from '../environment';
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -14,9 +15,11 @@ export class HelpComponent {
 
   @ViewChild('howToSearch') public howToSearch:ElementRef;
   @ViewChild('contactUs') public contactUs:ElementRef;
+  @ViewChild('howToBuildAdvanceSearch') public howToBuildAdvanceSearch:ElementRef;
+
 
   public HelpComponent () {
-    this.goToHowToSearch();
+    this.goToHowToAdvancedSearch();
   }
 
   public goToContactUs():void {
@@ -29,6 +32,16 @@ export class HelpComponent {
       this.howToSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
     });
   }
+
+
+  public goToHowToAdvancedSearch():void {
+    setImmediate(() => {
+      this.howToBuildAdvanceSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+    });
+  }
+
+
+
 
 
 
