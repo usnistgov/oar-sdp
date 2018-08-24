@@ -1,6 +1,8 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import { Config } from '../shared/index';
 import { environment } from '../environment';
+import {ActivatedRoute, NavigationEnd} from "@angular/router";
+import { Router } from '@angular/router';
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -13,37 +15,23 @@ import { environment } from '../environment';
 })
 export class HelpComponent {
 
-  @ViewChild('howToSearch') public howToSearch:ElementRef;
-  @ViewChild('contactUs') public contactUs:ElementRef;
-  @ViewChild('howToBuildAdvanceSearch') public howToBuildAdvanceSearch:ElementRef;
+  currentView = null;
 
-
-  public HelpComponent () {
-    this.goToHowToAdvancedSearch();
-  }
-
-  public goToContactUs():void {
-    setImmediate(() => {
-      this.contactUs.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-    });
-  }
-  public goToHowToSearch():void {
-    setImmediate(() => {
-      this.howToSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+  constructor (private route: ActivatedRoute,private router: Router) {
+    router.events.subscribe(event => {
+      //console.log(event);
+      if (event instanceof NavigationEnd ) {
+        var currentUrl=event.url;
+        this.currentView = currentUrl.substring(currentUrl.indexOf("/help/") + 6);
+        if(this.currentView === ""){
+          this.currentView = "how-advanced-search-builder";
+        }
+      }
     });
   }
 
-
-  public goToHowToAdvancedSearch():void {
-    setImmediate(() => {
-      this.howToBuildAdvanceSearch.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-    });
+  private navigateToPage(page: string): void {
+     this.router.navigateByUrl("/help/"+ page)
   }
-
-
-
-
-
-
 
 }
