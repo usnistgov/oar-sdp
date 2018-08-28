@@ -134,7 +134,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(ngZone:NgZone , private router: ActivatedRoute, private location: Location, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService, public searchQueryService: SearchQueryService) {
+  constructor(ngZone:NgZone , private router: ActivatedRoute, private location: Location, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService, public searchQueryService: SearchQueryService,private actualRouter: Router) {
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -1096,8 +1096,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         if (!_.isEmpty(this.selectedKeywords)) {
           params.append('keywords', this.selectedKeywords.toString());
         }
-
-        window.history.pushState(null, null, "#" + this.router.url + "&" + params);
+        window.history.pushState(null, null, "#" + this.actualRouter.url.toString() + "&" + params);
       }
   }
 
