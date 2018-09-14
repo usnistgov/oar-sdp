@@ -80,9 +80,7 @@ import { TreeModule,TreeNode, Tree, MenuItem } from 'primeng/primeng';
              <br>
             </div> 
             <div *ngIf="files.length != 0">           
-                <h3 id="files" name="files"><b>Files</b>
-                   <a href="{{distdownload}}" class="faa faa-file-archive-o" title="Download All Files" ></a>
-                </h3>
+                <h3 id="files" name="files"><b>Files</b></h3>
                 <div class="ui-g">
                     <div class="ui-g-6 ui-md-6 ui-lg-6 ui-sm-12">
                         <p-tree [value]="files" selectionMode="single" [(selection)]="selectedFile" (onNodeSelect)="nodeSelect($event)">
