@@ -331,12 +331,14 @@ export class LandingPanelComponent implements OnInit, OnDestroy {
       
       var itemsMenu: any[] = [];
       var homepage = this.createMenuItem("Visit Home Page",  "faa faa-external-link", '',this.recordDisplay['landingPage']);
-      var download = this.createMenuItem("Download all data","faa faa-file-archive-o", '', this.distdownload);
+      // var download = this.createMenuItem("Download all data","faa faa-file-archive-o", '', this.distdownload);
       var metadata = this.createMenuItem("Export JSON", "faa faa-file-o",'',this.serviceApi);
     
         itemsMenu.push(homepage);
-        if (this.files.length != 0)
-            itemsMenu.push(download);
+        // Disabling download-all; problematic implementation!
+        //
+        // if (this.files.length != 0)
+        //    itemsMenu.push(download);
         itemsMenu.push(metadata);   
          
       this.rightmenu = [{
