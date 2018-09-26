@@ -17,6 +17,20 @@ export const HelpRoutes: Route[] = [
         outlet: 'route1'
       }
     ]
+  },
+  {
+    path: 'help',
+    children: [
+      {
+        path: '',
+        component: HelpComponent
+      },
+      {
+        path: '',
+        component: SearchTopBarComponent,
+        outlet: 'route1'
+      }
+    ]
   }
 ];
 
