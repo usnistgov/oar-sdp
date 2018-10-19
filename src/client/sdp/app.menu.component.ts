@@ -52,7 +52,6 @@ export class AppMenuComponent implements OnInit {
         items: [
           {label: 'About NIST Data', routerLink: ['/about']},
           {label: 'Policy', routerLink: ['/policy']},
-          {label: 'FAQ', routerLink: ['/faq']},
           {label: 'Help', routerLink: ['/help']},
         ]
       },

@@ -32,7 +32,7 @@ export class AdvSearchComponent implements OnInit {
     taxonomies: SelectItem[];
     advSearchList: SelectItem[] = [];
     suggestedTaxonomyList: string[];
-    suggestedTaxonomies: string[];
+    suggestedTaxonomies: string[] = [];
     textRotate: boolean = true;
     searchTaxonomyKey: string;
     display: boolean = false;
@@ -323,7 +323,6 @@ export class AdvSearchComponent implements OnInit {
    * Set the display to show the examples dialog
    */
   toggleTextRotate() {
-    console.log("hello" + this.textRotate);
     if (this.searchValue == "") {
       this.textRotate = !this.textRotate;
     }
@@ -475,14 +474,14 @@ export class AdvSearchComponent implements OnInit {
   }
 
   clearText(){
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    var field = (<HTMLInputElement>document.getElementById('advsearchinput'));
     if (!Boolean(this.searchValue.trim())) {
       field.value = ' ';
     }
   }
 
   addPlaceholder() {
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    var field = (<HTMLInputElement>document.getElementById('advsearchinput'));
     if (!Boolean(this.searchValue)) {
       field.value = '';
     }
