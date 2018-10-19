@@ -209,3 +209,39 @@ hr {
   padding-left: 0px;
   padding-bottom: 0px;
 }
+
+@media screen and (min-width: 901px) {
+  button.searchButton {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  button.searchButton {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 1301px) {
+  p-dropdown {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  p-dropdown {
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 1301px) {
+  p-autoComplete {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  p-autoComplete {
+    font-size: 13px;
+  }
+}

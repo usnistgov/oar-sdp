@@ -119,8 +119,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   width:string;
   isActive: boolean = true;
 
-  filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
-  resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
+  filterClass:string = "ui-g-12 ui-md-7 ui-lg-9";
+  resultsClass:string = "ui-g-12 ui-md-7 ui-lg-9";
   queryName:string;
   queryValue:string;
   displayQuery: boolean = false;
@@ -217,7 +217,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.resultsClass = "ui-g-12 ui-md-11 ui-lgc-11";
       this.filterClass = "ui-g-12 ui-md-11 ui-lgc-1";
     } else {
-      this.resultsClass = "ui-g-12 ui-md-9 ui-lg-9";
+      this.resultsClass = "ui-g-12 ui-md-7 ui-lg-9";
     }
   }
 
@@ -441,7 +441,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     if (this.filteredResults.length < 5) {
       this.rows = 20;
     }
-    this.searching = false;
+    // CL: this line is causing the spinner not showing up sometime
+    // this.searching = false;
   }
 
   /**
@@ -837,7 +838,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let compType = '';
     let resourceType = '';
 
-
     // Resource types selected
     if (typeof this.selectedResourceTypeNode != 'undefined') {
       if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
@@ -887,7 +887,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             themeType += theme.data + ',';
           }
         }
-
 
         this.filteredResults = this.filterByThemes(this.filteredResults, this.selectedThemes);
         this.filteredResults = this.filteredResults.filter(this.onlyUnique);
@@ -1358,47 +1357,50 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
-        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-          this.searchValue =params['q'];
-          this.searchTaxonomyKey=params['key'];
-          this.queryAdvSearch = params['queryAdvSearch'];
-          this.page = params['page'];
-          this.searchResType = params['resType'];
-          this.searchResTopics = params['themes'];
-          this.searchRecord = params['compType'];
-          this.searchAuthors = params['authors'];
-          this.searchKeywords = params['keywords'];
+    this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
+      this.searchValue =params['q'];
+      this.searchTaxonomyKey=params['key'];
+      this.queryAdvSearch = params['queryAdvSearch'];
+      this.page = params['page'];
+      this.searchResType = params['resType'];
+      this.searchResTopics = params['themes'];
+      this.searchRecord = params['compType'];
+      this.searchAuthors = params['authors'];
+      this.searchKeywords = params['keywords'];
 
-          //this.resourceTypeTree.push(params['resType']);
-          this.getTaxonomies();
+      //this.resourceTypeTree.push(params['resType']);
+      this.getTaxonomies();
 
-          this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
-          console.log('authors inside init' + params['authors']);
-          this.selectedResourceTypeNode = [];
-          this.selectedThemesNode = [];
-          this.selectedComponentsNode = [];
-          setTimeout(()=> {
-            if ((!_.isEmpty(this.searchResType))) {
-              this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
-            }
-            if ((!_.isEmpty(this.searchResTopics))) {
-              this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
-            }
-            if ((!_.isEmpty(this.searchRecord))) {
-              this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
-            }
-            if ((!_.isEmpty(this.searchAuthors))) {
-              this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
-            }
-            if (!_.isEmpty(this.searchKeywords)) {
-              this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
-            }
-          },2000);
-          setTimeout(()=> {
-            this.filterResults('','');
-          },2000);
-
-        });
+      this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
+      console.log('authors inside init' + params['authors']);
+      this.selectedResourceTypeNode = [];
+      this.selectedThemesNode = [];
+      this.selectedComponentsNode = [];
+      setTimeout(()=> {
+        if ((!_.isEmpty(this.searchResType))) {
+          this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
+        }
+        if ((!_.isEmpty(this.searchResTopics))) {
+          this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
+        }
+        if ((!_.isEmpty(this.searchRecord))) {
+          this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
+        }
+        if ((!_.isEmpty(this.searchAuthors))) {
+          this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
+        }
+        if (!_.isEmpty(this.searchKeywords)) {
+          this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
+        }
+        if ((!_.isEmpty(this.searchTaxonomyKey))) {
+          this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchTaxonomyKey.toString().replace(/\+/g,  " ")));
+        }
+      },2000);
+      setTimeout(()=> {
+        this.filterResults('','');
+        this.searching = false;
+      },2000)
+    });
   }
 
   setResourceTypeSelection(node:TreeNode, resType:string) {
