@@ -288,3 +288,8 @@ background-cyanblue {
     font-size: 13px;
   }
 }
+
+:host /deep/ .color-white {
+  color: #fff;
+  font-weight: bold;
+}
