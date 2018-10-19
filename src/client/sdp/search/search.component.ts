@@ -119,6 +119,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   width:string;
   isActive: boolean = true;
 
+  showComponents: string[] = ["Data File", "Access Page", "Subcollection"];
+
   filterClass:string = "ui-g-12 ui-md-9 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-9 ui-lg-9";
   queryName:string;
@@ -608,8 +610,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.componentsWithCount = [];
     for (let comp of this.components) {
       let count: any;
-      count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
-      this.componentsWithCount.push({label: comp.label + "-" + count, data: comp.value});
+      if(this.showComponents.includes(comp.label)){
+        count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
+        this.componentsWithCount.push({label: comp.label + "-" + count, data: comp.value});
+      }
     }
   }
 
