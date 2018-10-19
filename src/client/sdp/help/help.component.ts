@@ -31,7 +31,7 @@ export class HelpComponent {
   }
 
   public navigateToPage(page: string): void {
-     this.router.navigateByUrl("/help/"+ page)
+     this.router.navigateByUrl("/help/"+ page);
   }
 
 }
