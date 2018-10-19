@@ -23,7 +23,7 @@
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
           <div class="inner-addon left-addon element " style="background-color: #FFFFFF" >
             <i class="glyphicon glyphicon-search"></i><label for="searchinput" class="hideLabel">Search Input</label><p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+        'font-style': 'italic'}"   [(ngModel)]="searchValue"  (keyup.enter) = "doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
@@ -34,7 +34,7 @@
           </p-dropdown>
         </div>
         <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <button class="searchButton" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>          </div>
+          <button class="searchButton" (click)="doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>          </div>
         <div class="ui-g-12 ui-md-2">
           &nbsp;&nbsp;<a href="#" [routerLink] = "['/advanced']" style="color: #1f496e;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search </a>
         </div>

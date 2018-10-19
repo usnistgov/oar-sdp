@@ -484,6 +484,40 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       );
   }
 
+  doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string){
+
+    this.search(searchValue, searchTaxonomyKey, queryAdvSearch);
+
+    this.selectedResourceTypeNode = [];
+    this.selectedThemesNode = [];
+    this.selectedComponentsNode = [];
+    setTimeout(()=> {
+      if ((!_.isEmpty(this.searchResType))) {
+        this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
+      }
+      if ((!_.isEmpty(this.searchResTopics))) {
+        this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
+      }
+      if ((!_.isEmpty(this.searchRecord))) {
+        this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
+      }
+      if ((!_.isEmpty(this.searchAuthors))) {
+        this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
+      }
+      if (!_.isEmpty(this.searchKeywords)) {
+        this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
+      }
+      if ((!_.isEmpty(this.searchTaxonomyKey))) {
+        this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchTaxonomyKey.toString().replace(/\+/g,  " ")));
+      }
+    },2000);
+    setTimeout(()=> {
+      this.filterResults('','');
+      this.searching = false;
+    },2000)
+
+  }
+
   getTaxonomySuggestions() {
     this.taxonomyListService.get()
       .subscribe(
@@ -1371,35 +1405,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       //this.resourceTypeTree.push(params['resType']);
       this.getTaxonomies();
 
-      this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
+      this.doSearch(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
       console.log('authors inside init' + params['authors']);
-      this.selectedResourceTypeNode = [];
-      this.selectedThemesNode = [];
-      this.selectedComponentsNode = [];
-      setTimeout(()=> {
-        if ((!_.isEmpty(this.searchResType))) {
-          this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
-        }
-        if ((!_.isEmpty(this.searchResTopics))) {
-          this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
-        }
-        if ((!_.isEmpty(this.searchRecord))) {
-          this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
-        }
-        if ((!_.isEmpty(this.searchAuthors))) {
-          this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
-        }
-        if (!_.isEmpty(this.searchKeywords)) {
-          this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
-        }
-        if ((!_.isEmpty(this.searchTaxonomyKey))) {
-          this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchTaxonomyKey.toString().replace(/\+/g,  " ")));
-        }
-      },2000);
-      setTimeout(()=> {
-        this.filterResults('','');
-        this.searching = false;
-      },2000)
     });
   }
 
