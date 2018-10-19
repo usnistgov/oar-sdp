@@ -119,8 +119,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   width:string;
   isActive: boolean = true;
 
+
   filterClass:string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-7 ui-lg-9";
+
+  showComponents: string[] = ["Data File", "Access Page", "Subcollection"];
+
   queryName:string;
   queryValue:string;
   displayQuery: boolean = false;
@@ -134,7 +138,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(ngZone:NgZone , private router: ActivatedRoute, private location: Location, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService, public searchQueryService: SearchQueryService) {
+  constructor(ngZone:NgZone , private router: ActivatedRoute, private location: Location, private el: ElementRef, private ref:ChangeDetectorRef, public taxonomyListService: TaxonomyListService, public searchService: SearchService, public searchFieldsListService: SearchFieldsListService, public searchQueryService: SearchQueryService,private actualRouter: Router) {
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
 
@@ -423,13 +427,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       "expanded": true,
       children: this.themesWithCount
     }];
-    console.log("before");
     this.resourceTypeTree = [{
       label: 'Resource Type -',
       "expanded": true,
       children: this.resourceTypesWithCount
     }];
-    console.log("after" + this.resourceTypeTree);
     if (!compNoData) {
       this.componentsTree = [{
         label: 'Record has -',
@@ -477,11 +479,44 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.searching = true;
     this.keyword = '';
     let that = this;
+    let searchPhraseValue = '';
+    let searchKeyValue = '';
+
+    if (searchValue.includes('&')) {
+      searchValue = searchValue.split("&").join(' ');
+    }
+
+    let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+
+
+    if (!_.isEmpty(parameters)) {
+      for (var i = 0; i < parameters.length; i++) {
+        if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and")) {
+          if (parameters[i].includes("searchphrase")) {
+            searchPhraseValue += parameters[i] + '&';
+          } else {
+            searchKeyValue += parameters[i] + '&';
+          }
+        } else {
+          searchPhraseValue += parameters[i] + '&';
+        }
+      }
+    }
+
+    console.log("searchphrase value" + searchPhraseValue);
+
+    if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
+      this.searching = false;
+      this.noResults = true;
+      return this.msgs.push({severity: 'error', summary: 'Unsupported syntax' + ':', detail: 'Please click on the link <a href="#help" class="color-white"> Search Rules</a> for more information.'});
+    }
+
     return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
       .subscribe(
         searchResults => that.onSuccess(searchResults),
         error => that.onError(error)
       );
+
   }
 
   doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string){
@@ -612,8 +647,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.componentsWithCount = [];
     for (let comp of this.components) {
       let count: any;
-      count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
-      this.componentsWithCount.push({label: comp.label + "-" + count, data: comp.value});
+      if(this.showComponents.includes(comp.label)){
+        count = _.countBy(this.componentsAllArray, _.partial(_.isEqual, comp.value))['true'];
+        this.componentsWithCount.push({label: comp.label + "-" + count, data: comp.value});
+      }
     }
   }
 
@@ -850,8 +887,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log("author" + this.selectedAuthor);
-
     if (type === 'unselectkeyword') {
       if (typeof this.selectedKeywords != 'undefined') {
         let selKeywordsIndex = this.selectedKeywords.indexOf(event);
@@ -879,7 +914,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
-            console.log("restype" + JSON.stringify(res.data));
             resourceType += res.data + ',';
           }
         }
@@ -917,7 +951,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
             themeSelected = true;
             this.selectedThemes.push(theme.data);
-            console.log('theme' + theme.data);
             themeType += theme.data + ',';
           }
         }
@@ -951,7 +984,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let comp of this.selectedComponentsNode) {
           if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
             componentSelected = true;
-            console.log("inside components" + comp.data);
             this.selectedComponents.push(comp.data);
             compType += comp.data + ',';
           }
@@ -1058,8 +1090,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.resourceTypes = this.collectResourceTypes(this.filteredResults);
       this.collectResourceTypesWithCount();
     }
-
-    if (this.componentsWithCount.length == 0)
+    if (_.isEmpty(this.componentsWithCount))
     {
       compNoData = true;
       this.componentsWithCount = [];
@@ -1104,8 +1135,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         if (!_.isEmpty(this.selectedKeywords)) {
           params.append('keywords', this.selectedKeywords.toString());
         }
-
-        window.history.pushState(null, null, "#" + this.router.url + "&" + params);
+        window.history.pushState(null, null, "#" + this.actualRouter.url.toString() + "&" + params);
       }
   }
 
@@ -1201,7 +1231,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     for (let keyw of keywords) {
       if (resultKeywords.indexOf(keyw) === -1)
         return false;
-      console.log("keyword not matched" + keywords);
     }
     return true;
   }
@@ -1243,7 +1272,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         for (let resultItem of searchResults) {
           if (resultItem.keyword && resultItem.keyword !== null &&
             this.containsAllKeywords(resultItem.keyword, selectedKeywords)) {
-            console.log("keyword matched");
             filteredResults.push(resultItem);
           }
         }
@@ -1391,6 +1419,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
+<<<<<<< HEAD
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
       this.searchValue =params['q'];
       this.searchTaxonomyKey=params['key'];
@@ -1408,16 +1437,54 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.doSearch(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
       console.log('authors inside init' + params['authors']);
     });
+=======
+        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
+          this.searchValue =params['q'];
+          this.searchTaxonomyKey=params['key'];
+          this.queryAdvSearch = params['queryAdvSearch'];
+          this.page = params['page'];
+          this.searchResType = params['resType'];
+          this.searchResTopics = params['themes'];
+          this.searchRecord = params['compType'];
+          this.searchAuthors = params['authors'];
+          this.searchKeywords = params['keywords'];
+
+          //this.resourceTypeTree.push(params['resType']);
+          this.getTaxonomies();
+
+          this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
+          this.selectedResourceTypeNode = [];
+          this.selectedThemesNode = [];
+          this.selectedComponentsNode = [];
+          setTimeout(()=> {
+            if ((!_.isEmpty(this.searchResType))) {
+              this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
+            }
+            if ((!_.isEmpty(this.searchResTopics))) {
+              this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
+            }
+            if ((!_.isEmpty(this.searchRecord))) {
+              this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
+            }
+            if ((!_.isEmpty(this.searchAuthors))) {
+              this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
+            }
+            if (!_.isEmpty(this.searchKeywords)) {
+              this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
+            }
+          },4000);
+          setTimeout(()=> {
+            this.filterResults('','');
+          },4000);
+
+        });
+>>>>>>> usnistgov/integration
   }
 
   setResourceTypeSelection(node:TreeNode, resType:string) {
       let resTypeParam = resType.toString().split(',');
       for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
-        console.log('helloooo11111' + this.resourceTypeTree[0].children[i].data);
-        console.log('helloooo22222' + resTypeParam);
-
         if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
-          console.log('helloooo' + this.resourceTypeTree[0].children[i].data);
           this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);
         }
       }

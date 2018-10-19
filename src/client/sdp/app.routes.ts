@@ -9,13 +9,13 @@ import { SearchRoutes } from './search/index';
 import { AdvSearchRoutes } from './adv_search/index';
 
 
-export const routes: Routes = [
-...HomeRoutes,
-...AboutRoutes,
-...FaqRoutes,
-...ApiRoutes,
-...SearchRoutes,
-...AdvSearchRoutes,
-...PolicyRoutes,
-...HelpRoutes,
+export const routes = [
+  ...HomeRoutes,
+  ...AboutRoutes,
+  ...FaqRoutes,
+  ...ApiRoutes,
+  ...SearchRoutes,
+  ...AdvSearchRoutes,
+  ...PolicyRoutes,
+  ...HelpRoutes
 ];
