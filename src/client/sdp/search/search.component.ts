@@ -1419,7 +1419,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getSearchFields();
     this.getTaxonomySuggestions();
-<<<<<<< HEAD
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
       this.searchValue =params['q'];
       this.searchTaxonomyKey=params['key'];
@@ -1437,48 +1436,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.doSearch(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
       console.log('authors inside init' + params['authors']);
     });
-=======
-        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-          this.searchValue =params['q'];
-          this.searchTaxonomyKey=params['key'];
-          this.queryAdvSearch = params['queryAdvSearch'];
-          this.page = params['page'];
-          this.searchResType = params['resType'];
-          this.searchResTopics = params['themes'];
-          this.searchRecord = params['compType'];
-          this.searchAuthors = params['authors'];
-          this.searchKeywords = params['keywords'];
-
-          //this.resourceTypeTree.push(params['resType']);
-          this.getTaxonomies();
-
-          this.search(this.searchValue,this.searchTaxonomyKey,this.queryAdvSearch);
-          this.selectedResourceTypeNode = [];
-          this.selectedThemesNode = [];
-          this.selectedComponentsNode = [];
-          setTimeout(()=> {
-            if ((!_.isEmpty(this.searchResType))) {
-              this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
-            }
-            if ((!_.isEmpty(this.searchResTopics))) {
-              this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
-            }
-            if ((!_.isEmpty(this.searchRecord))) {
-              this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
-            }
-            if ((!_.isEmpty(this.searchAuthors))) {
-              this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
-            }
-            if (!_.isEmpty(this.searchKeywords)) {
-              this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
-            }
-          },4000);
-          setTimeout(()=> {
-            this.filterResults('','');
-          },4000);
-
-        });
->>>>>>> usnistgov/integration
   }
 
   setResourceTypeSelection(node:TreeNode, resType:string) {
