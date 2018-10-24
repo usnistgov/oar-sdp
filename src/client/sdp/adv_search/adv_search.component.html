@@ -29,17 +29,17 @@
   <div class="ui-g ">
     <div class="ui-g-12">
       <div class="ui-g form-group">
-        <div class="ui-g-12 ui-md-2">
+        <div class="ui-g-12 ui-lg-2 ui-md-1">
         </div>
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
           <label for="advsearchinput" class="hideLabel">Search Input</label>
           <div class="inner-addon left-addon " style="background-color: #FFFFFF">
             <i class="glyphicon glyphicon-search"></i>  <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic','font-size': '20px'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" placeholder="" [(ngModel)]="searchValue" inputId="advsearchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+        'font-style': 'italic'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" placeholder="" [(ngModel)]="searchValue" inputId="advsearchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
-        <div class="ui-g-12 ui-md-2" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
+        <div class="ui-g-12 ui-lg-2 ui-md-4" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
           <p-dropdown [options]="taxonomies"  inputId="searchtaxonomy" [style]="{'width':'100%',
         'background-color': '#FFFFFF','height': '42px'
         ,'font-weight': '900','font-style': 'italic','display': 'flex','align-items':'center'}" [(ngModel)]="searchTaxonomyKey" >
