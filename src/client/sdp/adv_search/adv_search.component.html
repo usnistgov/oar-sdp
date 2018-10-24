@@ -35,7 +35,7 @@
           <label for="advsearchinput" class="hideLabel">Search Input</label>
           <div class="inner-addon left-addon " style="background-color: #FFFFFF">
             <i class="glyphicon glyphicon-search"></i>  <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic','font-size': '20px'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" placeholder="" [(ngModel)]="searchValue" inputId="advsearchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+        'font-style': 'italic'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" placeholder="" [(ngModel)]="searchValue" inputId="advsearchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
