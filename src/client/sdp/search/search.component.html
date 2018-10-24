@@ -18,23 +18,23 @@
   <div class="ui-g">
     <div class="ui-g-12 background-gray">
       <div class="ui-g form-group">
-        <div class="ui-g-12 ui-md-2">
+        <div class="ui-g-12 ui-lg-2 ui-md-1">
         </div>
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
           <div class="inner-addon left-addon element " style="background-color: #FFFFFF" >
             <i class="glyphicon glyphicon-search"></i><label for="searchinput" class="hideLabel">Search Input</label><p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic','font-size': '20px'}"   [(ngModel)]="searchValue"  (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+        'font-style': 'italic'}"   [(ngModel)]="searchValue"  (keyup.enter) = "doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
-        <div class="ui-g-12 ui-md-2" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
+        <div class="ui-g-12 ui-lg-2 ui-md-4" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
           <p-dropdown [options]="taxonomies"  [style]="{'width':'100%','display': 'flex','align-items':'center',
         'background-color': '#FFFFFF','height': '42px'
         ,'font-weight': '900','font-style': 'italic'}" [(ngModel)]="searchTaxonomyKey" >
           </p-dropdown>
         </div>
         <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <button class="searchButton" (click)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>          </div>
+          <button class="searchButton" (click)="doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton label="Search" type="submit" ></button>          </div>
         <div class="ui-g-12 ui-md-2">
           &nbsp;&nbsp;<a href="#" [routerLink] = "['/advanced']" style="color: #1f496e;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search </a>
         </div>
@@ -62,21 +62,17 @@
     </div>
     <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
   </div>
-  <div>
-  <div class="ui-g-12" *ngIf = "searching">
-    <div class="ui-g-5"></div>
-      <div class="ui-g-7"><p-progressSpinner></p-progressSpinner>
-      </div>
-  </div>
+  <div class="ui-g" *ngIf = "searching" style="width: mobWidth; height: 50vh; display: flex; justify-content: center; align-items: center;">
+      <p-progressSpinner></p-progressSpinner>
   </div>
   <div *ngIf="!noResults">
     <div *ngIf="filteredResults.length > 0">
       <div class="ui-g " style="background-color: #F8F9F9;">
-        <div *ngIf = "mobWidth <641" class="ui-g-12 ui-md-3 ui-lg-3 collapsed" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;)" >
+        <div *ngIf = "mobWidth <641 && !searching" class="ui-g-12 ui-lg-3 ui-md-5 collapsed" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
           <div class="ui-g my-content-small collapsed" style="padding: 0px;" >
             <div class="ui-g-12" style="padding: 0px;" >
               <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;">
-                <a style="background-color: #606165;color: #FFFFFF;">Filters </a><button type="button" class="btn btn-sm collapsed" data-toggle="collapse" style="background-color: #606165;color: #FFFFFF;padding: 0em;align:left;" data-target="#filter"></button>
+                <a style="background-color: #606165;color: #FFFFFF;">Filters </a><button type="button" class="btn btn-sm collapsed" data-toggle="collapse" style="background-color: #606165;color: #FFFFFF;padding: 0em; align:left;" data-target="#filter"></button>
                 <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF" (click)="$event.preventDefault();clearFilters()" >
                   <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
                   </i>Clear All</a>
@@ -126,7 +122,7 @@
                     <a href="#" (click)="$event.preventDefault();showLessResTopics()" style="background-color: #F8F9F9;color: #1f496e;;padding-left: 50px;">Show Less</a>
                   </div>
                 </div>
-                <div style="border-bottom:.5px solid #e6e6e6;width: 100%;'">
+                <div style="border-bottom:.5px solid #e6e6e6;width: 100%;">
                   <p-tree [value]="componentsTree" selectionMode="checkbox"
                           [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em',
                           'padding-bottom': '.5em','background-color': '#F8F9F9'}"
@@ -176,7 +172,7 @@
             </div>
           </div>
         </div>
-        <div *ngIf = "mobWidth >641" class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" [hidden]="!isActive" id="demo" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
+        <div *ngIf = "mobWidth >641 && !searching" class="ui-g-12 ui-lg-3 ui-md-5 collapsed in width" [hidden]="!isActive" id="demo" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
           <div  class="ui-g-12 "   style="padding: 0px;" >
             <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
 
@@ -280,13 +276,13 @@
           </div>
         </div>
         <!-- Section 1 -->
-        <div *ngIf = "mobWidth >641" [className]="filterClass" [hidden]="isActive" style="text-align:center;float: right;padding: 0px;background-color: #696666;color: #fff;"> <br>
-          <div class="ui-g-12">
+        <div *ngIf = "mobWidth >641 && !searching" [className]="filterClass" [hidden]="isActive" style="text-align:center;float: right;padding: 0px;background-color: #696666;color: #fff;"> <br>
+            <div class="ui-g-12">
             <button type="button" (click) = "setResultsWidth()" class="btn-sm collapsed" data-toggle="collapse" style="background-color: #696666;border-color: #696666; padding: 0em;border: 0em;align:left;color: #FFF;" data-target="#demo"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>
             <div class="rotate" style="display: block; right:-30px;color: #fff;"> Filters </div>
           </div>
         </div>
-        <div [className]="resultsClass" style="padding: 0px;background-color: #FFFFFF">
+        <div *ngIf = "!searching" [className]="resultsClass" style="padding: 0px;background-color: #FFFFFF">
           <div class="ui-g ui-grid-responsive" style="padding: 0em;">
             <div class="ui-g-12" style="padding: 0em">
               <div class="ui-g-12 ui-md-4 ui-sm-12">
@@ -327,7 +323,7 @@
                   <div class="ui-grid-col-12">
                     <div class="ui-grid ui-grid-responsive" style="text-align: left;width: auto;">
                       <div class="ui-grid-row">
-                        <div class="ui-grid-col-12" ><h4><b><a href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank" class="title" >
+                        <div class="ui-grid-col-12" ><h4><b><a href="{{PDRAPIURL}}{{resultItem.ediid}}" onclick="window.open(this.href, 'search'); return false" class="title" >
                           {{resultItem.title}}</a></b></h4></div>
                       </div>
                       <div class="ui-grid-row" *ngIf = "selectedFields.indexOf('Resource Description') !==-1">
@@ -369,8 +365,8 @@
                       </div>
                       <div class="ui-grid-row">
                         <div class="ui-grid-col-12" style="margin-top:5px">
-                          <a [(href)]="resultItem.landingPage" target="_blank">
-                            <button (click)="search(searchValue,searchTaxonomyKey)" pButton label="Visit Home Page"
+                          <a [(href)]="resultItem.landingPage" onclick="window.open(this.href, 'search'); return false">
+                            <button pButton label="Visit Home Page"
                                     type="button" icon="ui-icon-launch" style="width: 150px;background-color: #277E2F"></button>
                           </a>
                         </div>
