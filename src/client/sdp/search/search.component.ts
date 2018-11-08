@@ -487,7 +487,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }
 
     let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-
+    console.log("parameters:");
+    console.log(parameters);
 
     if (!_.isEmpty(parameters)) {
       for (var i = 0; i < parameters.length; i++) {

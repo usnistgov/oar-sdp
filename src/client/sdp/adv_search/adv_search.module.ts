@@ -8,7 +8,6 @@ import { SearchQueryService } from '../shared/search-query/index';
 
 
 
-
 @NgModule({
     imports: [CommonModule, SharedModule,DropdownModule, DataTableModule, PanelModule,ConfirmDialogModule, FileUploadModule, InputTextModule, MessageModule],
     declarations: [AdvSearchComponent],
