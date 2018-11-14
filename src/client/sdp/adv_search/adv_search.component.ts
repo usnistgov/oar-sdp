@@ -256,6 +256,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     this.queryName = queryName;
     if(!this.cloneQuery){
       this.oldQueryName = queryName;
+    }else{
+      this.oldQueryName = "";
     }
       // console.log("adv search----" + JSON.stringify(this.searchEntities));
       // this.displayQueryBuilder = true;
