@@ -70,7 +70,7 @@
     "@types/gulp-protractor": "^1.0.30",
     "@types/gulp-sass": "^0.0.30",
     "@types/gulp-util": "^3.0.33",
-    "@types/jasmine": "^2.5.52",
+    "@types/jasmine": "2.8.5",
     "@types/jquery": "^3.2.12",
     "@types/jspdf": "^1.1.31",
     "@types/lodash": "^4.14.109",
