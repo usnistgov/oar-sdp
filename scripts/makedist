@@ -10,9 +10,25 @@ PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 DIST_DIR=$PACKAGE_DIR/dist
 builddir=$PACKAGE_DIR/dist
 
+# this is needed because realpath is not on macs
+function realpath {
+    if [ -d "$1" ]; then
+        (cd $1 && pwd)
+    elif [ -f "$1" ]; then
+        file=`basename $1`
+        parent=`dirname $1`
+        realdir=`(cd $parent && pwd)`
+        echo "$realdir/$file"
+    elif [[ $1 = /* ]]; then
+        echo $1
+    else
+        echo "$PWD/${1#./}"
+    fi
+}
+
 # Update this list with the names of the individual component names
 # 
-DISTNAMES="sdp pdr-lps"
+DISTNAMES="sdp"
 
 # handle command line options
 build_dist=

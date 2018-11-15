@@ -8,7 +8,7 @@ execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 
-components="pdr sdp"
+components="sdp"
 args="$@"
 [ -n "$args" ] || args=$components
 unrec=
@@ -74,6 +74,8 @@ fi
 trap "{ pkill gulp || true; exit $failed; }" EXIT
 
 if { echo " $args " | grep -qs " pdr "; }; then
+    # DEPRECATED!!
+    
     # run pdr e2e tests
     # set -x
     echo '#' Running pdr e2e tests
