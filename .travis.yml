@@ -24,7 +24,7 @@ before_script:
 # tests for now
 # 
 script:
-  - scripts/testall.travis pdr
+  - scripts/testall.travis --unitonly
 # script:
 #   - scripts/testall
 
