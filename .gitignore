@@ -60,3 +60,5 @@ src/client/app/shared/config/env.config.js.map
 
 # Other
 *~
+*package-lock.json
+

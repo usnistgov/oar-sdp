@@ -16,20 +16,21 @@ install:
   - npm i -g npm@^5.3.0 && npm --version
   - npm install
 
-before_script:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+# before_script:
+#   - export DISPLAY=:99.0
+#   - sh -e /etc/init.d/xvfb start
 
 # e2e tests are not currently working under Travis; running only unit
 # tests for now
 # 
-script:
-  - scripts/testall.travis pdr
 # script:
-#   - scripts/testall
+#   - scripts/testall.travis --unitonly
+script:
+   - scripts/testall
+   - scripts/makedist
 
-after_script:
-  - pkill gulp
+# after_script:
+#   - pkill gulp
 
 cache:
   directories: node_modules
