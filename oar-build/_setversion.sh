@@ -15,7 +15,6 @@ function get_reponame {
         if [ -f "$PACKAGE_DIR/VERSION" ]; then
             awk '{print $1}' "$PACKAGE_DIR/VERSION"
         else
-            echo hey\!
             basename $PACKAGE_DIR | perl -pe 's/-[^\-]+$// if /^oar-[^\-]+-/'
         fi
     else
