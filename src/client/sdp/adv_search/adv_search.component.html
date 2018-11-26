@@ -108,7 +108,7 @@
                 <a href="/#/search?q={{row.data.queryValue}}&key=&queryAdvSearch=" (click) = "closeWindow()" target="_parent" >{{row.data.queryName}}</a>
               </ng-template> -->
               <ng-template let-row="rowData" pTemplate type="body">
-                  <button type="button" class="btn btn-link" (click) = "editQuery=false;addQuery=false;showAdvSearch(row.data.queryName)">{{row.data.queryName}}</button>
+                  <button type="button" class="btn btn-link" [disabled]="editQuery || addQuery" (click) = "editQuery=false;addQuery=false;showAdvSearch(row.data.queryName)">{{row.data.queryName}}</button>
               </ng-template>
             </p-column>
             <p-column header="Actions" [style]="{'width':'25%','font-weight':'700'}" styleClass="col-button">
@@ -182,8 +182,8 @@
 
           <p-column header="Actions" styleClass="col-button" [style]="{'width':'15%','font-weight':'700'}">
             <ng-template let-rowIndex="rowIndex" let-row="rowData" pTemplate="body">
-              <button type="button" class="buttonSize" pButton (click)="deleteRow(rowIndex)" icon="ui-icon-delete" [disabled]="!editQuery && !addQuery"></button>
-              <button type="button" class="buttonSize" pButton (click)="copyRow(row)" icon="ui-icon-content-copy" [disabled]="!editQuery && !addQuery"></button>
+              <button type="button" class="buttonSize" pButton (click)="deleteRow(rowIndex)" icon="ui-icon-delete" [disabled]="!editQuery && !addQuery" data-toggle="tooltip" title="Delete Row"></button>
+              <button type="button" class="buttonSize" pButton (click)="copyRow(row)" icon="ui-icon-content-copy" [disabled]="!editQuery && !addQuery" data-toggle="tooltip" title="Duplicate Row"></button>
             </ng-template>
           </p-column>
         </p-dataTable>
