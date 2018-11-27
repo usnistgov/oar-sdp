@@ -33,9 +33,8 @@ export class SearchService {
     let finalKeyValueStr = '';
 
     //Treat ',', ';' the same as space
-    searchValue = searchValue.replace(',', ' ');
-    searchValue = searchValue.replace(';', ' ');
-
+    searchValue = searchValue.replace(/\,/g, ' ');
+    searchValue = searchValue.replace(/\;/g, ' ');
     if (searchValue.includes('&')) {
       searchValue = searchValue.split("&").join(' and ');
     }
@@ -55,7 +54,6 @@ export class SearchService {
         for (var i = 0; i < parameters.length; i++) {
           if (parameters[i].includes("=")){
             searchKey = parameters[i].split("=")[0];
-            console.log('searchKey: ' + searchKey);
             searchPhraseValue += parameters[i];
           } else if (parameters[i].toLowerCase() == "and"){
             searchPhraseValue += 'logicalOp=AND';

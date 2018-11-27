@@ -118,7 +118,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   mobWidth: number;
   width:string;
   isActive: boolean = true;
-
+  sysError: boolean = false;
 
   filterClass:string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-7 ui-lg-9";
@@ -380,6 +380,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   onSuccess(searchResults: any[]) {
     this.noResults = false;
+    this.sysError = false;
     this.themesWithCount = [];
     this.componentsWithCount = [];
     this.sortable = [];
@@ -457,11 +458,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.themes = [];
     this.msgs = [];
     this.noResults = true;
+    this.sysError = true;
     this.exception = (<any>error).ex;
     this.errorMsg = (<any>error).message;
     this.status = (<any>error).httpStatus;
     this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
     this.searching = false;
+    console.log("Search value: " + this.searchValue);
+    console.log("Search error: " + this.errorMsg + ': ' + this.status + ' - ' + this.exception);
   }
 
   showMoreResTopics() {
