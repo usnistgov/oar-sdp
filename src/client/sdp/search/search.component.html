@@ -53,11 +53,15 @@
     </div>
   </div>
   <div *ngIf="noResults">
-    <div class="ui-g-12" style="background-color: #FFFFFF;" >
+    <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;" >
       <div class="ui-g-2"></div>
-      <div class="ui-g-10">
-        <p-messages [(value)]="searchResultsError" style="text-align:center"></p-messages>
-        <p-messages [(value)]="msgs" style="text-align:center;background-color: red"></p-messages>
+      <div class="ui-g-10" *ngIf="noResults && !sysError">
+        <!-- <p-messages [(value)]="searchResultsError" style="text-align:center"></p-messages>
+        <p-messages [(value)]="msgs" style="text-align:center;background-color: red"></p-messages> -->
+        Your search generates no results. Please click on <a href="#help"> Search Rules</a> for more information.
+      </div>
+      <div class="ui-g-10" *ngIf="sysError">
+        Oops! It looks like our site had a problem completing your search. Please try again. If this error persists you may contact <a href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= ">datasupport@nist.gov</a>.
       </div>
     </div>
     <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
@@ -68,7 +72,7 @@
   <div *ngIf="!noResults">
     <div *ngIf="filteredResults.length > 0">
       <div class="ui-g " style="background-color: #F8F9F9;">
-        <div *ngIf = "mobWidth <641 && !searching" class="ui-g-12 ui-lg-3 ui-md-5 collapsed" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
+        <div *ngIf = "mobWidth<641 && !searching" class="ui-g-12 ui-lg-3 ui-md-5 collapsed" style="background-color: #F8F9F9;padding: 0px 0px 0px 0px;" >
           <div class="ui-g my-content-small collapsed" style="padding: 0px;" >
             <div class="ui-g-12" style="padding: 0px;" >
               <div style="background-color: #606165;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;">

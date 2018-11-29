@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 import { routes } from './app.routes';
 import { FootbarComponent } from './shared/index';
 
-
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
@@ -23,12 +22,28 @@ import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
 import { TopBarComponent }  from './app.topbar.component';
 import { SearchTopBarComponent }  from './app.searchtopbar.component';
 import {DataTableModule,OverlayPanelModule,DataListModule} from "primeng/primeng";
-
-
+import {TooltipModule} from 'primeng/components/tooltip/tooltip';
+import {CanDeactivateGuard} from './can-deactivate/can-deactivate.guard';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, DataTableModule, BrowserAnimationsModule, RouterModule.forRoot(routes ,{ useHash: true })
-  , AboutModule, HomeModule, HelpModule, PolicyModule, FaqModule, ApiModule, SearchModule, AdvSearchModule, OverlayPanelModule, DataListModule, SharedModule.forRoot()
+  imports: [
+    BrowserModule, 
+    HttpModule, 
+    DataTableModule, 
+    BrowserAnimationsModule, 
+    RouterModule.forRoot(routes ,{ useHash: true }),
+    AboutModule, 
+    HomeModule, 
+    HelpModule, 
+    PolicyModule, 
+    FaqModule, 
+    ApiModule, 
+    SearchModule, 
+    AdvSearchModule, 
+    OverlayPanelModule, 
+    DataListModule, 
+    TooltipModule,
+    SharedModule.forRoot()
   ],
   declarations: [AppComponent,
     AppMenuComponent,
@@ -37,7 +52,7 @@ import {DataTableModule,OverlayPanelModule,DataListModule} from "primeng/primeng
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '<%= APP_BASE %>'
-  }],
+  },CanDeactivateGuard],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

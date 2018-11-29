@@ -90,7 +90,6 @@ export class SearchQueryService {
     // persist the map
     this.setQuery(cartMap);
     let cart  = this.getAllSearchEntities();
-    console.log("cart length" + this.querySize);
     this.setQueryLength (this.querySize);
   }
 
@@ -199,9 +198,6 @@ export class SearchQueryService {
 
     // if the current key exists in the map , append value
     if (cartMap[data.id] != undefined) {
-
-      console.log("key exists");
-      console.log("data id - " + data.id);
       cartMap[data.id] = {
         'data': data,
       }
@@ -239,7 +235,7 @@ export class SearchQueryService {
   private getQuery() {
 
     let queryAsString = this._storage.getItem('query');
-    console.log("query" + JSON.stringify(queryAsString));
+    // console.log("query" + JSON.stringify(queryAsString));
     return JSON.parse(queryAsString);
 
   }
@@ -250,7 +246,7 @@ export class SearchQueryService {
   private getAdvQuery() {
 
     let queryAsString = this._storage.getItem('advquery');
-    console.log("query" + JSON.stringify(queryAsString));
+    // console.log("query" + JSON.stringify(queryAsString));
     return JSON.parse(queryAsString);
 
   }

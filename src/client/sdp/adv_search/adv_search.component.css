@@ -140,7 +140,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 .buttonSize {
   zoom:75%;
   width:30%;
-  float:right;
+ float:right; 
   margin-right:10%;
 }
 
@@ -206,4 +206,19 @@ input[type="file"] {
   p-autoComplete {
     font-size: 13px;
   }
+}
+
+input[type=file]:enabled {
+  background: #ffff00;
+}
+
+input[type=file]:disabled {
+  background: #dddddd;
+}
+
+.text-input {
+  border:.5px solid #e6e6e6;
+  background-color: #FFFFFF;
+  height: 30px;font-weight: 400;
+  padding-left: 0.5em;
 }

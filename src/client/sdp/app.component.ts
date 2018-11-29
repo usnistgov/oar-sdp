@@ -104,7 +104,7 @@ export class AppComponent implements AfterViewInit {
 
       this.searchEntities = result;
 
-      console.log("cart entities inside datacartlist" + JSON.stringify(this.searchEntities));
+      // console.log("cart entities inside datacartlist" + JSON.stringify(this.searchEntities));
 
     }.bind(this), function (err) {
 

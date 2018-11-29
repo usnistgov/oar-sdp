@@ -118,7 +118,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   mobWidth: number;
   width:string;
   isActive: boolean = true;
-
+  sysError: boolean = false;
 
   filterClass:string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass:string = "ui-g-12 ui-md-7 ui-lg-9";
@@ -380,6 +380,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   onSuccess(searchResults: any[]) {
     this.noResults = false;
+    this.sysError = false;
     this.themesWithCount = [];
     this.componentsWithCount = [];
     this.sortable = [];
@@ -395,7 +396,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.noResults = true;
       this.searchResultsError.push({severity:'info', summary:'Info Message', detail:'No records found'});
     }
-
     // collect Research topics with count
     this.collectThemesWithCount();
     this.components = this.collectComponents(searchResults);
@@ -443,8 +443,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     if (this.filteredResults.length < 5) {
       this.rows = 20;
     }
-    // CL: this line is causing the spinner not showing up sometime
-    // this.searching = false;
+
+    this.filterResults('','');
+    this.searching = false;
   }
 
   /**
@@ -457,11 +458,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.themes = [];
     this.msgs = [];
     this.noResults = true;
+    this.sysError = true;
     this.exception = (<any>error).ex;
     this.errorMsg = (<any>error).message;
     this.status = (<any>error).httpStatus;
     this.msgs.push({severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception});
     this.searching = false;
+    console.log("Search value: " + this.searchValue);
+    console.log("Search error: " + this.errorMsg + ': ' + this.status + ' - ' + this.exception);
   }
 
   showMoreResTopics() {
@@ -477,39 +481,45 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
     this.searching = true;
+    this.noResults = false;
     this.keyword = '';
     let that = this;
     let searchPhraseValue = '';
     let searchKeyValue = '';
 
-    if (searchValue.includes('&')) {
-      searchValue = searchValue.split("&").join(' ');
-    }
+    // if (searchValue.includes('&')) {
+    //   searchValue = searchValue.split("&").join(' ');
+    // }
+    
+    // if (searchValue.toLowerCase().includes('and')) {
+    //   searchValue = searchValue.replace(/and/ig, "and").split("and").join(' ');
+    // }
 
-    let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+    // console.log('searchValue: ' + searchValue);
+    
+    // let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
 
+    // console.log('parameters: ' + parameters);
 
-    if (!_.isEmpty(parameters)) {
-      for (var i = 0; i < parameters.length; i++) {
-        if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and")) {
-          if (parameters[i].includes("searchphrase")) {
-            searchPhraseValue += parameters[i] + '&';
-          } else {
-            searchKeyValue += parameters[i] + '&';
-          }
-        } else {
-          searchPhraseValue += parameters[i] + '&';
-        }
-      }
-    }
+    // if (!_.isEmpty(parameters)) {
+    //   for (var i = 0; i < parameters.length; i++) {
+    //     if (parameters[i].includes("=") || parameters[i].toLowerCase().includes("or") || parameters[i].toLowerCase().includes("and")) {
+    //       if (parameters[i].includes("searchphrase")) {
+    //         searchPhraseValue += parameters[i] + '&';
+    //       } else {
+    //         searchKeyValue += parameters[i] + '&';
+    //       }
+    //     } else {
+    //       searchPhraseValue += parameters[i] + '&';
+    //     }
+    //   }
+    // }
 
-    console.log("searchphrase value" + searchPhraseValue);
-
-    if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
-      this.searching = false;
-      this.noResults = true;
-      return this.msgs.push({severity: 'error', summary: 'Unsupported syntax' + ':', detail: 'Please click on the link <a href="#help" class="color-white"> Search Rules</a> for more information.'});
-    }
+    // if ((searchValue.indexOf("OR") > -1 || searchValue.indexOf("or") > -1) && (!_.isEmpty(searchPhraseValue))) {
+    //   this.searching = false;
+    //   this.noResults = true;
+    //   return this.msgs.push({severity: 'error', summary: 'Unsupported syntax' + ':', detail: 'Please click on the link <a href="#help" class="color-white"> Search Rules</a> for more information.'});
+    // }
 
     return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
       .subscribe(
@@ -521,6 +531,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string){
 
+    this.msgs = [];
+    this.searchResultsError = [];
     this.search(searchValue, searchTaxonomyKey, queryAdvSearch);
 
     this.selectedResourceTypeNode = [];
@@ -528,13 +540,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.selectedComponentsNode = [];
     setTimeout(()=> {
       if ((!_.isEmpty(this.searchResType))) {
-        this.setResourceTypeSelection(this.resourceTypesWithCount, decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
+        this.setResourceTypeSelection(this.resourceTypesWithCount[0], decodeURIComponent(this.searchResType.toString().replace(/\+/g,  " ")));
       }
       if ((!_.isEmpty(this.searchResTopics))) {
-        this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
+        this.setThemesSelection(this.themesWithCount[0], decodeURIComponent(this.searchResTopics.toString().replace(/\+/g,  " ")));
       }
       if ((!_.isEmpty(this.searchRecord))) {
-        this.setComponentsSelection(this.componentsWithCount, decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
+        this.setComponentsSelection(this.componentsWithCount[0], decodeURIComponent(this.searchRecord.toString().replace(/\+/g,  " ")));
       }
       if ((!_.isEmpty(this.searchAuthors))) {
         this.setAuthorsSelection(decodeURIComponent(this.searchAuthors.toString().replace(/\+/g,  " ")));
@@ -543,13 +555,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.setKeywordsSelection(decodeURIComponent(this.searchKeywords.toString().replace(/\+/g,  " ")));
       }
       if ((!_.isEmpty(this.searchTaxonomyKey))) {
-        this.setThemesSelection(this.themesWithCount, decodeURIComponent(this.searchTaxonomyKey.toString().replace(/\+/g,  " ")));
+        this.setThemesSelection(this.themesWithCount[0], decodeURIComponent(this.searchTaxonomyKey.toString().replace(/\+/g,  " ")));
       }
     },2000);
     setTimeout(()=> {
-      this.filterResults('','');
+      // this.filterResults('','');
       this.searching = false;
-    },2000)
+    },10000)
 
   }
 
@@ -880,6 +892,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   filterResults(event: any,type: string) {
 
     this.filteredResults = this.searchResults;
+
+    if (this.searchResults.length === 0) {
+      return;
+    }
+
     if (type === 'unselectauthor') {
       if (typeof this.selectedAuthor != 'undefined') {
         let selAuthorIndex = this.selectedAuthor.indexOf(event);
@@ -1417,6 +1434,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Get the params OnInit
    */
   ngOnInit() {
+    this.msgs = [];
+    this.searchResultsError = [];
     this.getSearchFields();
     this.getTaxonomySuggestions();
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
