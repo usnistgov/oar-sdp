@@ -109,7 +109,7 @@ echo '+' $execdir/setversion.sh
 $execdir/setversion.sh
 [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
 version=`cat VERSION | awk '{print $2}'`
-vers4fn=`echo $version | sed -re 's#[/\s]+#_#g'`
+vers4fn=`echo $version | perl -pe 's#[/\s]+#_#g'`
 
 # install required modules
 npmvers=`npm --version`
