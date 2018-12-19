@@ -18,7 +18,11 @@ import * as _ from 'lodash';
           </a>
       </span>
       <span class="badge" style="background-color:#982800;vertical-align: text-top;margin-top: 10px;">1.1.0-beta</span>
-        <div class="topbar-right">
+      <span> <i class="faa faa-exclamation-triangle faa-2x" style="color:yellow" ></i>
+        Test Goverment Shutdown!!!Test Goverment Shutdown!!!Test Goverment Shutdown!!!Test Goverment Shutdown!!!
+        Test Goverment Shutdown!!!Test Goverment Shutdown!!!Test Goverment Shutdown!!!
+      </span>
+      <div class="topbar-right">
               <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                     <i></i>
                 </a>
