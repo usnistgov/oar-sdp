@@ -42,3 +42,9 @@ hr {
   color: #fff;
   font-weight: 300;
 }
+
+.content {
+  font-family: "Source Sans Pro","sans-serif";
+  font-size:20px;
+  line-height: 1.5em; 
+}
