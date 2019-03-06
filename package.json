@@ -150,7 +150,7 @@
     "traceur": "^0.0.111",
     "ts-node": "^3.0.4",
     "tslint": "^5.0.0",
-    "typescript": "~2.3.4",
+    "typescript": "~2.8.4",
     "walk": "^2.3.9",
     "yargs": "^9.0.1"
   },
