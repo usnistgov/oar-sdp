@@ -1,0 +1,45 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
+<div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
+  <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em">
+    <label style="font-size: xx-large;float: left;display: block;"><i class="faa faa-cogs faa-lg"></i> &nbsp;&nbsp;&nbsp;&nbsp;APIs</label>
+    <ol class="breadcrumb" style="float: right;">
+      <li><a href="#" style="color: #fff;">Home</a></li>
+      <li class="active breadCrumb-text">Developer</li>
+      <li class="active breadCrumb-text">APIs</li>
+    </ol>
+  </div>
+</div>
+<div class="card">
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <div class="ui-g-12 ui-md-8 ui-lg-8" style="font-family: Source Sans Pro,sans-serif;font-size:20px;line-height: 1.2em;">
+        <div class="adv-step"> This NIST Data Discovery web portal hosts access to a RestFul web service public API, Application Programming
+          Interface.  This API provides our developer community the capability to dynamically query the underlying data
+          resource catalog, a collection of key NIST research dataset descriptions (metadata).
+        </div>
+        <div class="adv-step">
+          The search API returns JSON open-standard format data objects containing high level resource information and scientific domain specific metadata representations.   We are in the process of extending these results as our data holdings increase in NIST’s Public Data Repository
+          system to further capabilities in scientific data discovery and mining of NIST research public data sets.
+        </div>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-1">
+      </div>
+      <div class="ui-g-12 ui-md-4 ui-lg-2 element" >
+        <a class="btn btn-primary btn-lg api " href = "{{RestAPIURL}}swagger-ui.html" target="_blank" >Explore Data Discovery API</a>
+      </div>
+    </div>
+  </div>
+</div>
