@@ -11,10 +11,10 @@ import * as _ from 'lodash';
     template: `
     <div class="topbar" style="background-color: #000000">
       <span class="topbar-left" style="background-color: #000000;">
-          <a href="/" style="text-decoration: none" title="National Institute of Standards and Technology" class="header__logo-link" rel="home">
+          <a href="/" style="text-decoration: none" title="NIST Science Data Portal" class="header__logo-link" rel="home">
           <img class="Fleft top_bar" srcset="./assets/images/nist_logo_reverse.png" 
-          alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology" >
-            <span class="Fleft" style="font-weight:bold;line-height: 16.5px;display: table-cell;vertical-align: text-top;color: #FFFFFF;font-size:14px;padding-left: 2%">SCIENCE <br> DATA PORTAL </span>
+          alt="NIST Science Data Portal" title="NIST Science Data Portal" >
+            <span class="Fleft" style="font-weight:bold;line-height: 16.5px;display: table-cell;vertical-align: text-top;color: #FFFFFF;font-size:14px;padding-left: 2%">SCIENCE<br> DATA PORTAL </span>
           </a>
       </span>
       <span class="badge" style="color:black;background-color:#f0f0f0;vertical-align: text-top;margin-top: 10px;">1.1.7</span>
