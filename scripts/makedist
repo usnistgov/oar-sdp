@@ -105,8 +105,11 @@ cd $PACKAGE_DIR
 # set the current version.  This will inject the version into the code, if 
 # needed.
 #
+cd angular
 echo '+' $execdir/setversion.sh
 $execdir/setversion.sh
+cd ..
+
 [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
 version=`cat VERSION | awk '{print $2}'`
 vers4fn=`echo $version | perl -pe 's#[/ \t]+#_#g'`
@@ -128,8 +131,12 @@ for dist in $build_dist; do
     echo '#########################'
  
     # build the component
-    echo '+' "npm run build.prod.aot -- --app $angproj"
-    npm run build.prod.aot -- --app $angproj
+    # echo '+' "npm run build.prod.aot -- --app $angproj"
+    # npm run build.prod.aot -- --app $angproj
+
+    echo '+' "ng build"
+    cd angular
+    ng build
 
     # create the dependency file
     if [ -f "$PACKAGE_DIR/package-lock.json" ]; then
