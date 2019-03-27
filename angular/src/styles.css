@@ -1,0 +1,43 @@
+/* You can add global styles to this file, and also import other style files */
+a:link {
+  color: #1E6BA1;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: #551A8B;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+.badge1{
+  background-color: green;
+  color: white;
+  position:relative;
+  top: 0px;
+  left: 5px;
+  font-size: 10px;
+  font-weight: bold;
+  height:10px;
+  padding:3px 7px 3px 2px ;
+  border-radius: 10px;
+}
+
+.badge-notify1{
+  background-color: green;
+  color: white;
+  position:relative;
+  top: -15px;
+  left: -8px;
+  font-size: 12px;
+  font-weight: bold;
+  height:25px;
+  padding:3px 7px 3px 7px ;
+  border-radius: 30px;
+}
+
+.xlModal > .modal-dialog {
+  max-width: 400px !important;
+  min-width: 300px !important;   
+  width: 50% !important;
+}

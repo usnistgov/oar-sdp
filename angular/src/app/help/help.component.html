@@ -1,0 +1,70 @@
+<style id="antiClickjack">
+  body {
+    display: none !important;
+  }
+</style>
+<script type="text/javascript">
+  if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+  } else {
+    top.location = self.location;
+  }
+</script>
+
+<div class="sdp-help-page">
+  <div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
+    <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em">
+      <label id='title' style="font-size: xx-large;float: left;display: block;"><i class="faa faa-question faa-lg"></i>
+        Help</label>
+      <ol class="breadcrumb" style="float: right;">
+        <li><a href="#" style="color: #fff;">Home</a></li>
+        <li class="active breadCrumb-text">About</li>
+        <li class="active breadCrumb-text">Help</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ui-g">
+      <div class="ui-g-12">
+
+        <div class="ui-g-12 ui-md-3 ui-lg-3 help-menu">
+          <ul class="links">
+
+            <li class="links" [ngClass]="{'current':currentView === 'how-advanced-search'}" (click)="navigateToPage('how-advanced-search')"><a>Advanced Search Builder</a> <br>
+              <span class="description"> Using the Advanced Search Builder</span>
+            </li>
+            <li class="links" [ngClass]="{'current':currentView === 'search-syntax'}"  (click)="navigateToPage('search-syntax')"><a>Search Syntax</a> <br>
+              <span class="description"> Syntax Rules for Search </span>
+            </li>
+            <!--          <li class="links"><a> FAQ</a> <br>
+                        <span class="description"> Frequently Asked Questions </span>
+                      </li>
+                    -->
+            <li class="links" [ngClass]="{'current':currentView === 'app-contact-us'}"  (click)="navigateToPage('app-contact-us')"><a> Contact Us</a> <br>
+              <span class="description"> Site Feedback and Support</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ui-g-12 ui-md-9 ui-lg-9 help-content" [ngSwitch]="true">
+          <div *ngSwitchCase="currentView === 'how-advanced-search'">
+            <how-advanced-search></how-advanced-search>
+          </div>
+          <div *ngSwitchCase="currentView === 'search-syntax'">
+             <search-syntax></search-syntax>
+          </div>
+          <div *ngSwitchCase="currentView === 'app-contact-us'">
+            <app-contact-us></app-contact-us>
+          </div>
+
+          <div *ngSwitchDefault>
+            <help-page-not-found></help-page-not-found>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
