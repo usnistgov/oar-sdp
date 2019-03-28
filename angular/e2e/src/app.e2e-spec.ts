@@ -52,7 +52,7 @@ describe('workspace-project App', () => {
     expect(element(by.id('title')).getText()).toEqual('APIs');
   });
 
-  it('Search page should display title of search page', () => {
+  it('Search page should return correct search result', () => {
     page.navigateTo('/#/search?q="SRD 69"&key=&queryAdvSearch=');
     browser.sleep(5000);
     browser.ignoreSynchronization = true;

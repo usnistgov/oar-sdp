@@ -5,8 +5,17 @@
 set -e
 prog=`basename $0`
 execdir=`dirname $0`
+
+echo '$execdir'
+echo $execdir
+
+
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+
+echo '$PACKAGE_DIR'
+echo $PACKAGE_DIR
+
 DIST_DIR=$PACKAGE_DIR/dist
 builddir=$PACKAGE_DIR/dist
 
@@ -108,7 +117,7 @@ cd $PACKAGE_DIR
 cd angular
 echo '+' $execdir/setversion.sh
 $execdir/setversion.sh
-cd ..
+cd $PACKAGE_DIR
 
 [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
 version=`cat VERSION | awk '{print $2}'`
@@ -134,9 +143,8 @@ for dist in $build_dist; do
     # echo '+' "npm run build.prod.aot -- --app $angproj"
     # npm run build.prod.aot -- --app $angproj
 
-    echo '+' "ng build"
-    cd angular
-    ng build
+    echo '+' "npm run build"
+    npm run build
 
     # create the dependency file
     if [ -f "$PACKAGE_DIR/package-lock.json" ]; then
