@@ -124,6 +124,7 @@ version=`cat VERSION | awk '{print $2}'`
 vers4fn=`echo $version | perl -pe 's#[/ \t]+#_#g'`
 
 # install required modules
+cd angular
 npmvers=`npm --version`
 echo '+' npm install
 npm $npmpfx install
