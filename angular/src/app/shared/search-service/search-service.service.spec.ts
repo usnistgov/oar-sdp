@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SearchService } from './search-service.service';
+import { RealSearchService } from './search-service.service.real';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RouterModule } from '@angular/router';
@@ -13,7 +13,7 @@ describe('SearchService', () => {
   }));
 
   it('should be created', () => {
-    const service: SearchService = TestBed.get(SearchService);
+    const service: RealSearchService = TestBed.get(RealSearchService);
     expect(service).toBeTruthy();
   });
 });

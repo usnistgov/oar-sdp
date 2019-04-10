@@ -4,6 +4,7 @@ import { SearchPanelComponent } from './search.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MockModule } from '../mock.module';
 
 describe('SearchComponent', () => {
   let searchCompService: SearchPanelComponent;
@@ -14,7 +15,8 @@ describe('SearchComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        NgxPaginationModule
+        NgxPaginationModule,
+        MockModule
       ],
       declarations: [SearchPanelComponent],
       schemas: [NO_ERRORS_SCHEMA]

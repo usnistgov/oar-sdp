@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
-import { SearchService, TaxonomyListService, SearchfieldsListService } from '../shared/index';
+import { Component, OnInit, OnDestroy, Inject, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
+import { TaxonomyListService, SearchfieldsListService } from '../shared/index';
+import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
@@ -22,7 +23,7 @@ declare var jQuery: any;
   selector: 'sdp-search',
   templateUrl: 'search.component.html',
   styleUrls: ['search.component.css'],
-  providers: [TaxonomyListService, SearchService, SearchfieldsListService]
+  providers: [TaxonomyListService, SearchfieldsListService]
 })
 
 export class SearchPanelComponent implements OnInit, OnDestroy {
@@ -137,13 +138,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * Creates an instance of the SearchPanel
    *
    */
-  constructor(ngZone: NgZone,
+  constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService, 
+    ngZone: NgZone,
     private router: ActivatedRoute,
     private location: Location,
     private el: ElementRef,
     private ref: ChangeDetectorRef,
     public taxonomyListService: TaxonomyListService,
-    public searchService: SearchService,
     public searchFieldsListService: SearchfieldsListService,
     public searchQueryService: SearchQueryService,
     private actualRouter: Router,
@@ -499,9 +500,21 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
       .subscribe(
-        searchResults => that.onSuccess(searchResults.ResultData),
+        searchResults => {
+          that.onSuccess(searchResults.ResultData);
+        },
         error => that.onError(error)
       );
+
+    // return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
+    //   .subscribe(
+    //     searchResults => {
+    //       console.log("searchResults:");
+    //       console.log(JSON.stringify(searchResults));
+    //       that.onSuccess(searchResults.ResultData);
+    //     },
+    //     error => that.onError(error)
+    //   );
 
   }
 

@@ -1,5 +1,8 @@
+import { RealModule } from '../app/real.module';
+
 export const environment = {
   production: false,
+  possiblyMockModule: RealModule,
   RMMAPI: 'http://testdata.nist.gov/rmm/',
   SDPAPI: 'http://testdata.nist.gov/sdp/',
   PDRAPI: 'http://localhost/id/',

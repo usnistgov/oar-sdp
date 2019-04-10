@@ -10,4 +10,13 @@ export class AppPage {
     browser.ignoreSynchronization = true;
     return element(by.className('TexAlCenter title')).getText();
   }
+
+  getSearchExampleLink() {
+    return element(by.id('srd101'));
+  }
+
+  getSearchButton() {
+    return element(by.className('searchButton'));
+  }
+
 }

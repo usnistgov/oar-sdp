@@ -4,7 +4,8 @@ import { AdvSearchComponent } from './adv-search.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ConfirmationDialogService } from '../shared/confirmation-dialog/confirmation-dialog.service'
+import { ConfirmationDialogService } from '../shared/confirmation-dialog/confirmation-dialog.service';
+import { MockModule } from '../mock.module';
 
 describe('AdvSearchComponent', () => {
   let component: AdvSearchComponent;
@@ -16,6 +17,7 @@ describe('AdvSearchComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         NgbModalModule,
+        MockModule,
         NgbModule.forRoot()
       ],
       declarations: [ AdvSearchComponent ],

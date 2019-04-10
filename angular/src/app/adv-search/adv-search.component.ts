@@ -1,8 +1,9 @@
-import { Component, OnInit, NgZone, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef } from '@angular/core';
 import { SelectItem, DropdownModule, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
-import { SearchService } from '../shared/search-service/index';
+// import { SearchService } from '../shared/search-service/index';
+import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { Data } from '../shared/search-query/data';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
@@ -79,10 +80,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Constructor
    */
-  constructor(ngZone: NgZone,
+  constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
+    ngZone: NgZone,
     public taxonomyListService: TaxonomyListService,
     public searchFieldsListService: SearchfieldsListService,
-    public searchService: SearchService,
+    // public searchService: SearchService,
     private router: Router,
     public searchQueryService: SearchQueryService,
     private confirmationService: ConfirmationService,

@@ -32,7 +32,7 @@
           <label for="searchinput" class="hideLabel">Search Input</label>
           <div class="inner-addon left-addon " style="background-color: #FFFFFF">
             <i class="glyphicon faa faa-search"></i>  <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue" inputId="searchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
+        'font-style': 'italic'}" (onFocus)="clearText()" (onBlur) = "addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue" inputId="searchinput" name="searchinput" (keyup.enter) = "search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength] = "2048" [size] = "50" >
           </p-autoComplete>
           </div>
         </div>
@@ -55,7 +55,7 @@
         <b> <span class="examplesLabel"> Examples: </span></b>
         <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');" href="#!" >"Kinetics database" </a> &nbsp;
         <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!" >Gallium </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#!" >"SRD 101" </a>&nbsp;
+        <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#!" >"SRD 101" </a>&nbsp;
         <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!" >XPDB </a>&nbsp;
         <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');" href="#!" >Interatomic Potentials </a>&nbsp;
       </div>

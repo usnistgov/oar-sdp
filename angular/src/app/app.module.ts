@@ -25,7 +25,8 @@ import { HelpModule } from './help/help.module';
 import { ApiModule } from './api/api.module';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { environment } from '../environments/environment';
+import { RealModule } from '../app/real.module';
 
 /**
  * Initialize the configs for backend services
@@ -65,6 +66,7 @@ const appInitializerFn = (appConfig: AppConfig) => {
     HelpModule,
     ApiModule,
     NgbModalModule,
+    environment.possiblyMockModule,
     SharedModule.forRoot()
   ],
   entryComponents:[ConfirmationDialogComponent],

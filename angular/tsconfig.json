@@ -8,8 +8,10 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "target": "es5",
+    "types": [ "node","jasmine" ],
     "typeRoots": [
       "node_modules/@types"
     ],

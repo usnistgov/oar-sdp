@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SearchfieldsListService } from './searchfields-list/index';
 import { TaxonomyListService } from './taxonomy-list/index';
-import { SearchService } from './search-service/index';
+// import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
 import { NameListService } from './name-list/name-list.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -47,7 +47,8 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [NameListService,TaxonomyListService,SearchService,SearchfieldsListService,ConfirmationDialogService]
+      // providers: [NameListService,TaxonomyListService,SearchService,SearchfieldsListService,ConfirmationDialogService]
+      providers: [NameListService,TaxonomyListService,SearchfieldsListService,ConfirmationDialogService]
     };
   }
 }

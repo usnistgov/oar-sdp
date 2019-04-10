@@ -4,6 +4,7 @@ import { HomeComponent } from './home.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppConfig } from '..//shared/config-service/config-service.service';
+import { MockModule } from '../mock.module';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -19,7 +20,8 @@ describe('HomeComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        MockModule
       ],
       declarations: [ HomeComponent ],
       providers: [

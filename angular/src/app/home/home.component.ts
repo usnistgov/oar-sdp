@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { SelectItem, DropdownModule } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
-import { SearchService } from '../shared/search-service/index';
+// import { SearchService } from '../shared/search-service/index'
+import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
@@ -47,9 +48,10 @@ export class HomeComponent implements OnInit {
   /**
    * Create an instance of services for Home
    */
-  constructor(public taxonomyListService: TaxonomyListService, 
+  constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
+    public taxonomyListService: TaxonomyListService, 
     public searchFieldsListService: SearchfieldsListService, 
-    public searchService: SearchService, 
+    // public searchService: SearchService, 
     private router: Router,
     private appConfig: AppConfig) {
 
