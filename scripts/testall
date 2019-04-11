@@ -12,3 +12,4 @@ echo '+' $PACKAGE_DIR/scripts/setversion.sh
 $PACKAGE_DIR/scripts/setversion.sh
 echo '+' npm test
 npm test
+npm run e2e
