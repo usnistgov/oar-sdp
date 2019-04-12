@@ -1,12 +1,6 @@
 import { RealModule } from '../app/real.module';
 
 export const environment = {
-  production: false,
+  production: true,
   possiblyMockModule: RealModule,
-  RMMAPI: 'http://testdata.nist.gov/rmm/',
-  SDPAPI: 'http://testdata.nist.gov/sdp/',
-  PDRAPI: 'http://localhost/id/',
-  DISTAPI: 'http://testdata.nist.gov/od/ds/',
-  METAPI: 'http://localhost/metaurl/',
-  LANDING: 'http://testdata.nist.gov/rmm/'
 };

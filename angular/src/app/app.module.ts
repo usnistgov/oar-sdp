@@ -19,14 +19,15 @@ import { TooltipModule } from 'primeng/components/tooltip/tooltip';
 import { AppConfig } from './shared/config-service/config-service.service';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { AboutComponent } from './about/about.component';
-import { AdvSearchComponent } from './adv-search/adv-search.component';
-import { PolicyComponent } from './policy/policy.component';
+import { AdvSearchModule } from './adv-search/adv_search.module';
+import { PolicyModule } from './policy/policy.module';
 import { HelpModule } from './help/help.module';
 import { ApiModule } from './api/api.module';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
 import { RealModule } from '../app/real.module';
+import {enableProdMode} from '@angular/core';
 
 /**
  * Initialize the configs for backend services
@@ -38,6 +39,8 @@ const appInitializerFn = (appConfig: AppConfig) => {
   };
 };
 
+enableProdMode();
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,8 +51,6 @@ const appInitializerFn = (appConfig: AppConfig) => {
     InlineProfileComponent,
     TopBarComponent,
     AboutComponent,
-    AdvSearchComponent,
-    PolicyComponent,
     ConfirmationDialogComponent
   ],
   imports: [
@@ -66,6 +67,8 @@ const appInitializerFn = (appConfig: AppConfig) => {
     HelpModule,
     ApiModule,
     NgbModalModule,
+    AdvSearchModule,
+    PolicyModule,
     environment.possiblyMockModule,
     SharedModule.forRoot()
   ],
