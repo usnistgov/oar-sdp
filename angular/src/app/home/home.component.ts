@@ -78,8 +78,7 @@ export class HomeComponent implements OnInit {
     });
 
     this.SDPAPI = this.confValues.SDPAPI;
-    this. imageURL = this.confValues.SDPAPI + 'assets/images/NIST_bk.jpg';
-    // this. imageURL = this.confValues.SDPAPI + 'assets/images/front-image.jpg';
+    this. imageURL = this.confValues.SDPAPI + 'assets/images/front-image.jpg';
     console.log(this. imageURL);
     this.getTaxonomies();
     this.getTaxonomySuggestions();
