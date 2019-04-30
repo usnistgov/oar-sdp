@@ -10,5 +10,7 @@ PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 
 echo '+' $PACKAGE_DIR/scripts/setversion.sh
 $PACKAGE_DIR/scripts/setversion.sh
+cd $PACKAGE_DIR/angular
 echo '+' npm test
 npm test
+npm run e2e

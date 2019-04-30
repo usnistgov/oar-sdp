@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  margin-bottom: 0;
+  margin-top: 0.83em;
+}
+
+hr {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+  border: 1px solid #666;
+  padding-bottom: -1px;
+  margin: 1.25rem 0;
+}
+
+.labelAbout {
+  font-size: xx-large;
+  float: left;
+  display: block;
+}
+
+.breadCrumb {
+  color: #4b4b4b;
+}
+
+.breadCrumbFirstElement {
+  color: #fff;
+}
+
+:host /deep/ .breadcrumb {
+  background-color: #153971;
+}
+
+.breadCrumb-item {
+  color: #fff;
+  font-weight: 300;
+}
+

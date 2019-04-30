@@ -5,8 +5,17 @@
 set -e
 prog=`basename $0`
 execdir=`dirname $0`
+
+echo '$execdir'
+echo $execdir
+
+
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+
+echo '$PACKAGE_DIR'
+echo $PACKAGE_DIR
+
 DIST_DIR=$PACKAGE_DIR/dist
 builddir=$PACKAGE_DIR/dist
 
@@ -105,13 +114,17 @@ cd $PACKAGE_DIR
 # set the current version.  This will inject the version into the code, if 
 # needed.
 #
+
 echo '+' $execdir/setversion.sh
 $execdir/setversion.sh
+cd $PACKAGE_DIR
+
 [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
 version=`cat VERSION | awk '{print $2}'`
 vers4fn=`echo $version | perl -pe 's#[/ \t]+#_#g'`
 
 # install required modules
+cd angular
 npmvers=`npm --version`
 echo '+' npm install
 npm $npmpfx install
@@ -128,24 +141,23 @@ for dist in $build_dist; do
     echo '#########################'
  
     # build the component
-    echo '+' "npm run build.prod.aot -- --app $angproj"
-    npm run build.prod.aot -- --app $angproj
+    echo '+' "npm run build"
+    npm run build
+
+    echo '+' '(cd dist/angular' '&&' \
+             "zip -qr $DIST_DIR/${distname}.zip *)"
+    (cd dist/angular && zip -qr $DIST_DIR/${distname}.zip *)
 
     # create the dependency file
-    if [ -f "$PACKAGE_DIR/package-lock.json" ]; then
+    cd $PACKAGE_DIR
+    if [ -f "$PACKAGE_DIR/angular/package-lock.json" ]; then
         echo '+' $execdir/record_deps.py $dist $version package-lock.json \
                  $npmvers \> $DIST_DIR/${distname}_dep.json
-        $execdir/record_deps.py $dist $version package-lock.json $npmvers \
+        $execdir/record_deps.py $dist $version angular/package-lock.json $npmvers \
                                 > $DIST_DIR/${distname}_dep.json
     else
         echo ${prog}: WARNING: Unable to create dependency file for ${dist}: \
              package-lock.json not found
     fi
-
-    # create the distribution file
-    echo '+' '(cd' $builddir/prod '&&' \
-             "zip -qr $DIST_DIR/${distname}.zip *)"
-    (cd $builddir/prod && zip -qr $DIST_DIR/${distname}.zip *)
-
 done
 
