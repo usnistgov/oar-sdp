@@ -11,6 +11,8 @@
     top.location = self.location;
   }
 </script>
+<script async type="text/javascript" id="_fed_an_ua_tag"
+  src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NIST&pua=UA-66610693-14&yt=true&exts=ppsx,pps,f90,sch,rtf,wrl,txz,m1v,xlsm,msi,xsd,f,tif,eps,mpg,xml,pl,xlt,c"></script>
 
 <div class="sdp-help-page">
   <div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
@@ -32,17 +34,20 @@
         <div class="ui-g-12 ui-md-3 ui-lg-3 help-menu">
           <ul class="links">
 
-            <li class="links" [ngClass]="{'current':currentView === 'how-advanced-search'}" (click)="navigateToPage('how-advanced-search')"><a>Advanced Search Builder</a> <br>
+            <li class="links" [ngClass]="{'current':currentView === 'how-advanced-search'}"
+              (click)="navigateToPage('how-advanced-search')"><a>Advanced Search Builder</a> <br>
               <span class="description"> Using the Advanced Search Builder</span>
             </li>
-            <li class="links" [ngClass]="{'current':currentView === 'search-syntax'}"  (click)="navigateToPage('search-syntax')"><a>Search Syntax</a> <br>
+            <li class="links" [ngClass]="{'current':currentView === 'search-syntax'}"
+              (click)="navigateToPage('search-syntax')"><a>Search Syntax</a> <br>
               <span class="description"> Syntax Rules for Search </span>
             </li>
             <!--          <li class="links"><a> FAQ</a> <br>
                         <span class="description"> Frequently Asked Questions </span>
                       </li>
                     -->
-            <li class="links" [ngClass]="{'current':currentView === 'app-contact-us'}"  (click)="navigateToPage('app-contact-us')"><a> Contact Us</a> <br>
+            <li class="links" [ngClass]="{'current':currentView === 'app-contact-us'}"
+              (click)="navigateToPage('app-contact-us')"><a> Contact Us</a> <br>
               <span class="description"> Site Feedback and Support</span>
             </li>
           </ul>
@@ -53,7 +58,7 @@
             <how-advanced-search></how-advanced-search>
           </div>
           <div *ngSwitchCase="currentView === 'search-syntax'">
-             <search-syntax></search-syntax>
+            <search-syntax></search-syntax>
           </div>
           <div *ngSwitchCase="currentView === 'app-contact-us'">
             <app-contact-us></app-contact-us>
