@@ -17,7 +17,8 @@
   </div>
   <div class="ui-g-10">
     <div class="EmptyBox20"></div>
-    <label id='title' style="font-size: xx-large;float: left;display: block;"><i class="faa faa-cogs faa-lg"></i>Advanced Search Builder</label>
+    <label id='title' style="font-size: xx-large;float: left;display: block;"><i
+        class="faa faa-cogs faa-lg"></i>Advanced Search Builder</label>
     <ol class="breadcrumb" style="float: right;">
       <li class="breadcrumb-item"><a href="#" style="color: #fff;">Home</a></li>
       <li class="active breadcrumb-item">Advanced Search Builder</li>
@@ -34,7 +35,7 @@
         <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
           <label for="advsearchinput" class="hideLabel">Search Input</label>
           <div class="inner-addon left-addon " style="background-color: #FFFFFF">
-              <i class="glyphicon faa faa-search"></i>
+            <i class="glyphicon faa faa-search"></i>
             <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
         'font-style': 'italic'}" (onFocus)="clearText()" (onBlur)="addPlaceholder()" [placeholder]="placeholder"
               [(ngModel)]="searchValue" inputId="advsearchinput"
@@ -63,12 +64,15 @@
       </div>
       <div class="ui-g-12 ui-md-6">
         <b> Examples: </b>
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');" href="#!">"Kinetics database" </a>
+        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
+          href="#!">"Kinetics database" </a>
         &nbsp;
         <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#!">"SRD 101" </a>&nbsp;
+        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#!">"SRD 101"
+        </a>&nbsp;
         <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');" href="#!">Interatomic Potentials
+        <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
+          href="#!">Interatomic Potentials
         </a>&nbsp;
       </div>
     </div>
