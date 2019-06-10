@@ -125,14 +125,10 @@ export class SearchQueryService {
     // convert the map to an array
     for (let key in myCartMap) {
       let value = myCartMap[key];
-      console.log("status before" + JSON.stringify(value.data.downloadStatus));
       if (value.data.downloadedStatus == null ) {
-        console.log("status after" + JSON.stringify(value.data.downloadStatus));
-        console.log("value" + JSON.stringify(value.data.resId));
         searchEntities.push(value);
       }
     }
-    console.log("cart" + JSON.stringify(searchEntities));
     let cartMap = searchEntities.reduce(function(map, cartEntry, i) {
       map[cartEntry.data.id] = cartEntry;
       return map;
@@ -164,12 +160,12 @@ export class SearchQueryService {
 
   setQueryLength(value: number) {
     this.storageSub.next(value);
-    console.log("query size inside method: " + this.storageSub.getValue());
+    // console.log("query size inside method: " + this.storageSub.getValue());
   }
 
   setAdvQueryLength(value: number) {
     this.storageAdvSub.next(value);
-    console.log("cart size inside method: " + this.storageAdvSub.getValue());
+    // console.log("cart size inside method: " + this.storageAdvSub.getValue());
   }
 
   /**

@@ -79,13 +79,11 @@ export class HomeComponent implements OnInit {
 
     this.SDPAPI = this.confValues.SDPAPI;
     this. imageURL = this.confValues.SDPAPI + 'assets/images/front-image.jpg';
-    console.log(this. imageURL);
     this.getTaxonomies();
     this.getTaxonomySuggestions();
     this.getSearchFields();
     this.rows = [{}];
     this.searchOperators();
-    console.log("taxonomy" + JSON.stringify(this.suggestedTaxonomies));
     var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
     var n = 0;
     var loopLength = placeHolder.length;
@@ -102,7 +100,6 @@ export class HomeComponent implements OnInit {
    * Set the display to show the examples dialog
    */
   toggleTextRotate() {
-    console.log("hello" + this.textRotate);
     if (this.searchValue == "") {
       this.textRotate = !this.textRotate;
     }

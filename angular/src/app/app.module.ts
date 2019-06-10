@@ -28,6 +28,7 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
 import { RealModule } from '../app/real.module';
 import {enableProdMode} from '@angular/core';
+import {GoogleAnalyticsService} from "./shared/ga-service/google-analytics.service";
 
 /**
  * Initialize the configs for backend services
@@ -78,6 +79,7 @@ enableProdMode();
   ],
   providers: [
     HttpClientModule,
+    GoogleAnalyticsService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFn,
@@ -92,4 +94,6 @@ enableProdMode();
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(protected _googleAnalyticsService: GoogleAnalyticsService) { } // We inject the service here to keep it alive whole time
+}

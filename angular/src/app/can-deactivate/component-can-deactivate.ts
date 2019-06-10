@@ -6,7 +6,6 @@ export abstract class ComponentCanDeactivate {
 
     @HostListener('window:beforeunload', ['$event'])
     unloadNotification($event: any) {
-        console.log("I am here! ");
         if (!this.canDeactivate()) {
             $event.returnValue =true;
         }
