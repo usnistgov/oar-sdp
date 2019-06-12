@@ -83,7 +83,6 @@ export class AppComponent implements AfterViewInit {
 
 
   removeItem(row:any) {
-    console.log("row" + JSON.stringify(row));
     let dataId: any;
     // convert the map to an array
     let delRow = this.searchEntities.indexOf(row);

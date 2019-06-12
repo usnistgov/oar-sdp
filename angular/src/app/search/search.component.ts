@@ -180,8 +180,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     if (_.isEmpty(queryName)) {
       this.queryNameReq = true;
     } else {
-      console.log("query name--" + queryName);
-      console.log("query value--" + this.searchValue);
       this.getSearchQueryList();
       this.duplicateQuery = false;
       for (let resultItem of this.searchEntities) {
@@ -475,8 +473,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.status = (<any>error).httpStatus;
     this.msgs.push({ severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception });
     this.searching = false;
-    console.log("Search value: " + this.searchValue);
-    console.log("Search error: " + this.errorMsg + ': ' + this.status + ' - ' + this.exception);
   }
 
   showMoreResTopics() {
@@ -1440,7 +1436,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.getTaxonomies();
 
       this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
-      console.log('authors inside init: ' + params['authors']);
+      // console.log('authors inside init: ' + params['authors']);
     });
   }
 
