@@ -8,7 +8,9 @@ export class GoogleAnalyticsService {
   constructor(router: Router) {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        gas('send', 'pageview', event.url, 'pageview');
+        setTimeout(() => {
+          gas('send', 'pageview', event.url, 'pageview');
+        }, 1000);
       }
     })
   }
