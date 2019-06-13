@@ -88,7 +88,6 @@ export class RealSearchService implements SearchService{
       searchPhraseValue = '&';
     }
 
-    console.log('url: ' + this.RMMAPIURL + 'records?' + searchPhraseValue + 'topic.tag=' + searchTaxonomyKey);
     return this.http.get(this.RMMAPIURL + 'records?' + searchPhraseValue + 'topic.tag=' + searchTaxonomyKey);
   }
 

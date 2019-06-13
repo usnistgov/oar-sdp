@@ -22,7 +22,7 @@ export interface Config {
 export class AppConfig {
   private appConfig;
   private confCall;
-  private envVariables = "/assets/environment.json";
+  private envVariables = "assets/environment.json";
   private confValues = {} as Config;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID)
@@ -30,17 +30,21 @@ export class AppConfig {
 
   loadAppConfig() {
     if (isPlatformBrowser(this.platformId)) {
-      console.log(" ****** HERE : in browser ::" + this.envVariables + " bsfshfsjd " + location.pathname + " ::" + location.host);
-      /**
-       * This check is added to avoid errors reading environment variables on server side
-       * when docker deployment is used. 
-       * Since nginx proxy adds additional context path, http.get
-       * does not get proper url for environment by using just relative path so added /pdr 
-       * here.
-       */
-      if (!location.host.includes("localhost:"))
-        this.envVariables = "/pdr" + this.envVariables;
 
+      // set this.envVariables to be the full URL for retrieving
+      // configuration.  Normal rules of relative URLs are applied.    
+      let baseurl = null;
+      if (this.envVariables.startsWith("/")) {
+          baseurl = location.origin;
+      }
+      else {
+          baseurl = location.href.replace(/#.*$/, "");
+          if (! this.envVariables.endsWith("/"))
+              baseurl = baseurl.replace(/\/[^\/]+$/, "/");
+      }
+      this.envVariables = baseurl + this.envVariables;
+      console.log("Retrieving configuration from "+this.envVariables);
+        
       this.confCall = this.http.get(this.envVariables)
         .toPromise()
         .then(

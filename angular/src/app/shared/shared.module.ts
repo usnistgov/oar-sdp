@@ -12,8 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
  PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
  PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
-import { ConfirmationDialogService } from './confirmation-dialog/confirmation-dialog.service'
-
+import { ConfirmationDialogService } from './confirmation-dialog/confirmation-dialog.service';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
