@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
       ],
       declarations: [ HomeComponent ],
       providers: [
-        {
+         {
           provide: APP_INITIALIZER,
           useFactory: appInitializerFn,
           multi: true,

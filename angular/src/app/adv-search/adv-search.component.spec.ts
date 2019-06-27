@@ -6,6 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConfirmationDialogService } from '../shared/confirmation-dialog/confirmation-dialog.service';
 import { MockModule } from '../mock.module';
+import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
+import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
 
 describe('AdvSearchComponent', () => {
   let component: AdvSearchComponent;
@@ -21,7 +23,11 @@ describe('AdvSearchComponent', () => {
         NgbModule.forRoot()
       ],
       declarations: [ AdvSearchComponent ],
-      providers: [ConfirmationDialogService],
+      providers: [
+        ConfirmationDialogService, 
+        GoogleAnalyticsService,
+        {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}
+      ],
       schemas: [NO_ERRORS_SCHEMA] 
     })
     .compileComponents();

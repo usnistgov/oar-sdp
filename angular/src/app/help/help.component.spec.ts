@@ -6,6 +6,9 @@ import { SearchSyntaxComponent } from "./search-syntax/search-syntax.component";
 import { HelpPageNotFoundComponent } from "./not-found/not-found.component";
 import { HowAdvancedSearchComponent } from "./how-advanced-search/how-advanced-search.component";
 import { RouterTestingModule } from '@angular/router/testing';
+import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
+import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('HelpComponent', () => {
   let component: HelpComponent;
@@ -14,7 +17,7 @@ describe('HelpComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule, HttpClientTestingModule
       ],
       declarations: [ 
         HelpComponent,
@@ -22,7 +25,8 @@ describe('HelpComponent', () => {
         SearchSyntaxComponent,
         HelpPageNotFoundComponent,
         HowAdvancedSearchComponent
-      ]
+      ],
+      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}]
     })
     .compileComponents();
   }));
