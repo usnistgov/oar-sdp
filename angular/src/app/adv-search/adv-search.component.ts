@@ -11,10 +11,9 @@ import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
 import { ConfirmationDialogService } from '../shared/confirmation-dialog/confirmation-dialog.service'
 import { timer } from 'rxjs/observable/timer';
+import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 
 import * as _ from 'lodash';
-declare var jQuery: any
-
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -89,10 +88,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     public searchQueryService: SearchQueryService,
     private confirmationService: ConfirmationService,
     private renderer: Renderer2,
-    private confirmationDialogService: ConfirmationDialogService) {
+    private confirmationDialogService: ConfirmationDialogService,
+    private googleAnalyticsService: GoogleAnalyticsService) {
 
     super();
-
+    this.googleAnalyticsService.appendGaTrackingCode();
+    
     this.taxonomies = [];
     this.fields = [];
     setTimeout(() => {

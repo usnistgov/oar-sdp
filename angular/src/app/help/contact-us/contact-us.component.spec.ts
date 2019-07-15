@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ContactUsComponent } from './contact-us.component';
+import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
+import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ContactUsComponent', () => {
   let component: ContactUsComponent;
@@ -8,7 +11,9 @@ describe('ContactUsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContactUsComponent ]
+      imports: [HttpClientTestingModule, RouterTestingModule],
+      declarations: [ ContactUsComponent ],
+      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}]
     })
     .compileComponents();
   }));

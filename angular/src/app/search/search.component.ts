@@ -14,8 +14,6 @@ import { SearchEntity } from '../shared/search-query/search.entity';
 import { Location } from '@angular/common';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
 
-declare var jQuery: any;
-
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -160,7 +158,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.mobHeight = window.innerHeight;
       });
     };
-
   }
 
   /**

@@ -8,7 +8,6 @@ import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
 import { timer } from 'rxjs/observable/timer';
-declare var jQuery: any
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -59,6 +58,8 @@ export class HomeComponent implements OnInit {
     this.suggestedTaxonomies = [];
     this.fields = [];
     this.confValues = this.appConfig.getConfig();
+    // Do not apply Google Anaylitics code here to avoid dup page counts
+
   }
 
   /**
