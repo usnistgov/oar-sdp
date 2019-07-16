@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 
 @Component({
   selector: 'sdp-about',
@@ -8,8 +7,7 @@ import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.se
 })
 export class AboutComponent implements OnInit {
 
-  constructor(private googleAnalyticsService: GoogleAnalyticsService) { 
-    this.googleAnalyticsService.appendGaTrackingCode();
+  constructor() { 
   }
 
   ngOnInit() {

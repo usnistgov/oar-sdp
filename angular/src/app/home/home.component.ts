@@ -58,8 +58,6 @@ export class HomeComponent implements OnInit {
     this.suggestedTaxonomies = [];
     this.fields = [];
     this.confValues = this.appConfig.getConfig();
-    // Do not apply Google Anaylitics code here to avoid dup page counts
-
   }
 
   /**

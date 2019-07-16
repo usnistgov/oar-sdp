@@ -1,10 +1,9 @@
 import {Component,AfterViewInit,ElementRef,Renderer,ViewChild} from '@angular/core';
 import './operators';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+//import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { SearchEntity } from './shared/search-query/search.entity';
-
-import {DataTableModule} from 'primeng/primeng';
+//import {DataTableModule} from 'primeng/primeng';
 
 enum MenuOrientation {
   STATIC,
