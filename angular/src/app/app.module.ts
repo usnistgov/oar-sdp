@@ -23,8 +23,6 @@ import { AdvSearchModule } from './adv-search/adv_search.module';
 import { PolicyModule } from './policy/policy.module';
 import { HelpModule } from './help/help.module';
 import { ApiModule } from './api/api.module';
-import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog/confirmation-dialog.component';
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
 import { RealModule } from '../app/real.module';
 import {enableProdMode} from '@angular/core';
@@ -52,8 +50,7 @@ enableProdMode();
     SearchTopBarComponent,
     InlineProfileComponent,
     TopBarComponent,
-    AboutComponent,
-    ConfirmationDialogComponent
+    AboutComponent
   ],
   imports: [
     RouterModule.forRoot(routes ,{ useHash: true }),
@@ -68,13 +65,11 @@ enableProdMode();
     AutoCompleteModule,
     HelpModule,
     ApiModule,
-    NgbModalModule,
     AdvSearchModule,
     PolicyModule,
     environment.possiblyMockModule,
     SharedModule.forRoot()
   ],
-  entryComponents:[ConfirmationDialogComponent],
   exports:[
     AutoCompleteModule
   ],

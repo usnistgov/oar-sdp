@@ -9,7 +9,6 @@ import { Data } from '../shared/search-query/data';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
-import { ConfirmationDialogService } from '../shared/confirmation-dialog/confirmation-dialog.service'
 import { timer } from 'rxjs/observable/timer';
 
 import * as _ from 'lodash';
@@ -86,11 +85,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     private router: Router,
     public searchQueryService: SearchQueryService,
     private confirmationService: ConfirmationService,
-    private renderer: Renderer2,
-    private confirmationDialogService: ConfirmationDialogService) {
+    private renderer: Renderer2) {
 
     super();
-    
+
     this.taxonomies = [];
     this.fields = [];
     setTimeout(() => {
@@ -162,11 +160,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    */
   cancelConfirm() {
     if (this.dataChanged) {
-      this.confirmationDialogService.confirm('Cancel Confirmation', 'Do you really want to cancel this edit?')
-        .then((confirmed) => this.cancelAdvSearchQuery())
-        .catch(() => {
-          console.log('User dismissed the dialog (e.g., by using ESC or clicking outside the dialog)');
-        });
+      if (confirm("Do you really want to cancel this edit?")) {
+        this.cancelAdvSearchQuery()
+      }
     } else {
       this.cancelAdvSearchQuery();
     }
@@ -176,14 +172,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   * Delete confirm popup
   */
   deleteConfirmQuery(queryName: string) {
-    this.confirmationDialogService.confirm('Please confirm...', 'Do you really want to delete this query?')
-      .then((confirmed) => {
-        this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
-        this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
-      })
-      .catch(() => {
-        console.log('User dismissed the dialog (e.g., by using ESC, clicking the cross icon, or clicking outside the dialog)');
-      });
+    if (confirm("Do you really want to delete this query?")) {
+      this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
+      this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+    }
+
   }
 
   /*

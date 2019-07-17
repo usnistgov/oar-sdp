@@ -7,12 +7,10 @@ import { TaxonomyListService } from './taxonomy-list/index';
 // import { SearchService } from './search-service/index';
 import { FootbarComponent } from './footbar/index';
 import { NameListService } from './name-list/name-list.service';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
  PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
  PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
-import { ConfirmationDialogService } from './confirmation-dialog/confirmation-dialog.service';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -33,8 +31,7 @@ import { ConfirmationDialogService } from './confirmation-dialog/confirmation-di
     MultiSelectModule,
     PaginatorModule,
     DialogModule,
-    CalendarModule,
-    NgbModule.forRoot()],
+    CalendarModule],
   declarations: [FootbarComponent],
   providers:[],
   exports: [FootbarComponent,
@@ -47,7 +44,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       // providers: [NameListService,TaxonomyListService,SearchService,SearchfieldsListService,ConfirmationDialogService]
-      providers: [NameListService,TaxonomyListService,SearchfieldsListService,ConfirmationDialogService]
+      providers: [NameListService,TaxonomyListService,SearchfieldsListService]
     };
   }
 }
