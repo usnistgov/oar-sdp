@@ -147,17 +147,18 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     public searchQueryService: SearchQueryService,
     private actualRouter: Router,
     private appConfig: AppConfig) {
-    this.confValues = this.appConfig.getConfig();
-    this.PDRAPIURL = this.confValues.PDRAPI;
-    this.mobHeight = (window.innerHeight);
-    this.mobWidth = (window.innerWidth);
 
-    window.onresize = (e) => {
-      ngZone.run(() => {
-        this.mobWidth = window.innerWidth;
-        this.mobHeight = window.innerHeight;
-      });
-    };
+      this.confValues = this.appConfig.getConfig();
+      this.PDRAPIURL = this.confValues.PDRAPI;
+      this.mobHeight = (window.innerHeight);
+      this.mobWidth = (window.innerWidth);
+
+      window.onresize = (e) => {
+        ngZone.run(() => {
+          this.mobWidth = window.innerWidth;
+          this.mobHeight = window.innerHeight;
+        });
+      };
   }
 
   /**

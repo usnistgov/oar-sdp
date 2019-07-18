@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-// import { Config } from '../shared/index';
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -9,4 +8,8 @@ import { Component } from '@angular/core';
   templateUrl: 'policy.component.html',
   styleUrls: ['policy.component.css']
 })
-export class PolicyComponent { }
+export class PolicyComponent { 
+  constructor(){
+  }
+
+}
