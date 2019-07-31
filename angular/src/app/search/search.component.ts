@@ -13,6 +13,7 @@ import { SearchQueryService } from '../shared/search-query/search-query.service'
 import { SearchEntity } from '../shared/search-query/search.entity';
 import { Location } from '@angular/common';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -146,7 +147,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     public searchFieldsListService: SearchfieldsListService,
     public searchQueryService: SearchQueryService,
     private actualRouter: Router,
-    private appConfig: AppConfig) {
+    private appConfig: AppConfig,
+    public gaService: GoogleAnalyticsService) {
 
       this.confValues = this.appConfig.getConfig();
       this.PDRAPIURL = this.confValues.PDRAPI;
