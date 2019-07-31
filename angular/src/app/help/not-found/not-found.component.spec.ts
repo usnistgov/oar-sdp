@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpPageNotFoundComponent } from './not-found.component';
+import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('HelpPageNotFoundComponent', () => {
   let component: HelpPageNotFoundComponent;
@@ -8,7 +11,9 @@ describe('HelpPageNotFoundComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpPageNotFoundComponent ]
+      imports: [RouterModule, RouterTestingModule],
+      declarations: [ HelpPageNotFoundComponent ],
+      providers: [GoogleAnalyticsService]
     })
     .compileComponents();
   }));
