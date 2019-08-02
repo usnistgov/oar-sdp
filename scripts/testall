@@ -8,9 +8,46 @@ execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 
+buildtypes="angular"
+
+dotypes=""
+e2eargs=""
+cdver=""
+while [ "$1" != "" ]; do
+    case "$1" in
+        --chrome-driver-version|--cdv)
+            shift
+            cdver="$1"
+            ;;
+        --chrome-driver-version=*|--cdv=*)
+            cdver=`echo $1 | sed -e 's/[^=]*=//'`
+            ;;
+        -*)
+            echo "${prog}: Unsupported option:" $1
+            false
+            ;;
+        angular)
+            dotypes="$dotypes $1"
+            ;;
+        *)
+            echo "${prog}: Unsupported command:" $1
+            false
+            ;;
+    esac
+    shift
+done
+[ -n "$dotypes" ] || dotypes=$buildtypes
+
 echo '+' $PACKAGE_DIR/scripts/setversion.sh
 $PACKAGE_DIR/scripts/setversion.sh
 cd $PACKAGE_DIR/angular
+
+[ -z "$cdver" ] || {
+    e2eargs=" -- --webdriver-update=false"
+    echo '+' npm run webdriver -- --versions.chrome $cdver
+    npm run webdriver -- --versions.chrome $cdver
+}
 echo '+' npm test
 npm test
-npm run e2e
+echo '+' npm run e2e $e2eargs
+npm run e2e $e2eargs
