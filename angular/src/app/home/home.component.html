@@ -1,18 +1,3 @@
-<style id="antiClickjack">
-  body {
-    display: none !important;
-  }
-</style>
-
-<script type="text/javascript">
-  if (self === top) {
-    var antiClickjack = document.getElementById("antiClickjack");
-    antiClickjack.parentNode.removeChild(antiClickjack);
-  } else {
-    top.location = self.location;
-  }
-</script>
-  
 <div class="frontPanel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
 <div class="ui-g header">
   <div class="ui-g-12" style="margin-top:20px">
@@ -78,40 +63,40 @@
         <div class="ui-g-12 ui-md-2 ">
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!" (click)="search('','Information Technology','')" class="cardDecoration" >
+          <div (click)="search('','Information Technology','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>INFORMATION TECHNOLOGY</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!"  (click)="search('','Mathematics and Statistics','')" class="cardDecoration" >
+          <div (click)="search('','Mathematics and Statistics','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>MATHEMATICS AND STATISTICS</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!"  (click)="search('','Manufacturing','')" class="cardDecoration">
+          <div  (click)="search('','Manufacturing','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>MANUFACTURING</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!"  (click)="search('','Forensics','')" class="cardDecoration">
+          <div (click)="search('','Forensics','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>FORENSICS</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -124,43 +109,42 @@
         <div class="ui-g-12 ui-md-2 ">
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!"  (click)="search('','Materials','')" class="cardDecoration">
+          <div (click)="search('','Materials','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>MATERIALS</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!"  (click)="search('','Physics,Neutron','')" class="cardDecoration">
+          <div (click)="search('','Physics,Neutron','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight" >
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>PHYSICS AND NEUTRON</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <a  href = "#!"  (click)="search('','Advanced Communications','')" class="cardDecoration">
+          <div (click)="search('','Advanced Communications','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight" >
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>ADVANCED COMMUNICATIONS</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
         <div class="ui-g-12 ui-md-2" >
-          <a  href = "#!"  (click)="search('','Chemistry','')" class="cardDecoration">
+          <div (click)="search('','Chemistry','')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title" ><b>CHEMISTRY</b></span>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

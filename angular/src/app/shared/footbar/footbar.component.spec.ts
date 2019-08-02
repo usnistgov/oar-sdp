@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FootbarComponent } from './footbar.component';
+import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('FootbarComponent', () => {
   let component: FootbarComponent;
@@ -8,7 +11,9 @@ describe('FootbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FootbarComponent ]
+      imports: [RouterModule, RouterTestingModule],
+      declarations: [ FootbarComponent ],
+      providers: [GoogleAnalyticsService]
     })
     .compileComponents();
   }));

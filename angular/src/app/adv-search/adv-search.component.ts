@@ -10,6 +10,7 @@ import { SearchQueryService } from '../shared/search-query/search-query.service'
 import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
 import { timer } from 'rxjs/observable/timer';
+import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
 import * as _ from 'lodash';
 
@@ -81,6 +82,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     ngZone: NgZone,
     public taxonomyListService: TaxonomyListService,
     public searchFieldsListService: SearchfieldsListService,
+    public gaService: GoogleAnalyticsService,
     // public searchService: SearchService,
     private router: Router,
     public searchQueryService: SearchQueryService,

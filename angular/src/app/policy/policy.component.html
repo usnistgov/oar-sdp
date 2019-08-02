@@ -17,7 +17,7 @@
     <label id='title' style="font-size: xx-large;float: left;display: block;"><i
         class="faa faa-book faa-lg"></i>Policy</label>
     <ol class="breadcrumb" style="float: right;">
-      <li><a href="#" style="color: #fff;">Home</a></li>
+      <li><a href="#" style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
       <li class="active breadCrumb-text">About</li>
       <li class="active breadCrumb-text">Policy</li>
     </ol>
@@ -31,18 +31,18 @@
         style="font-family: Source Sans Pro,sans-serif;font-size:20px;line-height: 1.2em;">
         <div class="adv-step">
           The NIST PDL and associated data are stored in NIST’s public data repository. Please refer to the <a
-            href="https://www.nist.gov/open" target="_blank">NIST Open Data</a> website for additional organizational
+            href="https://www.nist.gov/open" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'NIST Open Data')">NIST Open Data</a> website for additional organizational
           policy and related NIST directive information.
         </div>
         <div class="adv-step">
           In accordance with U.S. Government Open Data Policy and the <a
             href="https://www.nist.gov/sites/default/files/documents/2017/04/28/NIST-Plan-for-Public-Access.pdf"
-            target="_blank">NIST Plan for Providing Public Access to the Results of Federally Funded Research</a>,
+            target="_blank" (click)="gaService.gaTrackEvent('download', $event, 'NIST Plan for Providing Public Access to the Results of Federally Funded Research')">NIST Plan for Providing Public Access to the Results of Federally Funded Research</a>,
           NIST
           maintains a publicly accessible inventory of available data, the NIST Public Data Listing (PDL). This online
           inventory is harvested by the Department of Commerce and made publicly available at <a
-            href="https://data.gov/" target="_blank">Data.gov</a>. These NIST PDL complies with the guidance set forth
-          in OMB M-13-13 policy and uses the <a href="https://project-open-data.cio.gov/" target="_blank">Project Open
+            href="https://data.gov/" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Data.gov')">Data.gov</a>. These NIST PDL complies with the guidance set forth
+          in OMB M-13-13 policy and uses the <a href="https://project-open-data.cio.gov/" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Project Open Data')">Project Open
             Data</a> standard metadata schema representation.
         </div>
         <div class="adv-step">
@@ -50,8 +50,7 @@
             NIST’s public data repository records are accessible in machine-readable open data formats and demonstrate
             capabilities as set forth in new public law, <a
               href="https://docs.house.gov/meetings/GO/GO00/20171102/106588/BILLS-115HR4174ih-FEBP.pdf"
-              target="_blank">Foundations for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data
-              Act</a> (2019).
+              target="_blank" (click)="gaService.gaTrackEvent('download', $event, 'Foundations for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data Act')">Foundations for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data Act</a> (2019).
           </p>
         </div>
         <div class="adv-step">

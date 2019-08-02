@@ -65,12 +65,12 @@
       <div class="ui-g-10" *ngIf="noResults && !sysError">
         <!-- <p-messages [(value)]="searchResultsError" style="text-align:center"></p-messages>
         <p-messages [(value)]="msgs" style="text-align:center;background-color: red"></p-messages> -->
-        Your search generates no results. Please click on <a href="#help"> Search Rules</a> for more information.
+        Your search generates no results. Please click on <a href="#help" (click)="gaService.gaTrackPageview('/help', 'help')"> Search Rules</a> for more information.
       </div>
       <div class="ui-g-10" *ngIf="sysError">
         Oops! It looks like our site had a problem completing your search. Please try again. If this error persists you
         may contact <a
-          href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= ">datasupport@nist.gov</a>.
+          href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= " (click)="gaService.gaTrackEvent('Email', $event, 'Contact')">datasupport@nist.gov</a>.
       </div>
     </div>
     <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
@@ -422,7 +422,7 @@
                       </div>
                       <div class="ui-grid-row">
                         <div class="ui-grid-col-12" style="margin-top:5px">
-                          <a [(href)]="resultItem.landingPage" onclick="window.open(this.href, 'search'); return false">
+                          <a [(href)]="resultItem.landingPage" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                             <button pButton label="Visit Home Page" type="button" icon="faa faa-external-link"
                               style="font-size: 13px; width:150px; background-color: #277E2F"></button>
                           </a>

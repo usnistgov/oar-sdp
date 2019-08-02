@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
 @Component({
   selector: 'sdp-about',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AboutComponent implements OnInit {
 
-  constructor() { 
+  constructor(public gaService: GoogleAnalyticsService) { 
   }
 
   ngOnInit() {

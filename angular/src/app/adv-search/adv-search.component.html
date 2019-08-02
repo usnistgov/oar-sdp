@@ -1,17 +1,3 @@
-<style id="antiClickjack">
-  body {
-    display: none !important;
-  }
-</style>
-<script type="text/javascript">
-  if (self === top) {
-    var antiClickjack = document.getElementById("antiClickjack");
-    antiClickjack.parentNode.removeChild(antiClickjack);
-  } else {
-    top.location = self.location;
-  }
-</script>
-
 <div class="ui-g" style="background-color: #153971;color: #FFFFFF">
   <div class="ui-g-2">
   </div>
@@ -20,7 +6,7 @@
     <label id='title' style="font-size: xx-large;float: left;display: block;"><i
         class="faa faa-cogs faa-lg"></i>Advanced Search Builder</label>
     <ol class="breadcrumb" style="float: right;">
-      <li class="breadcrumb-item"><a href="#" style="color: #fff;">Home</a></li>
+      <li class="breadcrumb-item"><a href='#' style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
       <li class="active breadcrumb-item">Advanced Search Builder</li>
     </ol>
     <div class="EmptyBox20"></div>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -9,7 +10,7 @@ import { Component } from '@angular/core';
   styleUrls: ['policy.component.css']
 })
 export class PolicyComponent { 
-  constructor(){
+  constructor(public gaService: GoogleAnalyticsService){
   }
 
 }

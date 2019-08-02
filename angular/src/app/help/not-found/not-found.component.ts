@@ -1,4 +1,5 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
+import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -10,6 +11,8 @@ import {Component, ViewChild, ElementRef} from '@angular/core';
 })
 export class  HelpPageNotFoundComponent {
 
+  constructor(public gaService: GoogleAnalyticsService) { }
+  
   public HelpPageNotFoundComponent () {
    }
 
