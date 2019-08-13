@@ -15,21 +15,28 @@ export class GoogleAnalyticsService {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd && event.url != '/') {
         setTimeout(() => {
+          console.log("Router gas() pageview: event URL", event.url, "title: pageview");
           gas('send', 'pageview', event.url, 'pageview');
         }, 1000);
       }
     })
   }
 
-  // Tracking pageview
+  /*
+   * Tracking pageview
+   */
   gaTrackPageview(url: string, title: string) {
-    setTimeout(() => {
-      gas('send', 'pageview', url, title);
-    }, 1000);
+    console.log("Calling gas() pageview: URL", url, "title", title);
+    gas('send', 'pageview', url, title);
   }
 
-  // Tracking events
+  /*
+   * Tracking events
+   * If action and label are provided, use them. Otherwise try to get them from event param.
+   * If nothing available, leave them blank.
+   */
   gaTrackEvent(category: string, event?:any, label?: string, action?: string) {
+    console.log("Original event param: category", category, "action", action, "label", label);
     if(action == undefined){
       // menu item
       if(event.item != undefined){
@@ -51,8 +58,12 @@ export class GoogleAnalyticsService {
     action = (action == undefined)?"":action;
     label = (label == undefined)?"":label;
 
-    setTimeout(() => {
-      gas('send', 'event', category, action, label, 1);
-    }, 1000);
+    console.log("Calling gas(): Event category", category, "action", action, "label", label);
+    gas('send', 'event', category, action, label, 1);
+
+    // setTimeout(() => {
+    //   console.log("Event category", category, "action", action, "label", label);
+    //   gas('send', 'event', category, action, label, 1);
+    // }, 1000);
   }
 }
