@@ -1432,6 +1432,16 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.searchAuthors = params['authors'];
       this.searchKeywords = params['keywords'];
 
+      //Treat ',', ';' the same as space
+      this.searchValue = this.searchValue.replace(/\,/g, ' ');
+      this.searchValue = this.searchValue.replace(/\;/g, ' ');
+
+      // Replace '%26' with '&'
+      this.searchValue = this.searchValue.replace(/\%26/g, '&');
+
+      this.searchValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' or ');
+      this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
+
       //this.resourceTypeTree.push(params['resType']);
       this.getTaxonomies();
 
