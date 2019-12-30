@@ -117,6 +117,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   width: string;
   isActive: boolean = true;
   sysError: boolean = false;
+  imageURL: string;
 
   filterClass: string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass: string = "ui-g-12 ui-md-7 ui-lg-9";
@@ -1419,6 +1420,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.msgs = [];
     this.searchResultsError = [];
+    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
     this.getSearchFields();
     this.getTaxonomySuggestions();
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
