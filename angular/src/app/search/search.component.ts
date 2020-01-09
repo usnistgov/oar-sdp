@@ -1432,9 +1432,20 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.searchAuthors = params['authors'];
       this.searchKeywords = params['keywords'];
 
-      //this.resourceTypeTree.push(params['resType']);
       this.getTaxonomies();
 
+      // Processing search value
+      if(this.searchValue){
+        //Treat ',', ';' the same as space
+        this.searchValue = this.searchValue.replace(/\,/g, ' ');
+        this.searchValue = this.searchValue.replace(/\;/g, ' ');
+
+      // Replace '%26' with '&'
+        this.searchValue = this.searchValue.replace(/\%26/g, '&');
+
+        this.searchValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' or ');
+        this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
+      }
       this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
       // console.log('authors inside init: ' + params['authors']);
     });
