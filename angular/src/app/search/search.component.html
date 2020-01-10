@@ -14,7 +14,7 @@
 
 <div class="ui-fluid searchColor">
   <div class="ui-g">
-    <div class="ui-g-12 background-gray">
+    <div class="ui-g-12 frontPanel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
       <div class="ui-g form-group">
         <div class="ui-g-12 ui-lg-2 ui-md-1">
         </div>
@@ -40,14 +40,14 @@
             label="Search" type="submit"></button> </div>
         <div class="ui-g-12 ui-md-2">
           &nbsp;&nbsp;<a href="#" [routerLink]="['/advanced']"
-            style="color: #1f496e;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search
+            style="color: white;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search
           </a>
         </div>
       </div>
       <div class="ui-g-12 ui-md-2">
       </div>
       <div class="ui-g-12 ui-md-6">
-        <b> Examples: </b>
+        <b style="color: white;"> Examples: </b>
         <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
           href="#">"Kinetics database" </a> &nbsp;
         <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#">Gallium </a>&nbsp;
@@ -327,36 +327,36 @@
             <div class="ui-g-12" style="padding: 0em">
               <div class="ui-g-12 ui-md-4 ui-sm-12">
                 <div style="color: #000;font-weight: 800;float: left;padding-top: 10px">
-                  &nbsp;&nbsp;{{filteredResults.length}} records found</div>
+                    &nbsp;&nbsp;{{filteredResults.length}} records found</div>
               </div>
               <div class="ui-g-12 ui-md-8 ui-sm-12">
                 <div style="float:left;padding-top:10px;">
-                  <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
+                    <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
                 </div>
                 <div style="float: right;padding-right:10px;padding-top:10px;">
                   <button type="text" style="background-color: #606165;font-weight: 900" pButton
-                    (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
                   <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
                     <div style="width: 100%;margin-top:0em;text-align: left;">
-                      <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()"
+                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()"
                         [(ngModel)]="selectedFields"></p-checkbox>
-                      <b>Display Fields</b> <a href="#" (click)="$event.preventDefault();ResetSelectedFields()"
+                        <b>Display Fields</b> <a href="#" (click)="$event.preventDefault();ResetSelectedFields()"
                         style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
                     </div>
                     <div style="text-align: left">
-                      <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All"
+                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All"
                         (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                     </div>
                     <div *ngFor="let fields of displayFields" style="text-align: left">
-                      <p-checkbox inputId={{fields}} name={{fields}} class="label" value={{fields}} label={{fields}}
+                        <p-checkbox inputId={{fields}} name={{fields}} class="label" value={{fields}} label={{fields}}
                         [(ngModel)]="selectedFields"></p-checkbox>
                     </div>
                     <div style="border-top:.5px solid #e6e6e6;margin-top:5px;padding-top:5px;text-align: left">
-                      <b>Sort Results</b> <br>
-                      <p-dropdown [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name"
+                        <b>Sort Results</b> <br>
+                        <p-dropdown [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name"
                         (onChange)="SortByFields()"
                         [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
-                      </p-dropdown>
+                        </p-dropdown>
                     </div>
                     <div class="EmptyBox20"></div>
                   </p-overlayPanel>
@@ -364,7 +364,7 @@
               </div>
             </div>
           </div>
-          <ul style="list-style-type: none;padding-left:0">
+          <ul style="list-style-type: none;padding-left:0;">
             <li *ngFor="let resultItem of filteredResults | paginate: { itemsPerPage: 10, currentPage: page }">
               <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:.5px solid #e6e6e6;">
                 <div class="ui-grid-row nowrap" style="width: 100%;">
@@ -434,6 +434,21 @@
               </div>
             </li>
           </ul>
+          <div class="ui-g-12" style="padding: 0em">
+            <div class="ui-g-12 ui-md-4 ui-sm-12">
+              <div style="color: #000;font-weight: 800;float: left;padding-top: 10px">
+                &nbsp;&nbsp;{{filteredResults.length}} records found</div>
+            </div>
+            <div class="ui-g-12 ui-md-8 ui-sm-12">
+              <div style="float:left;padding-top:10px;">
+                <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
+              </div>
+              <div style="float: right;padding-right:10px;padding-top:10px;">
+                <button type="text" style="background-color: #606165;font-weight: 900" pButton
+                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
