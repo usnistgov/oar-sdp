@@ -44,7 +44,7 @@ export class AppMenuComponent implements OnInit {
         label: 'Developer',
         items: [
           {label: 'APIs', routerLink: ['/api']},
-          {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov/oar-sdp', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event, 'GitHub (usnistgov)')}},
+          {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov/oar-developer', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event, 'GitHub (usnistgov)')}},
         ]
       },
       {
