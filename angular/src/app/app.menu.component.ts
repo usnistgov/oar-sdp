@@ -5,7 +5,6 @@ import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {MenuItem} from 'primeng/primeng';
 import {AppComponent} from './app.component';
-import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service';
 
 @Component({
   selector: 'app-menu',
@@ -19,7 +18,7 @@ export class AppMenuComponent implements OnInit {
 
   model: any[];
 
-  constructor(public app: AppComponent, public gaService: GoogleAnalyticsService) {}
+  constructor(public app: AppComponent) {}
 
   ngOnInit() {
     this.model = [
@@ -27,24 +26,24 @@ export class AppMenuComponent implements OnInit {
       {
         label:'Key Datasets',
         items: [
-          {label: 'Atomic Spectroscopy Database',url: 'https://www.nist.gov/node/429021', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Ballistics Toolmark', url: 'https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Chemistry WebBook',url: 'http://webbook.nist.gov/chemistry', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Digital Library of Mathematical Functions', url: 'http://dlmf.nist.gov/', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Fire Research', url: 'https://www.nist.gov/node/436111', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Materials Genome Initiative', url: 'https://mgi.nist.gov/', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'National Vulnerability Database', url: 'http://csrc.nist.gov/groups/SNS/nvd/', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Physical Reference Data', url: 'https://www.nist.gov/pml/productsservices/physical-reference-data', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'Time',url: 'http://nist.time.gov/', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'World Trade Center Disaster Investigation Material', url: 'http://wtcdata.nist.gov/', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
+          {label: 'Atomic Spectroscopy Database',url: 'https://www.nist.gov/node/429021', target:'_blank'},
+          {label: 'Ballistics Toolmark', url: 'https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database', target:'_blank'},
+          {label: 'Chemistry WebBook',url: 'http://webbook.nist.gov/chemistry', target:'_blank'},
+          {label: 'Digital Library of Mathematical Functions', url: 'http://dlmf.nist.gov/', target:'_blank'},
+          {label: 'Fire Research', url: 'https://www.nist.gov/node/436111', target:'_blank'},
+          {label: 'Materials Genome Initiative', url: 'https://mgi.nist.gov/', target:'_blank'},
+          {label: 'National Vulnerability Database', url: 'http://csrc.nist.gov/groups/SNS/nvd/', target:'_blank'},
+          {label: 'Physical Reference Data', url: 'https://www.nist.gov/pml/productsservices/physical-reference-data', target:'_blank'},
+          {label: 'Time',url: 'http://nist.time.gov/', target:'_blank'},
+          {label: 'World Trade Center Disaster Investigation Material', url: 'http://wtcdata.nist.gov/', target:'_blank'},
         ]
       },
-      {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
+      {label: 'Standard Reference Data (SRDs)', url: 'https://www.nist.gov/srd', target:'_blank'},
       {
         label: 'Developer',
         items: [
           {label: 'APIs', routerLink: ['/api']},
-          {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov/oar-developer', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event, 'GitHub (usnistgov)')}},
+          {label: 'GitHub (usnistgov)',url: 'https://github.com/usnistgov/oar-sdp', target:'_blank'},
         ]
       },
       {
@@ -58,9 +57,9 @@ export class AppMenuComponent implements OnInit {
       {
         label: 'Find Papers',
         items: [
-          {label: 'Search All Papers',url: 'https://www.nist.gov/publications', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'JRes NIST', url: 'https://www.nist.gov/nist-research-library/journal-research-nist', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
-          {label: 'NIST PubMed Central', url: 'https://www.ncbi.nlm.nih.gov/pmc/funder/nist/', target:'_blank', command: (event) => {this.gaService.gaTrackEvent('outbound', event)}},
+          {label: 'Search All Papers',url: 'https://www.nist.gov/publications', target:'_blank'},
+          {label: 'JRes NIST', url: 'https://www.nist.gov/nist-research-library/journal-research-nist', target:'_blank'},
+          {label: 'NIST PubMed Central', url: 'https://www.ncbi.nlm.nih.gov/pmc/funder/nist/', target:'_blank'},
         ]
       },
     ];

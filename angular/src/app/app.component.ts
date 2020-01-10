@@ -1,8 +1,11 @@
-import {Component,AfterViewInit,ElementRef,Renderer,ViewChild} from '@angular/core';
+import { Component, AfterViewInit, ElementRef, Renderer, ViewChild } from '@angular/core';
 import './operators';
 //import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { SearchEntity } from './shared/search-query/search.entity';
+import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
+import { AppConfig, Config } from './shared/config-service/config-service.service';
+import { concat } from 'rxjs';
 //import {DataTableModule} from 'primeng/primeng';
 
 enum MenuOrientation {
@@ -58,34 +61,54 @@ export class AppComponent implements AfterViewInit {
   menuHoverActive: boolean;
   displayQueryList: boolean = false;
   searchEntities: SearchEntity[];
+  confValues: Config;
+  gaCode: string;
 
   @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
 
   @ViewChild('layoutMenuScroller') layoutMenuScrollerViewChild: ElementRef;
 
-  constructor(public renderer: Renderer,public searchQueryService: SearchQueryService) {
+  constructor(
+    public renderer: Renderer,
+    public searchQueryService: SearchQueryService,
+    private appConfig: AppConfig,
+    private gaService: GoogleAnalyticsService) {
 
     this.searchQueryService.watchQuery().subscribe(value => {
       this.displayQueryList = value;
     });
     this.getSearchQueryList();
+
+    /**
+     * Added Google Analytics service to html
+     * 
+     * Google Analytics service code was removed from index.html because it's not yet calling config service.
+     * While adding Google Analytics service code here, the header menu and footer are all available 
+     * at this time so we don't need to msnuslly track user events in header menu and footer links.
+     * But we still need to track user event of the dynamic content.
+     */
+    this.confValues = this.appConfig.getConfig();
+    this.gaCode = this.confValues.GACODE;
+    this.gaService.appendGaTrackingCode(this.gaCode);
   }
 
   ngAfterViewInit() {
-    this.layoutContainer = <HTMLDivElement> this.layourContainerViewChild.nativeElement;
-    this.layoutMenuScroller = <HTMLDivElement> this.layoutMenuScrollerViewChild.nativeElement;
+    this.layoutContainer = <HTMLDivElement>this.layourContainerViewChild.nativeElement;
+    this.layoutMenuScroller = <HTMLDivElement>this.layoutMenuScrollerViewChild.nativeElement;
 
     setTimeout(() => {
       // jQuery(this.layoutMenuScroller).nanoScroller({flash:true});
     }, 10);
   }
 
+  ngOnInit() {
 
-  removeItem(row:any) {
+  }
+  removeItem(row: any) {
     let dataId: any;
     // convert the map to an array
     let delRow = this.searchEntities.indexOf(row);
-    this.searchEntities.splice(delRow,1);
+    this.searchEntities.splice(delRow, 1);
     this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
     this.getSearchQueryList();
   }
@@ -93,17 +116,9 @@ export class AppComponent implements AfterViewInit {
   getSearchQueryList() {
 
     this.searchQueryService.getAllSearchEntities().then(function (result) {
-
-      //console.log("result" + result.length);
-
       this.searchEntities = result;
-
-      // console.log("cart entities inside datacartlist" + JSON.stringify(this.searchEntities));
-
     }.bind(this), function (err) {
-
       alert("something went wrong while fetching the products");
-
     });
 
   }
@@ -113,24 +128,24 @@ export class AppComponent implements AfterViewInit {
   }
 
   onLayoutClick() {
-    if(!this.topbarItemClick) {
+    if (!this.topbarItemClick) {
       this.activeTopbarItem = null;
       this.topbarMenuActive = false;
     }
 
-    if(!this.menuClick) {
-      if(this.isHorizontal() || this.isSlim()) {
+    if (!this.menuClick) {
+      if (this.isHorizontal() || this.isSlim()) {
         this.resetMenu = true;
       }
 
-      if(this.overlayMenuActive || this.staticMenuMobileActive) {
+      if (this.overlayMenuActive || this.staticMenuMobileActive) {
         this.hideOverlayMenu();
       }
 
       this.menuHoverActive = false;
     }
 
-    if(!this.rightPanelClick) {
+    if (!this.rightPanelClick) {
       this.rightPanelActive = false;
     }
 
@@ -144,11 +159,11 @@ export class AppComponent implements AfterViewInit {
     this.rotateMenuButton = !this.rotateMenuButton;
     this.topbarMenuActive = false;
 
-    if(this.layoutMode === MenuOrientation.OVERLAY) {
+    if (this.layoutMode === MenuOrientation.OVERLAY) {
       this.overlayMenuActive = !this.overlayMenuActive;
     }
     else {
-      if(this.isDesktop())
+      if (this.isDesktop())
         this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive;
       else
         this.staticMenuMobileActive = !this.staticMenuMobileActive;
@@ -161,9 +176,8 @@ export class AppComponent implements AfterViewInit {
     this.menuClick = true;
     this.resetMenu = false;
 
-    if(!this.isHorizontal()) {
+    if (!this.isHorizontal()) {
       setTimeout(() => {
-        // jQuery(this.layoutMenuScroller).nanoScroller();
       }, 500);
     }
   }
@@ -180,7 +194,7 @@ export class AppComponent implements AfterViewInit {
   onTopbarItemClick(event, item) {
     this.topbarItemClick = true;
 
-    if(this.activeTopbarItem === item)
+    if (this.activeTopbarItem === item)
       this.activeTopbarItem = null;
     else
       this.activeTopbarItem = item;
@@ -246,7 +260,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngOnDestroy() {
-    // jQuery(this.layoutMenuScroller).nanoScroller({flash:true});
   }
 
 }

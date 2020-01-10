@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GoogleAnalyticsService } from '../ga-service/google-analytics.service';
-import { CommonService } from '../common/common.service';
 
 @Component({
   selector: 'sdp-footbar',
@@ -9,7 +7,7 @@ import { CommonService } from '../common/common.service';
 })
 export class FootbarComponent implements OnInit {
 
-  constructor(public gaService: GoogleAnalyticsService, public commonService: CommonService) { }
+  constructor() { }
 
   ngOnInit() {
   }
