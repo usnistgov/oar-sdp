@@ -202,7 +202,7 @@
 }
 
 .examples {
-  color: #0f4a65;
+  color: white;
   text-decoration: underline;
 }
 
@@ -280,3 +280,11 @@ background-cyanblue {
   font-weight: bold;
 }
 
+.frontPanel {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center 63%;
+    width: 100%;
+}

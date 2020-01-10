@@ -12,6 +12,7 @@ import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, Menub
  PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
  PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
 
+ import { CommonService } from './common/common.service';
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
  */
@@ -33,7 +34,7 @@ import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, Menub
     DialogModule,
     CalendarModule],
   declarations: [FootbarComponent],
-  providers:[],
+  providers:[CommonService],
   exports: [FootbarComponent,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
     SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,

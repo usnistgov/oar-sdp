@@ -18,9 +18,10 @@
       <label id='title' style="font-size: xx-large;float: left;display: block;"><i class="faa faa-question faa-lg"></i>
         Help</label>
       <ol class="breadcrumb" style="float: right;">
-        <li><a href="#" style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-        <li class="active breadCrumb-text">About</li>
-        <li class="active breadCrumb-text">Help</li>
+        <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
+          (click)="commonService.goHome()">Home</span></li>
+        <li class="breadcrumb-item">About</li>
+        <li class="breadcrumb-item">Help</li>
       </ol>
     </div>
   </div>

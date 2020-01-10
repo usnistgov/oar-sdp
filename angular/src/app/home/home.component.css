@@ -159,12 +159,13 @@ hr {
 
 .frontPanel {
   /*width:100%;*/
-  background: no-repeat center center fixed;
+  /* background: no-repeat center center fixed; */
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-
+  background-position: center 63%;
+  width: 100%;
 }
 
 .background-cyanblue {
