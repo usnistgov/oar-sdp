@@ -1,8 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationEnd } from "@angular/router";
 import { Router } from '@angular/router';
-import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
-
+import { CommonService } from '../shared/common/common.service';
 /**
  * This class represents the lazy loaded AboutComponent.
  */
@@ -18,7 +17,7 @@ export class HelpComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public gaService: GoogleAnalyticsService
+    public commonService: CommonService
   ) {
 
     router.events.subscribe(event => {
@@ -35,5 +34,4 @@ export class HelpComponent {
   public navigateToPage(page: string): void {
     this.router.navigateByUrl("/help/" + page);
   }
-
 }
