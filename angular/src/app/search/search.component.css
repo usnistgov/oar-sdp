@@ -202,7 +202,7 @@
 }
 
 .examples {
-  color: #0f4a65;
+  color: white;
   text-decoration: underline;
 }
 
@@ -280,3 +280,47 @@ background-cyanblue {
   font-weight: bold;
 }
 
+.my-pagination /deep/ .ngx-pagination {
+  margin: 0 0;
+}
+
+.my-pagination /deep/ .ngx-pagination a, .ngx-pagination button { 
+  color: white; 
+}
+
+.my-pagination /deep/ .ngx-pagination a:hover, .ngx-pagination button:hover { background: rgb(31, 61, 95); }
+
+.my-pagination /deep/ .ngx-pagination .current {
+  background: green;
+  color: white;
+}
+
+.my-pagination /deep/ .ngx-pagination .disabled {
+  color: #d4d4d4;
+}
+
+.frontPanel {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position: center 63%;
+  width: 100%;
+}
+
+.pagination-bar {
+  padding: 0 0; 
+  background-color: #112E51;
+}
+
+.customize-fields-layout {
+  float: right;
+  padding-right: 10px;
+  padding-top: 2px;
+}
+
+.customize-fields-button {
+  background-color: #606165;
+  font-weight: 900; 
+  padding: 0px 10px 0px 10px;
+}
