@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { SearchEntity } from './shared/search-query/search.entity';
 import * as _ from 'lodash';
-
+import { AppConfig, Config } from './shared/config-service/config-service.service';
 
 
 @Component({
@@ -17,7 +17,7 @@ import * as _ from 'lodash';
             <span class="Fleft" style="font-weight:bold;line-height: 16.5px;display: table-cell;vertical-align: text-top;color: #FFFFFF;font-size:14px;padding-left: 2%">SCIENCE <br> DATA PORTAL </span>
           </a>
       </span>
-      <span class="badge" style="color:black;background-color:#f0f0f0;vertical-align: text-top;margin-top: 10px;">1.2.0</span>
+      <span class="badge" style="color:black;background-color:#f0f0f0;vertical-align: text-top;margin-top: 10px;">{{appVersion}}</span>
         <div class="topbar-right">
               <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                     <i></i>
@@ -45,14 +45,21 @@ export class SearchTopBarComponent {
 
   queryLength : number;
   searchEntities: SearchEntity[];
+  appVersion: string;
+  confValues: Config;
 
-  constructor(public app: AppComponent, public searchQueryService: SearchQueryService) {
+  constructor(
+    public app: AppComponent, 
+    public searchQueryService: SearchQueryService,
+    private appConfig: AppConfig) {
 
-  this.searchQueryService.watchStorage().subscribe(value => {
-    this.queryLength = value;
-    this.getSearchQueryList();
-  });
+    this.searchQueryService.watchStorage().subscribe(value => {
+      this.queryLength = value;
+      this.getSearchQueryList();
+    });
 
+    this.confValues = this.appConfig.getConfig();
+    this.appVersion = this.confValues.APPVERSION;
   }
 
   getSearchQueryList() {
