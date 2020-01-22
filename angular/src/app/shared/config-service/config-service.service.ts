@@ -15,6 +15,7 @@ export interface Config {
   PDRAPI: string;
   METAPI: string;
   GACODE: string;
+  APPVERSION: string;
 }
 
 @Injectable({
@@ -58,6 +59,7 @@ export class AppConfig {
             this.confValues.SDPAPI = resp['SDPAPI'];
             this.confValues.PDRAPI = resp['PDRAPI'];
             this.confValues.GACODE = resp['GACODE'];
+            this.confValues.APPVERSION = resp['APPVERSION'];
             console.log("In Browser read environment variables: " + JSON.stringify(this.confValues));
           },
           err => {
@@ -75,6 +77,7 @@ export class AppConfig {
       this.confValues.SDPAPI = process.env.SDPAPI || this.appConfig.SDPAPI;
       this.confValues.PDRAPI = process.env.PDRAPI || this.appConfig.PDRAPI;
       this.confValues.GACODE = process.env.GACODE || this.appConfig.GACODE;
+      this.confValues.APPVERSION = process.env.APPVERSION || this.appConfig.APPVERSION;
       console.log(" ****** In server: " + JSON.stringify(this.confValues));
     }
   }
@@ -92,7 +95,8 @@ export class AppConfig {
       "DISTAPI": "http://data.nist.gov/od/ds/",
       "METAPI":  "http://localhost/metaurl/",
       "LANDING": "http://data.nist.gov/rmm/",
-      "GACODE":  "not-set"
-  };
+      "GACODE":  "not-set",
+      "APPVERSION": "1.3.0"
+    };
   }
 }
