@@ -284,19 +284,13 @@ background-cyanblue {
   margin: 0 0;
 }
 
-.my-pagination /deep/ .ngx-pagination a, .ngx-pagination button { 
-  color: white; 
-}
-
-.my-pagination /deep/ .ngx-pagination a:hover, .ngx-pagination button:hover { background: rgb(31, 61, 95); }
-
 .my-pagination /deep/ .ngx-pagination .current {
-  background: green;
   color: white;
+  background-color: #2c539e;
 }
 
 .my-pagination /deep/ .ngx-pagination .disabled {
-  color: #d4d4d4;
+  color: #5c5c5c;
 }
 
 .frontPanel {
@@ -308,19 +302,4 @@ background-cyanblue {
   width: 100%;
 }
 
-.pagination-bar {
-  padding: 0 0; 
-  background-color: #112E51;
-}
 
-.customize-fields-layout {
-  float: right;
-  padding-right: 10px;
-  padding-top: 2px;
-}
-
-.customize-fields-button {
-  background-color: #606165;
-  font-weight: 900; 
-  padding: 0px 10px 0px 10px;
-}
