@@ -118,6 +118,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   isActive: boolean = true;
   sysError: boolean = false;
   imageURL: string;
+  FiltersIsHidden: boolean = true;
 
   filterClass: string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass: string = "ui-g-12 ui-md-7 ui-lg-9";
@@ -175,6 +176,18 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         },
         error => this.errorMessage = <any>error
       );
+  }
+
+  toggleFilters(){
+    this.FiltersIsHidden = !this.FiltersIsHidden;
+  }
+
+  getFilterImgClass(){
+    if(this.FiltersIsHidden){
+      return "faa faa-angle-double-down";
+    }else{
+      return "faa faa-angle-double-up";
+    }
   }
 
   saveSearchQuery(queryName: any, queryValue: any) {
@@ -912,7 +925,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Resource types selected
     if (typeof this.selectedResourceTypeNode != 'undefined') {
       if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
+        console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
         for (let res of this.selectedResourceTypeNode) {
+          console.log("res", res);
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
@@ -1455,6 +1470,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   setResourceTypeSelection(node: TreeNode, resType: string) {
     let resTypeParam = resType.toString().split(',');
+    console.log("this.resourceTypesWithCount", this.resourceTypesWithCount);
+    console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
+
     for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
       if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
         this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);

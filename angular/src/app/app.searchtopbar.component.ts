@@ -19,7 +19,7 @@ import * as _ from 'lodash';
       </span>
       <span class="badge" style="color:black;background-color:#f0f0f0;vertical-align: text-top;margin-top: 10px;">1.2.0</span>
         <div class="topbar-right">
-              <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
+              <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)" aria-label="top bar right">
                     <i></i>
                 </a>
           <a style="float:right;padding-top:20px" href="javascript:;" (click)="op.toggle($event)" ><span class="textlinks" style="vertical-align:5px; color: white;"><b>Queries </b></span>
