@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit {
     });
 
     this.SDPAPI = this.confValues.SDPAPI;
-    this. imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
+    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
     this.getTaxonomies();
     this.getTaxonomySuggestions();
     this.getSearchFields();
@@ -102,11 +102,6 @@ export class HomeComponent implements OnInit {
     if (this.searchValue == "") {
       this.textRotate = !this.textRotate;
     }
-  }
-
-  getUrl() {
-    var host = 'https://oardev.nist.gov/sdp/assets/images/front-image.jpg';
-    return "url('host')";
   }
 
   clearText() {

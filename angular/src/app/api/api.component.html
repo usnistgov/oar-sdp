@@ -16,9 +16,10 @@
   <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em">
     <label id='title' style="font-size: xx-large;float: left;display: block;"><i class="faa faa-cogs faa-lg"></i><span style="padding-left:0.5em;">APIs</span></label>
     <ol class="breadcrumb" style="float: right;">
-      <li class="active breadcrumb-item"><a href="#" style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
+      <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
+        (click)="commonService.goHome()">Home</span></li>
       <li class="breadcrumb-item">Developer</li>
-      <li class="active breadcrumb-item">APIs</li>
+      <li class="breadcrumb-item">APIs</li>
     </ol>
   </div>
 </div>
@@ -38,7 +39,7 @@
       <div class="ui-g-12 ui-md-6 ui-lg-1">
       </div>
       <div class="ui-g-12 ui-md-4 ui-lg-2 element" >
-        <a class="btn btn-primary btn-lg api " href = "{{RestAPIURL}}swagger-ui.html" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event)">Explore Data Discovery API</a>
+        <a class="btn btn-primary btn-lg api " href="{{RestAPIURL}}swagger-ui.html" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event)">Explore Data Discovery API</a>
       </div>
     </div>
   </div>

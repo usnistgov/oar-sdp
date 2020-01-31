@@ -408,7 +408,11 @@
                       </div>
                       <div class="ui-grid-row">
                         <div class="ui-grid-col-12" style="margin-top:5px">
-                          <a [(href)]="resultItem.landingPage" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
+                          <a *ngIf="resultItem.landingPage" [(href)]="resultItem.landingPage" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
+                            <button pButton label="Visit Home Page" type="button" icon="faa faa-external-link"
+                              style="font-size: 13px; width:150px; background-color: #277E2F"></button>
+                          </a>
+                          <a *ngIf="!resultItem.landingPage" href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                             <button pButton label="Visit Home Page" type="button" icon="faa faa-external-link"
                               style="font-size: 13px; width:150px; background-color: #277E2F"></button>
                           </a>
