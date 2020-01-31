@@ -1,20 +1,6 @@
-<style id="antiClickjack">
-  body {
-    display: none !important;
-  }
-</style>
-<script type="text/javascript">
-  if (self === top) {
-    var antiClickjack = document.getElementById("antiClickjack");
-    antiClickjack.parentNode.removeChild(antiClickjack);
-  } else {
-    top.location = self.location;
-  }
-</script>
-
 <div class="ui-fluid searchColor">
   <div class="ui-g">
-    <div class="ui-g-12 frontPanel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
+    <div class="ui-g-12 frontPanel" [ngStyle]="{ 'background-color':'black','background-image': 'url(' + imageURL + ')'}">
       <div class="ui-g form-group">
         <div class="ui-g-12 ui-lg-2 ui-md-1">
         </div>
@@ -22,7 +8,7 @@
           <div class="inner-addon left-addon element " style="background-color: #FFFFFF;">
             <i class="glyphicon faa faa-search" ></i><label for="searchinput" class="hideLabel">Search Input</label>
             <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic'}" [(ngModel)]="searchValue"
+        'font-style': 'italic'}" [(ngModel)]="searchValue" inputId="searchinput" name="searchinput"
               (keyup.enter)="doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)"
               [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1"
               [maxlength]="2048" [size]="50">
@@ -37,7 +23,7 @@
         </div>
         <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
           <button class="searchButton" (click)="doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton
-            label="Search" type="submit"></button> </div>
+            label="Search" type="submit" aria-label="Search"></button> </div>
         <div class="ui-g-12 ui-md-2">
           &nbsp;&nbsp;<a href="#" [routerLink]="['/advanced']"
             style="color: white;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search
@@ -318,7 +304,7 @@
           <div class="ui-g-12">
             <button type="button" (click)="setResultsWidth()" class="btn-sm collapsed" data-toggle="collapse"
               style="background-color: #696666;border-color: #696666; padding: 0em;border: 0em;align:left;color: #FFF;"
-              data-target="#demo"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>
+              data-target="#demo" aria-label="filters"><i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i></button>
             <div class="rotate" style="display: block; right:-30px;color: #fff;"> Filters </div>
           </div>
         </div>
@@ -331,7 +317,7 @@
               </div>
               <div class="ui-g-12 ui-md-8 ui-sm-12">
                 <div style="float:left;padding-top:10px;">
-                    <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
+                    <pagination-controls class="my-pagination" (pageChange)="onPageChange($event); false"></pagination-controls>
                 </div>
                 <div style="float: right;padding-right:10px;padding-top:10px;">
                   <button type="text" style="background-color: #606165;font-weight: 900" pButton
@@ -445,7 +431,7 @@
             </div>
             <div class="ui-g-12 ui-md-8 ui-sm-12">
               <div style="float:left;padding-top:10px;">
-                <pagination-controls (pageChange)="onPageChange($event); false"></pagination-controls>
+                <pagination-controls class="my-pagination" (pageChange)="onPageChange($event); false"></pagination-controls>
               </div>
               <div style="float: right;padding-right:10px;padding-top:10px;">
                 <button type="text" style="background-color: #606165;font-weight: 900" pButton

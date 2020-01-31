@@ -280,11 +280,25 @@ background-cyanblue {
   font-weight: bold;
 }
 
-.frontPanel {
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    background-position: center 63%;
-    width: 100%;
+.my-pagination /deep/ .ngx-pagination {
+  margin: 0 0;
 }
+
+.my-pagination /deep/ .ngx-pagination .current {
+  color: white;
+  background-color: #2c539e;
+}
+
+.my-pagination /deep/ .ngx-pagination .disabled {
+  color: #5c5c5c;
+}
+
+.frontPanel {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position: center 63%;
+  width: 100%;
+}
+
