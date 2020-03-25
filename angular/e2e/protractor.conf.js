@@ -15,8 +15,7 @@ exports.config = {
       args: [ "--headless", "--disable-gpu", "--window-size=800x600", "--disable-web-security" ]
     }
   },
-  directConnect: false,
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+  directConnect: true,
   baseUrl: 'http://localhost:5555/',
   framework: 'jasmine',
   jasmineNodeOpts: {
