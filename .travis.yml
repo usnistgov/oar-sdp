@@ -26,7 +26,6 @@ install:
 # script:
 #   - scripts/testall.travis --unitonly
 script:
-  #  - scripts/testall --cdv 2.44
    - scripts/testall
    - scripts/makedist
 
