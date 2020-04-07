@@ -9,7 +9,12 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "webdriver": "webdriver-manager update",
-    "postinstall": "cd ./node_modules/protractor && npm i webdriver-manager@latest"
+    "postinstall": "cd ./node_modules/protractor && npm i webdriver-manager@latest",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "minimist": "^1.2.3",
+    "yargs": "13.3.2"
   },
   "private": true,
   "dependencies": {
@@ -39,7 +44,7 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.13.8",
+    "@angular-devkit/build-angular": "0.13.10",
     "@angular/cli": "~6.0.0",
     "@angular/compiler-cli": "^7.2.12",
     "@angular/language-service": "^6.1.0",
@@ -49,7 +54,7 @@
     "codelyzer": "~4.3.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
-    "karma": "^4.0.1",
+    "karma": "^4.4.1",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
