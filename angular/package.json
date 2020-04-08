@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --aot --port 5555",
-    "build": "ng build --aot",
+    "build": "ng build --prod --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -44,7 +44,7 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.13.10",
+    "@angular-devkit/build-angular": "^0.13.10",
     "@angular/cli": "~6.0.0",
     "@angular/compiler-cli": "^7.2.12",
     "@angular/language-service": "^6.1.0",
