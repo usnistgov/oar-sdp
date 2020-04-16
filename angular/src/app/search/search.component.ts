@@ -296,32 +296,32 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   collectComponents(searchResults: any[]) {
     let components: SelectItem[] = [];
     let componentsArray: string[] = [];
-    let componentsAllArray: string[] = [];
-    let resultItemComp: string[] = [];
-    let comp: any[] = [];
     let compType: string;
     this.componentsAllArray = [];
+
     for (let resultItem of searchResults) {
-      if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+      if(resultItem['components'] != null && resultItem['components'] != undefined && resultItem['components'].length > 0){
         this.uniqueComp = [];
-        for (let resultItemComponents of resultItem.inventory) {
-          comp = resultItemComponents.byType;
-          for (let type of comp) {
-            let compType = type.forType;
-            if ((_.includes(compType, 'nrdp'))) {
-              //this.componentsAllArray.push(_.startCase(_.split(compType, ':')[1]));
-              this.uniqueComp.push(_.startCase(_.split(compType, ':')[1]));
-              if (componentsArray.indexOf(compType) < 0) {
+        let allcomponents = resultItem['components'];
+        for(let component of allcomponents){
+          let resTypeArray = component['@type'];
+          for (var i = 0; i < resTypeArray.length; i++) {
+            compType = _.startCase(_.split(resTypeArray[i], ':')[1])
+            if(this.uniqueComp.indexOf(compType) < 0)
+              this.uniqueComp.push(compType);
+    
+            if(compType != null && compType != undefined && _.includes(resTypeArray[i], 'nrdp')){
+              if (componentsArray.indexOf(resTypeArray[i]) < 0) {
                 components.push({
-                  label: _.startCase(_.split(compType, ':')[1]),
-                  value: _.startCase(_.split(compType, ':')[1])
+                  label: compType,
+                  value: compType
                 });
-                componentsArray.push(compType);
+                componentsArray.push(resTypeArray[i]);
               }
-            }
+            }   
           }
-          this.uniqueComp = this.uniqueComp.filter(this.onlyUnique);
         }
+
         for (let comp of this.uniqueComp) {
           this.componentsAllArray.push(comp);
         }
@@ -338,9 +338,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   collectResourceTypes(searchResults: any[]) {
     let resourceTypes: SelectItem[] = [];
     let resourceTypesArray: string[] = [];
-    let resourceTypesAllArray: string[] = [];
-    let resultItemResourceType: string[] = [];
-    let res: any[] = [];
     let resType: string;
     this.resourceTypesAllArray = [];
     for (let resultItem of searchResults) {
@@ -505,8 +502,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.noResults = false;
     this.keyword = '';
     let that = this;
-    let searchPhraseValue = '';
-    let searchKeyValue = '';
 
     return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
       .subscribe(
@@ -515,17 +510,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         },
         error => that.onError(error)
       );
-
-    // return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
-    //   .subscribe(
-    //     searchResults => {
-    //       console.log("searchResults:");
-    //       console.log(JSON.stringify(searchResults));
-    //       that.onSuccess(searchResults.ResultData);
-    //     },
-    //     error => that.onError(error)
-    //   );
-
   }
 
   doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
@@ -557,7 +541,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }, 2000);
     setTimeout(() => {
-      // this.filterResults('','');
       this.searching = false;
     }, 10000)
 
@@ -765,22 +748,20 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     if (selectedComponents.length > 0) {
       if (searchResults !== null && searchResults.length > 0) {
-        let components: SelectItem[] = [];
-        let componentsArray: string[] = [];
-        let resultItemComp: string[] = [];
+        let compType: string = "";
+
         for (let resultItem of searchResults) {
-          if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
-            for (let resultItemComponents of resultItem.inventory) {
-              let comp = resultItemComponents.byType;
-              if (comp !== null) {
-                for (let type of comp) {
-                  let compType = type.forType;
-                  compType = _.startCase(_.split(compType, ':')[1]);
-                  for (let comps of selectedComponents) {
-                    if (comps !== null) {
-                      if (compType.indexOf(comps) === 0) {
-                        filteredResults.push(resultItem);
-                      }
+          if(resultItem['components'] != null && resultItem['components'] != undefined && resultItem['components'].length > 0){
+            let allcomponents = resultItem['components'];
+            for(let component of allcomponents){
+              let resTypeArray = component['@type'];
+              for (var i = 0; i < resTypeArray.length; i++) {
+                compType = _.startCase(_.split(resTypeArray[i], ':')[1])
+        
+                for (let comps of selectedComponents) {
+                  if (comps !== null) {
+                    if (compType.indexOf(comps) === 0) {
+                      filteredResults.push(resultItem);
                     }
                   }
                 }
@@ -803,9 +784,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     if (this.selectedResourceType.length > 0) {
       if (searchResults !== null && searchResults.length > 0) {
-        let resourceTypes: SelectItem[] = [];
-        let resourceTypesArray: string[] = [];
-        let resultItemRes: string[] = [];
         for (let resultItem of searchResults) {
           let resTypeArray: string[];
           resTypeArray = resultItem['@type']
@@ -834,8 +812,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     var filteredResults: any[] = [];
     if (typeof selectedThemes !== 'undefined') {
       if (searchResults !== null && searchResults.length > 0) {
-        let themes: SelectItem[] = [];
-        let resultItemThemes: string[] = [];
         for (let resultItem of searchResults) {
           if (resultItem.topic && resultItem.topic !== null && resultItem.topic.length > 0) {
             for (let resultItemThemes of resultItem.topic) {
@@ -925,9 +901,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Resource types selected
     if (typeof this.selectedResourceTypeNode != 'undefined') {
       if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
         for (let res of this.selectedResourceTypeNode) {
-          console.log("res", res);
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
@@ -996,8 +970,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
     // Resource Features selected
-    if (typeof this.selectedComponentsNode != 'undefined') {
-      if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
+    if (typeof this.selectedComponentsNode != 'undefined' && this.selectedComponentsNode[0] != undefined) {
+      if (this.selectedComponentsNode != null && this.selectedComponentsNode != undefined && this.selectedComponentsNode.length > 0) {
         for (let comp of this.selectedComponentsNode) {
           if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
             componentSelected = true;
@@ -1056,7 +1030,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
       }
     }
-
 
     if (typeof this.selectedKeywords != 'undefined') {
       if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
@@ -1320,7 +1293,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   toSortItems(fields: any[]) {
     this.fieldsArray = fields;
-    let items: SelectItem[] = [];
     let sortItems: SelectItem[] = [];
     this.displayFields = [];
     //for (let field of fields) {
@@ -1343,7 +1315,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   SortByFields() {
-    let sortField: string[] = [];
     this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
     for (let field of this.fieldsArray) {
       if (field.name === this.sortItemKey) {
@@ -1464,14 +1435,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
       }
       this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
-      // console.log('authors inside init: ' + params['authors']);
     });
   }
 
   setResourceTypeSelection(node: TreeNode, resType: string) {
     let resTypeParam = resType.toString().split(',');
-    console.log("this.resourceTypesWithCount", this.resourceTypesWithCount);
-    console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
 
     for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
       if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
@@ -1503,9 +1471,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   setAuthorsSelection(authors: string) {
-    let authorsParam = authors.toString().split(',');
-    for (var i = 0; i < authorsParam.length; i++) {
-      this.selectedAuthor.push(authorsParam[i]);
+    if(this.selectedAuthor != undefined){
+      let authorsParam = authors.toString().split(',');
+      for (var i = 0; i < authorsParam.length; i++) {
+        this.selectedAuthor.push(authorsParam[i]);
+      }
     }
   }
 
