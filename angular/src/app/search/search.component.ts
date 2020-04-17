@@ -377,6 +377,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
           authors.push(resultItem.contactPoint.fn);
         }
       }
+
+      if(resultItem.authors && resultItem.authors != null && resultItem.authors.length > 0){
+        for(let author of resultItem.authors){
+          if (authors.indexOf(author.fn) < 0) {
+            authors.push(author.fn);
+          }
+        }
+      }
     }
     return authors;
   }
@@ -515,17 +523,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         },
         error => that.onError(error)
       );
-
-    // return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
-    //   .subscribe(
-    //     searchResults => {
-    //       console.log("searchResults:");
-    //       console.log(JSON.stringify(searchResults));
-    //       that.onSuccess(searchResults.ResultData);
-    //     },
-    //     error => that.onError(error)
-    //   );
-
   }
 
   doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
@@ -878,6 +875,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
             this.containsAllAuthors(resultItem.contactPoint.fn, selectedAuthor)) {
             filteredResults.push(resultItem);
           }
+
+          if (resultItem.authors && resultItem.authors !== null){
+            for(let author of resultItem.authors){
+              if(this.containsAllAuthors(author.fn, selectedAuthor))
+                filteredResults.push(resultItem);
+            }
+          }
         }
       }
       return filteredResults;
@@ -925,9 +929,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Resource types selected
     if (typeof this.selectedResourceTypeNode != 'undefined') {
       if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
         for (let res of this.selectedResourceTypeNode) {
-          console.log("res", res);
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
@@ -1030,6 +1032,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Authors and contributors
     if (typeof this.selectedAuthor != 'undefined') {
       if (this.selectedAuthor !== null && this.selectedAuthor.length > 0) {
         authorSelected = true;
@@ -1057,7 +1060,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
-
+    // Keywords
     if (typeof this.selectedKeywords != 'undefined') {
       if (this.selectedKeywords !== null && this.selectedKeywords.length > 0) {
         keywordSelected = true;
@@ -1084,6 +1087,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
 
+    // If nothing selected
     if (!themeSelected && !componentSelected && !authorSelected && !keywordSelected && !resourceTypesSelected) {
       this.filteredResults = this.searchResults;
       this.suggestedThemes = [];
@@ -1107,6 +1111,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.resourceTypes = this.collectResourceTypes(this.filteredResults);
       this.collectResourceTypesWithCount();
     }
+
+    // If component count is zero
     if (_.isEmpty(this.componentsWithCount)) {
       compNoData = true;
       this.componentsWithCount = [];
@@ -1128,7 +1134,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       }
     }
     this.themesTree[0].children = this.themesWithCount;
-
 
     if (event) {
       //window.history.replaceState(null, null, "/search?page=4");
@@ -1470,8 +1475,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   setResourceTypeSelection(node: TreeNode, resType: string) {
     let resTypeParam = resType.toString().split(',');
-    console.log("this.resourceTypesWithCount", this.resourceTypesWithCount);
-    console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
 
     for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
       if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
