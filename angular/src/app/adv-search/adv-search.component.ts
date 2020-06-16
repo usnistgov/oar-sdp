@@ -401,7 +401,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     let fieldItems: SelectItem[] = [];
     for (let field of fields) {
       if (_.includes(field.tags, 'searchable')) {
-            fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+        fieldItems.push({ label: field.label, value: field.name });
       }
     };
     fieldItems = _.sortBy(fieldItems, ['label', 'value']);
