@@ -4,7 +4,7 @@ import { SearchQueryService } from './shared/search-query/search-query.service';
 import { SearchEntity } from './shared/search-query/search.entity';
 import * as _ from 'lodash';
 import { AppConfig, Config } from './shared/config-service/config-service.service';
-
+import { AdvSearchService } from './adv-search/adv-search.service';
 
 @Component({
     selector: 'app-searchtopbar',
@@ -29,8 +29,9 @@ import { AppConfig, Config } from './shared/config-service/config-service.servic
     <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
       <ul class="line-separated" style="list-style-type: none;margin-right:20px">
       <li *ngFor="let entities of searchEntities| slice:0:5;let i = index">
-        <div>
-          <a href="/#/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a>
+        <div (click)="op.hide($event); startSearch(entities.data.queryValue)" style="cursor: pointer">
+          <!-- <a href="/#/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a> -->
+          {{entities.data.id}}
         </div>
       </li>
       </ul>
@@ -51,6 +52,7 @@ export class SearchTopBarComponent {
   constructor(
     public app: AppComponent, 
     public searchQueryService: SearchQueryService,
+    public advSearchService: AdvSearchService,
     private appConfig: AppConfig) {
 
     this.searchQueryService.watchStorage().subscribe(value => {
@@ -77,4 +79,12 @@ export class SearchTopBarComponent {
     this.app.getSearchQueryList();
   }
 
+  /**
+   * Remote start the search function in advance search page
+   * @param queryValue 
+   */
+  startSearch(queryValue: string) {
+      console.log('start search...')
+      this.advSearchService.startRemoteSearch(queryValue);
+  }
 }

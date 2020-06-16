@@ -28,6 +28,7 @@ import { RealModule } from '../app/real.module';
 import {enableProdMode} from '@angular/core';
 import {GoogleAnalyticsService} from "./shared/ga-service/google-analytics.service";
 import {GoogleAnalyticsServiceMock} from "./shared/ga-service/google-analytics.service.mock";
+import { AdvSearchService } from './adv-search/adv-search.service';
 
 /**
  * Initialize the configs for backend services
@@ -75,6 +76,7 @@ enableProdMode();
   ],
   providers: [
     HttpClientModule,
+    AdvSearchService,
     GoogleAnalyticsService,
     GoogleAnalyticsServiceMock,
     {
