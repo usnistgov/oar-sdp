@@ -9,7 +9,6 @@ export class AdvSearchService implements OnInit {
     constructor() { }
 
     ngOnInit() {
-        this._remoteSearch.next(null);
     }
 
     /**
@@ -24,8 +23,7 @@ export class AdvSearchService implements OnInit {
     /**
      * Trigger the search function
      */
-    public startRemoteSearch(queryValue) : void {
-        console.log('init start', queryValue);
+    public remoteStartSearch(queryValue) : void {
         this._remoteSearch.next(queryValue);
     }
 }

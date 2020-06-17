@@ -84,7 +84,6 @@ export class SearchTopBarComponent {
    * @param queryValue 
    */
   startSearch(queryValue: string) {
-      console.log('start search...')
-      this.advSearchService.startRemoteSearch(queryValue);
+      this.advSearchService.remoteStartSearch(queryValue);
   }
 }

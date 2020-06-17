@@ -511,8 +511,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.keyword = '';
     let that = this;
 
-    console.log('searchValue 111', searchValue);
-
     return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
       .subscribe(
         searchResults => {
@@ -1432,9 +1430,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.getTaxonomySuggestions();
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
       this.searchValue = params['q'];
-
-      console.log('params ------------', params);
-
       this.searchTaxonomyKey = params['key'];
       this.queryAdvSearch = params['queryAdvSearch'];
       this.page = params['page'];

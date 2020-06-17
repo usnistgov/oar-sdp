@@ -68,7 +68,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   queryString: string;
   caretDown = 'faa faa-angle-down';
   placeholder: string;
-  start: boolean = true;
+  startup: boolean = true;
   placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
 
   @ViewChild('input1') inputEl: ElementRef;
@@ -111,12 +111,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
       });
     };
 
+    // Watch search request from other module
     this.advSearchService._watchRemoteSearch().subscribe((queryValue) => {
-        if (!this.start && queryValue) {
+        // we don't want to execute the query at startup. So always skip the first check 
+        if (!this.startup && queryValue) {
             this.executeQuery(queryValue);
         }
 
-        this.start = false;
+        this.startup = false;
     });
   }
 
@@ -395,7 +397,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    * Advanced Search fields dropdown
    */
   toFieldItems(fields: any[]) {
-      console.log('fields', fields);
     let items: SelectItem[] = [];
     items.push({ label: this.ALL, value: 'All' });
     let fieldItems: SelectItem[] = [];
@@ -407,7 +408,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     fieldItems = _.sortBy(fieldItems, ['label', 'value']);
     fieldItems.unshift({ label: this.ALL, value: 'All' });
 
-    console.log('fieldItems', fieldItems);
     return fieldItems;
   }
 
