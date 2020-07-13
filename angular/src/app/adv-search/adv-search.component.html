@@ -2,7 +2,7 @@
      We have onWindowResize() to dynamically adjust breadcrumb location -->
 <div style="position: absolute; right: 1em;"  [ngStyle]="{'top': breadcrumb_top}">
   <ol class="breadcrumb" style="float: right;">
-    <li class="breadcrumb-item"><a href='#' style="color: #fff;"
+    <li class="breadcrumb-item"><a href='/' style="color: #fff;"
         (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
     <li class="active breadcrumb-item">Advanced Search Builder</li>
   </ol>
