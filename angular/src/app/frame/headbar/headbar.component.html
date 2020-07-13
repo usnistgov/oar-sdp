@@ -1,0 +1,29 @@
+<div style="background-color: #000000;margin: .6em 3em 0.5em .6em;">
+  <div style="display:inline-block; background-color: #000000; margin-left: 10px;">
+
+      <img src="./assets/images/nist_logo_reverse.png" 
+      alt="NIST Science Data Portal" title="NIST Science Data Portal" style="float: left; margin-left: 1em;">
+        <span style="font-family: Roboto,'Helvetica Neue',sans-serif;line-height: 16.5px;display: table-cell;vertical-align: text-top;color: #FFFFFF;font-size:14px;padding-left: 4%;">SCIENCE <br> DATA PORTAL </span>
+
+  </div>
+  <div class="badge" style="display:inline-block;color:black;background-color:#f0f0f0;vertical-align: text-top; margin-left: 3em; font-size:10px; margin-top:-16px;">{{appVersion}}</div>
+    <span>
+          <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
+                <i></i>
+            </a>
+      <a style="position: absolute; right: 1em; top: 25px; z-index: 1" href="javascript:;" (click)="op.toggle($event)" ><span class="textlinks" style="vertical-align:5px; color: white;"><b>Queries </b></span>
+        <span class="w3-badge badge-notify1" >{{queryLength}}</span></a>
+     </span>
+  </div>
+<p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
+  <ul class="line-separated" style="list-style-type: none;margin-right:20px">
+  <li *ngFor="let entities of searchEntities| slice:0:5;let i = index">
+    <div>
+      <a href="/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a>
+    </div>
+  </li>
+  </ul>
+  <div style="text-align:center">
+    <a href="/advanced?"   class="btn btn-default" (click) = "op.hide($event)" style="background-color:green;color:white;zoom:75%" target="_parent">More</a>
+  </div>
+</p-overlayPanel>

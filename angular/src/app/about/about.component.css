@@ -43,3 +43,8 @@ hr {
   font-weight: 300;
 }
 
+.main-image{
+  float: right; 
+  width: 40%; 
+  padding: 0em 1em 1em 0em; 
+}

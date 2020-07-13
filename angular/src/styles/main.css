@@ -506,6 +506,9 @@ img {
 .glyphicon
 {
   color: #1471AE;
+  font-size: 30px; 
+  padding: .2em; 
+  z-index: 999;
 }
 
 
@@ -533,3 +536,5 @@ img {
 .hideLabel {
   display: none;
 }
+
+

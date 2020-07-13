@@ -1,6 +1,5 @@
 import { Route } from '@angular/router';
 import { ApiComponent } from './api.component';
-import { SearchTopBarComponent } from '../app.searchtopbar.component';
  
 export const ApiRoutes: Route[] = [
   {
@@ -9,11 +8,6 @@ export const ApiRoutes: Route[] = [
       {
         path: '',
         component: ApiComponent
-      },
-      {
-        path: '',
-        component: SearchTopBarComponent,
-        outlet: 'route1'
       }
     ]
   }

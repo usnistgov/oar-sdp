@@ -1,67 +1,16 @@
-<div class="ui-g" style="background-color: #153971;color: #FFFFFF">
-  <div class="ui-g-2">
-  </div>
-  <div class="ui-g-10">
-    <div class="EmptyBox20"></div>
-    <label id='title' style="font-size: xx-large;float: left;display: block;"><i
-        class="faa faa-cogs faa-lg"></i>Advanced Search Builder</label>
-    <ol class="breadcrumb" style="float: right;">
-      <li class="breadcrumb-item"><a href='#' style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-      <li class="active breadcrumb-item" style="color: rgb(196, 196, 196);">Advanced Search Builder</li>
-    </ol>
-    <div class="EmptyBox20"></div>
-  </div>
+<!-- Use absolute position for breadcrumb so it won't affect other elements' layout
+     We have onWindowResize() to dynamically adjust breadcrumb location -->
+<div style="position: absolute; right: 1em;"  [ngStyle]="{'top': breadcrumb_top}">
+  <ol class="breadcrumb" style="float: right;">
+    <li class="breadcrumb-item"><a href='#' style="color: #fff;"
+        (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
+    <li class="active breadcrumb-item">Advanced Search Builder</li>
+  </ol>
 </div>
+<app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' jumbotronHeight='27vh' jumbotronPadding='2em 2em 0em 2em'></app-search-panel>
+
 <div class="ui-fluid" style="background-color: #EFEFEF">
   <div class="ui-g ">
-    <div class="ui-g-12">
-      <div class="ui-g form-group">
-        <div class="ui-g-12 ui-lg-2 ui-md-1">
-        </div>
-        <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
-          <label for="advsearchinput" class="hideLabel">Search Input</label>
-          <div class="inner-addon left-addon " style="background-color: #FFFFFF">
-            <i class="glyphicon faa faa-search"></i>
-            <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic'}" (onFocus)="clearText()" (onBlur)="addPlaceholder()" [placeholder]="placeholder"
-              [(ngModel)]="searchValue" inputId="advsearchinput"
-              (keyup.enter)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList"
-              (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength]="2048" [size]="50">
-            </p-autoComplete>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-lg-2 ui-md-4" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <p-dropdown [options]="taxonomies" inputId="searchtaxonomy" [style]="{'width':'100%',
-        'background-color': '#FFFFFF','height': '42px'
-        ,'font-weight': '900','font-style': 'italic','display': 'flex','align-items':'center'}"
-            [(ngModel)]="searchTaxonomyKey">
-          </p-dropdown>
-        </div>
-        <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <button class="searchButton" (click)="search(searchValue,searchTaxonomyKey,'yes')" pButton label="Search"
-            type="submit"></button> </div>
-        <div class="ui-g-12 ui-md-2 how-to-build">
-          &nbsp;&nbsp;<a href="#!" class="how-to-build-link" [routerLink]="['/help/how-advanced-search']"
-            target="_blank">How to build Advanced Search Queries</a>
-        </div>
-
-      </div>
-      <div class="ui-g-12 ui-md-2">
-      </div>
-      <div class="ui-g-12 ui-md-6">
-        <b> Examples: </b>
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
-          href="#!">"Kinetics database" </a>
-        &nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#!">"SRD 101"
-        </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
-          href="#!">Interatomic Potentials
-        </a>&nbsp;
-      </div>
-    </div>
     <p-confirmDialog key="queryDelete"></p-confirmDialog>
     <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="demo"
       style="background-color: #F8F9F9;padding-left: 5px;">

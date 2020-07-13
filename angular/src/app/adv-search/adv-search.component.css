@@ -107,7 +107,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 }
 
 .examples {
-  color: #0f4a65;
+  color: #fff;
   text-decoration: underline;
 }
 
@@ -138,10 +138,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', end
 }
 
 .buttonSize {
-  zoom:75%;
-  width:30%;
+  width:50px;
  float:right; 
-  margin-right:10%;
+  margin-right:10px;
 }
 
 input[type="file"] {
@@ -217,8 +216,45 @@ input[type=file]:disabled {
 }
 
 .text-input {
-  border:.5px solid #e6e6e6;
+  border:.5px solid #a0a0a0;
   background-color: #FFFFFF;
-  height: 30px;font-weight: 400;
+  width: 80%;
+  height: 30px;
+  font-weight: 400;
   padding-left: 0.5em;
+  vertical-align:middle;
+  margin-left:1em
+}
+
+.advancedSearch-link {
+  color: #fff;
+  text-decoration: underline;
+  display:table-cell;
+  vertical-align: middle;
+  font-size: small;
+  white-space: nowrap;
+  padding-top: 18px;
+}
+
+.examplesLabel {
+  color: #fff;
+}
+
+.add-query-button {
+  /* float: right; */
+  padding-right: 1em;
+  vertical-align: middle;
+  width:max-content;
+  height:2.3em;
+  background-color: white;
+  color: #025277;
+  margin-top: -4px;
+}
+
+.query-list {
+  border: 1px solid green;
+}
+
+.control-btns {
+  z-index: 99;
 }

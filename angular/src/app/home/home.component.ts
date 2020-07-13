@@ -34,15 +34,10 @@ export class HomeComponent implements OnInit {
   rows: any[];
   fields: SelectItem[];
   ALL: string = 'All Fields';
-  showDeleteButton: boolean = false;
   operators: SelectItem[];
   displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword', 'Publisher', 'Rights', 'Theme',
     'Title'];
   SDPAPI: any;
-  imageURL: string;
-  placeholder: string;
-  placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
-  
 
   /**
    * Create an instance of services for Home
@@ -53,7 +48,6 @@ export class HomeComponent implements OnInit {
     // public searchService: SearchService, 
     private router: Router,
     private appConfig: AppConfig) {
-
     this.taxonomies = [];
     this.suggestedTaxonomies = [];
     this.fields = [];
@@ -64,20 +58,7 @@ export class HomeComponent implements OnInit {
    *
    */
   ngOnInit() {
-    var i = 0;
-    const source = timer(1000, 2000);
-    source.subscribe(val => {
-      if (i < loopLength) {
-        i++;
-        this.placeholder = this.placeHolderText[i];
-      } else {
-        this.placeholder = this.placeHolderText[0];
-        i = 0;
-      }
-    });
-
     this.SDPAPI = this.confValues.SDPAPI;
-    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
     this.getTaxonomies();
     this.getTaxonomySuggestions();
     this.getSearchFields();
@@ -86,65 +67,6 @@ export class HomeComponent implements OnInit {
     var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
     var n = 0;
     var loopLength = placeHolder.length;
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
-  showDialog() {
-    this.display = true;
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
-  toggleTextRotate() {
-    if (this.searchValue == "") {
-      this.textRotate = !this.textRotate;
-    }
-  }
-
-  clearText() {
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
-    if (!Boolean(this.searchValue.trim())) {
-      field.value = ' ';
-    }
-  }
-
-  addPlaceholder() {
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
-    if (!Boolean(this.searchValue)) {
-      field.value = '';
-    }
-  }
-  /**
-   * Advanced Search builder string
-   */
-
-  saveSearch() {
-    this.searchValue = '';
-    this.queryAdvSearch = 'yes';
-    for (let i = 0; i < this.rows.length; i++) {
-      if (typeof this.rows[i].column1 === 'undefined') {
-        this.rows[i].column1 = 'AND';
-      }
-      if (typeof this.rows[i].column2 === 'undefined' || this.rows[i].column2 === 'All') {
-        this.rows[i].column2 = 'searchphrase';
-      }
-      if (typeof this.rows[i].column3 === 'undefined') {
-        this.rows[i].column3 = '';
-      }
-
-      let fieldValue: string;
-      fieldValue = this.rows[i].column2;
-      fieldValue = fieldValue.replace(/\s+/g, '');
-
-      if (i > 0) {
-        this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' + fieldValue + '=' + this.rows[i].column3;
-      } else {
-        this.searchValue += fieldValue + '=' + this.rows[i].column3;
-      }
-    }
   }
 
   /**
@@ -275,27 +197,5 @@ export class HomeComponent implements OnInit {
     this.display = false;
     this.searchValue = popupValue;
     this.textRotate = !this.textRotate;
-  }
-
-  /**
-   * Add rows - Advanced Search block
-   */
-  addRow() {
-    this.rows.push({});
-    this.showDeleteButton = true;
-  }
-
-  /**
-   * Delete rows - Advanced Search block
-   */
-
-  deleteRow(rowIndex: number) {
-    if (this.rows.length > 1) {
-      this.rows.splice(rowIndex, 1);
-      this.saveSearch();
-    }
-    if (this.rows.length === 1) {
-      this.showDeleteButton = false;
-    }
   }
 }

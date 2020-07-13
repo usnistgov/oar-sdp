@@ -1,12 +1,10 @@
 import { Component, AfterViewInit, ElementRef, Renderer, ViewChild } from '@angular/core';
 import './operators';
-//import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { SearchEntity } from './shared/search-query/search.entity';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
 import { AppConfig, Config } from './shared/config-service/config-service.service';
 import { concat } from 'rxjs';
-//import {DataTableModule} from 'primeng/primeng';
 
 enum MenuOrientation {
   STATIC,
@@ -73,7 +71,6 @@ export class AppComponent implements AfterViewInit {
     public searchQueryService: SearchQueryService,
     private appConfig: AppConfig,
     private gaService: GoogleAnalyticsService) {
-
     this.searchQueryService.watchQuery().subscribe(value => {
       this.displayQueryList = value;
     });
@@ -94,11 +91,6 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.layoutContainer = <HTMLDivElement>this.layourContainerViewChild.nativeElement;
-    this.layoutMenuScroller = <HTMLDivElement>this.layoutMenuScrollerViewChild.nativeElement;
-
-    setTimeout(() => {
-      // jQuery(this.layoutMenuScroller).nanoScroller({flash:true});
-    }, 10);
   }
 
   ngOnInit() {

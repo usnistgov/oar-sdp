@@ -28,7 +28,8 @@ export class AppConfig {
   private confValues = {} as Config;
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID)
-  private platformId: Object, location: Location) { }
+  private platformId: Object) { 
+  }
 
   loadAppConfig() {
     if (isPlatformBrowser(this.platformId)) {
@@ -89,12 +90,12 @@ export class AppConfig {
 
   loadConfigForTest(){
     this.confValues = {
-      "RMMAPI":  "http://data.nist.gov/rmm/",
-      "SDPAPI":  "http://localhost:5555/",
-      "PDRAPI":  "http://localhost/od/id/",
-      "DISTAPI": "http://data.nist.gov/od/ds/",
-      "METAPI":  "http://localhost/metaurl/",
-      "LANDING": "http://data.nist.gov/rmm/",
+      "RMMAPI":  "https://data.nist.gov/rmm/",
+      "SDPAPI":  "https://localhost:5555/",
+      "PDRAPI":  "https://localhost/od/id/",
+      "DISTAPI": "https://data.nist.gov/od/ds/",
+      "METAPI":  "https://localhost/metaurl/",
+      "LANDING": "https://data.nist.gov/rmm/",
       "GACODE":  "not-set",
       "APPVERSION": "1.3.0"
     };

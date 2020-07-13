@@ -1,17 +1,56 @@
-<div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
-  <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em">
-    <label id='title' style="font-size: xx-large;float: left;display: block;"><i
-        class="faa faa-info-circle faa-lg"></i>About NIST Data</label>
+<!-- Top banner -->
+<div class="ui-g top-banner" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
+  <div class="container inner-top-banner" id='title'>
+    <span style="font-size: xx-large;">
+      <i class="faa faa-info-circle faa-lg" style="padding-right: .5em;"></i><label>About NIST Data</label>
+    </span>
     <ol class="breadcrumb" style="float: right;">
       <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
-        (click)="commonService.goHome()">Home</span></li>
+          (click)="commonService.goHome()">Home</span></li>
       <li class="breadcrumb-item">About</li>
       <li class="breadcrumb-item">NIST Data</li>
     </ol>
   </div>
 </div>
 
-<div class="card">
+<!-- Text body -->
+<div style="width: 100%; background-color: white;">
+  <div class="container text-body">
+    <img class="main-image" src="./assets/images/AboutNIST-Large.png" alt="AboutNIST">
+    Data products developed and distributed by the National Institute of Standards and Technology span multiple
+    disciplines of research and are widely used in research and development programs by industry and academia.
+    <p style="margin-top: 1em;">
+      NIST's publicly available data sets showcase its committment to providing accurate, well-curated measurements
+      of
+      physical properties, exemplified by the <a href="https://www.nist.gov/srd" target="_blank"
+        (click)="gaService.gaTrackEvent('outbound', $event, 'Standard Reference Data program')"> Standard Reference
+        Data program</a>, as well as its committment
+      to advancing basic research.
+      <p style="margin-top: 1em;">
+        In accordance with U.S. Government Open Data Policy and the <a href="https://www.nist.gov/open" target="_blank"
+          (click)="gaService.gaTrackEvent('outbound', $event, 'NIST Plan')">NIST Plan</a> for providing public access to
+        the results of federally funded research data, NIST maintains a publicly accessible listing of available data,
+        the
+        NIST Public Dataset List <a href="https://www.nist.gov/sites/default/files/data.json" target="_blank"
+          (click)="gaService.gaTrackEvent('outbound', $event, 'json')">(json)</a>. Additionally, these data are assigned
+        a Digital Object
+        Identifier (DOI) to increase the discovery and access to research output; these DOIs are registered with
+        <a href="https://www.datacite.org" target="_blank"
+          (click)="gaService.gaTrackEvent('outbound', $event, 'DataCite')">DataCite</a> and provide globally unique
+        persistent
+        identifiers. The NIST Science Data Portal provides a
+        user-friendly discovery and exploration tool for publically available datasets at NIST.
+        <p>
+          <hr>
+          <p>
+            This portal is designed and developed with data.gov <a href="https://project-open-data.cio.gov/"
+              target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Project Open Data')">Project Open
+              Data </a> standards and principles. The portal software is hosted in the
+            usnistgov github repository.
+  </div>
+</div>
+
+<!-- <div class="card">
   <div class="ui-g">
     <div class="ui-g-12">
       <div class="ui-g-12 ui-md-6 ui-lg-6 content"
@@ -54,4 +93,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

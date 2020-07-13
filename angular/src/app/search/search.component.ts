@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, Inject, ElementRef, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ElementRef, ChangeDetectorRef, NgZone, ViewChild } from '@angular/core';
 import { TaxonomyListService, SearchfieldsListService } from '../shared/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule } from 'primeng/primeng';
+import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule, TreeTableModule } from 'primeng/primeng';
 import { Message } from 'primeng/components/common/api';
 import { MenuItem, InputTextareaModule, ProgressSpinner } from 'primeng/primeng';
 import * as _ from 'lodash';
@@ -14,6 +14,8 @@ import { SearchEntity } from '../shared/search-query/search.entity';
 import { Location } from '@angular/common';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
+import { timer } from 'rxjs/observable/timer';
+import { SearchPanelComponent } from '../search-panel/search-panel.component';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -25,7 +27,7 @@ import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.se
   providers: [TaxonomyListService, SearchfieldsListService]
 })
 
-export class SearchPanelComponent implements OnInit, OnDestroy {
+export class SearchComponent implements OnInit, OnDestroy {
 
   layoutCompact: boolean = true;
   layoutMode: string = 'horizontal';
@@ -54,7 +56,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   componentsTree: TreeNode[] = [];
   resourceTypeTree: TreeNode[] = [];
   searchValue: string;
-  taxonomies: SelectItem[];
+  // taxonomies: SelectItem[];
   sortItems: SelectItem[];
   fields: SelectItem[];
   fieldsArray: any[];
@@ -66,8 +68,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   searchRecord: string;
   searchAuthors: string;
   searchKeywords: string;
-  suggestedTaxonomies: string[];
-  suggestedTaxonomyList: string[];
+  // suggestedTaxonomies: string[];
+  // suggestedTaxonomyList: string[];
   nodeExpanded: boolean = true;
   sortItemKey: string;
   showMoreLink: boolean = false;
@@ -118,7 +120,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   isActive: boolean = true;
   sysError: boolean = false;
   imageURL: string;
-  FiltersIsHidden: boolean = true;
 
   filterClass: string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass: string = "ui-g-12 ui-md-7 ui-lg-9";
@@ -134,9 +135,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   private _routeParamsSubscription: Subscription;
   confValues: Config;
   private PDRAPIURL;
+  inputStyle: any = {'width': '100%','padding-left':'40px','height': '42px','font-weight': '400','font-style': 'italic'}
+  placeholder: string;
+  placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+
+
+  // injected as ViewChilds so that this class can send messages to it with a synchronous method call.
+  @ViewChild(SearchPanelComponent)
+  private searchPanel: SearchPanelComponent;
 
   /**
-   * Creates an instance of the SearchPanel
+   * Creates an instance of the SearchComponent
    *
    */
   constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService, 
@@ -165,76 +174,136 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       };
   }
 
+
+  /**
+   * Get the params OnInit
+   */
+  ngOnInit() {
+    var i = 0;
+    const source = timer(1000, 2000);
+    source.subscribe(val => {
+      if (i < loopLength) {
+        i++;
+        this.placeholder = this.placeHolderText[i];
+      } else {
+        this.placeholder = this.placeHolderText[0];
+        i = 0;
+      }
+    });
+    var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+    var n = 0;
+    var loopLength = placeHolder.length;
+
+    this.msgs = [];
+    this.searchResultsError = [];
+    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
+    this.getSearchFields();
+    // this.getTaxonomySuggestions();
+    this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
+      console.log("params", params);
+      this.searchValue = params['q'];
+      this.searchTaxonomyKey = params['key'];
+      this.queryAdvSearch = params['queryAdvSearch'];
+      this.page = params['page'];
+      this.searchResType = params['resType'];
+      this.searchResTopics = params['themes'];
+      this.searchRecord = params['compType'];
+      this.searchAuthors = params['authors'];
+      this.searchKeywords = params['keywords'];
+
+      console.log("this.searchValue", this.searchValue);
+      this.searchPanel.searchValue = this.searchValue;
+      // this.getTaxonomies();
+
+      // Processing search value
+      if(this.searchValue){
+        //Treat ',', ';' the same as space
+        this.searchValue = this.searchValue.replace(/\,/g, ' ');
+        this.searchValue = this.searchValue.replace(/\;/g, ' ');
+
+      // Replace '%26' with '&'
+        this.searchValue = this.searchValue.replace(/\%26/g, '&');
+
+        this.searchValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' or ');
+        this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
+      }
+      this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
+      // console.log('authors inside init: ' + params['authors']);
+    });
+  }
+
+  addPlaceholder() {
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    if (!Boolean(this.searchValue)) {
+      field.value = '';
+    }
+  }
+
+  clearText() {
+    var field = (<HTMLInputElement>document.getElementById('searchinput'));
+    if (!Boolean(this.searchValue.trim())) {
+      field.value = ' ';
+    }
+  }
+
   /**
    * Handle the nameListService observable
    */
-  getTaxonomies() {
-    this.taxonomyListService.get()
-      .subscribe(
-        taxonomies => {
-          this.taxonomies = this.toTaxonomiesItems(taxonomies)
-        },
-        error => this.errorMessage = <any>error
-      );
-  }
+  // getTaxonomies() {
+  //   this.taxonomyListService.get()
+  //     .subscribe(
+  //       taxonomies => {
+  //         this.taxonomies = this.toTaxonomiesItems(taxonomies)
+  //       },
+  //       error => this.errorMessage = <any>error
+  //     );
+  // }
 
-  toggleFilters(){
-    this.FiltersIsHidden = !this.FiltersIsHidden;
-  }
-
-  getFilterImgClass(){
-    if(this.FiltersIsHidden){
-      return "faa faa-angle-double-down";
-    }else{
-      return "faa faa-angle-double-up";
-    }
-  }
-
-  saveSearchQuery(queryName: any, queryValue: any) {
-    if (_.isEmpty(queryName)) {
-      this.queryNameReq = true;
-    } else {
-      this.getSearchQueryList();
-      this.duplicateQuery = false;
-      for (let resultItem of this.searchEntities) {
-        if (queryName == resultItem.data.queryName) {
-          this.duplicateQuery = true;
-        }
-      }
-      if (!this.duplicateQuery) {
-        let data: Data;
-        var date = new Date();
-        data = { 'queryName': queryName, 'queryValue': queryValue, 'id': queryName, 'date': date.getTime() };
-        this.searchQueryService.saveSearchQuery(data);
-        this.getSearchQueryList();
-        this.duplicateQuery = false;
-      }
-      this.queryNameReq = false;
-      this.showQueryName = false;
-    }
-  }
+  // saveSearchQuery(queryName: any, queryValue: any) {
+  //   if (_.isEmpty(queryName)) {
+  //     this.queryNameReq = true;
+  //   } else {
+  //     this.getSearchQueryList();
+  //     this.duplicateQuery = false;
+  //     for (let resultItem of this.searchEntities) {
+  //       if (queryName == resultItem.data.queryName) {
+  //         this.duplicateQuery = true;
+  //       }
+  //     }
+  //     if (!this.duplicateQuery) {
+  //       let data: Data;
+  //       var date = new Date();
+  //       data = { 'queryName': queryName, 'queryValue': queryValue, 'id': queryName, 'date': date.getTime() };
+  //       this.searchQueryService.saveSearchQuery(data);
+  //       this.getSearchQueryList();
+  //       this.duplicateQuery = false;
+  //     }
+  //     this.queryNameReq = false;
+  //     this.showQueryName = false;
+  //   }
+  // }
 
 
-  getSearchQueryList() {
-    this.searchQueryService.getAllSearchEntities().then(function (result) {
-      this.searchEntities = result;
-    }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
-    });
-  }
+  // getSearchQueryList() {
+  //   this.searchQueryService.getAllSearchEntities().then(function (result) {
+  //     this.searchEntities = result;
+  //   }.bind(this), function (err) {
+  //     alert("something went wrong while fetching the products");
+  //   });
+  // }
 
 
   /**
    * Populate taxonomy items
    */
-  toTaxonomiesItems(taxonomies: any[]) {
-    let items: SelectItem[] = [];
-    items.push({ label: 'ALL RESEARCH', value: '' });
-    for (let taxonomy of taxonomies) {
-      items.push({ label: taxonomy.label, value: taxonomy.label });
-    }
-    return items;
-  }
+  // toTaxonomiesItems(taxonomies: any[]) {
+  //   let items: SelectItem[] = [];
+  //   items.push({ label: 'ALL RESEARCH', value: '' });
+  //   for (let taxonomy of taxonomies) {
+  //     items.push({ label: taxonomy.label, value: taxonomy.label });
+  //   }
+  //   return items;
+  // }
 
   reset() {
     this.first = 0;
@@ -294,6 +363,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
 
   collectComponents(searchResults: any[]) {
+    console.log('Collecting components...');
     let components: SelectItem[] = [];
     let componentsArray: string[] = [];
     let componentsAllArray: string[] = [];
@@ -302,6 +372,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     let compType: string;
     this.componentsAllArray = [];
     for (let resultItem of searchResults) {
+      console.log('resultItem.inventory', resultItem.inventory);
       if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
         this.uniqueComp = [];
         for (let resultItemComponents of resultItem.inventory) {
@@ -404,6 +475,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults: any[]) {
+    console.log("searchResults", searchResults);
     this.noResults = false;
     this.sysError = false;
     this.themesWithCount = [];
@@ -424,6 +496,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // collect Research topics with count
     this.collectThemesWithCount();
     this.components = this.collectComponents(searchResults);
+    console.log("components", this.components);
     // collect Resource features with count
     this.collectComponentsWithCount();
     this.collectResourceTypesWithCount();
@@ -515,17 +588,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         },
         error => that.onError(error)
       );
-
-    // return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
-    //   .subscribe(
-    //     searchResults => {
-    //       console.log("searchResults:");
-    //       console.log(JSON.stringify(searchResults));
-    //       that.onSuccess(searchResults.ResultData);
-    //     },
-    //     error => that.onError(error)
-    //   );
-
   }
 
   doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
@@ -563,38 +625,38 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   }
 
-  getTaxonomySuggestions() {
-    this.taxonomyListService.get()
-      .subscribe(
-        taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
-        error => this.errorMessage = <any>error
-      );
-  }
+  // getTaxonomySuggestions() {
+  //   this.taxonomyListService.get()
+  //     .subscribe(
+  //       taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
+  //       error => this.errorMessage = <any>error
+  //     );
+  // }
 
   /**
    * Taxonomy items list
    */
-  toTaxonomySuggestedItems(taxonomies: any[]) {
-    let items: string[] = [];
-    for (let taxonomy of taxonomies) {
-      items.push(taxonomy.label);
-    }
-    return items;
-  }
+  // toTaxonomySuggestedItems(taxonomies: any[]) {
+  //   let items: string[] = [];
+  //   for (let taxonomy of taxonomies) {
+  //     items.push(taxonomy.label);
+  //   }
+  //   return items;
+  // }
 
   /**
    * Filter keywords for suggestive search
    */
-  filterTaxonomies(event: any) {
-    let suggTaxonomy = event.query;
-    this.suggestedTaxonomyList = [];
-    for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
-      let keyw = this.suggestedTaxonomies[i];
-      if (keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
-        this.suggestedTaxonomyList.push(keyw);
-      }
-    }
-  }
+  // filterTaxonomies(event: any) {
+  //   let suggTaxonomy = event.query;
+  //   this.suggestedTaxonomyList = [];
+  //   for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
+  //     let keyw = this.suggestedTaxonomies[i];
+  //     if (keyw.toLowerCase().indexOf(suggTaxonomy.toLowerCase()) >= 0) {
+  //       this.suggestedTaxonomyList.push(keyw);
+  //     }
+  //   }
+  // }
 
   /**
    * Filter keywords for suggestive search
@@ -655,6 +717,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   collectComponentsWithCount() {
     this.componentsWithCount = [];
+    console.log('this.componentsAllArray', this.componentsAllArray);
+    console.log('this.components', this.components);
     for (let comp of this.components) {
       let count: any;
       if (this.showComponents.includes(comp.label)) {
@@ -891,7 +955,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    */
   filterResults(event: any, type: string) {
     this.filteredResults = this.searchResults;
-
     if (this.searchResults.length === 0) {
       return;
     }
@@ -925,9 +988,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Resource types selected
     if (typeof this.selectedResourceTypeNode != 'undefined') {
       if (this.selectedResourceTypeNode != null && this.selectedResourceTypeNode.length > 0) {
-        console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
         for (let res of this.selectedResourceTypeNode) {
-          console.log("res", res);
           if (typeof res.data !== 'undefined' && res.data !== 'undefined') {
             resourceTypesSelected = true;
             this.selectedResourceType.push(res.data);
@@ -1429,50 +1490,9 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  /**
-   * Get the params OnInit
-   */
-  ngOnInit() {
-    this.msgs = [];
-    this.searchResultsError = [];
-    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-    this.getSearchFields();
-    this.getTaxonomySuggestions();
-    this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-      this.searchValue = params['q'];
-      this.searchTaxonomyKey = params['key'];
-      this.queryAdvSearch = params['queryAdvSearch'];
-      this.page = params['page'];
-      this.searchResType = params['resType'];
-      this.searchResTopics = params['themes'];
-      this.searchRecord = params['compType'];
-      this.searchAuthors = params['authors'];
-      this.searchKeywords = params['keywords'];
-
-      this.getTaxonomies();
-
-      // Processing search value
-      if(this.searchValue){
-        //Treat ',', ';' the same as space
-        this.searchValue = this.searchValue.replace(/\,/g, ' ');
-        this.searchValue = this.searchValue.replace(/\;/g, ' ');
-
-      // Replace '%26' with '&'
-        this.searchValue = this.searchValue.replace(/\%26/g, '&');
-
-        this.searchValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' or ');
-        this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
-      }
-      this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
-      // console.log('authors inside init: ' + params['authors']);
-    });
-  }
 
   setResourceTypeSelection(node: TreeNode, resType: string) {
     let resTypeParam = resType.toString().split(',');
-    console.log("this.resourceTypesWithCount", this.resourceTypesWithCount);
-    console.log("this.selectedResourceTypeNode", this.selectedResourceTypeNode);
-
     for (var i = 0; i < this.resourceTypesWithCount.length; i++) {
       if (resTypeParam.includes(this.resourceTypeTree[0].children[i].data)) {
         this.selectedResourceTypeNode.push(this.resourceTypeTree[0].children[i]);

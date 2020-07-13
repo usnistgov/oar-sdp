@@ -11,6 +11,7 @@ import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
 import { timer } from 'rxjs/observable/timer';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
+import { AppConfig, Config } from '../shared/config-service/config-service.service';
 
 import * as _ from 'lodash';
 
@@ -36,7 +37,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   suggestedTaxonomies: string[] = [];
   textRotate: boolean = true;
   searchTaxonomyKey: string;
-  display: boolean = false;
+  // display: boolean = false;
   displayQueryBuilder: boolean = false;
   queryAdvSearch: string = '';
   showAdvancedSearch: boolean = false;
@@ -67,14 +68,15 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   queryString: string;
   caretDown = 'faa faa-angle-down';
   placeholder: string;
-  placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+  imageURL: string;
+  confValues: Config;
+  searchBoxWith: string = '50%';
+  breadcrumb_top: string = '6em';
 
-  @ViewChild('input1') inputEl: ElementRef;
+  // @ViewChild('input1') inputEl: ElementRef;
   @ViewChild('dataChanged')
-  dataChanged: boolean = false;
+  dataChanged: boolean = false;  
 
-  displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword', 'Publisher', 'Rights', 'Theme',
-    'Title'];
   /**
    * Constructor
    */
@@ -87,24 +89,28 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     private router: Router,
     public searchQueryService: SearchQueryService,
     private confirmationService: ConfirmationService,
+    private appConfig: AppConfig,
     private renderer: Renderer2) {
 
     super();
 
+    this.confValues = this.appConfig.getConfig();
     this.taxonomies = [];
     this.fields = [];
     setTimeout(() => {
       this.getSearchQueryList();
-      // console.log("+++++++++++length+++++++" + this.searchEntities.length);
     }, 100);
 
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
+    // Init search box size and breadcrumb position
+    this.onWindowResize();
 
     window.onresize = (e) => {
       ngZone.run(() => {
         this.mobWidth = window.innerWidth;
         this.mobHeight = window.innerHeight;
+        this.onWindowResize();
       });
     };
   }
@@ -115,27 +121,17 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    */
   ngOnInit() {
     var i = 0;
-    const source = timer(1000, 2000);
-    source.subscribe(val => {
-      if (i < loopLength) {
-        i++;
-        this.placeholder = this.placeHolderText[i];
-      } else {
-        this.placeholder = this.placeHolderText[0];
-        i = 0;
-      }
-    });
 
-    this.getTaxonomies();
+    // this.getTaxonomies();
     this.getSearchFields();
 
     this.rows = [];
     this.searchOperators();
-    var loopLength = this.placeHolderText.length;
 
     this.editQuery = false;
     this.addQuery = false;
     this.queryName = '';
+    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
   }
 
   /**
@@ -143,6 +139,22 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    */
   onKeydown(event) {
     this.dataChanged = true;
+    
+    if(!this.editQuery && !this.addQuery){
+      this.createQueryInit();
+    }
+  }
+
+  /**
+   * When window resized, we need to resize the search text box and reposition breadcrumb accordingly
+   * When top menu bar collapse, we want to place breadcrumb inside the top menu bar
+   */
+  onWindowResize(){
+    if(this.mobWidth > 750){
+      this.breadcrumb_top = '6em';
+    }else{
+      this.breadcrumb_top = '3.5em';
+    }
   }
 
   /**
@@ -197,14 +209,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Set the display to show the examples dialog
    */
-  showDialog() {
-    this.display = true;
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
   showAdvSearch(queryName: any) {
+    console.log("this.editQuery", this.editQuery);
     this.queryName = queryName;
     if (!this.cloneQuery) {
       this.oldQueryName = queryName;
@@ -249,8 +255,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
             }
           }
         } else {
-          // this.rows[0].column2 = this.searchValue;
-          // this.rows[0] = [{}];
           let row = this.queryValue[0].split('=');
           if (row[0].includes('searchphrase')) {
             this.rows[0].column3 = 'All'
@@ -293,72 +297,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
       }
     }
     this.dataChanged = true;
-  }
-
-  /**
-   * Handle the nameListService observable
-   */
-  getTaxonomies() {
-    this.taxonomyListService.get()
-      .subscribe(
-        taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  getTaxonomySuggestions() {
-    this.taxonomyListService.get()
-      .subscribe(
-        taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
-  toggleTextRotate() {
-    if (this.searchValue == "") {
-      this.textRotate = !this.textRotate;
-    }
-  }
-
-  /**
-   * Filter keywords for suggestive search
-   */
-  filterTaxonomies(event: any) {
-    let suggTaxonomy = event.query;
-    this.suggestedTaxonomyList = [];
-    for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
-      let keyw = this.suggestedTaxonomies[i];
-      if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
-        this.suggestedTaxonomyList.push(keyw);
-      }
-    }
-  }
-
-
-  /**
-   * Taxonomy items list
-   */
-  toTaxonomySuggestedItems(taxonomies: any[]) {
-    let items: string[] = [];
-    for (let taxonomy of taxonomies) {
-      items.push(taxonomy.label);
-    }
-    return items;
-  }
-
-  /**
-   * Taxonomy items list
-   */
-  toTaxonomiesItems(taxonomies: any[]) {
-    let items: SelectItem[] = [];
-    items.push({ label: 'ALL RESEARCH', value: '' });
-    for (let taxonomy of taxonomies) {
-      items.push({ label: taxonomy.label, value: taxonomy.label });
-    }
-    return items;
   }
 
   /**
@@ -426,7 +364,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    *  Pass Search example popup value to home screen
    */
   searchExample(popupValue: string) {
-    this.display = false;
     this.searchValue = popupValue;
     this.textRotate = !this.textRotate;
   }
@@ -493,7 +430,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Duplicate query
    */
-  copyQuery(queryName: any, queryValue: string) {
+  dupQuery(queryName: any, queryValue: string) {
     // this.showSaveQueryDialog = true;
 
     this.editQuery = false;
@@ -647,7 +584,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   * Execute query
   */
   executeQuery(queryValue: string) {
-    this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
+    this.queryString = "/search?q=" + queryValue + "&key=&queryAdvSearch=";
     window.open(this.queryString, '_self');
   }
 }

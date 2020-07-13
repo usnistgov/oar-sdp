@@ -1,14 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
-import { AppMenuComponent,AppSubMenu }  from './app.menu.component';
-import { InlineProfileComponent } from './app.profile.component';
 import { HttpClientModule } from '@angular/common/http'; 
 import { routes } from './app.routes';
 import { Routes, RouterModule } from '@angular/router';
-import { SearchTopBarComponent }  from './app.searchtopbar.component';
 import { DataTableModule,OverlayPanelModule,DataListModule} from "primeng/primeng";
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { APP_BASE_HREF } from '@angular/common';
@@ -28,6 +25,10 @@ import { RealModule } from '../app/real.module';
 import {enableProdMode} from '@angular/core';
 import {GoogleAnalyticsService} from "./shared/ga-service/google-analytics.service";
 import {GoogleAnalyticsServiceMock} from "./shared/ga-service/google-analytics.service.mock";
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
+import { HeadbarComponent } from './frame/headbar/headbar.component';
+import { SearchPanelModule } from './search-panel/search-panel.module';
 
 /**
  * Initialize the configs for backend services
@@ -44,16 +45,13 @@ enableProdMode();
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    AppMenuComponent,
-    AppSubMenu,
-    SearchTopBarComponent,
-    InlineProfileComponent,
     TopBarComponent,
-    AboutComponent
+    AboutComponent,
+    TopMenuBarComponent,
+    HeadbarComponent
   ],
   imports: [
-    RouterModule.forRoot(routes ,{ useHash: true }),
+    RouterModule.forRoot(routes ,{ useHash: false }),
     BrowserModule,
     HttpClientModule,
     OverlayPanelModule, 
@@ -68,6 +66,9 @@ enableProdMode();
     AdvSearchModule,
     PolicyModule,
     environment.possiblyMockModule,
+    NgbModule,
+    SearchPanelModule,
+    HomeModule,
     SharedModule.forRoot()
   ],
   exports:[

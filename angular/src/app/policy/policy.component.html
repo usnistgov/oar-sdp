@@ -1,68 +1,56 @@
-
-<div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
-  <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em;">
-    <label id='title' style="font-size: xx-large;float: left;display: block;"><i class="faa faa-book faa-lg"></i><span
-        style="padding-left:0.5em;">Policy</span></label>
+<!-- Top banner -->
+<div class="ui-g top-banner" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
+  <div class="container inner-top-banner" id='title'>
+    <span style="font-size: xx-large;">
+      <i class="faa faa-book faa-lg" style="padding-right: .5em;"></i><label>Policy</label>
+    </span>
     <ol class="breadcrumb" style="float: right;">
       <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
-        (click)="commonService.goHome()">Home</span></li>
+          (click)="commonService.goHome()">Home</span></li>
       <li class="breadcrumb-item">About</li>
       <li class="breadcrumb-item">Policy</li>
     </ol>
   </div>
 </div>
 
-<div class="card">
-  <div class="ui-g">
-    <div class="ui-g-12">
-      <div class="ui-g-12 ui-md-6 ui-lg-6"
-        style="font-family: Source Sans Pro,sans-serif;font-size:20px;line-height: 1.2em;">
-        <div class="adv-step">
-          The NIST PDL and associated data are stored in NIST’s public data repository. Please refer to the <a
-            href="https://www.nist.gov/open" target="_blank"
-            (click)="gaService.gaTrackEvent('outbound', $event, 'NIST Open Data')">NIST Open Data</a> website for
-          additional organizational
-          policy and related NIST directive information.
-        </div>
-        <div class="adv-step">
-          In accordance with U.S. Government Open Data Policy and the <a
-            href="https://www.nist.gov/sites/default/files/documents/2017/04/28/NIST-Plan-for-Public-Access.pdf"
-            target="_blank"
-            (click)="gaService.gaTrackEvent('download', $event, 'NIST Plan for Providing Public Access to the Results of Federally Funded Research')">NIST
-            Plan for Providing Public Access to the Results of Federally Funded Research</a>,
-          NIST
-          maintains a publicly accessible inventory of available data, the NIST Public Data Listing (PDL). This online
-          inventory is harvested by the Department of Commerce and made publicly available at <a
-            href="https://data.gov/" target="_blank"
-            (click)="gaService.gaTrackEvent('outbound', $event, 'Data.gov')">Data.gov</a>. These NIST PDL complies with
-          the guidance set forth
-          in OMB M-13-13 policy and uses the <a href="https://project-open-data.cio.gov/" target="_blank"
-            (click)="gaService.gaTrackEvent('outbound', $event, 'Project Open Data')">Project Open
-            Data</a> standard metadata schema representation.
-        </div>
-        <div class="adv-step">
-          <p>
-            NIST’s public data repository records are accessible in machine-readable open data formats and demonstrate
-            capabilities as set forth in new public law, <a
-              href="https://docs.house.gov/meetings/GO/GO00/20171102/106588/BILLS-115HR4174ih-FEBP.pdf" target="_blank"
-              (click)="gaService.gaTrackEvent('download', $event, 'Foundations for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data Act')">Foundations
-              for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data Act</a> (2019).
-          </p>
-        </div>
-        <div class="adv-step">
-          <p>
-            As part of NIST strategic efforts to develop infrastructure supporting public access and discoverability to
-            government research datasets, this page will be updated to reflect changes in content and services as they
-            pertain to policy and law.
-          </p>
-        </div>
-      </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-1">
-      </div>
-      <div class="ui-g-12 ui-md-6 ui-lg-4">
-        <img class="Fleft" src="./assets/images/policies.png" alt="policy image">
+<div style="width: 100%; background-color: white;">
+  <div class="container text-body">
+    <img class="main-image" src="./assets/images/policies.png" style="width:300px;height:300px;">
 
-      </div>
-    </div>
+    The NIST PDL and associated data are stored in NIST’s public data repository. Please refer to the <a
+      href="https://www.nist.gov/open" target="_blank"
+      (click)="gaService.gaTrackEvent('outbound', $event, 'NIST Open Data')">NIST Open Data</a> website for
+    additional organizational policy and related NIST directive information.
+
+    <p style="margin-top: 1em;"></p>
+
+    In accordance with U.S. Government Open Data Policy and the <a
+      href="https://www.nist.gov/sites/default/files/documents/2017/04/28/NIST-Plan-for-Public-Access.pdf"
+      target="_blank"
+      (click)="gaService.gaTrackEvent('download', $event, 'NIST Plan for Providing Public Access to the Results of Federally Funded Research')">NIST
+      Plan for Providing Public Access to the Results of Federally Funded Research</a>,
+    NIST
+    maintains a publicly accessible inventory of available data, the NIST Public Data Listing (PDL). This online
+    inventory is harvested by the Department of Commerce and made publicly available at <a href="https://data.gov/"
+      target="_blank" (click)="gaService.gaTrackEvent('outbound', $event, 'Data.gov')">Data.gov</a>. These NIST PDL
+    complies with
+    the guidance set forth
+    in OMB M-13-13 policy and uses the <a href="https://project-open-data.cio.gov/" target="_blank"
+      (click)="gaService.gaTrackEvent('outbound', $event, 'Project Open Data')">Project Open
+      Data</a> standard metadata schema representation.
+
+    <p style="margin-top: 1em;"></p>
+
+    NIST’s public data repository records are accessible in machine-readable open data formats and demonstrate
+    capabilities as set forth in new public law, <a
+      href="https://docs.house.gov/meetings/GO/GO00/20171102/106588/BILLS-115HR4174ih-FEBP.pdf" target="_blank"
+      (click)="gaService.gaTrackEvent('download', $event, 'Foundations for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data Act')">Foundations
+      for Evidence-Based Policymaking Act (115-435) Title II, Open Government Data Act</a> (2019).
+
+    <p style="margin-top: 1em;"></p>
+
+    As part of NIST strategic efforts to develop infrastructure supporting public access and discoverability to
+    government research datasets, this page will be updated to reflect changes in content and services as they
+    pertain to policy and law.
   </div>
 </div>

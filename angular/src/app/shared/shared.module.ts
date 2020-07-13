@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { SearchfieldsListService } from './searchfields-list/index';
 import { TaxonomyListService } from './taxonomy-list/index';
 // import { SearchService } from './search-service/index';
-import { FootbarComponent } from './footbar/index';
+import { FootbarComponent } from '../frame/footbar/index';
 import { NameListService } from './name-list/name-list.service';
 
 import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
@@ -13,6 +13,11 @@ import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, Menub
  PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
 
  import { CommonService } from './common/common.service';
+
+import { ComboBoxComponent } from './combobox/combo-box.component';
+import { ComboBoxPipe } from './combobox/combo-box.pipe';
+import { BrowserModule } from '@angular/platform-browser';
+
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
  */
@@ -32,10 +37,12 @@ import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, Menub
     MultiSelectModule,
     PaginatorModule,
     DialogModule,
-    CalendarModule],
-  declarations: [FootbarComponent],
+    CalendarModule,
+    BrowserModule,
+    FormsModule],
+  declarations: [FootbarComponent, ComboBoxComponent, ComboBoxPipe],
   providers:[CommonService],
-  exports: [FootbarComponent,
+  exports: [FootbarComponent,ComboBoxComponent, ComboBoxPipe,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
     SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
     MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule]

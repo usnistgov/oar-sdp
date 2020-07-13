@@ -280,25 +280,64 @@ background-cyanblue {
   font-weight: bold;
 }
 
-.my-pagination /deep/ .ngx-pagination {
-  margin: 0 0;
-}
-
-.my-pagination /deep/ .ngx-pagination .current {
-  color: white;
-  background-color: #2c539e;
-}
-
-.my-pagination /deep/ .ngx-pagination .disabled {
-  color: #5c5c5c;
-}
-
 .frontPanel {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center 63%;
+    width: 100%;
+}
+
+.advancedSearch-link {
+  color: #fff;
+  text-decoration: underline;
+  display:table-cell;
+  vertical-align: middle;
+  font-size: small;
+  white-space: nowrap;
+  padding-top: 18px;
+}
+
+.jumbotron {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
   background-position: center 63%;
   width: 100%;
+  margin-top: 0em !important;
+  padding-top: 1em !important;
+  margin-bottom: 0em !important;
+  padding-bottom: 1em;
+  height: 10%;
 }
 
+.examplesLabel {
+  color: #fff;
+}
+
+.wrap {
+	width:100%;
+	margin:auto;
+	text-align: center;
+	font-size:0.1px;/* Kill white-space*/
+}
+
+.box {
+	display:inline-block;
+	vertical-align:center;
+	font-size:16px;
+	font-size:1rem;
+}
+
+.wrap:after{
+	content:"";
+	display:inline-block;
+	height:1px;
+	width:0;
+	font-size:0;
+	line-height:0;
+	overflow:hidden;
+	margin:0 100% 0 0;
+}

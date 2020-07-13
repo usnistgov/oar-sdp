@@ -1,7 +1,5 @@
 import {Route} from '@angular/router';
 import {HelpComponent} from './help.component';
-import {SearchTopBarComponent} from "../app.searchtopbar.component";
-
 
 export const HelpRoutes: Route[] = [
   {
@@ -10,11 +8,6 @@ export const HelpRoutes: Route[] = [
       {
         path: '',
         component: HelpComponent
-      },
-      {
-        path: '',
-        component: SearchTopBarComponent,
-        outlet: 'route1'
       }
     ]
   },
@@ -24,13 +17,12 @@ export const HelpRoutes: Route[] = [
       {
         path: '',
         component: HelpComponent
-      },
-      {
-        path: '',
-        component: SearchTopBarComponent,
-        outlet: 'route1'
       }
     ]
+  },
+  {
+    path: 'help',
+    component: HelpComponent
   }
 ];
 

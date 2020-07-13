@@ -1,7 +1,9 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationEnd } from "@angular/router";
 import { Router } from '@angular/router';
 import { CommonService } from '../shared/common/common.service';
+import { AppConfig, Config } from '../shared/config-service/config-service.service';
+
 /**
  * This class represents the lazy loaded AboutComponent.
  */
@@ -11,27 +13,24 @@ import { CommonService } from '../shared/common/common.service';
   styleUrls: ['help.component.css']
 })
 export class HelpComponent {
-
-  currentView = null;
+  currentView = "how-advanced-search";
+  confValues: Config;
+  imageURL: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private appConfig: AppConfig,
     public commonService: CommonService
   ) {
+    this.confValues = this.appConfig.getConfig();
+  }
 
-    router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        var currentUrl = event.url;
-        this.currentView = currentUrl.substring(currentUrl.indexOf("/help/") + 6);
-        if (this.currentView === "") {
-          this.currentView = "how-advanced-search";
-        }
-      }
-    });
+  ngOnInit() {
+    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
   }
 
   public navigateToPage(page: string): void {
-    this.router.navigateByUrl("/help/" + page);
+    this.currentView = page;
   }
 }
