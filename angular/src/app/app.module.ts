@@ -51,7 +51,7 @@ enableProdMode();
     HeadbarComponent
   ],
   imports: [
-    RouterModule.forRoot(routes ,{ useHash: false }),
+    RouterModule.forRoot(routes ,{ useHash: true }),
     BrowserModule,
     HttpClientModule,
     OverlayPanelModule, 
