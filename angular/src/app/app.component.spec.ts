@@ -5,12 +5,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
+import { GoogleAnalyticsServiceMock } from "./shared/ga-service/google-analytics.service.mock";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterModule, RouterTestingModule],
-      providers: [Location],
+      providers: [Location, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}],
       declarations: [
         AppComponent
       ],

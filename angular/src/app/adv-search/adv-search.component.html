@@ -7,7 +7,7 @@
         class="faa faa-cogs faa-lg"></i>Advanced Search Builder</label>
     <ol class="breadcrumb" style="float: right;">
       <li class="breadcrumb-item"><a href='#' style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-      <li class="active breadcrumb-item">Advanced Search Builder</li>
+      <li class="active breadcrumb-item" style="color: rgb(196, 196, 196);">Advanced Search Builder</li>
     </ol>
     <div class="EmptyBox20"></div>
   </div>
@@ -71,7 +71,7 @@
 
           <a style="color: #FFFFFF;font-weight: 900;text-decoration:none;">Queries </a> <a class="btn-sm collapse1 in"
             (click)="setResultsWidth()" data-toggle="collapse"
-            style="border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo"></a>
+            style="border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo" aria-label="Queries"></a>
 
           <a href="#" *ngIf="!editQuery && !addQuery"
             style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF"
@@ -204,9 +204,9 @@
         <div class="ui-g-12 ui-md-6 ui-sm-6">
           <div class="ui-g-12 ui-lg-4 ui-md-3 ui-sm-12" style="float:right;">
             <button (click)="cancelConfirm()" *ngIf="!editQuery && !addQuery" disabled pButton label="Cancel"
-              type="submit" icon="ui-icon-cancel" style="height:2em;border:none;background-color:gray"></button>
+              type="submit" icon="ui-icon-cancel" style="height:2em;border:none;background-color:rgb(82, 82, 82)"></button>
             <button (click)="cancelConfirm()" *ngIf="rows.length>0 && (editQuery || addQuery)" pButton label="Cancel"
-              type="submit" icon="ui-icon-cancel" style="height:2em;border:none;background-color: gray"></button>
+              type="submit" icon="ui-icon-cancel" style="height:2em;border:none;background-color: rgb(82, 82, 82)"></button>
           </div>
           <div class="ui-g-12 ui-lg-4 ui-md-3 ui-sm-12" style="float:right;">
             <button (click)="saveQuery(queryName)" *ngIf="!editQuery && !addQuery" disabled pButton label="Save"

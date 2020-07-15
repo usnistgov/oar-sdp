@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { CommonService } from '../shared/common/common.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
 /**
@@ -19,6 +20,7 @@ export class ApiComponent {
    */
   constructor(
     private appConfig: AppConfig,
+    public commonService: CommonService,
     public gaService: GoogleAnalyticsService) {
       this.confValues = this.appConfig.getConfig();
       this.RestAPIURL = this.confValues.RMMAPI;

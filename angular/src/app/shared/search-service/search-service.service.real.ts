@@ -48,6 +48,13 @@ export class RealSearchService implements SearchService{
     //Treat ',', ';' the same as space
     searchValue = searchValue.replace(/\,/g, ' ');
     searchValue = searchValue.replace(/\;/g, ' ');
+
+    // Replace '%26' with '&'
+    searchValue = searchValue.replace(/\%26/g, '&');
+
+    searchValue = searchValue.replace(/\&logicalOp=OR&/g, ' or ');
+    searchValue = searchValue.replace(/\&logicalOp=AND&/g, ' and ');
+
     if (searchValue.includes('&')) {
       searchValue = searchValue.split("&").join(' and ');
     }
@@ -87,7 +94,7 @@ export class RealSearchService implements SearchService{
     if (_.isEmpty(searchPhraseValue)) {
       searchPhraseValue = '&';
     }
-
+    console.log('searchPhraseValue', searchPhraseValue);
     return this.http.get(this.RMMAPIURL + 'records?' + searchPhraseValue + 'topic.tag=' + searchTaxonomyKey);
   }
 

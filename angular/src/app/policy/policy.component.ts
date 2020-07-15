@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonService } from '../shared/common/common.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
 /**
@@ -10,7 +11,8 @@ import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.se
   styleUrls: ['policy.component.css']
 })
 export class PolicyComponent { 
-  constructor(public gaService: GoogleAnalyticsService){
+  constructor(
+    public commonService: CommonService, public gaService: GoogleAnalyticsService){
   }
 
 }

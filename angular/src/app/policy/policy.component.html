@@ -1,25 +1,13 @@
-<style id="antiClickjack">
-  body {
-    display: none !important;
-  }
-</style>
-<script type="text/javascript">
-  if (self === top) {
-    var antiClickjack = document.getElementById("antiClickjack");
-    antiClickjack.parentNode.removeChild(antiClickjack);
-  } else {
-    top.location = self.location;
-  }
-</script>
 
 <div class="ui-g" style="width: 100%;background-color: #153971;color: #FFFFFF">
   <div class="ui-g-12" style="padding-left:2.5em;padding-right: 2.5em;padding-top: 2.5em;">
-    <label id='title' style="font-size: xx-large;float: left;display: block;"><i
-        class="faa faa-book faa-lg"></i>Policy</label>
+    <label id='title' style="font-size: xx-large;float: left;display: block;"><i class="faa faa-book faa-lg"></i><span
+        style="padding-left:0.5em;">Policy</span></label>
     <ol class="breadcrumb" style="float: right;">
-      <li><a href="#" style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-      <li class="active breadCrumb-text">About</li>
-      <li class="active breadCrumb-text">Policy</li>
+      <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
+        (click)="commonService.goHome()">Home</span></li>
+      <li class="breadcrumb-item">About</li>
+      <li class="breadcrumb-item">Policy</li>
     </ol>
   </div>
 </div>
