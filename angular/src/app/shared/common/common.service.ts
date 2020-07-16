@@ -13,7 +13,7 @@ export class CommonService {
    *  Go to home page and track pageview
    */
   goHome(){
-    this.gaService.gaTrackPageview('/', 'homepage');
+    // this.gaService.gaTrackPageview('/', 'homepage');
     this.router.navigate(['']);
   }
 
@@ -21,8 +21,8 @@ export class CommonService {
    *  Go to external URL and track outbound event
    *  option - target. i.g., "_blank"
    */
-  openURL(url: string, option: string){
-    this.gaService.gaTrackEvent("Outbound", null, "", url);
-    (window as any).open(url, option);
-  }
+//   openURL(url: string, option: string){
+//     this.gaService.gaTrackEvent("Outbound", null, "", url);
+//     (window as any).open(url, option);
+//   }
 }

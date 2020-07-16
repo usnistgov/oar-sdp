@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { SearchPanelComponent } from './search.component';
+import { SearchComponent } from './search.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -9,8 +9,8 @@ import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.se
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
 
 describe('SearchComponent', () => {
-  let searchCompService: SearchPanelComponent;
-  let fixture: ComponentFixture<SearchPanelComponent>;
+  let searchCompService: SearchComponent;
+  let fixture: ComponentFixture<SearchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -20,7 +20,7 @@ describe('SearchComponent', () => {
         NgxPaginationModule,
         MockModule
       ],
-      declarations: [SearchPanelComponent],
+      declarations: [SearchComponent],
       providers: [
         {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}
       ],
@@ -30,7 +30,7 @@ describe('SearchComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SearchPanelComponent);
+    fixture = TestBed.createComponent(SearchComponent);
     searchCompService = fixture.componentInstance;
     fixture.detectChanges();
   });

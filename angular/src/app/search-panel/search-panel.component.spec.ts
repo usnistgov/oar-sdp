@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SearchPanelComponent } from './search-panel.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { OverlayPanelModule, AutoCompleteModule } from "primeng/primeng";
+import { MockModule } from '../mock.module';
+import { FormsModule } from '@angular/forms';
 
 describe('SearchPanelComponent', () => {
   let component: SearchPanelComponent;
@@ -8,6 +12,13 @@ describe('SearchPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+        imports: [
+            RouterTestingModule,
+            HttpClientTestingModule,
+            AutoCompleteModule,
+            FormsModule,
+            MockModule
+          ],
       declarations: [ SearchPanelComponent ]
     })
     .compileComponents();

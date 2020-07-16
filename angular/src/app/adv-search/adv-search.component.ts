@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { SelectItem, DropdownModule, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
@@ -21,7 +21,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'sdp-advsearch',
   templateUrl: 'adv-search.component.html',
-  styleUrls: ['adv-search.component.css'],
+  styleUrls: ['adv-search.component.scss'],
   providers: [ConfirmationService]
 
 })
@@ -72,10 +72,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   confValues: Config;
   searchBoxWith: string = '50%';
   breadcrumb_top: string = '6em';
+  readyEdit: boolean = false; // indecating current query is ready for editing. If user type in any character
+                              // in the query name field, edit mode will be set to true. Otherwise add mode will
+                              // set to true
 
   // @ViewChild('input1') inputEl: ElementRef;
   @ViewChild('dataChanged')
   dataChanged: boolean = false;  
+  showDropdown: boolean = false;
 
   /**
    * Constructor
@@ -93,6 +97,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     private renderer: Renderer2) {
 
     super();
+
+    this.renderer.listen('window', 'click',(e:Event)=>{ 
+        this.showDropdown = false;
+    })
 
     this.confValues = this.appConfig.getConfig();
     this.taxonomies = [];
@@ -140,8 +148,15 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   onKeydown(event) {
     this.dataChanged = true;
     
+    if(this.readyEdit) {
+        this.editQuery = true;
+        this.addQuery = false;
+    }
+
     if(!this.editQuery && !this.addQuery){
-      this.createQueryInit();
+        this.addQuery = true;
+        this.editQuery = false;
+        this.createQueryInit();
     }
   }
 
@@ -489,11 +504,22 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    */
   createQueryInit() {
     this.oldQueryName = '';
+    this.queryName = '';
+    this.readyEdit = false;
     this.editQuery = false;
     this.addQuery = true;
     this.cloneQuery = false;
     this.rows = [];
     this.addRow();
+  }
+
+  onTextFieldFocus(){
+      console.log('this.queryName', this.queryName);
+      if(this.queryName)
+      {
+          this.oldQueryName = this.queryName;
+          this.readyEdit = true;
+      } 
   }
 
   /**
@@ -507,6 +533,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    * Save query - detail
    */
   saveAdvSearchQuery(queryName: any, addQuery: boolean) {
+      console.log('editQuery', this.editQuery);
+      console.log('addQuery', this.addQuery);
+
     this.duplicateQuery = false;
     this.queryNameReq = false;
 
@@ -526,6 +555,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
           }
         }
         if (!this.duplicateQuery) {
+            console.log('this.oldQueryName', this.oldQueryName);
           this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
           this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
           this.searchQueryService.saveSearchQuery(data);
@@ -584,7 +614,30 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   * Execute query
   */
   executeQuery(queryValue: string) {
-    this.queryString = "/search?q=" + queryValue + "&key=&queryAdvSearch=";
+    this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
     window.open(this.queryString, '_self');
   }
+
+    /**
+     * Return row background color
+     * @param i - row number
+     */
+    getBackColor(i: number) {
+        if (i % 2 != 0) return 'rgb(231, 231, 231)';
+        else return 'white';
+    }
+
+    /**
+     * Show query in the right panel. Do nothing in edit/add mode.
+     * @param queryName - query to be displayed
+     */
+    showQuery(queryName: string){
+        if(!this.editQuery && !this.addQuery)
+        {
+            this.editQuery=false;
+            this.addQuery=false;
+            this.showAdvSearch(queryName);
+        }
+    }
+    
 }
