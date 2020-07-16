@@ -11,6 +11,7 @@ import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
 import { timer } from 'rxjs/observable/timer';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
+import { AdvSearchService } from './adv-search.service';
 
 import * as _ from 'lodash';
 
@@ -67,6 +68,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   queryString: string;
   caretDown = 'faa faa-angle-down';
   placeholder: string;
+  startup: boolean = true;
   placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
 
   @ViewChild('input1') inputEl: ElementRef;
@@ -79,13 +81,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    * Constructor
    */
   constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
-    ngZone: NgZone,
+    public ngZone: NgZone,
     public taxonomyListService: TaxonomyListService,
     public searchFieldsListService: SearchfieldsListService,
     public gaService: GoogleAnalyticsService,
     // public searchService: SearchService,
     private router: Router,
     public searchQueryService: SearchQueryService,
+    public advSearchService: AdvSearchService,
     private confirmationService: ConfirmationService,
     private renderer: Renderer2) {
 
@@ -107,6 +110,16 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
         this.mobHeight = window.innerHeight;
       });
     };
+
+    // Watch search request from other module
+    this.advSearchService._watchRemoteSearch().subscribe((queryValue) => {
+        // we don't want to execute the query at startup. So always skip the first check 
+        if (!this.startup && queryValue) {
+            this.executeQuery(queryValue);
+        }
+
+        this.startup = false;
+    });
   }
 
 
@@ -267,8 +280,17 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    * Advanced Search builder string
    */
   saveSearch() {
+    this.constructSearchString();
+    this.dataChanged = true;
+  }
+
+  /**
+   * Construct the search string
+   */
+  constructSearchString(){
     this.searchValue = '';
     this.queryAdvSearch = 'yes';
+
     for (let i = 0; i < this.rows.length; i++) {
       if (typeof this.rows[i].column1 === 'undefined') {
         this.rows[i].column1 = 'AND';
@@ -292,7 +314,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
         }
       }
     }
-    this.dataChanged = true;
   }
 
   /**
@@ -407,7 +428,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     this.searchTaxonomyKey = searchTaxonomyKey;
     let params: NavigationExtras = {
       queryParams: {
-        'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
+        'q': searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
         'queryAdvSearch': this.queryAdvSearch
       }
     };
@@ -647,7 +668,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   * Execute query
   */
   executeQuery(queryValue: string) {
-    this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
-    window.open(this.queryString, '_self');
+    this.searchValue = queryValue;
+    this.search(queryValue, this.searchTaxonomyKey, 'yes');
   }
 }
