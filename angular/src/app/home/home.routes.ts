@@ -9,6 +9,10 @@ export const HomeRoutes: Routes = [
       {
         path: '',
         component: HomeComponent
+      },
+      {
+        path: 'sdp',
+        component: HomeComponent
       }
     ]
   }

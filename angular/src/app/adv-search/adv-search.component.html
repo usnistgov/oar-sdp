@@ -4,7 +4,7 @@
     <ol class="breadcrumb" style="float: right;">
         <li class="breadcrumb-item"><a href='/' style="color: #fff;"
                 (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-        <li class="active breadcrumb-item">Advanced Search Builder</li>
+        <li id='title' class="active breadcrumb-item">Advanced Search Builder</li>
     </ol>
 </div>
 <app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false'
@@ -13,60 +13,44 @@
 <div class="ui-fluid" style="background-color: #EFEFEF">
     <div class="ui-g ">
         <p-confirmDialog key="queryDelete"></p-confirmDialog>
-        <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="demo"
-            style="background-color: #F8F9F9;padding-left: 5px;">
-            <div style="padding: 0px;">
-                <div class="ui-g-12 ui-md-12" id="query-list-bar" style="color: white;font-weight:700;">
+        <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="left-panel">
+            <div>
+                <div class="ui-g-12 ui-md-12" id="query-list-bar">
                     Queries
                     <span style="float: right;">Actions</span>
                 </div>
-                <div *ngFor="let searchEntity of searchEntities; index as i;" [ngStyle]="{'background-color': getBackColor(i)}" style="margin: .5em;">
-                    <a href="javascript:void(0);" (click)="showQuery(searchEntity.data.queryName)">{{searchEntity.data.queryName}}</a>
+                <div *ngFor="let searchEntity of searchEntities; index as i;"
+                    [ngStyle]="{'background-color': getBackColor(i)}" style="margin-top: .5em;">
+                    <a href="javascript:void(0);" (click)="showQuery(searchEntity.data.queryName)"
+                        style="margin-left: .5em;">{{searchEntity.data.queryName}}</a>
                     <div class="dropdown">
-                        <button class="dropbtn" [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Actions" (click)='showDropdown=true;' (mouseover)='showDropdown=true;'>...</button>
+                        <button class="dropbtn" [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Actions"
+                            (click)='showDropdown=true;' (mouseover)='showDropdown=true;'>...</button>
                         <div class="dropdown-content" *ngIf='showDropdown'>
-                            <a href="javascript:void(0);" (click)="showQuery(searchEntity.data.queryName); showDropdown=false;">View</a>
-                            <a href="javascript:void(0);" (click)="editQuery=true;addQuery=false;showAdvSearch(searchEntity.data.queryName); showDropdown=false;">Edit</a>
-                            <a href="javascript:void(0);" (click)="executeQuery(searchEntity.data.queryValue); showDropdown=false;">Execute</a>
-                            <a href="javascript:void(0);" (click)="dupQuery(searchEntity.data.queryName,searchEntity.data.queryValue); showDropdown=false;">Duplicate</a>
-                            <a href="javascript:void(0);" (click)="deleteConfirmQuery(searchEntity.data.queryName); showDropdown=false;">Delete</a>
+                            <a href="javascript:void(0);"
+                                (click)="showQuery(searchEntity.data.queryName); showDropdown=false;">View</a>
+                            <a href="javascript:void(0);"
+                                (click)="editQuery=true;addQuery=false;showAdvSearch(searchEntity.data.queryName); showDropdown=false;">Edit</a>
+                            <a href="javascript:void(0);"
+                                (click)="executeQuery(searchEntity.data.queryValue); showDropdown=false;">Execute</a>
+                            <a href="javascript:void(0);"
+                                (click)="dupQuery(searchEntity.data.queryName,searchEntity.data.queryValue); showDropdown=false;">Duplicate</a>
+                            <a href="javascript:void(0);"
+                                (click)="deleteConfirmQuery(searchEntity.data.queryName); showDropdown=false;">Delete</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="ui-g-12 ui-md-12" style="display:flex;justify-content:center;">
-                    <div style="width:30%;margin: 1em">
-                        <label *ngIf="editQuery || addQuery"
-                            class="_buttonSize ui-button ui-button-text ui-corner-all ui-widget"
-                            style="font-weight:normal;line-height:1.5em;height:2em;background-color:rgb(185, 210, 227); cursor: default;">
-                            <input type="file" id="fileInput" label="Import" (change)="importList($event)" disabled
-                                style="cursor: default;" />
-                            <i style="vertical-align: middle;zoom: 80%" class="material-icons" label="Import">
-                                import_export</i>
-                            Import
-                        </label>
-                        <label *ngIf="!editQuery && !addQuery"
-                            class="_buttonSize ui-button ui-button-text ui-corner-all ui-widget"
-                            style="font-weight:normal;line-height:1.5em;height:2em;" disabled>
-                            <input type="file" id="fileInput" label="Import" (change)="importList($event)" />
-                            <i style="vertical-align: middle;zoom: 80%" class="material-icons" label="Import">
-                                import_export</i>
-                            Import
-                        </label>
+                <div class="ui-g-12 ui-md-12" style="text-align: center;">
+                    <div class="file-io btn btn-sm btn-primary"
+                        [ngStyle]="{'opacity': editQuery || addQuery? '.65' : '1' }">
+                        <label for="file">Import</label>
+                        <input type="file" id="file" (change)="importList($event)" [disabled]="editQuery || addQuery">
                     </div>
-
-                    <div style="width:30%;margin: 1em">
-                        <button type="button" pButton class="_buttonSize" *ngIf="searchEntities.length == 0"
-                            (click)="exportList()" [disabled]="editQuery || addQuery"
-                            style="font-weight:normal;line-height:1.5em;height:2em;" label=" "><i
-                                style="vertical-align: middle;zoom: 80%" class="material-icons"> import_export
-                            </i>Export</button>
-
-                        <button type="button" pButton class="_buttonSize" *ngIf="searchEntities.length > 0"
-                            (click)="exportList()" style="font-weight:normal;line-height:1.5em;height:2em;" label=" "
-                            [disabled]="editQuery || addQuery"><i style="vertical-align: middle;zoom: 80%"
-                                class="material-icons"> import_export </i> Export</button>
-                    </div>
+                    <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
+                        [disabled]="editQuery || addQuery">
+                        Export
+                    </button>
                 </div>
             </div>
         </div>
@@ -100,9 +84,9 @@
                     </p-column>
                     <p-column field="data.queryName" header="Field Text" [style]="{'width':'35%','font-weight':'700'}">
                         <ng-template let-row="rowData" pTemplate type="body">
-                            <input type="text" class="text-input field-name"
-                                [(ngModel)]="row.column2" (keyup)="saveSearch()" placeholder="Fields text..."
-                                (focus)="onTextFieldFocus()" (keydown)="onKeydown($event)" />
+                            <input type="text" class="text-input field-name" [(ngModel)]="row.column2"
+                                (keyup)="saveSearch()" placeholder="Fields text..." (focus)="onTextFieldFocus()"
+                                (keydown)="onKeydown($event)" />
                         </ng-template>
                     </p-column>
                     <p-column field="data.queryName" header="Field Type" [style]="{'width':'35%','font-weight':'700'}">
@@ -132,18 +116,21 @@
             </div>
             <p-confirmDialog></p-confirmDialog>
             <div class="ui-g-12 search-builder-background">
-                <div class="ui-g-12 ui-md-6 ui-sm-6"></div>
-                <div class="ui-g-12 ui-md-6 ui-sm-6">
-                    <div class="ui-g-12 ui-lg-4 ui-md-3 ui-sm-12" style="float:right;">
-                        <button (click)="cancelConfirm()" [disabled]="(!editQuery && !addQuery) || rows.length==0" pButton
-                            label="Cancel" type="submit" icon="ui-icon-cancel"
-                            style="height:2em;border:none;background-color:rgb(82, 82, 82)"></button>
-                    </div>
-                    <div class="ui-g-12 ui-lg-4 ui-md-3 ui-sm-12" style="float:right;">
-                        <button id="btn-save" (click)="saveQuery(queryName)" pButton
-                            [disabled]="(!editQuery && !addQuery) || rows.length==0" label="Save" type="submit"
-                            icon="ui-icon-save"></button>
-                    </div>
+                <div class="ui-g-12 ui-lg-6 ui-md-6 ui-sm-12" style="float:right;">
+                    <button id="btn-cancel" (click)="cancelConfirm()"
+                        [disabled]="(!editQuery && !addQuery) || rows.length==0" class="btn btn-secondary"
+                        style="height:2em;border:none;background-color:rgb(82, 82, 82)">
+                        <i class="faa faa-remove faa-1x icon-white"></i>
+                        Cancel
+                    </button>
+
+                    <button id="btn-save" (click)="saveQuery(queryName)" class="btn btn-success"
+                        [disabled]="(!editQuery && !addQuery) || rows.length==0" type="submit">
+                        <i class="faa faa-save faa-1x icon-white"></i>
+                        Save
+                    </button>
+
+
                 </div>
             </div>
         </div>

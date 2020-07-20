@@ -8,7 +8,7 @@ export class AppPage {
   getParagraphText() {
     browser.sleep(5000);
     browser.ignoreSynchronization = true;
-    return element(by.className('TexAlCenter title')).getText();
+    return element(by.className('title')).getText();
   }
 
   getSearchExampleLink() {
@@ -16,7 +16,7 @@ export class AppPage {
   }
 
   getSearchButton() {
-    return element(by.className('searchButton'));
+    return element(by.className('bigSearchButton'));
   }
 
 }

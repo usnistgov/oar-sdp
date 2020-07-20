@@ -19,8 +19,8 @@ describe('workspace-project App', () => {
     browser.sleep(5000);
     browser.ignoreSynchronization = true;
     expect<any>(browser.getTitle()).toEqual('NIST Data Repository Page');
-
     expect<any>(page.getParagraphText()).toEqual('NIST Data Discovery');
+    expect<any>(element(by.id('feature')).getText()).toEqual('FEATURED DATA DOMAINS');
   });
 
   it('About page should display title of about page', () => {
@@ -30,7 +30,7 @@ describe('workspace-project App', () => {
     expect<any>(element(by.id('title')).getText()).toEqual('About NIST Data');
   });
 
-  it('Advanced search page should display title of advanced search page', () => {
+  it('Advanced search page should display title of Advanced Search Builder', () => {
     page.navigateTo('/#/advanced');
     browser.sleep(5000);
     browser.ignoreSynchronization = true;
