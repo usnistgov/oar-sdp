@@ -43,10 +43,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   showAdvancedSearch: boolean = false;
   showAdvSearchBuilder: boolean = false;
   queryName: string = '';
-  showSaveQueryDialog: boolean = false;
   rows: any[] = [];
   fields: SelectItem[];
-  duplicateQuery: boolean = false;
   ALL: string = 'ALL FIELDS';
   showDeleteButton: boolean = false;
   operators: SelectItem[];
@@ -55,7 +53,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   queryValue: string[];
   editQuery: boolean = false;
   addQuery: boolean = false;
-  cloneQuery: boolean = false;
   mobHeight: number;
   mobWidth: number;
   width: string;
@@ -63,7 +60,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   filterClass: string = "ui-g-12 ui-md-9 ui-lg-9";
   resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
   msgs: Message[] = [];
-  queryNameReq: boolean = false;
   oldQueryName: string = '';
   queryString: string;
   caretDown = 'faa faa-angle-down';
@@ -80,6 +76,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   @ViewChild('dataChanged')
   dataChanged: boolean = false;  
   showDropdown: boolean = false;
+  selectedRow: string;
+  queryNameValidateError: boolean = false;
+  queryNameValidateErrorMsg: string = '';
 
   /**
    * Constructor
@@ -145,19 +144,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Key press event
    */
-  onKeydown(event) {
+  onKeyup(event, field: string) {
     this.dataChanged = true;
-    
-    if(this.readyEdit) {
-        this.editQuery = true;
-        this.addQuery = false;
-    }
 
-    if(!this.editQuery && !this.addQuery){
-        this.addQuery = true;
-        this.editQuery = false;
-        this.createQueryInit();
-    }
+    if(field = 'queryName')
+        this.queryNameValidation(event.target.value);
   }
 
   /**
@@ -202,8 +193,16 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   */
   deleteConfirmQuery(queryName: string) {
     if (confirm("Do you really want to delete this query?")) {
-      this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
-      this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+        this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
+        this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+        //Display the top item in query list
+        if(this.searchEntities && this.searchEntities.length > 0){
+            this.queryName = this.searchEntities[0].data.queryName;
+        }else{
+            this.queryName = "";
+        }
+
+        this.setCurrentQuery(this.queryName)
     }
 
   }
@@ -222,16 +221,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   }
 
   /**
-   * Set the display to show the examples dialog
+   * Populate the right panel
    */
   showAdvSearch(queryName: any) {
-    console.log("this.editQuery", this.editQuery);
+    if(!queryName) return;  // nothing to display
+
     this.queryName = queryName;
-    if (!this.cloneQuery) {
-      this.oldQueryName = queryName;
-    } else {
-      this.oldQueryName = "";
-    }
     this.rows = [{}];
     let k = 1;
     for (let resultItem of this.searchEntities) {
@@ -285,7 +280,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Advanced Search builder string
    */
-  saveSearch() {
+  buildSearchString() {
     this.searchValue = '';
     this.queryAdvSearch = 'yes';
     for (let i = 0; i < this.rows.length; i++) {
@@ -311,7 +306,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
         }
       }
     }
-    this.dataChanged = true;
   }
 
   /**
@@ -386,8 +380,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Add rows - Advanced Search block
    */
-  addRow() {
-    let rows = [...this.rows, {}];
+  addRow(row: any = {}) {
+    let rows = [...this.rows, JSON.parse(JSON.stringify(row))];
     this.rows = rows;
   }
 
@@ -395,14 +389,27 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    * Delete rows - Advanced Search block
    */
   deleteRow(rowIndex: number) {
+    //Check if this is an existing query
+    this.setReadyEdit();
+
+    this.dataChanged = true;
+    this.setMode(this.queryName);
+
     this.rows = this.rows.filter((val, i) => i != rowIndex);
-    this.saveSearch();
+    if(!this.rows) this.rows = [{}];
   }
 
   /**
    * Copy rows
+   * 1. If not edit/add mode, 
    */
   copyRow(row: any[]) {
+    //Check if this is an existing query
+    this.setReadyEdit();
+
+    this.dataChanged = true;
+    this.setMode(this.queryName);
+
     let rows = [...this.rows, this.clone(row)];
     //let rows = [...this.rows,row];
     this.rows = rows;
@@ -444,18 +451,15 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
 
   /**
    * Duplicate query
+   * Creates a new query then populates it with the given query
    */
-  dupQuery(queryName: any, queryValue: string) {
-    // this.showSaveQueryDialog = true;
+  dupQuery(query: any) {
+    this.selectedRow = query.data.queryName;
+    this.createQueryInit(query);
 
-    this.editQuery = false;
-    this.addQuery = true;
-    this.cloneQuery = true;
-    this.searchValue = queryValue;
-    this.showAdvSearch(queryName);
-    //data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName};
-    //this.searchQueryService.saveAdvSearchQuery(data);
-
+    this.searchValue = query.data.queryValue;
+    this.showAdvSearch(query.data.queryName);
+    this.queryName = query.data.queryName + " copy";
   }
 
   /**
@@ -502,96 +506,89 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   /**
    * Init for creating new query
    */
-  createQueryInit() {
+  createQueryInit(row: any = {}) {
     this.oldQueryName = '';
     this.queryName = '';
     this.readyEdit = false;
     this.editQuery = false;
     this.addQuery = true;
-    this.cloneQuery = false;
     this.rows = [];
-    this.addRow();
+    this.addRow(row);
   }
 
-  onTextFieldFocus(){
-      console.log('this.queryName', this.queryName);
-      if(this.queryName)
-      {
-          this.oldQueryName = this.queryName;
-          this.readyEdit = true;
-      } 
-  }
+    /**
+     * When query name input field focused
+     * If not in edit/add mode and query name field already populated, it means this is an existing query
+     *  - set the readyEdit flag to true 
+     */
+    setReadyEdit(){
+        this.readyEdit = false;
+        if(this.queryName && !this.addQuery && !this.editQuery)
+        {
+            this.oldQueryName = this.queryName;
+            this.readyEdit = true;
+        } 
+    }
 
-  /**
-   * Save query
-   */
-  saveQuery(queryName: any) {
-    this.saveAdvSearchQuery(queryName, this.addQuery);
-  }
+    /**
+     * Query name field validation
+     * 1. This field is required
+     * 2. Query name should be unique
+     * @param queryName 
+     */
+    queryNameValidation(queryName: string){
+        this.queryNameValidateError = false;
+        if (_.isEmpty(queryName)) {
+        this.queryNameValidateErrorMsg = "Query name is required";
+        this.queryNameValidateError = true;
+        } else {
+            if (this.editQuery) {
+                for (let searchEntity of this.searchEntities) {
+                    if (queryName == searchEntity.data.queryName && queryName != this.oldQueryName) {
+                        this.queryNameValidateErrorMsg = "Query name already exists";
+                        this.queryNameValidateError = true;
+                    }
+                }
+            }
+            
+            if (this.addQuery){
+                for (let resultItem of this.searchEntities) {
+                    if (queryName == resultItem.data.queryName) {
+                        this.queryNameValidateErrorMsg = "Query name already exists";
+                        this.queryNameValidateError = true;
+                    }
+                }
+            }
+        }
 
-  /**
-   * Save query - detail
-   */
-  saveAdvSearchQuery(queryName: any, addQuery: boolean) {
-      console.log('editQuery', this.editQuery);
-      console.log('addQuery', this.addQuery);
+        return !this.queryNameValidateError;
+    }
 
-    this.duplicateQuery = false;
-    this.queryNameReq = false;
+    /**
+     * Save query 
+     * 1. Filter current query from the list
+     * 2. Add the new query to the list
+     */
+    saveAdvSearchQuery(queryName: any) {
+        //Double check query name field value
+        if(!this.queryNameValidation(queryName))
+            return;
 
-    if (_.isEmpty(this.queryName)) {
-      this.queryNameReq = true;
-    } else {
-      if (this.editQuery) {
-        queryName = this.queryName;
+        // Build this.searchValue
+        this.buildSearchString();
 
         let data: Data;
         var date = new Date();
         data = { 'queryName': queryName, 'queryValue': this.searchValue, 'id': queryName, 'date': date.getTime() };
-        for (let resultItem of this.searchEntities) {
-          if (queryName == resultItem.data.queryName && queryName != this.oldQueryName) {
-            this.duplicateQuery = true;
-            this.showSaveQueryDialog = true;
-          }
-        }
-        if (!this.duplicateQuery) {
-            console.log('this.oldQueryName', this.oldQueryName);
-          this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
-          this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
-          this.searchQueryService.saveSearchQuery(data);
-          this.getSearchQueryList();
-          this.editQuery = false;
-          this.dataChanged = false;
-          this.cloneQuery = false;
-        }
-      } else if (this.addQuery || addQuery) {
-
+        this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
+        this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
+        this.searchQueryService.saveSearchQuery(data);
         this.getSearchQueryList();
-        this.duplicateQuery = false;
-        for (let resultItem of this.searchEntities) {
-          if (queryName == resultItem.data.queryName) {
-            this.duplicateQuery = true;
-            this.showSaveQueryDialog = true;
-          }
-        }
-        if (!this.duplicateQuery) {
-          let data: Data;
-          var date = new Date();
-          data = { 'queryName': queryName, 'queryValue': this.searchValue, 'id': queryName, 'date': date.getTime() };
-          this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
-          this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
-          this.searchQueryService.saveSearchQuery(data);
-          this.getSearchQueryList();
-          this.duplicateQuery = false;
-          this.showSaveQueryDialog = false;
-          this.addQuery = false;
-          this.editQuery = false;
-          this.dataChanged = false;
-          this.cloneQuery = false;
-        }
-      }
+        this.setCurrentQuery(queryName);
+        this.addQuery = false;
+        this.editQuery = false;
+        this.dataChanged = false;
     }
-  }
 
   /*
   * Cancel query edit
@@ -604,10 +601,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     this.addQuery = false;
     this.queryName = '';
     this.searchValue = '';
-    this.queryNameReq = false;
-    this.duplicateQuery = false;
     this.dataChanged = false;
-    this.cloneQuery = false;
+    this.queryNameValidateError = false;
+    this.setReadyEdit();
+    if(this.oldQueryName)
+        this.setCurrentQuery(this.oldQueryName);
+    else if(this.searchEntities && this.searchEntities.length > 0)
+        this.setCurrentQuery(this.searchEntities[0].data.queryName)
   }
 
   /*
@@ -617,15 +617,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
     window.open(this.queryString, '_self');
   }
-
-    /**
-     * Return row background color
-     * @param i - row number
-     */
-    getBackColor(i: number) {
-        if (i % 2 != 0) return 'rgb(231, 231, 231)';
-        else return 'white';
-    }
 
     /**
      * Show query in the right panel. Do nothing in edit/add mode.
@@ -640,4 +631,44 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
         }
     }
     
+    /**
+     * When user clicks on a query in the query list, highlight the query and 
+     * display the query content at the right panel.
+     * @param queryName 
+     */
+    setCurrentQuery(queryName: string){
+        this.showQuery(queryName);
+        this.selectedRow = queryName;
+    }
+
+    /**
+     * When field type dropdown changed, if not edit/add mode, set to edit mode.
+     * @param event 
+     */
+    onDropdownChange(event) {
+        //Check if this is an existing query
+        this.setReadyEdit();
+
+        this.dataChanged = true;
+        this.setMode(this.queryName);
+    }
+
+    /**
+     * 
+     */
+    setMode(queryName: string){
+        if(this.readyEdit) {
+            this.oldQueryName = this.queryName;
+            this.editQuery = true;
+            this.addQuery = false;
+            this.readyEdit = false;
+        }
+    
+        if(!this.editQuery && !this.addQuery){
+            this.oldQueryName = "";
+            this.addQuery = true;
+            this.editQuery = false;
+            this.createQueryInit();
+        }
+    }
 }

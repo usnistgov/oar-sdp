@@ -254,7 +254,7 @@ input[type=file]:disabled {
   height:2.3em;
   background-color: white;
   color: #025277;
-  margin-top: -4px;
+  margin-top: -10px;
 }
 
 .query-list {
@@ -268,7 +268,7 @@ input[type=file]:disabled {
 #btn-save {
     height:2em;
     border:none;
-    // background-color: green;
+    background-color: green;
     width: 45%;
     margin-right: .5em;
     float: right;
@@ -277,25 +277,21 @@ input[type=file]:disabled {
 #btn-cancel {
     height:2em;
     border:none;
-    // background-color:rgb(82, 82, 82);
+    background-color:rgb(82, 82, 82);
     width: 45%;
-    margin-right: .5em;
+    margin-right: 1em;
     float: right;
 }
 
 #query-list-bar {
     background-color: #1471AE;
-    border-bottom:.5px solid #e6e6e6;
     line-height: 0em;
     width: 100%;
     height: 2em;
-    // padding: .625em;
-    // box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);
-    margin-bottom: .5em;
     color: white;
     font-weight:700;
-    vertical-align: middle;
-    padding: 15px; 
+    // vertical-align: middle;
+    padding-top: 15px; 
 }
 
 .dropbtn {
@@ -311,6 +307,7 @@ input[type=file]:disabled {
     position: relative;
     /* display: inline-block; */
     float: right;
+    margin-top: -2px;
   }
   
   .dropbtn:disabled {
@@ -353,4 +350,22 @@ input[type=file]:disabled {
 
 #left-panel {
     background-color: #F8F9F9;
+}
+
+#query-list {
+    margin-bottom: .5em;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+#query-list:hover {
+    background-color: #cef5ff !important;
+}
+
+#query-list.active {
+    background-color:hsl(210, 96%, 80%) !important;
+    color: white !important;
+} 
+
+#queryName {
+    margin-top: -3px;
 }
