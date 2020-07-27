@@ -79,12 +79,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   selectedRow: string;
   queryNameValidateError: boolean = false;
   queryNameValidateErrorMsg: string = '';
+  screenWidth: number;
 
   /**
    * Constructor
    */
   constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
-    ngZone: NgZone,
+    public ngZone: NgZone,
     public taxonomyListService: TaxonomyListService,
     public searchFieldsListService: SearchfieldsListService,
     public gaService: GoogleAnalyticsService,
@@ -98,7 +99,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     super();
 
     this.renderer.listen('window', 'click',(e:Event)=>{ 
-        this.showDropdown = false;
+        // If user clicks on the dropdown button, display the action popup list
+        //otherwise hide it.
+        if(e.target['name'] == 'dropdownButton')
+            this.showDropdown = true;
+        else
+            this.showDropdown = false;
     })
 
     this.confValues = this.appConfig.getConfig();
@@ -112,16 +118,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     this.mobWidth = (window.innerWidth);
     // Init search box size and breadcrumb position
     this.onWindowResize();
-
-    window.onresize = (e) => {
-      ngZone.run(() => {
-        this.mobWidth = window.innerWidth;
-        this.mobHeight = window.innerHeight;
-        this.onWindowResize();
-      });
-    };
   }
-
 
   /**
    * init
@@ -141,6 +138,25 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
   }
 
+      /**
+     *  Following functions detect screen size
+     */
+    @HostListener("window:resize", [])
+    public onResize() {
+        this.detectScreenSize();
+    }
+
+    public ngAfterViewInit() {
+        this.detectScreenSize();
+    }
+
+    private detectScreenSize() {
+        this.mobWidth = window.innerWidth;
+        this.mobHeight = window.innerHeight;
+
+        this.onWindowResize();
+    }
+
   /**
    * Key press event
    */
@@ -156,10 +172,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
    * When top menu bar collapse, we want to place breadcrumb inside the top menu bar
    */
   onWindowResize(){
-    if(this.mobWidth > 750){
-      this.breadcrumb_top = '6em';
+    if(this.mobWidth > 767){
+        this.breadcrumb_top = '0em';
     }else{
-      this.breadcrumb_top = '3.5em';
+        this.breadcrumb_top = '-2.5em';
     }
   }
 
@@ -670,5 +686,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
             this.editQuery = false;
             this.createQueryInit();
         }
+    }
+
+    setDropdown(){
+        console.log("Showing dropdown button...")
+
+        this.ngZone.run(() => {
+            this.showDropdown = true;
+        });
     }
 }

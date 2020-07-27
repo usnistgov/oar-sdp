@@ -102,18 +102,6 @@ textarea {
   min-height: 50vh;
 }
 
-.bigSearchButton {
-  display: table;
-  margin-top:0px;
-  cursor: pointer;
-  text-align: center !important;
-  vertical-align: middle !important;
-  color: white;
-  background-color:#0872B9;
-  height:43px;
-  padding: 0px;
-}
-
 .inner-top-banner {
   display: block; 
   width: 100%; 

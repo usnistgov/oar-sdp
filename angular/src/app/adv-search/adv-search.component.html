@@ -1,6 +1,6 @@
 <!-- Use absolute position for breadcrumb so it won't affect other elements' layout
      We have onWindowResize() to dynamically adjust breadcrumb location -->
-<div style="position: absolute; right: 1em;" [ngStyle]="{'top': breadcrumb_top}">
+<div style="position: absolute; right: 1em; " [ngStyle]="{'margin-top': breadcrumb_top}">
     <ol class="breadcrumb" style="float: right;">
         <li class="breadcrumb-item"><a href='/' style="color: #fff;"
                 (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
@@ -14,38 +14,49 @@
     <div class="ui-g ">
         <p-confirmDialog key="queryDelete"></p-confirmDialog>
         <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="left-panel">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 95%;">Queries</th>
+                        <th scope="col" style="width: 5%;">Act</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="searchEntities.length == 0">No query found</tr>
+                    <tr id="query-list1" *ngFor="let searchEntity of searchEntities; index as i"
+                        [class.active]="searchEntity.data.queryName == selectedRow"
+                        (click)="setCurrentQuery(searchEntity.data.queryName)">
+                        <th scope="row" (click)="showQuery(searchEntity.data.queryName)">
+                            <a href="javascript:void(0);" style="margin-left: .5em;">{{searchEntity.data.queryName}}</a>
+                        </th>
+                        <td>
+                            <div class="dropdown">
+                                <button class="dropbtn" name="dropdownButton" [disabled]="editQuery || addQuery"
+                                    data-toggle="tooltip" title="Actions" (mouseover)='showDropdown=true;'>...</button>
+                                <div class="dropdown-content" *ngIf='showDropdown'
+                                    [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
+                                    <a href="javascript:void(0);"
+                                        (click)="showQuery(searchEntity.data.queryName); showDropdown=false;">View</a>
+                                    <a href="javascript:void(0);"
+                                        (click)="editQuery=true;addQuery=false;showAdvSearch(searchEntity.data.queryName); showDropdown=false;">Edit</a>
+                                    <a href="javascript:void(0);"
+                                        (click)="executeQuery(searchEntity.data.queryValue); showDropdown=false;">Execute</a>
+                                    <a href="javascript:void(0);"
+                                        (click)="dupQuery(searchEntity); showDropdown=false;">Duplicate</a>
+                                    <a href="javascript:void(0);"
+                                        (click)="deleteConfirmQuery(searchEntity.data.queryName); showDropdown=false;">Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div>
-                <div class="ui-g-12 ui-md-12" id="query-list-bar">
-                    Queries
-                    <span style="float: right;">Actions</span>
-                </div>
-                <div class="ui-g-12 ui-md-12" style="height: 1em;background-color: white;"></div>
-                <div *ngFor="let searchEntity of searchEntities; let i = index;" id="query-list"
-                    [class.active]="searchEntity.data.queryName == selectedRow" (click)="setCurrentQuery(searchEntity.data.queryName)">
-                    <a href="javascript:void(0);" (click)="showQuery(searchEntity.data.queryName)"
-                        style="margin-left: .5em;">{{searchEntity.data.queryName}}</a>
-                    <div class="dropdown">
-                        <button class="dropbtn" [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Actions"
-                            (click)='showDropdown=true;' (mouseover)='showDropdown=true;'>...</button>
-                        <div class="dropdown-content" *ngIf='showDropdown'>
-                            <a href="javascript:void(0);"
-                                (click)="showQuery(searchEntity.data.queryName); showDropdown=false;">View</a>
-                            <a href="javascript:void(0);"
-                                (click)="editQuery=true;addQuery=false;showAdvSearch(searchEntity.data.queryName); showDropdown=false;">Edit</a>
-                            <a href="javascript:void(0);"
-                                (click)="executeQuery(searchEntity.data.queryValue); showDropdown=false;">Execute</a>
-                            <a href="javascript:void(0);"
-                                (click)="dupQuery(searchEntity); showDropdown=false;">Duplicate</a>
-                            <a href="javascript:void(0);"
-                                (click)="deleteConfirmQuery(searchEntity.data.queryName); showDropdown=false;">Delete</a>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="ui-g-12 ui-md-12" style="text-align: center;">
                     <div class="file-io btn btn-sm btn-primary"
                         [ngStyle]="{'opacity': editQuery || addQuery? '.65' : '1', 'cursor': editQuery||addQuery? 'default' : 'pointer'}">
-                        <label for="file" [ngStyle]="{'cursor': editQuery||addQuery? 'default' : 'pointer'}">Import</label>
+                        <label for="file"
+                            [ngStyle]="{'cursor': editQuery||addQuery? 'default' : 'pointer'}">Import</label>
                         <input type="file" id="file" (change)="importList($event)" [disabled]="editQuery || addQuery">
                     </div>
                     <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
@@ -58,10 +69,10 @@
 
         <div [className]="resultsClass" style="background-color:white">
             <div class="ui-g-12 ui-md-12" style="display: flex;vertical-align: middle;">
-                <label for="queryName">Query Name</label>
+                <label for="queryName" style="white-space: nowrap;">Query Name</label>
 
-                <input class="query-name" type="text" id="queryName" [(ngModel)]="queryName"
-                    (focus)="setReadyEdit()" (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'queryName')" />
+                <input class="query-name" type="text" id="queryName" [(ngModel)]="queryName" (focus)="setReadyEdit()"
+                    (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'queryName')" />
 
                 <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
                     [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Add Query">
@@ -74,7 +85,7 @@
                 <p-dataTable [value]="rows" emptyMessage="No entry found" [style]="{'border':'.5px solid #e6e6e6'}">
                     <p-column field="data.queryName" header="Operator" [style]="{'width':'15%','font-weight':'700'}">
                         <ng-template let-row="rowData" let-i="rowIndex" pTemplate type="body">
-                            <p-dropdown [dropdownIcon]="caretDown" *ngIf="i != 0" 
+                            <p-dropdown [dropdownIcon]="caretDown" *ngIf="i != 0"
                                 [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px','font-weight': '400','font-style': 'italic','border':'.5px solid #e6e6e6'}"
                                 [options]="operators" [(ngModel)]="row.column1" (onChange)="onDropdownChange($event)">
                             </p-dropdown>
@@ -83,7 +94,8 @@
                     <p-column field="data.queryName" header="Field Text" [style]="{'width':'35%','font-weight':'700'}">
                         <ng-template let-row="rowData" pTemplate type="body">
                             <input type="text" class="text-input field-name" [(ngModel)]="row.column2"
-                                placeholder="Fields text..." (focus)="setReadyEdit()" (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'searchValue')" />
+                                placeholder="Fields text..." (focus)="setReadyEdit()"
+                                (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'searchValue')" />
                         </ng-template>
                     </p-column>
                     <p-column field="data.queryName" header="Field Type" [style]="{'width':'35%','font-weight':'700'}">
@@ -98,13 +110,12 @@
                     <p-column header="Actions" styleClass="col-button" [style]="{'width':'15%','font-weight':'700'}">
                         <ng-template let-rowIndex="rowIndex" let-row="rowData" pTemplate="body">
                             <button type="button" class="buttonSize" pButton (click)="deleteRow(rowIndex)"
-                                icon="ui-icon-delete" data-toggle="tooltip"
-                                title="Delete Row" [disabled]="rows.length <= 1">
+                                icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row"
+                                [disabled]="rows.length <= 1">
                                 <i class="faa faa-trash"></i>
                             </button>
                             <button type="button" class="buttonSize" pButton (click)="copyRow(row)"
-                                icon="ui-icon-content-copy" data-toggle="tooltip"
-                                title="Duplicate Row">
+                                icon="ui-icon-content-copy" data-toggle="tooltip" title="Duplicate Row">
                                 <i class="faa faa-copy"></i>
                             </button>
                         </ng-template>
@@ -113,9 +124,9 @@
             </div>
             <p-confirmDialog></p-confirmDialog>
             <div class="ui-g-12 search-builder-background">
-                <div class="ui-g-12 ui-lg-4 ui-md-4 ui-sm-12" style="float:right;">
+                <div class="ui-g-12 ui-lg-8 ui-md-12 ui-sm-12" style="float:right;">
                     <button id="btn-cancel" type="button" (click)="cancelConfirm()" pButton type="submit"
-                        [disabled]="(!editQuery && !addQuery) || !dataChanged">
+                        [disabled]="(!editQuery && !addQuery)">
                         <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i>
                         Cancel
                     </button>

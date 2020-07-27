@@ -1,6 +1,7 @@
-<div class="jumbotron" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')', 'padding': jumbotronPadding, 'margin-bottom':'-1em'}">
-  <div style="text-align: center; color: white;">
-    <div style="width: 100%;display: inline-block; margin: 0em auto 1em;">
+<!-- <div class="jumbotron" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')', 'padding': jumbotronPadding, 'margin-bottom':'-1em'}"> -->
+<div class="search-panel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')','margin-bottom':'-1em'}">
+  <div class="content">
+    <!-- <div style="width: 100%;display: inline-block; margin: 0em auto 1em;"> -->
       <h3 *ngIf="title" class="title">{{title}}</h3>
       <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
         <i class="faa faa-question-circle help-icon" data-toggle="tooltip"
@@ -10,13 +11,13 @@
           Technology and
           <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></p>
 
-      <div class="searchBox" style="margin-bottom: .5em;">
+      <div class="searchBox">
         <label for="searchinput" class="hideLabel">Search Input</label>
-        <div class="inner-addon left-addon " style="background-color: #FFFFFF;display: inline-block;"
+        <div class="inner-addon left-addon background-white" [ngStyle]="{'width': mobWidth > 487? '40%' : '100%', 'margin-left':  mobWidth > 487? '6em' : '0em'}"
           >
           <i class="glyphicon faa faa-search"></i>
-          <!-- <div style="text-align: left;" [ngStyle]="{'width': searchBoxWith}"> -->
-            <p-autoComplete [inputStyle]="inputStyle" 
+          <!-- <div style="text-align: left;"> -->
+            <p-autoComplete [inputStyle]="inputStyle"
               (onFocus)="clearText()" (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
               inputId="searchinput" name="searchinput"  (keyup.enter)="search(searchValue,searchTaxonomyKey,'yes')"
               [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1"
@@ -30,7 +31,7 @@
             </p-autoComplete>
           <!-- </div> -->
         </div>
-        <div class="bigSearchButton" style="display: inline-block;margin-top: -2px;min-width: 80px;" [ngStyle]="{'width': searchBottonWith}"
+        <div class="bigSearchButton" [ngStyle]="{'width': mobWidth > 487? '10%' : '100%'} "
           (click)="search(searchValue,searchTaxonomyKey,'yes')">
           <p style="margin-top: 10px;">Search</p>
         </div>
@@ -52,6 +53,7 @@
             href="#!">Interatomic Potentials </a>&nbsp;
         </div>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </div>
+<!-- </div> -->
