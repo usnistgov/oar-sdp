@@ -80,6 +80,27 @@ export class SearchPanelComponent implements OnInit {
    *
    */
   ngOnInit() {
+    this.searchService._watchQueryValue((queryObj) => {
+        // To remote start editing, resID need be set otherwise authorizeEditing()
+        // will do nothing and the app won't change to edit mode
+        console.log('queryObj', queryObj);
+        if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
+            this.searchValue = queryObj.queryString;
+            this.searchService.setQueryValue(null, null, null); // Reset
+        }
+    });
+
+    this.searchService._watchRemoteStart((startQuery) => {
+        // To remote start editing, resID need be set otherwise authorizeEditing()
+        // will do nothing and the app won't change to edit mode
+        console.log("startQuery", startQuery);
+        if (startQuery) {
+            console.log("startQuery...");
+            this.search(this.searchValue, "", "");
+            this.searchService.startSearching(false);   // Reset
+        }
+    });
+    
     // Init search box size and breadcrumb position
     this.onWindowResize();
     console.log("Window width: ", window.screen.width);
@@ -217,8 +238,8 @@ export class SearchPanelComponent implements OnInit {
     this.searchTaxonomyKey = searchTaxonomyKey;
     let params: NavigationExtras = {
       queryParams: {
-        'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
-        'queryAdvSearch': this.queryAdvSearch
+        'q': searchValue, 'key': searchTaxonomyKey ? searchTaxonomyKey : '',
+        'queryAdvSearch': queryAdvSearch
       }
     };
     this.router.navigate(['/search'], params);

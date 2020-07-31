@@ -511,20 +511,6 @@ img {
   z-index: 999;
 }
 
-
-/* enable absolute positioning */
-.inner-addon {
-  position: relative;
-}
-
-/* style icon */
-.inner-addon .glyphicon {
-  position: absolute;
-  padding: 10px;
-  pointer-events: none;
-  font-size: 25px;
-}
-
 /* align icon */
 .left-addon .glyphicon  { left:  0px;}
 .right-addon .glyphicon { right: 0px;}

@@ -13,7 +13,7 @@
 
       <div class="searchBox">
         <label for="searchinput" class="hideLabel">Search Input</label>
-        <div class="inner-addon left-addon background-white" [ngStyle]="{'width': mobWidth > 487? '40%' : '100%', 'margin-left':  mobWidth > 487? '6em' : '0em'}"
+        <div class="inner-addon left-addon background-white search-box" [ngStyle]="{'width': mobWidth > 487? '40%' : '100%'}"
           >
           <i class="glyphicon faa faa-search"></i>
           <!-- <div style="text-align: left;"> -->
@@ -35,7 +35,7 @@
           (click)="search(searchValue,searchTaxonomyKey,'yes')">
           <p style="margin-top: 10px;">Search</p>
         </div>
-        <div *ngIf="advanceLink" style="display: inline-block;vertical-align: bottom !important; margin-left: .3em;">
+        <div *ngIf="advanceLink" class="adv-link-block">
           <a href="#!" class="advancedSearch-link" [routerLink]="['/advanced']"> Advanced Search </a>
         </div>
       </div>

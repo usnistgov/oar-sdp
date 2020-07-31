@@ -13,5 +13,12 @@ export interface SearchService {
    * @return {string[]} The Observable for the HTTP request.
    */
   searchPhraseTest(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any>;
+
+  _watchQueryValue(subscriber);
+  _watchRemoteStart(subscriber);
+
+  startSearching(startSearch: boolean) : void;
+
+  setQueryValue(queryString: string, searchTaxonomyKey: string, queryAdvSearch: string): void;
 }
 

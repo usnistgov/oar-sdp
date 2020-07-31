@@ -228,7 +228,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
       }
       this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
-      // console.log('authors inside init: ' + params['authors']);
     });
   }
 
@@ -363,7 +362,6 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
 
   collectComponents(searchResults: any[]) {
-    console.log('Collecting components...');
     let components: SelectItem[] = [];
     let componentsArray: string[] = [];
     let componentsAllArray: string[] = [];
@@ -372,7 +370,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     let compType: string;
     this.componentsAllArray = [];
     for (let resultItem of searchResults) {
-      console.log('resultItem.inventory', resultItem.inventory);
       if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
         this.uniqueComp = [];
         for (let resultItemComponents of resultItem.inventory) {
@@ -475,7 +472,6 @@ export class SearchComponent implements OnInit, OnDestroy {
    */
 
   onSuccess(searchResults: any[]) {
-    console.log("searchResults", searchResults);
     this.noResults = false;
     this.sysError = false;
     this.themesWithCount = [];
@@ -496,7 +492,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     // collect Research topics with count
     this.collectThemesWithCount();
     this.components = this.collectComponents(searchResults);
-    console.log("components", this.components);
     // collect Resource features with count
     this.collectComponentsWithCount();
     this.collectResourceTypesWithCount();
@@ -581,7 +576,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     let searchPhraseValue = '';
     let searchKeyValue = '';
 
-    return this.searchService.searchPhrase(this.searchValue, this.searchTaxonomyKey, queryAdvSearch)
+    return this.searchService.searchPhrase(searchValue, searchTaxonomyKey, queryAdvSearch)
       .subscribe(
         searchResults => {
           that.onSuccess(searchResults.ResultData);
@@ -717,8 +712,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   collectComponentsWithCount() {
     this.componentsWithCount = [];
-    console.log('this.componentsAllArray', this.componentsAllArray);
-    console.log('this.components', this.components);
     for (let comp of this.components) {
       let count: any;
       if (this.showComponents.includes(comp.label)) {

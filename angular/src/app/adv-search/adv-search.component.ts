@@ -15,6 +15,12 @@ import { AppConfig, Config } from '../shared/config-service/config-service.servi
 
 import * as _ from 'lodash';
 
+export interface queryRow {
+    operator: string,
+    fieldText: string,
+    fieldType: string
+}
+
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -151,6 +157,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     }
 
     private detectScreenSize() {
+        this.screenWidth = window.innerWidth;
         this.mobWidth = window.innerWidth;
         this.mobHeight = window.innerHeight;
 
@@ -248,6 +255,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
     for (let resultItem of this.searchEntities) {
       if (queryName == resultItem.data.queryName) {
         this.searchValue = resultItem.data.queryValue;
+        console.log('this.searchValue', this.searchValue);
+        // Update search box
+        this.searchService.setQueryValue(this.searchValue, '', '');
+
         this.queryValue = resultItem.data.queryValue.split('&');
 
         if (this.queryValue.length > 1) {
@@ -315,7 +326,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
       fieldValue = fieldValue.replace(/\s+/g, '');
 
       if (i > 0) {
-        this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' + fieldValue + '=' + this.rows[i].column2;
+        this.searchValue += ' ' + this.rows[i].column1 + ' ' + fieldValue + '=' + this.rows[i].column2;
       } else {
         if (!_.isEmpty(fieldValue) || !_.isEmpty(this.rows[i].columns)) {
           this.searchValue += fieldValue + '=' + this.rows[i].column2;
@@ -601,6 +612,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
         this.searchQueryService.saveSearchQuery(data);
         this.getSearchQueryList();
         this.setCurrentQuery(queryName);
+
+        // Update search box
+        this.searchService.setQueryValue(this.searchValue, '', '');
+
         this.addQuery = false;
         this.editQuery = false;
         this.dataChanged = false;
@@ -630,8 +645,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
   * Execute query
   */
   executeQuery(queryValue: string) {
-    this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
-    window.open(this.queryString, '_self');
+      console.log('queryValue', queryValue);
+      this.searchService.setQueryValue(queryValue, '', '');
+      this.searchService.startSearching(true);
+    // this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
+    // window.open(this.queryString, '_self');
   }
 
     /**

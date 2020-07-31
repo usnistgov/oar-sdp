@@ -6,6 +6,7 @@ import 'rxjs/operator/map';
 import 'rxjs/operator/catch';
 import 'rxjs/observable/throw';
 import { EMPTY } from 'rxjs'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
 // import { Config } from '../config/env.config';
 import { AppConfig, Config } from '../config-service/config-service.service';
@@ -52,8 +53,12 @@ export class RealSearchService implements SearchService{
     // Replace '%26' with '&'
     searchValue = searchValue.replace(/\%26/g, '&');
 
-    searchValue = searchValue.replace(/\&logicalOp=OR&/g, ' or ');
-    searchValue = searchValue.replace(/\&logicalOp=AND&/g, ' and ');
+    // searchValue = searchValue.replace(/\&logicalOp=OR&/g, ' or ');
+    // searchValue = searchValue.replace(/\&logicalOp=AND&/g, ' and ');
+    searchValue = searchValue.replace(' or ', '&logicalOp=OR&');
+    searchValue = searchValue.replace(' and ', '&logicalOp=AND&');
+    searchValue = searchValue.replace(' OR ', '&logicalOp=OR&');
+    searchValue = searchValue.replace(' AND ', '&logicalOp=AND&');
 
     if (searchValue.includes('&')) {
       searchValue = searchValue.split("&").join(' and ');
@@ -95,7 +100,11 @@ export class RealSearchService implements SearchService{
       searchPhraseValue = '&';
     }
     console.log('searchPhraseValue', searchPhraseValue);
-    return this.http.get(this.RMMAPIURL + 'records?' + searchPhraseValue + 'topic.tag=' + searchTaxonomyKey);
+    let url = this.RMMAPIURL + 'records?' + searchPhraseValue + 'key=' + searchTaxonomyKey + '&queryAdvSearch=' + queryAdvSearch;
+
+    console.log("url", url);
+    
+    return this.http.get(url);
   }
 
   /**
@@ -118,17 +127,28 @@ export class RealSearchService implements SearchService{
     }
   }
 
-  /**
-    * Handle HTTP error
-
-  private handleError (error: any) {
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to get a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
+  private _remoteQueryValue : BehaviorSubject<object> = new BehaviorSubject<object>({queryString: '', searchTaxonomyKey: '', queryAdvSearch: 'yes'});
+  public _watchQueryValue(subscriber){
+    this._remoteQueryValue.subscribe(subscriber);
   }
-   */
+
+  public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
+    this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
+  }
+
+    /**
+     * Behavior subject to remotely start the search function. 
+     */
+    private _remoteStartSearch : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public _watchRemoteStart(subscriber) {
+        this._remoteStartSearch.subscribe(subscriber);
+    }
+
+    /**
+     * Remote start search
+     */
+    public startSearching(startSearch: boolean = false) : void {
+        this._remoteStartSearch.next(startSearch);
+    }
 }
 
