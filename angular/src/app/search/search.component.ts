@@ -59,6 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   // taxonomies: SelectItem[];
   sortItems: SelectItem[];
   fields: SelectItem[];
+  fieldTypes: SelectItem[];
   fieldsArray: any[];
   displayFields: string[] = [];
   selectedFields: string[] = ['Resource Description', 'Subject keywords'];
@@ -197,10 +198,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.msgs = [];
     this.searchResultsError = [];
     this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-    this.getSearchFields();
+
     // this.getTaxonomySuggestions();
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-      console.log("params", params);
       this.searchValue = params['q'];
       this.searchTaxonomyKey = params['key'];
       this.queryAdvSearch = params['queryAdvSearch'];
@@ -211,12 +211,11 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchAuthors = params['authors'];
       this.searchKeywords = params['keywords'];
 
-      console.log("this.searchValue", this.searchValue);
-      this.searchPanel.searchValue = this.searchValue;
-      // this.getTaxonomies();
-
-      // Processing search value
-      if(this.searchValue){
+    //   this.searchPanel.searchValue = this.searchValue;
+    this.getSearchFields();
+        console.log('this.searchValue', this.searchValue);
+    // Processing search value
+    if(this.searchValue){
         //Treat ',', ';' the same as space
         this.searchValue = this.searchValue.replace(/\,/g, ' ');
         this.searchValue = this.searchValue.replace(/\;/g, ' ');
@@ -224,9 +223,22 @@ export class SearchComponent implements OnInit, OnDestroy {
       // Replace '%26' with '&'
         this.searchValue = this.searchValue.replace(/\%26/g, '&');
 
-        this.searchValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' or ');
-        this.searchValue = this.searchValue.replace(/\&logicalOp=AND&/g, ' and ');
-      }
+        let queryValue: string;
+
+        queryValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' OR ');
+        queryValue = queryValue.replace(/\&logicalOp=AND&/g, ' AND ');
+        queryValue = queryValue.replace(/\&logicalOp=NOR&/g, ' NOR ');
+
+        this.searchFieldsListService.getSearchFields().subscribe(
+            (fields) => {
+                this.fieldTypes = fields,
+                this.searchService.setQueryValue(this.revertSearchvalue(queryValue), '', '');
+            },
+            (err) => {
+                this.errorMessage = <any>err;
+            }
+        )
+    }
       this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
     });
   }
@@ -244,65 +256,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       field.value = ' ';
     }
   }
-
-  /**
-   * Handle the nameListService observable
-   */
-  // getTaxonomies() {
-  //   this.taxonomyListService.get()
-  //     .subscribe(
-  //       taxonomies => {
-  //         this.taxonomies = this.toTaxonomiesItems(taxonomies)
-  //       },
-  //       error => this.errorMessage = <any>error
-  //     );
-  // }
-
-  // saveSearchQuery(queryName: any, queryValue: any) {
-  //   if (_.isEmpty(queryName)) {
-  //     this.queryNameReq = true;
-  //   } else {
-  //     this.getSearchQueryList();
-  //     this.duplicateQuery = false;
-  //     for (let resultItem of this.searchEntities) {
-  //       if (queryName == resultItem.data.queryName) {
-  //         this.duplicateQuery = true;
-  //       }
-  //     }
-  //     if (!this.duplicateQuery) {
-  //       let data: Data;
-  //       var date = new Date();
-  //       data = { 'queryName': queryName, 'queryValue': queryValue, 'id': queryName, 'date': date.getTime() };
-  //       this.searchQueryService.saveSearchQuery(data);
-  //       this.getSearchQueryList();
-  //       this.duplicateQuery = false;
-  //     }
-  //     this.queryNameReq = false;
-  //     this.showQueryName = false;
-  //   }
-  // }
-
-
-  // getSearchQueryList() {
-  //   this.searchQueryService.getAllSearchEntities().then(function (result) {
-  //     this.searchEntities = result;
-  //   }.bind(this), function (err) {
-  //     alert("something went wrong while fetching the products");
-  //   });
-  // }
-
-
-  /**
-   * Populate taxonomy items
-   */
-  // toTaxonomiesItems(taxonomies: any[]) {
-  //   let items: SelectItem[] = [];
-  //   items.push({ label: 'ALL RESEARCH', value: '' });
-  //   for (let taxonomy of taxonomies) {
-  //     items.push({ label: taxonomy.label, value: taxonomy.label });
-  //   }
-  //   return items;
-  // }
 
   reset() {
     this.first = 0;
@@ -1364,7 +1317,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   getSearchFields() {
     this.searchFieldsListService.get()
       .subscribe(
-        fields => this.fields = this.toSortItems(fields),
+        fields => {
+            this.fields = this.toSortItems(fields)
+        },
         error => this.errorMessage = <any>error
       );
   }
@@ -1548,5 +1503,28 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this._routeParamsSubscription) {
       this._routeParamsSubscription.unsubscribe();
     }
+  }
+
+  /**
+   * Revert url parameter into the search text in search box. For example,
+   * Revert "topic.tag%3Dwater" to "Research Topic=water" 
+   * Revert "topic.tag%3Dwater&logicalOp%3DOR=&topic.tag%3Dfire" to "Research Topic=water OR Research Topic=fire"
+   * @param param - search value from url parameters
+   */
+  revertSearchvalue(param: string): string{
+    let searchValue = '';
+    if(!param) return searchValue;
+
+    searchValue = param;
+    for(let field of this.fieldTypes){
+        searchValue = searchValue.replace(new RegExp(field.value.replace('.', '\.'), 'gi'), field.label);
+    }
+
+    searchValue = searchValue.replace(new RegExp('&logicalOp=OR&', 'g'), ' OR ');
+    searchValue = searchValue.replace(new RegExp('&logicalOp=NOR&', 'g'), ' NOR ');
+    searchValue = searchValue.replace(new RegExp('&logicalOp=AND&', 'g'), ' AND ');
+    searchValue = searchValue.replace("searchphrase", "ALL FIELDS");
+
+    return searchValue;
   }
 }

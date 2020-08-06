@@ -49,10 +49,14 @@
   float:right !important;
 }
 
-.buttonSize {
+.btn-row-act {
   width:50px;
   float:right; 
   margin-right:10px;
+}
+
+.btn-row-act:hover {
+    background-color: #3e8e41 !important;
 }
 
 input[type="file"] {
@@ -95,9 +99,11 @@ input[type="file"] {
 }
 
 .field-name {
-    border: 1px solid #a0a0a0;
+    border: 1px solid #d1d1d1;
     width: 100%; 
-    font-style: italic
+    font-style: italic;
+    height: 2.3em;
+    padding-left: 10px;
 }
 
 .advancedSearch-link {
@@ -216,7 +222,7 @@ input[type="file"] {
 }
 
 .file-io:hover{
-    background-color:#3078ca;
+    background-color:#3e8e41;
 }
 
 #left-panel {

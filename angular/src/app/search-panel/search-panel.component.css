@@ -43,7 +43,7 @@ hr {
 }
 
 .examples {
-  color: #fff;
+  /* color: #fff; */
   text-decoration: underline;
 }
 
@@ -108,6 +108,14 @@ hr {
 
 .search-box {
     margin-left: 0em !important;
+}
+
+.link-text {
+    color: #fff;
+    text-decoration: underline; 
+    font-size: small;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 .advancedSearch-link {
@@ -186,4 +194,38 @@ body .ui-state-active, body .ui-state-highlight {
     background-size: cover;
     background-position: center 63%;
     width: 100%;
+}
+
+#help {
+    margin:auto;
+    margin-top: 1em;
+    margin-bottom: .5em;
+    background-color: white;
+    color: black;
+    width:80%;
+    height: 300px;
+    border-radius: 5px;
+}
+
+table thead {
+    background-color: #1471AE;
+    color: white;
+}
+
+table tbody {
+    display: block;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+table thead, table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+#table-wrapper {
+    width: 100%;
+    padding: 10px 20px 10px 20px;
+    margin-bottom: 10px;
 }

@@ -53,21 +53,6 @@ export class RealSearchService implements SearchService{
     // Replace '%26' with '&'
     searchValue = searchValue.replace(/\%26/g, '&');
 
-    // searchValue = searchValue.replace(/\&logicalOp=OR&/g, ' or ');
-    // searchValue = searchValue.replace(/\&logicalOp=AND&/g, ' and ');
-    searchValue = searchValue.replace(' or ', '&logicalOp=OR&');
-    searchValue = searchValue.replace(' and ', '&logicalOp=AND&');
-    searchValue = searchValue.replace(' OR ', '&logicalOp=OR&');
-    searchValue = searchValue.replace(' AND ', '&logicalOp=AND&');
-
-    if (searchValue.includes('&')) {
-      searchValue = searchValue.split("&").join(' and ');
-    }
-
-    if (searchValue.includes('||')) {
-      searchValue = searchValue.split("||").join(' or ');
-    }
-
     let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
     //let opArray = ['AND','NOT','OR','and','not','or']
     //let filteredArray = _.difference(parameters, opArray);
@@ -99,11 +84,11 @@ export class RealSearchService implements SearchService{
     if (_.isEmpty(searchPhraseValue)) {
       searchPhraseValue = '&';
     }
-    console.log('searchPhraseValue', searchPhraseValue);
+
     let url = this.RMMAPIURL + 'records?' + searchPhraseValue + 'key=' + searchTaxonomyKey + '&queryAdvSearch=' + queryAdvSearch;
 
-    console.log("url", url);
-    
+    console.log('url', url);
+
     return this.http.get(url);
   }
 

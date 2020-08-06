@@ -8,6 +8,7 @@ import {Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
 import 'rxjs/add/operator/toPromise';
+import { Query, QueryRow } from './query';
 
 /**
  * The cart service provides an way to store the cart in local store.
@@ -208,6 +209,16 @@ export class SearchQueryService {
     this.setQueryLength (this.querySize);
     //this.updateFileSpinnerStatus(false);
     this.getQuery();
+  }
+
+  saveQueries(qureies: Query[]){
+    this._storage.setItem('queries',JSON.stringify(qureies));
+  }
+
+  getQueries(){
+    let queriesAsString = JSON.parse(this._storage.getItem('queries'));
+    // console.log("query" + JSON.stringify(queryAsString));
+    return queriesAsString == null? [] : queriesAsString;
   }
 
   updateFileSpinnerStatus(addFileSpinner:boolean)

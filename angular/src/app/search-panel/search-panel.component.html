@@ -1,59 +1,139 @@
 <!-- <div class="jumbotron" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')', 'padding': jumbotronPadding, 'margin-bottom':'-1em'}"> -->
 <div class="search-panel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')','margin-bottom':'-1em'}">
-  <div class="content">
-    <!-- <div style="width: 100%;display: inline-block; margin: 0em auto 1em;"> -->
-      <h3 *ngIf="title" class="title">{{title}}</h3>
-      <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
-        <i class="faa faa-question-circle help-icon" data-toggle="tooltip"
-          title="How to build Advanced Search Queries"></i>
-      </a>
-      <p *ngIf="subtitle" class="TexAlCenter subTitle"><i>Explore data, tools, and resources for Science, Engineering,
-          Technology and
-          <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></p>
+    <div class="content">
+        <!-- <div style="width: 100%;display: inline-block; margin: 0em auto 1em;"> -->
+        <h3 *ngIf="title" class="title">{{title}}</h3>
+        <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
+            <i class="faa faa-question-circle help-icon" data-toggle="tooltip"
+                title="How to build Advanced Search Queries"></i>
+        </a>
+        <p *ngIf="subtitle" class="TexAlCenter subTitle"><i>Explore data, tools, and resources for Science, Engineering,
+                Technology and
+                <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></p>
 
-      <div class="searchBox">
-        <label for="searchinput" class="hideLabel">Search Input</label>
-        <div class="inner-addon left-addon background-white search-box" [ngStyle]="{'width': mobWidth > 487? '40%' : '100%'}"
-          >
-          <i class="glyphicon faa faa-search"></i>
-          <!-- <div style="text-align: left;"> -->
-            <p-autoComplete [inputStyle]="inputStyle"
-              (onFocus)="clearText()" (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
-              inputId="searchinput" name="searchinput"  (keyup.enter)="search(searchValue,searchTaxonomyKey,'yes')"
-              [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1"
-              [maxlength]="2048" [size]="50">
+        <div class="searchBox">
+            <label for="searchinput" class="hideLabel">Search Input</label>
+            <div class="inner-addon left-addon background-white search-box"
+                [ngStyle]="{'width': mobWidth > 487? '40%' : '100%'}">
+                <i class="glyphicon faa faa-search"></i>
+                <p-autoComplete [style]="{'width':'100%'}" [inputStyle]="inputStyle" (onFocus)="clearText()" (onBlur)="addPlaceholder()"
+                    [placeholder]="placeholder" [(ngModel)]="searchValue" inputId="searchinput" name="searchinput"
+                     (keyup.enter)="search(searchValue,searchTaxonomyKey,'')" [suggestions]="suggestedTaxonomyList"
+                    (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength]="2048" [size]="50">
 
-              <ng-template let-taxonomy pTemplate="item" >
-                <div class="autoComplete" [ngStyle]="{'color':'black'}">
-                  {{taxonomy}}
-                </div>
-              </ng-template>
-            </p-autoComplete>
-          <!-- </div> -->
+                    <ng-template let-taxonomy pTemplate="item">
+                        <div class="autoComplete" [ngStyle]="{'color':'black'}">
+                            {{taxonomy}}
+                        </div>
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+            <div class="bigSearchButton" [ngStyle]="{'width': mobWidth > 487? '10%' : '100%'} "
+                (click)="changeState();search(searchValue,searchTaxonomyKey,'')">
+                <p style="margin-top: 10px;">Search</p>
+            </div>
+            <div class="adv-link-block link-text" (click)="changeState()">
+                <span *ngIf="!showExampleStatus">Show Examples</span>
+                <span *ngIf="showExampleStatus">Hide Examples</span>
+            </div>
+            <div *ngIf="advanceLink" class="adv-link-block">
+                <a href="#!" class="advancedSearch-link" [routerLink]="['/advanced']"> Advanced Search </a>
+            </div>
         </div>
-        <div class="bigSearchButton" [ngStyle]="{'width': mobWidth > 487? '10%' : '100%'} "
-          (click)="search(searchValue,searchTaxonomyKey,'yes')">
-          <p style="margin-top: 10px;">Search</p>
-        </div>
-        <div *ngIf="advanceLink" class="adv-link-block">
-          <a href="#!" class="advancedSearch-link" [routerLink]="['/advanced']"> Advanced Search </a>
-        </div>
-      </div>
 
-      <div style="width: 100%; margin-bottom: 1em;">
-        <div style="text-align: center">
-          <b> <span class="examplesLabel"> Examples: </span></b>
-          <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
-            href="#!">"Kinetics database" </a> &nbsp;
-          <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium </a>&nbsp;
-          <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
-            href="#!">"SRD 101" </a>&nbsp;
-          <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB </a>&nbsp;
-          <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
-            href="#!">Interatomic Potentials </a>&nbsp;
+        <div id="help" [@changeDivSize]=currentState>
+            <div>
+                <b> <span> Quick Examples: </span></b>
+                <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
+                    href="#!">"Kinetics database" </a> &nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
+                </a>&nbsp;
+                <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
+                    href="#!">"SRD 101"
+                </a>&nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB
+                </a>&nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
+                    href="#!">Interatomic Potentials </a>&nbsp;
+            </div>
+            <div><b>Syntax Rules:</b></div>
+            <div id="table-wrapper">
+                <table width="100%" border="1">
+                    <thead>
+                        <tr>
+                            <th width="20%">
+                                Search Criteria
+                            </th>
+                            <th width="30%">
+                                Keywords
+                            </th>
+                            <th width="50%">
+                                Description
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="20%">
+                                <p>Individual terms</p>
+                            </td>
+                            <td width="30%">
+                                <p>NIST Chemistry</p>
+                            </td>
+                            <td width="50%">
+                                <p>Records that include either &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo; are
+                                    returned.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                <p>Phrase</p>
+                            </td>
+                            <td width="30%">
+                                <p>&ldquo;NIST Chemistry&rdquo;</p>
+                            </td>
+                            <td width="50%">
+                                <p>Records that contain the phrase &ldquo;NIST Chemistry&rdquo; (the two words
+                                    adjacent
+                                    to each other
+                                    in that order) will be returned.&nbsp;</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                <p>Phrase with Individual terms</p>
+                            </td>
+                            <td width="30%">
+                                <p>&ldquo;NIST Chemistry&rdquo; Physics</p>
+                            </td>
+                            <td width="50%">
+                                <p>Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND
+                                    (&ldquo;Physics&rdquo;
+                                    OR &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo;); That is, returned records
+                                    will
+                                    contain the
+                                    phrase &ldquo;NIST Chemistry&rdquo;; they may contain &ldquo;Physics&rdquo;.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                <p>Key Value pair</p>
+                            </td>
+                            <td width="30%">
+                                <p>ContactPoint.fn = &ldquo;Peter Linstrom&rdquo;</p>
+                            </td>
+                            <td width="50%">
+                                <p>Records whose field, ContactPoint.fn, contains &ldquo;Peter Linstrom&rdquo; are
+                                    returned.</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-    <!-- </div> -->
-  </div>
+        <!-- Spacing for home page -->
+        <div *ngIf="homePage" style="height: 3em;">
+
+        </div>
+    </div>
 </div>
-<!-- </div> -->

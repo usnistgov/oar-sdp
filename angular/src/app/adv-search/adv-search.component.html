@@ -22,12 +22,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngIf="searchEntities.length == 0">No query found</tr>
-                    <tr id="query-list1" *ngFor="let searchEntity of searchEntities; index as i"
-                        [class.active]="searchEntity.data.queryName == selectedRow"
-                        (click)="setCurrentQuery(searchEntity.data.queryName)">
-                        <th scope="row" (click)="showQuery(searchEntity.data.queryName)">
-                            <a href="javascript:void(0);" style="margin-left: .5em;">{{searchEntity.data.queryName}}</a>
+                    <tr *ngIf="queries == null || queries?.length == 0">
+                        <td colspan="2">
+                            No query found
+                        </td>
+                    </tr>
+                    <tr id="query-list1" *ngFor="let query of queries; index as i"
+                        [class.active]="i == currentQueryIndex">
+                        <th scope="row" (click)="displayQuery(i)" *ngIf="!editQuery && !addQuery">
+                            <a href="javascript:void(0);" style="margin-left: .5em;">{{query.queryName}}</a>
+                        </th>
+                        <th scope="row" *ngIf="editQuery || addQuery">
+                            <span style="margin-left: .5em; color: darkgray;">{{query.queryName}}</span>
                         </th>
                         <td>
                             <div class="dropdown">
@@ -36,21 +42,22 @@
                                 <div class="dropdown-content" *ngIf='showDropdown'
                                     [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
                                     <a href="javascript:void(0);"
-                                        (click)="showQuery(searchEntity.data.queryName); showDropdown=false;">View</a>
+                                        (click)="displayQuery(i); showDropdown=false;">View</a>
                                     <a href="javascript:void(0);"
-                                        (click)="editQuery=true;addQuery=false;showAdvSearch(searchEntity.data.queryName); showDropdown=false;">Edit</a>
+                                        (click)="editQuery=true;addQuery=false;setCurrentQuery(i); showDropdown=false;">Edit</a>
                                     <a href="javascript:void(0);"
-                                        (click)="executeQuery(searchEntity.data.queryValue); showDropdown=false;">Execute</a>
+                                        (click)="executeQuery(query); showDropdown=false;">Execute</a>
                                     <a href="javascript:void(0);"
-                                        (click)="dupQuery(searchEntity); showDropdown=false;">Duplicate</a>
+                                        (click)="dupQuery(i); showDropdown=false;">Duplicate</a>
                                     <a href="javascript:void(0);"
-                                        (click)="deleteConfirmQuery(searchEntity.data.queryName); showDropdown=false;">Delete</a>
+                                        (click)="deleteConfirmQuery(query.queryName); showDropdown=false;">Delete</a>
                                 </div>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
             <div>
                 <div class="ui-g-12 ui-md-12" style="text-align: center;">
                     <div class="file-io btn btn-sm btn-primary"
@@ -71,7 +78,7 @@
             <div class="ui-g-12 ui-md-12" style="display: flex;vertical-align: middle;">
                 <label for="queryName" style="white-space: nowrap;">Query Name</label>
 
-                <input class="query-name" type="text" id="queryName" [(ngModel)]="queryName" (focus)="setReadyEdit()"
+                <input class="query-name" type="text" id="queryName" [(ngModel)]="currentQuery.queryName" (focus)="setReadyEdit()"
                     (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'queryName')" />
 
                 <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
@@ -81,47 +88,56 @@
             </div>
             <div *ngIf="queryNameValidateError" style="color:red;padding-left: 1em;">{{queryNameValidateErrorMsg}}</div>
 
-            <div class="ui-g-12 ui-md-12 search-builder-background">
-                <p-dataTable [value]="rows" emptyMessage="No entry found" [style]="{'border':'.5px solid #e6e6e6'}">
-                    <p-column field="data.queryName" header="Operator" [style]="{'width':'15%','font-weight':'700'}">
-                        <ng-template let-row="rowData" let-i="rowIndex" pTemplate type="body">
-                            <p-dropdown [dropdownIcon]="caretDown" *ngIf="i != 0"
-                                [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px','font-weight': '400','font-style': 'italic','border':'.5px solid #e6e6e6'}"
-                                [options]="operators" [(ngModel)]="row.column1" (onChange)="onDropdownChange($event)">
-                            </p-dropdown>
-                        </ng-template>
-                    </p-column>
-                    <p-column field="data.queryName" header="Field Text" [style]="{'width':'35%','font-weight':'700'}">
-                        <ng-template let-row="rowData" pTemplate type="body">
-                            <input type="text" class="text-input field-name" [(ngModel)]="row.column2"
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr style="text-align: center;">
+                        <th scope="col" style="width: 15%;">Operator</th>
+                        <th scope="col" style="width: 35%;">Field Text</th>
+                        <th scope="col" style="width: 35%;">Field Type</th>
+                        <th scope="col" style="width: 15%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="currentQuery.queryRows.length == 0">
+                        <td colspan="4">
+                            No query found
+                        </td>
+                    </tr>
+                    <tr *ngFor="let queryRow of currentQuery.queryRows; index as rowIndex">
+                        <td *ngIf="rowIndex > 0">
+                            <select class="browser-default custom-select" [(ngModel)]="queryRow.operator" (change)="onDataChange()">
+                                <option *ngFor="let operator of operators;">{{operator.label}}</option>
+                            </select>
+                        </td>
+                        <td *ngIf="rowIndex == 0">
+
+                        </td>
+                        <td>
+                            <input type="text" class="text-input field-name" [(ngModel)]="queryRow.fieldText"
                                 placeholder="Fields text..." (focus)="setReadyEdit()"
                                 (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'searchValue')" />
-                        </ng-template>
-                    </p-column>
-                    <p-column field="data.queryName" header="Field Type" [style]="{'width':'35%','font-weight':'700'}">
-                        <ng-template let-row="rowData" pTemplate type="body">
-                            <p-dropdown [dropdownIcon]="caretDown" [options]="fields"
-                                [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px','font-weight': '400','font-style': 'italic','border':'.5px solid #e6e6e6','vertical-align':'bottom'}"
-                                [(ngModel)]="row.column3" (onChange)="onDropdownChange($event)">
-                            </p-dropdown>
-                        </ng-template>
-                    </p-column>
-
-                    <p-column header="Actions" styleClass="col-button" [style]="{'width':'15%','font-weight':'700'}">
-                        <ng-template let-rowIndex="rowIndex" let-row="rowData" pTemplate="body">
-                            <button type="button" class="buttonSize" pButton (click)="deleteRow(rowIndex)"
+                        </td>
+                        <td>
+                            <select class="browser-default custom-select" [(ngModel)]="queryRow.fieldType" (change)="onDataChange()">
+                                <option *ngFor="let field of fields;">{{field.label}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
                                 icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row"
-                                [disabled]="rows.length <= 1">
+                                [disabled]="currentQuery.queryRows.length <= 1">
                                 <i class="faa faa-trash"></i>
                             </button>
-                            <button type="button" class="buttonSize" pButton (click)="copyRow(row)"
+                            <button type="button" class="btn-row-act" pButton (click)="duplicateRow(queryRow)"
                                 icon="ui-icon-content-copy" data-toggle="tooltip" title="Duplicate Row">
                                 <i class="faa faa-copy"></i>
                             </button>
-                        </ng-template>
-                    </p-column>
-                </p-dataTable>
-            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
             <p-confirmDialog></p-confirmDialog>
             <div class="ui-g-12 search-builder-background">
                 <div class="ui-g-12 ui-lg-8 ui-md-12 ui-sm-12" style="float:right;">
@@ -131,7 +147,7 @@
                         Cancel
                     </button>
 
-                    <button id="btn-save" type="button" (click)="saveAdvSearchQuery(queryName)" pButton type="submit"
+                    <button id="btn-save" type="button" (click)="saveAdvSearchQuery()" pButton type="submit"
                         [disabled]="(!editQuery && !addQuery) || !dataChanged || queryNameValidateError">
                         <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
                         Save
