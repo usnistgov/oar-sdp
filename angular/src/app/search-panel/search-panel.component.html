@@ -16,10 +16,11 @@
             <div class="inner-addon left-addon background-white search-box"
                 [ngStyle]="{'width': mobWidth > 487? '40%' : '100%'}">
                 <i class="glyphicon faa faa-search"></i>
-                <p-autoComplete [style]="{'width':'100%'}" [inputStyle]="inputStyle" (onFocus)="clearText()" (onBlur)="addPlaceholder()"
-                    [placeholder]="placeholder" [(ngModel)]="searchValue" inputId="searchinput" name="searchinput"
-                     (keyup.enter)="search(searchValue,searchTaxonomyKey,'')" [suggestions]="suggestedTaxonomyList"
-                    (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength]="2048" [size]="50">
+                <p-autoComplete [style]="{'width':'100%'}" [inputStyle]="inputStyle" (onFocus)="clearText()"
+                    (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
+                    inputId="searchinput" name="searchinput"  (keyup.enter)="search(searchValue,searchTaxonomyKey,'')"
+                    [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1"
+                    [maxlength]="2048" [size]="50">
 
                     <ng-template let-taxonomy pTemplate="item">
                         <div class="autoComplete" [ngStyle]="{'color':'black'}">
@@ -42,21 +43,10 @@
         </div>
 
         <div id="help" [@changeDivSize]=currentState>
-            <div>
-                <b> <span> Quick Examples: </span></b>
-                <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
-                    href="#!">"Kinetics database" </a> &nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
-                </a>&nbsp;
-                <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
-                    href="#!">"SRD 101"
-                </a>&nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB
-                </a>&nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
-                    href="#!">Interatomic Potentials </a>&nbsp;
-            </div>
-            <div><b>Syntax Rules:</b></div>
+            <span class="faa-stack fa-lg" style="float: right; cursor: pointer;" (click)="changeState()">
+                <i class="faa faa-remove faa-stack-1x icon-white" style="background: green;border-radius: 50%; color: white;" aria-hidden="true" data-toggle="tooltip" title="Hide Examples"></i>
+            </span>
+            <div id="syntax-rules"><b>Syntax Rules:</b></div>
             <div id="table-wrapper">
                 <table width="100%" border="1">
                     <thead>
@@ -78,7 +68,10 @@
                                 <p>Individual terms</p>
                             </td>
                             <td width="30%">
-                                <p>NIST Chemistry</p>
+                                <a class="examples" id="srd101"
+                                    (click)="$event.preventDefault();searchExample('NIST Chemistry');" href="#!">NIST
+                                    Chemistry
+                                </a>
                             </td>
                             <td width="50%">
                                 <p>Records that include either &ldquo;NIST&rdquo; OR &ldquo;Chemistry&rdquo; are
@@ -90,7 +83,10 @@
                                 <p>Phrase</p>
                             </td>
                             <td width="30%">
-                                <p>&ldquo;NIST Chemistry&rdquo;</p>
+                                <a class="examples" id="srd101"
+                                    (click)="$event.preventDefault();searchExample('&quot;NIST Chemistry&quot;');"
+                                    href="#!">"NIST Chemistry"
+                                </a>
                             </td>
                             <td width="50%">
                                 <p>Records that contain the phrase &ldquo;NIST Chemistry&rdquo; (the two words
@@ -104,7 +100,10 @@
                                 <p>Phrase with Individual terms</p>
                             </td>
                             <td width="30%">
-                                <p>&ldquo;NIST Chemistry&rdquo; Physics</p>
+                                <a class="examples" id="srd101"
+                                    (click)="$event.preventDefault();searchExample('&quot;NIST Chemistry&quot; Physics');"
+                                    href="#!">"NIST Chemistry" Physics
+                                </a>
                             </td>
                             <td width="50%">
                                 <p>Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND
@@ -120,7 +119,10 @@
                                 <p>Key Value pair</p>
                             </td>
                             <td width="30%">
-                                <p>ContactPoint.fn = &ldquo;Peter Linstrom&rdquo;</p>
+                                <a class="examples" id="srd101"
+                                (click)="$event.preventDefault();searchExample('ContactPoint.fn = &quot;Peter Linstrom&quot;');"
+                                href="#!">ContactPoint.fn = "Peter Linstrom"
+                            </a>
                             </td>
                             <td width="50%">
                                 <p>Records whose field, ContactPoint.fn, contains &ldquo;Peter Linstrom&rdquo; are
@@ -129,6 +131,20 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div>
+                <b> <span> More Examples: </span></b>
+                <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
+                    href="#!">"Kinetics database" </a> &nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
+                </a>&nbsp;
+                <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
+                    href="#!">"SRD 101"
+                </a>&nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB
+                </a>&nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
+                    href="#!">Interatomic Potentials </a>&nbsp;
             </div>
         </div>
         <!-- Spacing for home page -->

@@ -17,9 +17,10 @@
   </div>
 <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
   <ul class="line-separated" style="list-style-type: none;margin-right:20px">
-  <li *ngFor="let entities of searchEntities| slice:0:5;let i = index">
+  <li *ngFor="let query of queries| slice:0:5;let i = index">
     <div>
-      <a href="/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a>
+        <span (click)="op.hide($event); executeQuery(query)" style="cursor: pointer">{{query.queryName}}</span>
+      <!-- <a href="/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a> -->
     </div>
   </li>
   </ul>

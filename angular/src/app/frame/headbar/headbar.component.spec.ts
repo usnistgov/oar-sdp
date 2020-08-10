@@ -9,6 +9,7 @@ import { TopMenuBarComponent } from '../../top-menu-bar/top-menu-bar.component';
 import { FootbarComponent } from '../footbar';
 import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
+import { MockModule } from '../../mock.module';
 
 describe('HeadbarComponent', () => {
   let component: HeadbarComponent;
@@ -16,7 +17,7 @@ describe('HeadbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        imports: [OverlayPanelModule, RouterTestingModule, HttpClientTestingModule],
+        imports: [OverlayPanelModule, RouterTestingModule, HttpClientTestingModule, MockModule],
         declarations: [ HeadbarComponent, AppComponent, TopMenuBarComponent, FootbarComponent ],
         providers: [ AppComponent, Renderer, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock} ]
     })

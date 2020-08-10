@@ -118,7 +118,7 @@
                                 (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'searchValue')" />
                         </td>
                         <td>
-                            <select class="browser-default custom-select" [(ngModel)]="queryRow.fieldType" (change)="onDataChange()">
+                            <select class="browser-default custom-select" [(ngModel)]="queryRow.fieldType" (change)="onFieldTypeChange(queryRow)">
                                 <option *ngFor="let field of fields;">{{field.label}}</option>
                             </select>
                         </td>

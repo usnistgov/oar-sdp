@@ -4,6 +4,8 @@ import { SearchQueryService } from '../../shared/search-query/search-query.servi
 import { SearchEntity } from '../../shared/search-query/search.entity';
 import * as _ from 'lodash';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
+import { Query, QueryRow } from '../../shared/search-query/query';
+import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 
 @Component({
   selector: 'app-headbar',
@@ -15,15 +17,17 @@ export class HeadbarComponent implements OnInit {
   searchEntities: SearchEntity[];
   appVersion: string;
   confValues: Config;
+  queries: Query[] = [];
 
   constructor(
+    @Inject(SEARCH_SERVICE) private searchService: SearchService,
     public app: AppComponent, 
     public searchQueryService: SearchQueryService,
     private appConfig: AppConfig) {
 
     this.searchQueryService.watchStorage().subscribe(value => {
-      this.queryLength = value;
-      this.getSearchQueryList();
+      this.queries = this.searchQueryService.getQueries();
+      this.queryLength = this.queries.length;
     });
 
     this.confValues = this.appConfig.getConfig();
@@ -33,18 +37,10 @@ export class HeadbarComponent implements OnInit {
   ngOnInit() {
   }
 
-  getSearchQueryList() {
-    this.searchQueryService.getAllSearchEntities().then(function (result) {
-    this.searchEntities = _.sortBy(result,[function(o) { return o.date; }]);
-    this.searchEntities = _.reverse(this.searchEntities);
-    }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
-    });
-  }
+  executeQuery(query: Query){
+    let lQueryValue = this.searchQueryService.buildSearchString(query);
+    this.searchService.setQueryValue(lQueryValue, '', '');
+    this.searchService.startSearching(true);
 
-  updateQueryStatus()
-  {
-    this.searchQueryService.updateQueryDisplayStatus(true);
-    this.app.getSearchQueryList();
   }
 }

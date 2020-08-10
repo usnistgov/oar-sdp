@@ -213,7 +213,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     //   this.searchPanel.searchValue = this.searchValue;
     this.getSearchFields();
-        console.log('this.searchValue', this.searchValue);
+
     // Processing search value
     if(this.searchValue){
         //Treat ',', ';' the same as space
@@ -1516,9 +1516,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     if(!param) return searchValue;
 
     searchValue = param;
-    for(let field of this.fieldTypes){
-        searchValue = searchValue.replace(new RegExp(field.value.replace('.', '\.'), 'gi'), field.label);
-    }
+    // for(let field of this.fieldTypes){
+    //     searchValue = searchValue.replace(new RegExp(field.value.replace('.', '\.'), 'gi'), field.label);
+    // }
 
     searchValue = searchValue.replace(new RegExp('&logicalOp=OR&', 'g'), ' OR ');
     searchValue = searchValue.replace(new RegExp('&logicalOp=NOR&', 'g'), ' NOR ');

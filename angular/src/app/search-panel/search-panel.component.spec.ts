@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OverlayPanelModule, AutoCompleteModule } from "primeng/primeng";
 import { MockModule } from '../mock.module';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('SearchPanelComponent', () => {
   let component: SearchPanelComponent;
@@ -17,7 +18,8 @@ describe('SearchPanelComponent', () => {
             HttpClientTestingModule,
             AutoCompleteModule,
             FormsModule,
-            MockModule
+            MockModule,
+            BrowserAnimationsModule
           ],
       declarations: [ SearchPanelComponent ]
     })

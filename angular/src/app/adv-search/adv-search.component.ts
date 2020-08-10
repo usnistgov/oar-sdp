@@ -113,9 +113,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     this.confValues = this.appConfig.getConfig();
     this.taxonomies = [];
     this.fields = [];
-    setTimeout(() => {
-      this.getSearchQueryList();
-    }, 100);
+    // setTimeout(() => {
+    //   this.getSearchQueryList();
+    // }, 100);
 
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
@@ -199,14 +199,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
   /**
    * Get search query list
    */
-  getSearchQueryList() {
-    this.searchQueryService.getAllSearchEntities().then(function (result) {
-      this.searchEntities = _.sortBy(result, [function (o) { return o.date; }]);
-      this.searchEntities = _.reverse(this.searchEntities);
-    }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
-    });
-  }
+//   getSearchQueryList() {
+//     this.searchQueryService.getAllSearchEntities().then(function (result) {
+//       this.searchEntities = _.sortBy(result, [function (o) { return o.date; }]);
+//       this.searchEntities = _.reverse(this.searchEntities);
+//     }.bind(this), function (err) {
+//       alert("something went wrong while fetching the products");
+//     });
+//   }
 
   /**
    * Confirm cancel query edit
@@ -250,34 +250,34 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
   /**
    * Advanced Search builder string
    */
-  buildSearchString(query: Query) {
-    let lSearchValue: string = '';
-    this.queryAdvSearch = 'yes';
+//   buildSearchString(query: Query) {
+//     let lSearchValue: string = '';
+//     this.queryAdvSearch = 'yes';
 
-    for (let i = 0; i < query.queryRows.length; i++) {
-      if (typeof query.queryRows[i].operator === 'undefined') {
-        query.queryRows[i].operator = 'AND';
-      }
-      if (typeof query.queryRows[i].fieldType === 'undefined' || query.queryRows[i].fieldType === 'All') {
-        query.queryRows[i].fieldType = 'searchphrase';
-      }
-      if (typeof query.queryRows[i].fieldText === 'undefined') {
-        query.queryRows[i].fieldText = '';
-      }
+//     for (let i = 0; i < query.queryRows.length; i++) {
+//       if (typeof query.queryRows[i].operator === 'undefined') {
+//         query.queryRows[i].operator = 'AND';
+//       }
+//       if (typeof query.queryRows[i].fieldType === 'undefined' || query.queryRows[i].fieldType === 'All') {
+//         query.queryRows[i].fieldType = 'searchphrase';
+//       }
+//       if (typeof query.queryRows[i].fieldText === 'undefined') {
+//         query.queryRows[i].fieldText = '';
+//       }
 
-      let fieldValue: string;
-      fieldValue = query.queryRows[i].fieldType;
-      if (i > 0) {
-        lSearchValue += ' ' + query.queryRows[i].operator + ' ' + fieldValue + '=' + query.queryRows[i].fieldText;
-      } else {
-        if (!_.isEmpty(fieldValue) || !_.isEmpty(query.queryRows[i].fieldText)) {
-            lSearchValue += fieldValue + '=' + query.queryRows[i].fieldText;
-        }
-      }
-    }
+//       let fieldValue: string;
+//       fieldValue = query.queryRows[i].fieldType;
+//       if (i > 0) {
+//         lSearchValue += ' ' + query.queryRows[i].operator + ' ' + fieldValue + '=' + query.queryRows[i].fieldText;
+//       } else {
+//         if (!_.isEmpty(fieldValue) || !_.isEmpty(query.queryRows[i].fieldText)) {
+//             lSearchValue += fieldValue + '=' + query.queryRows[i].fieldText;
+//         }
+//       }
+//     }
 
-    return lSearchValue;
-  }
+//     return lSearchValue;
+//   }
 
   /**
    * Define Search operators for the drop down
@@ -351,7 +351,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
    * Import query list
    */
   importList(event) {
-      console.log('reading file...')
     var files = event.srcElement.files;
     files = files[0];
     let _this = this;
@@ -360,9 +359,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     read.readAsText(files);
     read.onloadend = function () {
       let fileData = read.result;
-      console.log('fileData', fileData);
       _this.queries = JSON.parse(fileData.toString());
-      console.log('this.query', _this.queries);
       _this.setCurrentQuery(0);
     }
   }
@@ -438,7 +435,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
             return;
 
         // Build this.searchValue
-        this.searchValue = this.buildSearchString(this.currentQuery);
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
 
         // If this is edit mode, replace previous query in the query list with the current query. Otherwise just insert
         // the current query to the list.
@@ -498,7 +495,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
   * Execute query
   */
   executeQuery(query: Query) {
-      let lQueryValue = this.buildSearchString(query);
+      let lQueryValue = this.searchQueryService.buildSearchString(query);
       this.searchService.setQueryValue(lQueryValue, '', '');
       this.searchService.startSearching(true);
     // this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
@@ -527,7 +524,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         if(this.queries.length > 0 && index < this.queries.length){
             this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
             this.currentQueryIndex = index;
-            this.searchValue = this.buildSearchString(this.currentQuery);
+            this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
             // Update search box in the top search panel
             this.searchService.setQueryValue(this.searchValue, '', ''); 
         }else{
@@ -548,6 +545,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
         this.dataChanged = true;
         this.setMode(this.currentQuery.queryName);
+    }
+
+    onFieldTypeChange(row: QueryRow){
+        let field = this.fields.filter(field => field.label == row.fieldType);
+        if(field != null && field.length > 0)   
+            row.fieldValue = field[0].value;
+
+        this.onDataChange();
     }
 
     /**

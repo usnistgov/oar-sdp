@@ -54,10 +54,6 @@ export class RealSearchService implements SearchService{
     searchValue = searchValue.replace(/\%26/g, '&');
 
     let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-    //let opArray = ['AND','NOT','OR','and','not','or']
-    //let filteredArray = _.difference(parameters, opArray);
-    //parameters = filteredArray;
-    let searchKeyValue = '';
     let searchKey = '';
 
     if (!_.isEmpty(parameters)) {
@@ -85,9 +81,7 @@ export class RealSearchService implements SearchService{
       searchPhraseValue = '&';
     }
 
-    let url = this.RMMAPIURL + 'records?' + searchPhraseValue + 'key=' + searchTaxonomyKey + '&queryAdvSearch=' + queryAdvSearch;
-
-    console.log('url', url);
+    let url = this.RMMAPIURL + 'records?' + searchPhraseValue + 'topic.tag=' + searchTaxonomyKey + '&queryAdvSearch=' + queryAdvSearch;
 
     return this.http.get(url);
   }
@@ -112,14 +106,17 @@ export class RealSearchService implements SearchService{
     }
   }
 
-  private _remoteQueryValue : BehaviorSubject<object> = new BehaviorSubject<object>({queryString: '', searchTaxonomyKey: '', queryAdvSearch: 'yes'});
-  public _watchQueryValue(subscriber){
-    this._remoteQueryValue.subscribe(subscriber);
-  }
+    /**
+     * Behavior subject to remotely set the search value. 
+     */
+    private _remoteQueryValue : BehaviorSubject<object> = new BehaviorSubject<object>({queryString: '', searchTaxonomyKey: '', queryAdvSearch: 'yes'});
+    public _watchQueryValue(subscriber){
+        this._remoteQueryValue.subscribe(subscriber);
+    }
 
-  public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
-    this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
-  }
+    public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
+        this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
+    }
 
     /**
      * Behavior subject to remotely start the search function. 

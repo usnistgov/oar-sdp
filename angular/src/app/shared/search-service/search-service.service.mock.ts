@@ -61,14 +61,17 @@ export class MockSearchService implements SearchService{
     }
   }
 
-  private _remoteQueryValue : BehaviorSubject<object> = new BehaviorSubject<object>({queryString: '', searchTaxonomyKey: '', queryAdvSearch: 'yes'});
-  public _watchQueryValue(subscriber){
-    this._remoteQueryValue.subscribe(subscriber);
-  }
+    /**
+     * Set/watch the search value in the search text box
+     */
+    private _remoteQueryValue : BehaviorSubject<object> = new BehaviorSubject<object>({queryString: '', searchTaxonomyKey: '', queryAdvSearch: 'yes'});
+    public _watchQueryValue(subscriber){
+        this._remoteQueryValue.subscribe(subscriber);
+    }
 
-  public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
-    this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
-  }
+    public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
+        this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
+    }
 
     /**
      * Behavior subject to remotely start the search function. 

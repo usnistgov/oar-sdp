@@ -57,7 +57,7 @@ export class AppComponent implements AfterViewInit {
   resetMenu: boolean;
 
   menuHoverActive: boolean;
-  displayQueryList: boolean = false;
+//   displayQueryList: boolean = false;
   searchEntities: SearchEntity[];
   confValues: Config;
   gaCode: string;
@@ -71,10 +71,6 @@ export class AppComponent implements AfterViewInit {
     public searchQueryService: SearchQueryService,
     private appConfig: AppConfig,
     private gaService: GoogleAnalyticsService) {
-    this.searchQueryService.watchQuery().subscribe(value => {
-      this.displayQueryList = value;
-    });
-    this.getSearchQueryList();
 
     /**
      * Added Google Analytics service to html
@@ -96,27 +92,9 @@ export class AppComponent implements AfterViewInit {
   ngOnInit() {
 
   }
-  removeItem(row: any) {
-    let dataId: any;
-    // convert the map to an array
-    let delRow = this.searchEntities.indexOf(row);
-    this.searchEntities.splice(delRow, 1);
-    this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
-    this.getSearchQueryList();
-  }
-
-  getSearchQueryList() {
-
-    this.searchQueryService.getAllSearchEntities().then(function (result) {
-      this.searchEntities = result;
-    }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
-    });
-
-  }
 
   closeWindow() {
-    this.displayQueryList = false;
+    // this.displayQueryList = false;
   }
 
   onLayoutClick() {

@@ -76,7 +76,6 @@ export class SearchPanelComponent implements OnInit {
     public taxonomyListService: TaxonomyListService, 
     public searchFieldsListService: SearchfieldsListService, 
     ngZone: NgZone,
-    // public searchService: SearchService, 
     private router: Router,
     private appConfig: AppConfig) {
       var ts = new Date();
@@ -110,8 +109,6 @@ export class SearchPanelComponent implements OnInit {
     )
 
     this.searchService._watchQueryValue((queryObj) => {
-        // To remote start editing, resID need be set otherwise authorizeEditing()
-        // will do nothing and the app won't change to edit mode
         if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
             this.searchValue = queryObj.queryString;
             this.searchService.setQueryValue(null, null, null); // Reset
@@ -119,8 +116,6 @@ export class SearchPanelComponent implements OnInit {
     });
 
     this.searchService._watchRemoteStart((startQuery) => {
-        // To remote start editing, resID need be set otherwise authorizeEditing()
-        // will do nothing and the app won't change to edit mode
         if (startQuery) {
             this.search(this.searchValue, "", "");
             this.searchService.startSearching(false);   // Reset
@@ -280,9 +275,6 @@ export class SearchPanelComponent implements OnInit {
    * @param searchvalue - search value typically from the search text box
    */
   convertSearchvalue(searchvalue: string): string{
-
-    console.log('searchvalue', searchvalue);
-
       let searchString = '';
       if(!searchvalue) return searchString;
 
@@ -297,7 +289,6 @@ export class SearchPanelComponent implements OnInit {
       searchString = searchString.replace(new RegExp(' NOR ', 'g'), '&logicalOp=NOR&');
       searchString = searchString.replace(new RegExp(' AND ', 'g'), '&logicalOp=AND&');
 
-      console.log('searchString', searchString);
       return searchString;
   }
 
