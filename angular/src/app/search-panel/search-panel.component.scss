@@ -107,25 +107,24 @@ hr {
 }
 
 .search-box {
+    flex-grow: 9;
     margin-left: 0em !important;
 }
 
-.link-text {
+.link-text-white {
     color: #fff;
     text-decoration: underline; 
     font-size: small;
     white-space: nowrap;
     cursor: pointer;
+    margin-right: .5em;
 }
 
-.advancedSearch-link {
-  color: #fff;
-  text-decoration: underline;
-  display:table-cell;
-  vertical-align: middle;
-  font-size: small;
-  white-space: nowrap;
-  padding-top: 18px;
+.link-text {
+    color: #1E6BA1;
+    text-decoration: underline; 
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 .help-icon {
@@ -139,7 +138,6 @@ hr {
 
 .searchBox {
   padding: 0.5em 0em 0em 0em !important;
-  margin-bottom: .5em;
 }
 
 body .ui-state-active, body .ui-state-highlight {
@@ -148,7 +146,7 @@ body .ui-state-active, body .ui-state-highlight {
 }
 
 .bigSearchButton {
-    display: inline-block;
+    flex-grow: 1;
     margin-top:-2px;
     cursor: pointer;
     text-align: center !important;
@@ -162,6 +160,11 @@ body .ui-state-active, body .ui-state-highlight {
 
 .bigSearchButton:hover{
     background-color:#3078ca;
+}
+
+.full-width {
+    display: block;
+    width: 100%;
 }
 
 /* align icon */
@@ -196,26 +199,42 @@ body .ui-state-active, body .ui-state-highlight {
     width: 100%;
 }
 
-#help {
+.help-wrapper {
     margin:auto;
     margin-top: 1em;
     margin-bottom: .5em;
     background-color: white;
     color: black;
     width:80%;
-    height: 380px;
+    // height: 380px;
     border-radius: 5px;
+    overflow-y: scroll;
 }
 
 table thead {
-    background-color: #1471AE;
+    background-color: #257a2d;
     color: white;
 }
 
 table tbody {
     display: block;
+    // max-height: 260px;
+    // overflow-y: scroll;
+    text-align: left;
+    background-color: white;
+}
+
+.popup-table tbody {
+    display: block;
     max-height: 260px;
     overflow-y: scroll;
+    text-align: left;
+    background-color: white;
+}
+
+table tbody tr td {
+    padding-left: 1em;
+    border: 1px solid lightgray;
 }
 
 table thead, table tbody tr {
@@ -224,12 +243,108 @@ table thead, table tbody tr {
     table-layout: fixed;
 }
 
-#table-wrapper {
+.table-wrapper {
     width: 100%;
     padding: 0px 20px 10px 20px;
 }
 
-#syntax-rules {
+.title-text {
     font-size: 20px;
     padding-top: .5em;
+    width: 100%;
+    height: 2em;
+    background-color: #1471AE;
+    color: white;
+    margin-bottom: .5em;
+}
+
+#underline-text {
+    margin: auto; 
+    text-align: left;
+    line-height: 25px;
+    /* margin-top: -10px; */
+}
+
+.btn-copy-field {
+    float: right;
+    margin-right: .5em;
+    background-color: #1471AE;
+    color: white;
+    border-radius: 4px;
+    /* padding: 16px; */
+    font-size: 16px;
+    border: none;
+    /* line-height: 20px !important; */
+    /* margin: -10px -10px -15px 0px;
+    padding: 5px 10px; */
+}
+
+.btn-copy-field:hover {
+    background-color: #3e8e41 !important;
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    margin-top: -1.6em;
+    background-color: #f1f1f1;
+    opacity: 0.9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.field-item {
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: lightgray;
+    }
+}
+
+.border-bottom {
+    border-bottom: 1px solid rgb(105, 105, 105) !important;
+}
+
+.operator {
+    background-color: rgb(252, 246, 237);
+}
+
+#btn-append {
+    background-color: green;
+    border: 1px solid green;
+    border-radius: 0 4px 4px 0;
+    color: white;
+}
+
+.overlay-input {
+    width: 400px;
+    border: 1px solid lightgrey;
+}
+
+.control-icons {
+    color: green;
+    background-color: white;
+    cursor:pointer;
+    margin: .2em .5em .5em 0em !important;
+    border-radius: 50%;
+    height: 50%;
+}
+
+.inner-addon .clear-box {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 25px;
+    color: rgb(143, 143, 143);
+    cursor: pointer;
+}
+
+.sample-line {
+    display: block;
+    padding-top: .3em;
+    margin: auto;
+    text-align: left;
+    padding-left: 0em;
 }

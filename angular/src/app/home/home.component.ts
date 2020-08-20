@@ -21,20 +21,16 @@ import { timer } from 'rxjs/observable/timer';
 export class HomeComponent implements OnInit {
   confValues: Config;
   errorMessage: string;
-  searchValue: string = '';
-  advSearchValue: string[];
   taxonomies: SelectItem[];
   suggestedTaxonomies: string[];
   suggestedTaxonomyList: string[];
   searchTaxonomyKey: string;
   display: boolean = false;
   queryAdvSearch: string = '';
-  showAdvancedSearch: boolean = false;
   textRotate: boolean = true;
   rows: any[];
   fields: SelectItem[];
   ALL: string = 'All Fields';
-  operators: SelectItem[];
   displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword', 'Publisher', 'Rights', 'Theme',
     'Title'];
   SDPAPI: any;
@@ -63,7 +59,6 @@ export class HomeComponent implements OnInit {
     this.getTaxonomySuggestions();
     this.getSearchFields();
     this.rows = [{}];
-    this.searchOperators();
     var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
     var n = 0;
     var loopLength = placeHolder.length;
@@ -76,8 +71,13 @@ export class HomeComponent implements OnInit {
   getTaxonomies() {
     this.taxonomyListService.get()
       .subscribe(
-        taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
-        error => this.errorMessage = <any>error
+        (taxonomies) => {
+            this.taxonomies = this.toTaxonomiesItems(taxonomies)
+        },
+        (error) => {
+            console.log(error);
+            this.errorMessage = <any>error;
+        }
       );
   }
 
@@ -160,42 +160,16 @@ export class HomeComponent implements OnInit {
   }
 
   /**
-   * Define Search operators for the drop down
-   */
-  searchOperators() {
-    this.operators = [];
-    this.operators.push({ label: 'AND', value: 'AND' });
-    this.operators.push({ label: 'OR', value: 'OR' });
-    this.operators.push({ label: 'NOT', value: 'NOT' });
-  }
-
-  /**
    * Set the search parameters and redirect to search page
    */
-  search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
-    this.searchTaxonomyKey = searchTaxonomyKey;
+  search(searchValue: string) {
+    let queryValue = "topic.tag=" + searchValue;
+
     let params: NavigationExtras = {
       queryParams: {
-        'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
-        'queryAdvSearch': this.queryAdvSearch
+        'q': queryValue
       }
     };
     this.router.navigate(['/search'], params);
-  }
-
-  /**
-   * Display advanced search block
-   */
-  advancedSearch(advSearch: boolean) {
-    this.showAdvancedSearch = advSearch;
-  }
-
-  /**
-   *  Pass Search example popup value to home screen
-   */
-  searchExample(popupValue: string) {
-    this.display = false;
-    this.searchValue = popupValue;
-    this.textRotate = !this.textRotate;
   }
 }

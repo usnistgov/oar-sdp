@@ -16,6 +16,7 @@ import { AppConfig, Config } from '../shared/config-service/config-service.servi
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 import { timer } from 'rxjs/observable/timer';
 import { SearchPanelComponent } from '../search-panel/search-panel.component';
+import { stringify } from 'querystring';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -121,6 +122,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   isActive: boolean = true;
   sysError: boolean = false;
   imageURL: string;
+  FiltersIsHidden: boolean = true;
 
   filterClass: string = "ui-g-12 ui-md-7 ui-lg-9";
   resultsClass: string = "ui-g-12 ui-md-7 ui-lg-9";
@@ -137,10 +139,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   confValues: Config;
   private PDRAPIURL;
   inputStyle: any = {'width': '100%','padding-left':'40px','height': '42px','font-weight': '400','font-style': 'italic'}
-  placeholder: string;
-  placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
-
-
+  
   // injected as ViewChilds so that this class can send messages to it with a synchronous method call.
   @ViewChild(SearchPanelComponent)
   private searchPanel: SearchPanelComponent;
@@ -150,7 +149,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    *
    */
   constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService, 
-    ngZone: NgZone,
+    public ngZone: NgZone,
     private router: ActivatedRoute,
     private location: Location,
     private el: ElementRef,
@@ -166,13 +165,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.PDRAPIURL = this.confValues.PDRAPI;
       this.mobHeight = (window.innerHeight);
       this.mobWidth = (window.innerWidth);
-
-      window.onresize = (e) => {
-        ngZone.run(() => {
-          this.mobWidth = window.innerWidth;
-          this.mobHeight = window.innerHeight;
-        });
-      };
   }
 
 
@@ -180,20 +172,12 @@ export class SearchComponent implements OnInit, OnDestroy {
    * Get the params OnInit
    */
   ngOnInit() {
-    var i = 0;
-    const source = timer(1000, 2000);
-    source.subscribe(val => {
-      if (i < loopLength) {
-        i++;
-        this.placeholder = this.placeHolderText[i];
-      } else {
-        this.placeholder = this.placeHolderText[0];
-        i = 0;
-      }
-    });
-    var placeHolder = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
-    var n = 0;
-    var loopLength = placeHolder.length;
+    window.onresize = (e) => {
+        this.ngZone.run(() => {
+          this.mobWidth = window.innerWidth;
+          this.mobHeight = window.innerHeight;
+        });
+    };
 
     this.msgs = [];
     this.searchResultsError = [];
@@ -225,14 +209,15 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         let queryValue: string;
 
-        queryValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' OR ');
-        queryValue = queryValue.replace(/\&logicalOp=AND&/g, ' AND ');
-        queryValue = queryValue.replace(/\&logicalOp=NOR&/g, ' NOR ');
+        // queryValue = this.searchValue.replace(/\&logicalOp=OR&/g, ' OR ');
+        // queryValue = queryValue.replace(/\&logicalOp=AND&/g, ' AND ');
+        // queryValue = queryValue.replace(/\&logicalOp=NOR&/g, ' NOR ');
+        queryValue = this.revertSearchvalue(this.searchValue);
 
         this.searchFieldsListService.getSearchFields().subscribe(
             (fields) => {
                 this.fieldTypes = fields,
-                this.searchService.setQueryValue(this.revertSearchvalue(queryValue), '', '');
+                this.searchService.setQueryValue(queryValue, '', '');
             },
             (err) => {
                 this.errorMessage = <any>err;
@@ -241,20 +226,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
       this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
     });
-  }
-
-  addPlaceholder() {
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
-    if (!Boolean(this.searchValue)) {
-      field.value = '';
-    }
-  }
-
-  clearText() {
-    var field = (<HTMLInputElement>document.getElementById('searchinput'));
-    if (!Boolean(this.searchValue.trim())) {
-      field.value = ' ';
-    }
   }
 
   reset() {
@@ -272,9 +243,23 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Return filter icon image class based on filter status
+   */
+  getFilterImgClass(){
+    if(this.FiltersIsHidden){
+      return "faa faa-angle-double-down";
+    }else{
+      return "faa faa-angle-double-up";
+    }
+  }
+
+  toggleFilters(){
+    this.FiltersIsHidden = !this.FiltersIsHidden;
+  }
+
+  /**
    * Populate list of themes from Search results
    */
-
   collectThemes(searchResults: any[]) {
     let themes: SelectItem[] = [];
     let themesArray: string[] = [];
@@ -972,7 +957,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (typeof this.selectedThemesNode != 'undefined') {
       if (this.selectedThemesNode != null && this.selectedThemesNode.length > 0) {
         for (let theme of this.selectedThemesNode) {
-          if (typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
+          if (theme != 'undefined' && typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
             themeSelected = true;
             this.selectedThemes.push(theme.data);
             themeType += theme.data + ',';
@@ -1006,7 +991,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (typeof this.selectedComponentsNode != 'undefined') {
       if (this.selectedComponentsNode != null && this.selectedComponentsNode.length > 0) {
         for (let comp of this.selectedComponentsNode) {
-          if (typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
+          if (comp !== 'undefined' && typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
             componentSelected = true;
             this.selectedComponents.push(comp.data);
             compType += comp.data + ',';
@@ -1526,5 +1511,18 @@ export class SearchComponent implements OnInit, OnDestroy {
     searchValue = searchValue.replace("searchphrase", "ALL FIELDS");
 
     return searchValue;
+  }
+
+  resultTopBarClass(){
+      if(this.mobWidth > 1024 ) return "flex-container";
+      else return "";
+  }
+
+  flexgrow(column: number){
+    let lclass: string;
+    if(this.mobWidth > 1024 ) lclass = "flex-grow" + column;
+    else lclass = "full-width";
+
+    return lclass;
   }
 }

@@ -2,7 +2,6 @@ import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef, Ho
 import { SelectItem, DropdownModule, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
-// import { SearchService } from '../shared/search-service/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { Router, NavigationExtras } from '@angular/router';
 import { Data } from '../shared/search-query/data';
@@ -197,18 +196,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
   }
 
   /**
-   * Get search query list
-   */
-//   getSearchQueryList() {
-//     this.searchQueryService.getAllSearchEntities().then(function (result) {
-//       this.searchEntities = _.sortBy(result, [function (o) { return o.date; }]);
-//       this.searchEntities = _.reverse(this.searchEntities);
-//     }.bind(this), function (err) {
-//       alert("something went wrong while fetching the products");
-//     });
-//   }
-
-  /**
    * Confirm cancel query edit
    */
   cancelConfirm() {
@@ -248,38 +235,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
   }
 
   /**
-   * Advanced Search builder string
-   */
-//   buildSearchString(query: Query) {
-//     let lSearchValue: string = '';
-//     this.queryAdvSearch = 'yes';
-
-//     for (let i = 0; i < query.queryRows.length; i++) {
-//       if (typeof query.queryRows[i].operator === 'undefined') {
-//         query.queryRows[i].operator = 'AND';
-//       }
-//       if (typeof query.queryRows[i].fieldType === 'undefined' || query.queryRows[i].fieldType === 'All') {
-//         query.queryRows[i].fieldType = 'searchphrase';
-//       }
-//       if (typeof query.queryRows[i].fieldText === 'undefined') {
-//         query.queryRows[i].fieldText = '';
-//       }
-
-//       let fieldValue: string;
-//       fieldValue = query.queryRows[i].fieldType;
-//       if (i > 0) {
-//         lSearchValue += ' ' + query.queryRows[i].operator + ' ' + fieldValue + '=' + query.queryRows[i].fieldText;
-//       } else {
-//         if (!_.isEmpty(fieldValue) || !_.isEmpty(query.queryRows[i].fieldText)) {
-//             lSearchValue += fieldValue + '=' + query.queryRows[i].fieldText;
-//         }
-//       }
-//     }
-
-//     return lSearchValue;
-//   }
-
-  /**
    * Define Search operators for the drop down
    */
   searchOperators() {
@@ -309,7 +264,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
    * @param index - index number of the row to be deleted
    */
   deleteRow(index: number){
-    this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row == this.currentQuery.queryRows[index]);
+      console.log('Deleting index', index);
+      console.log('this.currentQuery.queryRows[index] before', this.currentQuery.queryRows[index]);
+
+    this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row.id != this.currentQuery.queryRows[index].id);
+
+    console.log('this.currentQuery after', this.currentQuery);
+
+    this.onDataChange();
   }
 
   /**
@@ -317,7 +279,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
    * @param row - row to be duplicated
    */
   duplicateRow(row: QueryRow){
-    this.currentQuery.queryRows.push(JSON.parse(JSON.stringify(row)));
+    let newRow: QueryRow = JSON.parse(JSON.stringify(row));
+    newRow.id = this.nextRowId(this.currentQuery);
+    this.currentQuery.queryRows.push(newRow);
     this.onDataChange();
   }
 
@@ -578,5 +542,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.ngZone.run(() => {
             this.showDropdown = true;
         });
+    }
+
+    /**
+     * Return next unique row id
+     * @param query - given query
+     */
+    nextRowId(query: Query) {
+        return Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
     }
 }

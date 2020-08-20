@@ -58,13 +58,10 @@ export class SearchQueryService {
 
       let fieldValue: string;
       fieldValue = query.queryRows[i].fieldValue;
-      if (i > 0) {
-        lSearchValue += ' ' + query.queryRows[i].operator + ' ' + fieldValue + '=' + query.queryRows[i].fieldText;
-      } else {
-        if (!_.isEmpty(fieldValue) || !_.isEmpty(query.queryRows[i].fieldText)) {
-            lSearchValue += fieldValue + '=' + query.queryRows[i].fieldText;
-        }
-      }
+
+      lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;
+      if(i < query.queryRows.length - 1)
+        lSearchValue += ' ' + query.queryRows[i].operator + ' ';
     }
 
     return lSearchValue;

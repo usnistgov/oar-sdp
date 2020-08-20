@@ -39,9 +39,9 @@ h2 {
 {
   background-color:#0872B9 !important;
   color: #fff;
-  width: fit-content;
+  width: 100%;
   padding-bottom: .5em;
-  margin: 1em 0em 0em 1em !important;
+  margin: 1em 0em 0em 0em !important;
 }
 
 .element {
@@ -60,9 +60,9 @@ h2 {
 }
 
 .main-image{
+  width: 50%;
   float: right; 
   padding: 0em 2em 1em 2em; 
-  margin: auto;
 }
 
 /* Style buttons */

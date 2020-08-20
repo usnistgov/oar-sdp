@@ -259,3 +259,13 @@ hr {
   white-space: nowrap;
   padding-top: 18px;
 }
+
+.featured-data {
+    color:#112e51;
+    font-weight:900;
+    font-size: large;
+    text-align: center; 
+    margin: auto; 
+    display: block;
+    padding-top: 1em;
+}

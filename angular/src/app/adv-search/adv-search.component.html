@@ -67,7 +67,7 @@
                         <input type="file" id="file" (change)="importList($event)" [disabled]="editQuery || addQuery">
                     </div>
                     <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
-                        [disabled]="editQuery || addQuery">
+                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0">
                         Export
                     </button>
                 </div>
@@ -78,8 +78,9 @@
             <div class="ui-g-12 ui-md-12" style="display: flex;vertical-align: middle;">
                 <label for="queryName" style="white-space: nowrap;">Query Name</label>
 
-                <input class="query-name" type="text" id="queryName" [(ngModel)]="currentQuery.queryName" (focus)="setReadyEdit()"
-                    (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'queryName')" />
+                <input class="query-name" type="text" id="queryName" [(ngModel)]="currentQuery.queryName"
+                    (focus)="setReadyEdit()" (keydown)="setMode($event.target.value)"
+                    (keyup)="onKeyup($event, 'queryName')" />
 
                 <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
                     [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Add Query">
@@ -91,36 +92,39 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr style="text-align: center;">
+                        <th scope="col" style="width: 35%;">Field Name</th>
+                        <th scope="col" style="width: 35%;">Field Value</th>
                         <th scope="col" style="width: 15%;">Operator</th>
-                        <th scope="col" style="width: 35%;">Field Text</th>
-                        <th scope="col" style="width: 35%;">Field Type</th>
                         <th scope="col" style="width: 15%;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngIf="currentQuery.queryRows.length == 0">
                         <td colspan="4">
-                            No query found
+                            No detail found
                         </td>
                     </tr>
                     <tr *ngFor="let queryRow of currentQuery.queryRows; index as rowIndex">
-                        <td *ngIf="rowIndex > 0">
-                            <select class="browser-default custom-select" [(ngModel)]="queryRow.operator" (change)="onDataChange()">
-                                <option *ngFor="let operator of operators;">{{operator.label}}</option>
+                        <td>
+                            <select class="browser-default custom-select italic" [(ngModel)]="queryRow.fieldType"
+                                (change)="onFieldTypeChange(queryRow)">
+                                <option hidden value="" disabled selected>Select Field Name</option>
+                                <option *ngFor="let field of fields;">{{field.label}}</option>
                             </select>
-                        </td>
-                        <td *ngIf="rowIndex == 0">
-
                         </td>
                         <td>
                             <input type="text" class="text-input field-name" [(ngModel)]="queryRow.fieldText"
                                 placeholder="Fields text..." (focus)="setReadyEdit()"
                                 (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'searchValue')" />
                         </td>
-                        <td>
-                            <select class="browser-default custom-select" [(ngModel)]="queryRow.fieldType" (change)="onFieldTypeChange(queryRow)">
-                                <option *ngFor="let field of fields;">{{field.label}}</option>
+                        <td *ngIf="rowIndex < currentQuery.queryRows.length-1">
+                            <select class="browser-default custom-select" [(ngModel)]="queryRow.operator"
+                                (change)="onDataChange()">
+                                <option *ngFor="let operator of operators;">{{operator.label}}</option>
                             </select>
+                        </td>
+                        <td *ngIf="rowIndex == currentQuery.queryRows.length-1">
+
                         </td>
                         <td>
                             <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
@@ -151,6 +155,12 @@
                         [disabled]="(!editQuery && !addQuery) || !dataChanged || queryNameValidateError">
                         <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
                         Save
+                    </button>
+
+                    <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery)" pButton type="submit"
+                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0">
+                        <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
+                        Execute
                     </button>
                 </div>
             </div>

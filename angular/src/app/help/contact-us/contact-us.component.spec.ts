@@ -4,6 +4,7 @@ import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics
 import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CommonService } from '../../shared/common/common.service';
 
 describe('ContactUsComponent', () => {
   let component: ContactUsComponent;
@@ -13,7 +14,7 @@ describe('ContactUsComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [ ContactUsComponent ],
-      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}]
+      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}, CommonService]
     })
     .compileComponents();
   }));

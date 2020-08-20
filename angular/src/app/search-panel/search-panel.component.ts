@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Input, NgZone } from '@angular/core';
+import { Component, Inject, OnInit, Input, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { SelectItem, DropdownModule } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
@@ -8,11 +8,12 @@ import * as _ from 'lodash';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
 import { timer } from 'rxjs/observable/timer';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-search-panel',
   templateUrl: './search-panel.component.html',
-  styleUrls: ['./search-panel.component.css'],
+  styleUrls: ['./search-panel.component.scss'],
   animations: [
     trigger('changeDivSize', [
       state('initial', style({
@@ -27,7 +28,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       })),
       transition('initial=>final', animate('1000ms ease-out')),
       transition('final=>initial', animate('500ms ease-out'))
-    ]),
+    ])
   ]
 })
 export class SearchPanelComponent implements OnInit {
@@ -62,6 +63,9 @@ export class SearchPanelComponent implements OnInit {
                     'font-style': 'italic', 'border': '0px'};
   fields: SelectItem[];
   currentState = 'initial';
+  showDropdown: boolean = true;
+
+  @ViewChild('field') fieldElement: ElementRef;
 
   get searchValue() : string { return this._searchValue};
                     
@@ -75,7 +79,7 @@ export class SearchPanelComponent implements OnInit {
   constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
     public taxonomyListService: TaxonomyListService, 
     public searchFieldsListService: SearchfieldsListService, 
-    ngZone: NgZone,
+    public ngZone: NgZone,
     private router: Router,
     private appConfig: AppConfig) {
       var ts = new Date();
@@ -85,25 +89,27 @@ export class SearchPanelComponent implements OnInit {
 
     this.mobHeight = (window.innerHeight);
     this.mobWidth = (window.innerWidth);
-
-    window.onresize = (e) => {
-      ngZone.run(() => {
-        this.mobWidth = window.innerWidth;
-        this.mobHeight = window.innerHeight;
-        this.onWindowResize();
-      });
-    };
   }
 
   /**
    *
    */
   ngOnInit() {
+    window.onresize = (e) => {
+        this.ngZone.run(() => {
+          this.mobWidth = window.innerWidth;
+          this.mobHeight = window.innerHeight;
+          this.onWindowResize();
+        });
+    };
+
     this.searchFieldsListService.getSearchFields().subscribe(
         (fields) => {
             this.fields = (fields as SelectItem[]);
+            console.log('this.fields', this.fields);
         },
         (err) => {
+            console.log(err);
             this.errorMessage = <any>err;
         }
     )
@@ -117,7 +123,7 @@ export class SearchPanelComponent implements OnInit {
 
     this.searchService._watchRemoteStart((startQuery) => {
         if (startQuery) {
-            this.search(this.searchValue, "", "");
+            this.search(this.searchValue, "");
             this.searchService.startSearching(false);   // Reset
         }
     });
@@ -144,11 +150,19 @@ export class SearchPanelComponent implements OnInit {
   }
 
   /**
-   * For animation
+   * Show/hide syntax rules
    */
   changeState() {
       this.showExampleStatus = !this.showExampleStatus;
     this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+  }
+
+  /**
+   * Hide syntax rules and field lookup help
+   */
+  hideAllHelp() {
+    this.showExampleStatus = false;
+    this.currentState = 'initial';
   }
 
   /**
@@ -257,12 +271,15 @@ export class SearchPanelComponent implements OnInit {
   /**
    * Set the search parameters and redirect to search page
    */
-  search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
+  search(searchValue: string, searchTaxonomyKey: string) {
     this.searchTaxonomyKey = searchTaxonomyKey;
+
+    // Replace multiple spaces with single space
+    searchValue = searchValue.replace(/  +/g, ' ');
+
     let params: NavigationExtras = {
       queryParams: {
-        'q': this.convertSearchvalue(searchValue), 'key': searchTaxonomyKey ? searchTaxonomyKey : '',
-        'queryAdvSearch': queryAdvSearch
+        'q': this.convertSearchvalue(searchValue)
       }
     };
     this.router.navigate(['/search'], params);
@@ -275,19 +292,31 @@ export class SearchPanelComponent implements OnInit {
    * @param searchvalue - search value typically from the search text box
    */
   convertSearchvalue(searchvalue: string): string{
+      console.log('searchvalue', searchvalue);
       let searchString = '';
       if(!searchvalue) return searchString;
 
       searchString = searchvalue;
-      searchString = searchString.replace(new RegExp('ALL FIELDS', 'g'), "searchphrase");
 
-      for(let field of this.fields){
-        searchString = searchString.replace(new RegExp(field.label, 'gi'), field.value.replace('.', '\.'));
-      }
+      // Strip spaces around "="
+      searchString = searchString.replace(new RegExp(' =', 'g'), '=');
+      searchString = searchString.replace(new RegExp('= ', 'g'), '=');
+
+    // Reserve "AND", "OR", "NOT"
+      searchString = searchString.replace(new RegExp('"OR"', 'g'), '"OaaaaaR"');
+      searchString = searchString.replace(new RegExp('"AND"', 'g'), '"ANaaaaaD"');
+      searchString = searchString.replace(new RegExp('"NOT"', 'g'), '"NOaaaaaT"');
 
       searchString = searchString.replace(new RegExp(' OR ', 'g'), '&logicalOp=OR&');
       searchString = searchString.replace(new RegExp(' NOR ', 'g'), '&logicalOp=NOR&');
       searchString = searchString.replace(new RegExp(' AND ', 'g'), '&logicalOp=AND&');
+
+      // Restore "AND", "OR", "NOT"
+      searchString = searchString.replace(new RegExp('"OaaaaaR"', 'g'), 'OR');
+      searchString = searchString.replace(new RegExp('"ANaaaaaD"', 'g'), 'AND');
+      searchString = searchString.replace(new RegExp('"NOaaaaaT"', 'g'), 'NOT');
+
+      console.log('searchString', searchString);
 
       return searchString;
   }
@@ -300,5 +329,57 @@ export class SearchPanelComponent implements OnInit {
     this.display = false;
     this._searchValue = popupValue;
     this.textRotate = !this.textRotate;
+  }
+
+  /**
+   * Apeend text to the search box
+   * @param field - text to be appended
+   * @param op - operator (usually "=")
+   * @param overlaypanel - the overlaypanel that is calling. It will be closed after this operation.
+   */
+  appendToSearchBox(field: string, op?: string, overlaypanel?: OverlayPanel){
+    // Strip quotes
+    field = field.replace(new RegExp('"', 'g'), '');
+
+    if(field.indexOf(" ") > 0){
+        field = '"' + field + '"';
+    }
+
+    this.searchValue += field;
+    if(op) this.searchValue = this.searchValue.trim() + op;
+
+    if(overlaypanel) overlaypanel.hide();
+  }
+
+  /*
+    * Popup dialog
+    */
+  showPopupDialog( event, overlaypanel: OverlayPanel ) {
+    overlaypanel.toggle(event);
+
+    setTimeout(()=>{ 
+        this.fieldElement.nativeElement.focus();
+    },0);  
+  }
+
+  /**
+   * This is for the case when user right click on the search text box. An overlay panel with field value
+   * will popup. This function returns overlay panel style based on the screen size.
+   */
+  overlayStyle(){
+    if(this.mobWidth > 461){
+        return {'position':'related','left':'50%','max-width':'800px'};
+    }
+    else{
+        return {'position':'related','left':'50%','max-width':'400px'};
+    }
+  }
+
+  getSearchBtnClass(){
+    if(this.mobWidth > 461){
+        return "bigSearchButton";
+      }else{
+        return "full-width";
+      }
   }
 }

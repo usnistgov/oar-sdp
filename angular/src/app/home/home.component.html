@@ -1,9 +1,7 @@
 <app-search-panel title='NIST Data Discovery' [subtitle]='true' [helpicon]='false' [advanceLink]='true' [homePage]='true' jumbotronHeight='40vh' jumbotronPadding='2em 3em 0em 3em'></app-search-panel>
 
 <div class="ui-g" style="background-color: #F5F5F5;padding-top: 10px;">
-  <!-- <div class="ui-g-12 ui-md-3 ui-lg-2">
-  </div> -->
-  <div id="feature" class="ui-g-12 ui-md-8 ui-lg-8" style="color:#112e51;font-weight:900;font-size: large;text-align: center; margin: auto; display: block;"> <b>FEATURED DATA DOMAINS</b>
+  <div id="feature" class="ui-g-12 ui-md-8 ui-lg-8 featured-data"> <b>FEATURED DATA DOMAINS</b>
     <div class="feature-data-domain-divider">
       <hr class="feature-divider">
     </div>
@@ -16,7 +14,7 @@
         <div class="ui-g-12 ui-md-2 ">
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Information Technology','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Information Technology')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>INFORMATION TECHNOLOGY</b></span>
@@ -25,7 +23,7 @@
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Mathematics and Statistics','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Mathematics and Statistics')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>MATHEMATICS AND STATISTICS</b></span>
@@ -34,7 +32,7 @@
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Manufacturing','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Manufacturing')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>MANUFACTURING</b></span>
@@ -43,7 +41,7 @@
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Forensics','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Forensics')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>FORENSICS</b></span>
@@ -62,7 +60,7 @@
         <div class="ui-g-12 ui-md-2 ">
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Materials','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Materials')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>MATERIALS</b></span>
@@ -71,7 +69,7 @@
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Physics,Neutron','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Physics,Neutron')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>PHYSICS AND NEUTRON</b></span>
@@ -80,7 +78,7 @@
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Advanced Communications','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Advanced Communications')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>ADVANCED COMMUNICATIONS</b></span>
@@ -89,7 +87,7 @@
           </div>
         </div>
         <div class="ui-g-12 ui-md-2">
-          <div (click)="search('','Chemistry','')" class="cardDecoration" style="cursor: pointer">
+          <div (click)="search('Chemistry')" class="cardDecoration" style="cursor: pointer">
             <div class="card overview cardDiv cardDivHeight">
               <div class="overview-content clearfix">
                 <span class="overview-title"><b>CHEMISTRY</b></span>

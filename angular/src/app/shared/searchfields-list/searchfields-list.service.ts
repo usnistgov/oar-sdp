@@ -57,6 +57,7 @@ export class SearchfieldsListService {
                 subscriber.complete();
             },
             (error) => {
+                console.log(error);
                 subscriber.next(error);
                 subscriber.complete();
             }
@@ -73,7 +74,7 @@ export class SearchfieldsListService {
     let fieldItems: SelectItem[] = [];
     for (let field of fields) {
       if (_.includes(field.tags, 'searchable')) {
-        fieldItems.push({ label: field.label, value: field.name });
+        fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
       }
     };
     fieldItems = _.sortBy(fieldItems, ['label', 'value']);

@@ -41,7 +41,7 @@ export class RealSearchService implements SearchService{
   searchPhrase(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
     let searchPhraseValue = '';
     let finalKeyValueStr = '';
-
+    console.log('searchValue000', searchValue);
     if(searchValue == undefined){
       return EMPTY;
     }
@@ -53,35 +53,40 @@ export class RealSearchService implements SearchService{
     // Replace '%26' with '&'
     searchValue = searchValue.replace(/\%26/g, '&');
 
-    let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+    // let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+    let parameters = searchValue.split("&");
     let searchKey = '';
-
+    console.log('parameters', parameters);
     if (!_.isEmpty(parameters)) {
       for (var i = 0; i < parameters.length; i++) {
+        if(i > 0) searchPhraseValue += '&';
+
         if (parameters[i].includes("=")) {
           searchKey = parameters[i].split("=")[0];
-          searchPhraseValue += parameters[i];
-        } else if (parameters[i].toLowerCase() == "and") {
+          if(searchKey.toUpperCase() == "ALL") searchKey = "searchphrase";
+
+          searchPhraseValue += searchKey + "=" + parameters[i].split("=")[1];;
+        } else if (parameters[i].toLowerCase() == "logicalOp=and") {
           searchPhraseValue += 'logicalOp=AND';
-        } else if (parameters[i].toLowerCase() == "or") {
+        } else if (parameters[i].toLowerCase() == "logicalOp=or") {
           searchPhraseValue += 'logicalOp=OR';
+        } else if (parameters[i].toLowerCase() == "logicalOp=not") {
+            searchPhraseValue += 'logicalOp=NOT';
         } else {
-          if (!_.isEmpty(searchKey)) {
-            searchPhraseValue += searchKey + "=" + parameters[i];
-          } else {
             searchPhraseValue += "searchphrase=" + parameters[i];
             searchKey = "searchphrase";
-          }
         }
-        searchPhraseValue += '&';
       }
     }
 
-    if (_.isEmpty(searchPhraseValue)) {
-      searchPhraseValue = '&';
+    let keyString: string = '';
+    if(searchTaxonomyKey){
+        keyString = '&topic.tag=' + searchTaxonomyKey;
     }
 
-    let url = this.RMMAPIURL + 'records?' + searchPhraseValue + 'topic.tag=' + searchTaxonomyKey + '&queryAdvSearch=' + queryAdvSearch;
+    let url = this.RMMAPIURL + 'records?' + searchPhraseValue + keyString;
+
+    console.log("url", url);
 
     return this.http.get(url);
   }
