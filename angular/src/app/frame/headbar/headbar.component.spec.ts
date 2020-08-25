@@ -10,6 +10,7 @@ import { FootbarComponent } from '../footbar';
 import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
 import { MockModule } from '../../mock.module';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('HeadbarComponent', () => {
   let component: HeadbarComponent;
@@ -17,7 +18,7 @@ describe('HeadbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        imports: [OverlayPanelModule, RouterTestingModule, HttpClientTestingModule, MockModule],
+        imports: [OverlayPanelModule, RouterTestingModule, HttpClientTestingModule, MockModule,ToastrModule.forRoot()],
         declarations: [ HeadbarComponent, AppComponent, TopMenuBarComponent, FootbarComponent ],
         providers: [ AppComponent, Renderer, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock} ]
     })

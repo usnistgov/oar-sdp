@@ -8,6 +8,8 @@
   font-size: 14px;
 } */
 
+@import "~ngx-toastr/toastr.css";
+
 /* You can add global styles to this file, and also import other style files */
 a:link {
   color: #1E6BA1;
@@ -53,7 +55,9 @@ a:visited {
 }
 
 body {
-    font-family: "Roboto" !important;
+    font-family: "Roboto";
+    font-size: 14px;
+    font-weight: 400;
   }
   
 input,
@@ -96,7 +100,7 @@ textarea {
 .text-body {
   padding: 2em 0em; 
   background-color: white; 
-  font-size:20px;
+  font-size:18px;
   line-height: 1.3em;
   min-height: 50vh;
 }
@@ -104,4 +108,19 @@ textarea {
 .inner-top-banner {
   display: block; 
   width: 100%; 
+}
+
+.adv-step {
+    margin:40px 0 20px 0;
+}
+
+.toast-bootstrap-compatibility-fix {
+    opacity:1;
+}
+
+.toast-success {
+    color: white;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+    font-size: 1em;
+    font-weight: bold;
 }

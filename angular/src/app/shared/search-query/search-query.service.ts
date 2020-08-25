@@ -8,6 +8,7 @@ import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
 import 'rxjs/add/operator/toPromise';
 import { SDPQuery, QueryRow } from './query';
 import { SearchfieldsListService } from '../../shared/searchfields-list/index';
+import { NotificationService } from '../../shared/notification-service/notification.service';
 
 /**
  * The cart service provides an way to store the cart in local store.
@@ -31,7 +32,8 @@ export class SearchQueryService {
     fields: SelectItem[];
 
     constructor(
-        public searchFieldsListService: SearchfieldsListService) {
+        public searchFieldsListService: SearchfieldsListService,
+        private notificationService: NotificationService) {
     }
 
     public watchQueries(): Observable<SDPQuery[]> {
@@ -71,6 +73,7 @@ export class SearchQueryService {
      */
     saveQueries(qureies: SDPQuery[]){
         this._storage.setItem('queries',JSON.stringify(qureies));
+        this.notificationService.showSuccessWithTimeout("Queries saved.", "", 3000);
         this.queriesSub.next(qureies);
     }
 

@@ -13,8 +13,7 @@
 
         <div>
             <label for="searchinput" class="hideLabel">Search Input</label>
-            <div style="margin: auto;"
-                [ngStyle]="{'width': mobWidth < 725? '100%' : mobWidth < 960? '80%' : '60%'}">
+            <div style="margin: auto;" [ngStyle]="{'width': mobWidth < 725? '100%' : mobWidth < 960? '80%' : '60%'}">
                 <div [ngStyle]="{'display': mobWidth < 461? 'block' : 'flex'}">
                     <div class="inner-addon left-addon background-white search-box">
                         <i class="glyphicon faa faa-search"></i>
@@ -53,12 +52,11 @@
         </div>
 
         <div class="help-wrapper" [@changeDivSize]=currentState>
-            <span class="faa-stack fa-lg" style="float: right; cursor: pointer;" (click)="changeState()">
-                <i class="faa faa-remove faa-stack-1x icon-white"
-                    style="background: green;border-radius: 50%; color: white;" aria-hidden="true" data-toggle="tooltip"
-                    title="Hide Examples"></i>
+            <span class="faa-stack fa-lg" style="float: right; cursor: pointer; margin: 5px;" (click)="changeState()">
+                <i class="faa faa-remove faa-stack-1x icon-white" id="btn-close" aria-hidden="true"
+                    data-toggle="tooltip" title="Hide Examples"></i>
             </span>
-            <div class="title-text"><b>Basic Syntax Rules</b>
+            <div class="title-text"><b>Syntax Rules</b>
             </div>
             <div class="table-wrapper">
                 <table width="100%" border="1">
@@ -266,10 +264,14 @@
 <p-overlayPanel class="fileDialog" #op4 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
     appendToBody=true>
     <div>
-        <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
-            (keyup.enter)="appendToSearchBox($event.target.value, null, op4)"
-            style="background-color: rgb(252, 246, 237);;" />
+        <span class="inner-addon">
+            <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
+                (keyup.enter)="appendToSearchBox($event.target.value, null, op4)"
+                style="background-color: rgb(252, 246, 237);;" />
 
+            <i class="faa faa-remove clear-box2" (click)="field.value=''" data-toggle="tooltip"
+                title="Clear the search box"></i>
+        </span>
         <button id="btn-append" type="button" (click)="appendToSearchBox(field.value, null, op4)" pButton type="submit">
             Append
         </button>
@@ -280,10 +282,13 @@
 <p-overlayPanel class="fileDialog" #op5 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
     appendToBody=true>
     <div>
-        <input type="text" class="text-input overlay-input" #field2 placeholder="Please enter unique query name"
-            (keyup.enter)="saveAdvQuery($event.target.value, op5)"
-            style="background-color: rgb(252, 246, 237);;" />
+        <span class="inner-addon">
+            <input type="text" class="text-input overlay-input" #field2 placeholder="Please enter unique query name"
+                (keyup.enter)="saveAdvQuery($event.target.value, op5)" style="background-color: rgb(252, 246, 237);;" />
 
+            <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
+                title="Clear the search box"></i>
+        </span>
         <button id="btn-append" type="button" (click)="saveAdvQuery($event.target.value, op5)" pButton type="submit">
             Save Query
         </button>

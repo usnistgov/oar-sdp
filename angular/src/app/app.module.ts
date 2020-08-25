@@ -29,6 +29,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 import { HeadbarComponent } from './frame/headbar/headbar.component';
 import { SearchPanelModule } from './search-panel/search-panel.module';
+import { NotificationService } from './shared/notification-service/notification.service';
+import { ToastrModule } from 'ngx-toastr';
 
 /**
  * Initialize the configs for backend services
@@ -69,6 +71,9 @@ enableProdMode();
     NgbModule,
     SearchPanelModule,
     HomeModule,
+    ToastrModule.forRoot({
+        toastClass: 'toast toast-bootstrap-compatibility-fix'
+    }),
     SharedModule.forRoot()
   ],
   exports:[
@@ -78,6 +83,7 @@ enableProdMode();
     HttpClientModule,
     GoogleAnalyticsService,
     GoogleAnalyticsServiceMock,
+    NotificationService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFn,

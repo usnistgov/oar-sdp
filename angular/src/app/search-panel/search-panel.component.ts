@@ -354,6 +354,7 @@ export class SearchPanelComponent implements OnInit {
         if(op) this.searchValue = this.searchValue.trim() + op;
 
         if(overlaypanel) overlaypanel.hide();
+        field = "";
     }
 
     /*

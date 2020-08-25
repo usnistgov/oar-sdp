@@ -38,19 +38,29 @@
                         <td>
                             <div class="dropdown">
                                 <button class="dropbtn" name="dropdownButton" [disabled]="editQuery || addQuery"
-                                    data-toggle="tooltip" title="Actions" (mouseover)='showDropdown=true;'>...</button>
+                                    data-toggle="tooltip" title="Actions" (mouseover)='showDropdown=true;' (click)='showDropdown=true;'>...</button>
                                 <div class="dropdown-content" *ngIf='showDropdown'
                                     [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
                                     <a href="javascript:void(0);"
-                                        (click)="displayQuery(i); showDropdown=false;">View</a>
+                                        (click)="displayQuery(i); showDropdown=false;">View
+                                        <i class="faa faa-eye" style="float: right;"></i>
+                                    </a>
                                     <a href="javascript:void(0);"
-                                        (click)="editQuery=true;addQuery=false;setCurrentQuery(i); showDropdown=false;">Edit</a>
+                                        (click)="editQuery=true;addQuery=false;setCurrentQuery(i); showDropdown=false;">Edit
+                                        <i class="faa faa-pencil" style="float: right;"></i>
+                                    </a>
                                     <a href="javascript:void(0);"
-                                        (click)="executeQuery(query); showDropdown=false;">Execute</a>
+                                        (click)="executeQuery(query); showDropdown=false;">Execute
+                                        <i class="faa faa-play" style="float: right;"></i>
+                                    </a>
                                     <a href="javascript:void(0);"
-                                        (click)="dupQuery(i); showDropdown=false;">Duplicate</a>
+                                        (click)="dupQuery(i); showDropdown=false;">Duplicate
+                                        <i class="faa faa-copy" style="float: right;"></i>
+                                    </a>
                                     <a href="javascript:void(0);"
-                                        (click)="deleteConfirmQuery(query.queryName); showDropdown=false;">Delete</a>
+                                        (click)="deleteConfirmQuery(query.queryName); showDropdown=false;">Delete
+                                        <i class="faa faa-trash" style="float: right;"></i>
+                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -79,7 +89,7 @@
                 <label for="queryName" style="white-space: nowrap;">Query Name</label>
 
                 <input class="query-name" type="text" id="queryName" [(ngModel)]="currentQuery.queryName"
-                    (focus)="setReadyEdit()" (keydown)="setMode($event.target.value)"
+                    (focus)="setReadyEdit()" (keydown)="setMode()"
                     (keyup)="onKeyup($event, 'queryName')" />
 
                 <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
@@ -115,7 +125,7 @@
                         <td>
                             <input type="text" class="text-input field-name" [(ngModel)]="queryRow.fieldText"
                                 placeholder="Fields text..." (focus)="setReadyEdit()"
-                                (keydown)="setMode($event.target.value)" (keyup)="onKeyup($event, 'searchValue')" />
+                                (keydown)="setMode()" (keyup)="onKeyup($event, 'searchValue')" />
                         </td>
                         <td *ngIf="rowIndex < currentQuery.queryRows.length-1">
                             <select class="browser-default custom-select" [(ngModel)]="queryRow.operator"

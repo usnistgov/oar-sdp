@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MockModule } from '../mock.module';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
+import { ToastrModule } from 'ngx-toastr';
 
 describe('AdvSearchComponent', () => {
   let component: AdvSearchComponent;
@@ -16,7 +17,8 @@ describe('AdvSearchComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        MockModule
+        MockModule,
+        ToastrModule.forRoot()
       ],
       declarations: [ AdvSearchComponent ],
       providers: [

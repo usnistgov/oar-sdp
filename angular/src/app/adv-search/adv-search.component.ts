@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
-import { SelectItem, DropdownModule, ConfirmationService, Message } from 'primeng/primeng';
+import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
@@ -26,49 +26,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
     errorMessage: string;
     searchValue: string = '';
-    advSearchValue: string[];
-    taxonomies: SelectItem[];
-    advSearchList: SelectItem[] = [];
-    suggestedTaxonomyList: string[];
-    suggestedTaxonomies: string[] = [];
-    textRotate: boolean = true;
-    searchTaxonomyKey: string;
-    // display: boolean = false;
-    displayQueryBuilder: boolean = false;
-    queryAdvSearch: string = '';
-    showAdvancedSearch: boolean = false;
-    showAdvSearchBuilder: boolean = false;
-    queryName: string = '';
-    rows: any[] = [];
     fields: SelectItem[];
-    ALL: string = 'ALL FIELDS';
-    showDeleteButton: boolean = false;
     operators: SelectItem[];
-    selectedAdvSearch: string = '';
-    queryValue: string[];
     editQuery: boolean = false;
     addQuery: boolean = false;
     mobHeight: number;
     mobWidth: number;
-    width: string;
-    isActive: boolean = true;
-    filterClass: string = "ui-g-12 ui-md-9 ui-lg-9";
     resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
-    msgs: Message[] = [];
-    queryString: string;
-    caretDown = 'faa faa-angle-down';
-    placeholder: string;
-    imageURL: string;
-    confValues: Config;
-    searchBoxWith: string = '50%';
     breadcrumb_top: string = '6em';
-    readyEdit: boolean = false; // indecating current query is ready for editing. If user type in any character
-                                // in the query name field, edit mode will be set to true. Otherwise add mode will
-                                // set to true
-
-    // @ViewChild('input1') inputEl: ElementRef;
-    @ViewChild('dataChanged')
-    dataChanged: boolean = false;  
     showDropdown: boolean = false;
     queryNameValidateError: boolean = false;
     queryNameValidateErrorMsg: string = '';
@@ -77,6 +42,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     currentQuery: SDPQuery = new SDPQuery();
     currentQueryIndex: number = 0;
     previousQueryIndex: number = 0;
+
+    // readyEdit: indecating current query is ready for editing. If user type in any character
+    // in the query name field, edit mode will be set to true. Otherwise add mode will
+    // set to true
+    readyEdit: boolean = false; 
+
+    @ViewChild('dataChanged') dataChanged: boolean = false; 
 
     /**
      * Constructor
@@ -88,7 +60,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         public gaService: GoogleAnalyticsService,
         private router: Router,
         public searchQueryService: SearchQueryService,
-        private appConfig: AppConfig,
         private renderer: Renderer2) {
 
         super();
@@ -102,8 +73,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.showDropdown = false;
         })
 
-        this.confValues = this.appConfig.getConfig();
-        this.taxonomies = [];
         this.fields = [];
         this.mobHeight = (window.innerHeight);
         this.mobWidth = (window.innerWidth);
@@ -116,13 +85,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     ngOnInit() {
         var i = 0;
-        this.rows = [];
         this.searchOperators();
 
         this.editQuery = false;
         this.addQuery = false;
-        this.queryName = '';
-        this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
 
         this.searchFieldsListService.getSearchFields().subscribe(
             (fields) => {
@@ -165,7 +131,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     /**
-     * Key press event
+     * Do validation and variable init when user keys in a text input field.
+     * @param event - text input value
+     * @param field - if this is query name field, validate query name
      */
     onKeyup(event, field: string) {
         this.dataChanged = true;
@@ -222,19 +190,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         }
     }
 
-    /*
-    * Set column width - seems not been used
-    */
-    setResultsWidth() {
-        this.isActive = !this.isActive;
-        if (!this.isActive) {
-        this.resultsClass = "ui-g-12 ui-md-11 ui-lgc-11";
-        this.filterClass = "ui-g-12 ui-md-11 ui-lgc-1";
-        } else {
-        this.resultsClass = "ui-g-12 ui-md-9 ui-lg-9";
-        }
-    }
-
     /**
      * Define Search operators for the drop down
      */
@@ -249,11 +204,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * Set the search parameters and redirect to search page
      */
     search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
-        this.searchTaxonomyKey = searchTaxonomyKey;
         let params: NavigationExtras = {
         queryParams: {
-            'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
-            'queryAdvSearch': this.queryAdvSearch
+            'q': this.searchValue, 'key': searchTaxonomyKey ? searchTaxonomyKey : '',
+            'queryAdvSearch': queryAdvSearch
         }
         };
 
@@ -332,7 +286,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     createQueryInit(row: any = {}) {
         this.previousQueryIndex = this.currentQueryIndex;
         this.currentQueryIndex = null;
-        this.queryName = '';
         this.readyEdit = false;
         this.editQuery = false;
         this.addQuery = true;
@@ -428,7 +381,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.setReadyEdit();
 
 
-        // New function
+        // If query list is not empty, diaplay current query. Otherwise set current query to blank.
         if(this.queries.length > 0){
             this.displayQuery(this.currentQueryIndex);
         }else{
@@ -485,11 +438,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * @param event 
      */
     onDataChange() {
-        //Check if this is an existing query
+        // Check if this is an existing query, if so, note current query index for backup purpose
+        // and set readyEdit flag to true.
         this.setReadyEdit();
 
         this.dataChanged = true;
-        this.setMode(this.currentQuery.queryName);
+        this.setMode();
     }
 
     onFieldTypeChange(row: QueryRow){
@@ -501,9 +455,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     /**
-     * 
+     * Set current mode (edit or add) based on readEdit flag.
      */
-    setMode(queryName: string){
+    setMode(){
         if(this.readyEdit) {
             this.previousQueryIndex = this.currentQueryIndex;
             this.editQuery = true;

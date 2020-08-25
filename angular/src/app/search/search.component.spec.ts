@@ -7,6 +7,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { MockModule } from '../mock.module';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
+import { ToastrModule } from 'ngx-toastr';
 
 describe('SearchComponent', () => {
   let searchCompService: SearchComponent;
@@ -18,7 +19,8 @@ describe('SearchComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         NgxPaginationModule,
-        MockModule
+        MockModule,
+        ToastrModule.forRoot()
       ],
       declarations: [SearchComponent],
       providers: [

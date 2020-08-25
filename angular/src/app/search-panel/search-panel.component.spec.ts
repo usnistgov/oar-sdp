@@ -6,6 +6,7 @@ import { OverlayPanelModule, AutoCompleteModule } from "primeng/primeng";
 import { MockModule } from '../mock.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 describe('SearchPanelComponent', () => {
   let component: SearchPanelComponent;
@@ -20,7 +21,8 @@ describe('SearchPanelComponent', () => {
             FormsModule,
             MockModule,
             BrowserAnimationsModule,
-            OverlayPanelModule
+            OverlayPanelModule,
+            ToastrModule.forRoot()
           ],
       declarations: [ SearchPanelComponent ]
     })

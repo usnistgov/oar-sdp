@@ -338,6 +338,15 @@ table thead, table tbody tr {
     cursor: pointer;
 }
 
+.inner-addon .clear-box2 {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    font-size: 15px;
+    color: rgb(143, 143, 143);
+    cursor: pointer;
+}
+
 .sample-line {
     display: block;
     padding-top: .3em;
@@ -356,4 +365,10 @@ table thead, table tbody tr {
     background-color: #3e8e41;
     padding: 4px .5em 0 .5em;
     cursor: pointer;
+}
+
+#btn-close {
+    background: green;
+    border-radius: 50%; 
+    color: white;
 }
