@@ -19,4 +19,7 @@ export class AppPage {
     return element(by.className('bigSearchButton'));
   }
 
+  showExampleLink() {
+    return element(by.id('example'));
+  }
 }

@@ -70,6 +70,8 @@ describe('workspace-project App', () => {
     page.navigateTo('/');
     browser.sleep(5000);
     browser.ignoreSynchronization = true;
+    page.showExampleLink().click();
+    browser.sleep(5000);
     page.getSearchExampleLink().click();
     browser.sleep(5000);
     page.getSearchButton().click();

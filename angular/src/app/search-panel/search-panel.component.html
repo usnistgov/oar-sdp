@@ -42,7 +42,7 @@
                 </div>
                 <div style="width: 100%;">
                     <div class="sample-line link-text-white">
-                        <span *ngIf="!showExampleStatus" (click)="changeState()">Show Examples</span>
+                        <span id="example" *ngIf="!showExampleStatus" (click)="changeState()">Show Examples</span>
                         <span *ngIf="showExampleStatus" (click)="changeState()">Hide Examples</span>
                         <span *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em;">Advanced
                             Search</span>
@@ -169,7 +169,7 @@
                     href="#!">"Kinetics database" </a> &nbsp;
                 <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
                 </a>&nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
+                <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
                     href="#!">"SRD 101"
                 </a>&nbsp;
                 <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB
