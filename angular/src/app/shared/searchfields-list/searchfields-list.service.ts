@@ -23,6 +23,19 @@ export class SearchfieldsListService {
     private appConfig: AppConfig) {
       this.confValues = this.appConfig.getConfig();
       this.RMMAPIURL = this.confValues.RMMAPI;
+
+      this.getSearchFields().subscribe(
+        (fields) => {
+            this.fields = (fields as SelectItem[]);
+        },
+        (err) => {
+            console.log("Error getting fields.", err);
+        }
+      );
+    }
+
+    ngOnInit(): void {
+
     }
 
   /**
@@ -82,4 +95,14 @@ export class SearchfieldsListService {
 
     return fieldItems;
   }
+
+    /**
+     * Look up field type
+     * @param fieldValue - input field value
+     */
+    getFieldType(fieldValue: string){
+        let field = this.fields.filter(field => field.value == fieldValue);
+        if(field && field.length>0) return field[0].label;
+        else return "";
+    }
 }

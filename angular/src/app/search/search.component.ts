@@ -8,15 +8,11 @@ import { SelectItem, TreeNode, TreeModule, DialogModule, Dialog, InputTextModule
 import { Message } from 'primeng/components/common/api';
 import { MenuItem, InputTextareaModule, ProgressSpinner } from 'primeng/primeng';
 import * as _ from 'lodash';
-import { Data } from '../shared/search-query/data';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
-import { SearchEntity } from '../shared/search-query/search.entity';
 import { Location } from '@angular/common';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
-import { timer } from 'rxjs/observable/timer';
 import { SearchPanelComponent } from '../search-panel/search-panel.component';
-import { stringify } from 'querystring';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -38,7 +34,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   selectedResourceTypeNode: TreeNode[] = [];
   profileMode: string = 'inline';
   msgs: Message[] = [];
-  searchEntities: SearchEntity[] = [];
   exception: string;
   textRotate: boolean = true;
   display: boolean = false;

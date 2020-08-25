@@ -41,7 +41,6 @@ export class RealSearchService implements SearchService{
   searchPhrase(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
     let searchPhraseValue = '';
     let finalKeyValueStr = '';
-    console.log('searchValue000', searchValue);
     if(searchValue == undefined){
       return EMPTY;
     }
@@ -56,7 +55,6 @@ export class RealSearchService implements SearchService{
     // let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
     let parameters = searchValue.split("&");
     let searchKey = '';
-    console.log('parameters', parameters);
     if (!_.isEmpty(parameters)) {
       for (var i = 0; i < parameters.length; i++) {
         if(i > 0) searchPhraseValue += '&';
@@ -85,9 +83,6 @@ export class RealSearchService implements SearchService{
     }
 
     let url = this.RMMAPIURL + 'records?' + searchPhraseValue + keyString;
-
-    console.log("url", url);
-
     return this.http.get(url);
   }
 

@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, ElementRef, Renderer, ViewChild } from '@angular/core';
 import './operators';
 import { SearchQueryService } from './shared/search-query/search-query.service';
-import { SearchEntity } from './shared/search-query/search.entity';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
 import { AppConfig, Config } from './shared/config-service/config-service.service';
 import { concat } from 'rxjs';
@@ -57,8 +56,6 @@ export class AppComponent implements AfterViewInit {
   resetMenu: boolean;
 
   menuHoverActive: boolean;
-//   displayQueryList: boolean = false;
-  searchEntities: SearchEntity[];
   confValues: Config;
   gaCode: string;
 

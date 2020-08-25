@@ -141,8 +141,6 @@
                 </tbody>
             </table>
 
-
-            <p-confirmDialog></p-confirmDialog>
             <div class="ui-g-12 search-builder-background">
                 <div class="ui-g-12 ui-lg-8 ui-md-12 ui-sm-12" style="float:right;">
                     <button id="btn-cancel" type="button" (click)="cancelConfirm()" pButton type="submit"
@@ -152,7 +150,7 @@
                     </button>
 
                     <button id="btn-save" type="button" (click)="saveAdvSearchQuery()" pButton type="submit"
-                        [disabled]="(!editQuery && !addQuery) || !dataChanged || queryNameValidateError">
+                        [disabled]="(!editQuery && !addQuery) || !currentQuery.queryName || !dataChanged || queryNameValidateError">
                         <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
                         Save
                     </button>

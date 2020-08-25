@@ -4,156 +4,147 @@ import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { Router, NavigationExtras } from '@angular/router';
-import { Data } from '../shared/search-query/data';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
-import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
-import { timer } from 'rxjs/observable/timer';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
-import { Query, QueryRow } from '../shared/search-query/query';
-
+import { SDPQuery, QueryRow } from '../shared/search-query/query';
 import * as _ from 'lodash';
 
 /**
  * This class represents the lazy loaded HomeComponent.
  */
 @Component({
-  selector: 'sdp-advsearch',
-  templateUrl: 'adv-search.component.html',
-  styleUrls: ['adv-search.component.scss'],
-  providers: [ConfirmationService]
+    selector: 'sdp-advsearch',
+    templateUrl: 'adv-search.component.html',
+    styleUrls: ['adv-search.component.scss'],
+    providers: [ConfirmationService]
 
 })
 
 export class AdvSearchComponent extends FormCanDeactivate implements OnInit, AfterViewInit {
 
-  errorMessage: string;
-  searchValue: string = '';
-  advSearchValue: string[];
-  taxonomies: SelectItem[];
-  advSearchList: SelectItem[] = [];
-  suggestedTaxonomyList: string[];
-  suggestedTaxonomies: string[] = [];
-  textRotate: boolean = true;
-  searchTaxonomyKey: string;
-  // display: boolean = false;
-  displayQueryBuilder: boolean = false;
-  queryAdvSearch: string = '';
-  showAdvancedSearch: boolean = false;
-  showAdvSearchBuilder: boolean = false;
-  queryName: string = '';
-  rows: any[] = [];
-  fields: SelectItem[];
-  ALL: string = 'ALL FIELDS';
-  showDeleteButton: boolean = false;
-  operators: SelectItem[];
-  searchEntities: SearchEntity[] = [];
-  selectedAdvSearch: string = '';
-  queryValue: string[];
-  editQuery: boolean = false;
-  addQuery: boolean = false;
-  mobHeight: number;
-  mobWidth: number;
-  width: string;
-  isActive: boolean = true;
-  filterClass: string = "ui-g-12 ui-md-9 ui-lg-9";
-  resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
-  msgs: Message[] = [];
-  queryString: string;
-  caretDown = 'faa faa-angle-down';
-  placeholder: string;
-  imageURL: string;
-  confValues: Config;
-  searchBoxWith: string = '50%';
-  breadcrumb_top: string = '6em';
-  readyEdit: boolean = false; // indecating current query is ready for editing. If user type in any character
-                              // in the query name field, edit mode will be set to true. Otherwise add mode will
-                              // set to true
+    errorMessage: string;
+    searchValue: string = '';
+    advSearchValue: string[];
+    taxonomies: SelectItem[];
+    advSearchList: SelectItem[] = [];
+    suggestedTaxonomyList: string[];
+    suggestedTaxonomies: string[] = [];
+    textRotate: boolean = true;
+    searchTaxonomyKey: string;
+    // display: boolean = false;
+    displayQueryBuilder: boolean = false;
+    queryAdvSearch: string = '';
+    showAdvancedSearch: boolean = false;
+    showAdvSearchBuilder: boolean = false;
+    queryName: string = '';
+    rows: any[] = [];
+    fields: SelectItem[];
+    ALL: string = 'ALL FIELDS';
+    showDeleteButton: boolean = false;
+    operators: SelectItem[];
+    selectedAdvSearch: string = '';
+    queryValue: string[];
+    editQuery: boolean = false;
+    addQuery: boolean = false;
+    mobHeight: number;
+    mobWidth: number;
+    width: string;
+    isActive: boolean = true;
+    filterClass: string = "ui-g-12 ui-md-9 ui-lg-9";
+    resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
+    msgs: Message[] = [];
+    queryString: string;
+    caretDown = 'faa faa-angle-down';
+    placeholder: string;
+    imageURL: string;
+    confValues: Config;
+    searchBoxWith: string = '50%';
+    breadcrumb_top: string = '6em';
+    readyEdit: boolean = false; // indecating current query is ready for editing. If user type in any character
+                                // in the query name field, edit mode will be set to true. Otherwise add mode will
+                                // set to true
 
-  // @ViewChild('input1') inputEl: ElementRef;
-  @ViewChild('dataChanged')
-  dataChanged: boolean = false;  
-  showDropdown: boolean = false;
-  queryNameValidateError: boolean = false;
-  queryNameValidateErrorMsg: string = '';
-  screenWidth: number;
-  queries: Query[] = [];
-  currentQuery: Query = new Query();
-  currentQueryIndex: number = 0;
-  previousQueryIndex: number = 0;
+    // @ViewChild('input1') inputEl: ElementRef;
+    @ViewChild('dataChanged')
+    dataChanged: boolean = false;  
+    showDropdown: boolean = false;
+    queryNameValidateError: boolean = false;
+    queryNameValidateErrorMsg: string = '';
+    screenWidth: number;
+    queries: SDPQuery[] = [];
+    currentQuery: SDPQuery = new SDPQuery();
+    currentQueryIndex: number = 0;
+    previousQueryIndex: number = 0;
 
-  /**
-   * Constructor
-   */
-  constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
-    public ngZone: NgZone,
-    public taxonomyListService: TaxonomyListService,
-    public searchFieldsListService: SearchfieldsListService,
-    public gaService: GoogleAnalyticsService,
-    // public searchService: SearchService,
-    private router: Router,
-    public searchQueryService: SearchQueryService,
-    private confirmationService: ConfirmationService,
-    private appConfig: AppConfig,
-    private renderer: Renderer2) {
+    /**
+     * Constructor
+     */
+    constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
+        public ngZone: NgZone,
+        public taxonomyListService: TaxonomyListService,
+        public searchFieldsListService: SearchfieldsListService,
+        public gaService: GoogleAnalyticsService,
+        private router: Router,
+        public searchQueryService: SearchQueryService,
+        private appConfig: AppConfig,
+        private renderer: Renderer2) {
 
-    super();
+        super();
 
-    this.renderer.listen('window', 'click',(e:Event)=>{ 
-        // If user clicks on the dropdown button, display the action popup list
-        //otherwise hide it.
-        if(e.target['name'] == 'dropdownButton')
-            this.showDropdown = true;
-        else
-            this.showDropdown = false;
-    })
+        this.renderer.listen('window', 'click',(e:Event)=>{ 
+            // If user clicks on the dropdown button, display the action popup list
+            //otherwise hide it.
+            if(e.target['name'] == 'dropdownButton')
+                this.showDropdown = true;
+            else
+                this.showDropdown = false;
+        })
 
-    this.confValues = this.appConfig.getConfig();
-    this.taxonomies = [];
-    this.fields = [];
-    // setTimeout(() => {
-    //   this.getSearchQueryList();
-    // }, 100);
+        this.confValues = this.appConfig.getConfig();
+        this.taxonomies = [];
+        this.fields = [];
+        this.mobHeight = (window.innerHeight);
+        this.mobWidth = (window.innerWidth);
+        // Init search box size and breadcrumb position
+        this.onWindowResize();
+    }
 
-    this.mobHeight = (window.innerHeight);
-    this.mobWidth = (window.innerWidth);
-    // Init search box size and breadcrumb position
-    this.onWindowResize();
-  }
+    /**
+     * init
+     */
+    ngOnInit() {
+        var i = 0;
+        this.rows = [];
+        this.searchOperators();
 
-  /**
-   * init
-   */
-  ngOnInit() {
-    var i = 0;
+        this.editQuery = false;
+        this.addQuery = false;
+        this.queryName = '';
+        this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
 
-    // this.getTaxonomies();
-    this.searchFieldsListService.getSearchFields().subscribe(
-        (fields) => {
-            this.fields = (fields as SelectItem[]);
-
-            if(this.queries && this.queries.length > 0){
-                this.currentQueryIndex = 0;
-                this.displayQuery(this.currentQueryIndex);
+        this.searchFieldsListService.getSearchFields().subscribe(
+            (fields) => {
+                this.fields = (fields as SelectItem[]);
+                this.queries = this.searchQueryService.getQueries();
+                if(this.queries && this.queries.length > 0){
+                    this.currentQueryIndex = 0;
+                    this.displayQuery(this.currentQueryIndex);
+                }
+            },
+            (err) => {
+                this.errorMessage = <any>err;
             }
-        },
-        (err) => {
-            this.errorMessage = <any>err;
-        }
-    )
+        );
 
-    this.rows = [];
-    this.searchOperators();
+        this.searchQueryService.watchQueries().subscribe(value => {
+            if(value)
+                this.queries = value as SDPQuery[];
+        });
+    }
 
-    this.editQuery = false;
-    this.addQuery = false;
-    this.queryName = '';
-    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-    this.queries = this.searchQueryService.getQueries();
-  }
-
-      /**
+    /**
      *  Following functions detect screen size
      */
     @HostListener("window:resize", [])
@@ -173,176 +164,183 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.onWindowResize();
     }
 
-  /**
-   * Key press event
-   */
-  onKeyup(event, field: string) {
-    this.dataChanged = true;
+    /**
+     * Key press event
+     */
+    onKeyup(event, field: string) {
+        this.dataChanged = true;
+        this.queryNameValidateErrorMsg = "";
+        this.queryNameValidateError = false;
 
-    if(field = 'queryName')
-        this.queryNameValidation(event.target.value);
-  }
-
-  /**
-   * When window resized, we need to resize the search text box and reposition breadcrumb accordingly
-   * When top menu bar collapse, we want to place breadcrumb inside the top menu bar
-   */
-  onWindowResize(){
-    if(this.mobWidth > 767){
-        this.breadcrumb_top = '0em';
-    }else{
-        this.breadcrumb_top = '-2.5em';
+        if(field = 'queryName'){
+            if (_.isEmpty(event.target.value)) {
+                this.queryNameValidateErrorMsg = "Query name is required";
+                this.queryNameValidateError = true;
+            } else {
+                if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
+                    this.queryNameValidateErrorMsg = "Query name is required";
+                    this.queryNameValidateError = true;
+                }
+            }
+        }
     }
-  }
 
-  /**
-   * Confirm cancel query edit
-   */
-  cancelConfirm() {
-    if (this.dataChanged) {
-      if (confirm("Do you really want to cancel this edit?")) {
-        this.cancelAdvSearchQuery()
-      }
-    } else {
-      this.cancelAdvSearchQuery();
+    /**
+     * When window resized, we need to resize the search text box and reposition breadcrumb accordingly
+     * When top menu bar collapse, we want to place breadcrumb inside the top menu bar
+     */
+    onWindowResize(){
+        if(this.mobWidth > 767){
+            this.breadcrumb_top = '0em';
+        }else{
+            this.breadcrumb_top = '-2.5em';
+        }
     }
-  }
 
-  /*
-  * Delete query confirm popup
-  */
-  deleteConfirmQuery(queryName: string) {
-    if (confirm("Do you really want to delete this query?")) {
-        this.queries = this.queries.filter(query => query.queryName != queryName);
+    /**
+     * Confirm cancel query edit
+     */
+    cancelConfirm() {
+        if (this.dataChanged) {
+        if (confirm("Do you really want to cancel this edit?")) {
+            this.cancelAdvSearchQuery()
+        }
+        } else {
+        this.cancelAdvSearchQuery();
+        }
+    }
+
+    /*
+    * Delete query confirm popup
+    */
+    deleteConfirmQuery(queryName: string) {
+        if (confirm("Do you really want to delete this query?")) {
+            this.queries = this.queries.filter(query => query.queryName != queryName);
+            // Save to local storage
+            this.searchQueryService.saveQueries(this.queries);
+            this.setCurrentQuery(0)
+        }
+    }
+
+    /*
+    * Set column width - seems not been used
+    */
+    setResultsWidth() {
+        this.isActive = !this.isActive;
+        if (!this.isActive) {
+        this.resultsClass = "ui-g-12 ui-md-11 ui-lgc-11";
+        this.filterClass = "ui-g-12 ui-md-11 ui-lgc-1";
+        } else {
+        this.resultsClass = "ui-g-12 ui-md-9 ui-lg-9";
+        }
+    }
+
+    /**
+     * Define Search operators for the drop down
+     */
+    searchOperators() {
+        this.operators = [];
+        this.operators.push({ label: 'AND', value: 'AND' });
+        this.operators.push({ label: 'OR', value: 'OR' });
+        this.operators.push({ label: 'NOT', value: 'NOT' });
+    }
+
+    /**
+     * Set the search parameters and redirect to search page
+     */
+    search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
+        this.searchTaxonomyKey = searchTaxonomyKey;
+        let params: NavigationExtras = {
+        queryParams: {
+            'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
+            'queryAdvSearch': this.queryAdvSearch
+        }
+        };
+
+        this.router.navigate(['/search'], params);
+    }
+
+    /**
+     * Delete a row in current query
+     * @param index - index number of the row to be deleted
+     */
+    deleteRow(index: number){
+        this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row.id != this.currentQuery.queryRows[index].id);
+
+        this.onDataChange();
+    }
+
+    /**
+     * Duplicate current row in current query
+     * @param row - row to be duplicated
+     */
+    duplicateRow(row: QueryRow){
+        let newRow: QueryRow = JSON.parse(JSON.stringify(row));
+        newRow.id = this.nextRowId(this.currentQuery);
+        this.currentQuery.queryRows.push(newRow);
+        this.onDataChange();
+    }
+
+    /**
+     * Duplicate query
+     * Creates a new query then populates it with the given query
+     * No need to update search box in the top search panel since this is a duplicate
+     */
+    dupQuery(index: number) {
+        this.currentQueryIndex = null;
+        this.previousQueryIndex = index;
+        this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
+        this.currentQuery.queryName = this.currentQuery.queryName + " copy";
+        this.dataChanged = true;
+        this.editQuery = false;
+        this.addQuery = true;
+    }
+
+    /**
+     * Export query list
+     */
+    exportList() {
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(JSON.stringify(this.queries));
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'NIST-SDP-Queries.json';
+        hiddenElement.click();
+    }
+
+    /**
+     * Import query list
+     */
+    importList(event) {
+        var files = event.srcElement.files;
+        files = files[0];
+        let _this = this;
+        var dataFile = [];
+        var read: FileReader = new FileReader();
+        read.readAsText(files);
+        read.onloadend = function () {
+        let fileData = read.result;
+        _this.queries = JSON.parse(fileData.toString());
         // Save to local storage
-        this.searchQueryService.saveQueries(this.queries);
-        this.setCurrentQuery(0)
+        _this.searchQueryService.saveQueries(_this.queries);
+        _this.setCurrentQuery(0);
+        }
     }
 
-  }
+    /**
+     * Init for creating new query
+     */
+    createQueryInit(row: any = {}) {
+        this.previousQueryIndex = this.currentQueryIndex;
+        this.currentQueryIndex = null;
+        this.queryName = '';
+        this.readyEdit = false;
+        this.editQuery = false;
+        this.addQuery = true;
 
-  /*
-  * Set column width - seems not been used
-  */
-  setResultsWidth() {
-    this.isActive = !this.isActive;
-    if (!this.isActive) {
-      this.resultsClass = "ui-g-12 ui-md-11 ui-lgc-11";
-      this.filterClass = "ui-g-12 ui-md-11 ui-lgc-1";
-    } else {
-      this.resultsClass = "ui-g-12 ui-md-9 ui-lg-9";
+        this.currentQuery = new SDPQuery();
+        this.currentQuery.queryRows = [new QueryRow()];
+
     }
-  }
-
-  /**
-   * Define Search operators for the drop down
-   */
-  searchOperators() {
-    this.operators = [];
-    this.operators.push({ label: 'AND', value: 'AND' });
-    this.operators.push({ label: 'OR', value: 'OR' });
-    this.operators.push({ label: 'NOT', value: 'NOT' });
-  }
-
-  /**
-   * Set the search parameters and redirect to search page
-   */
-  search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
-    this.searchTaxonomyKey = searchTaxonomyKey;
-    let params: NavigationExtras = {
-      queryParams: {
-        'q': this.searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
-        'queryAdvSearch': this.queryAdvSearch
-      }
-    };
-
-    this.router.navigate(['/search'], params);
-  }
-
-  /**
-   * Delete a row in current query
-   * @param index - index number of the row to be deleted
-   */
-  deleteRow(index: number){
-      console.log('Deleting index', index);
-      console.log('this.currentQuery.queryRows[index] before', this.currentQuery.queryRows[index]);
-
-    this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row.id != this.currentQuery.queryRows[index].id);
-
-    console.log('this.currentQuery after', this.currentQuery);
-
-    this.onDataChange();
-  }
-
-  /**
-   * Duplicate current row in current query
-   * @param row - row to be duplicated
-   */
-  duplicateRow(row: QueryRow){
-    let newRow: QueryRow = JSON.parse(JSON.stringify(row));
-    newRow.id = this.nextRowId(this.currentQuery);
-    this.currentQuery.queryRows.push(newRow);
-    this.onDataChange();
-  }
-
-  /**
-   * Duplicate query
-   * Creates a new query then populates it with the given query
-   * No need to update search box in the top search panel since this is a duplicate
-   */
-  dupQuery(index: number) {
-    this.currentQueryIndex = null;
-    this.previousQueryIndex = index;
-    this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
-    this.currentQuery.queryName = this.currentQuery.queryName + " copy";
-    this.dataChanged = true;
-    this.editQuery = false;
-    this.addQuery = true;
-  }
-
-  /**
-   * Export query list
-   */
-  exportList() {
-    var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:attachment/text,' + encodeURI(JSON.stringify(this.queries));
-    hiddenElement.target = '_blank';
-    hiddenElement.download = 'NIST-SDP-Queries.json';
-    hiddenElement.click();
-  }
-
-  /**
-   * Import query list
-   */
-  importList(event) {
-    var files = event.srcElement.files;
-    files = files[0];
-    let _this = this;
-    var dataFile = [];
-    var read: FileReader = new FileReader();
-    read.readAsText(files);
-    read.onloadend = function () {
-      let fileData = read.result;
-      _this.queries = JSON.parse(fileData.toString());
-      _this.setCurrentQuery(0);
-    }
-  }
-
-  /**
-   * Init for creating new query
-   */
-  createQueryInit(row: any = {}) {
-    this.previousQueryIndex = this.currentQueryIndex;
-    this.currentQueryIndex = null;
-    this.queryName = '';
-    this.readyEdit = false;
-    this.editQuery = false;
-    this.addQuery = true;
-
-    this.currentQuery = new Query();
-    this.currentQuery.queryRows = [new QueryRow()];
-
-  }
 
     /**
      * When query name input field focused
@@ -359,33 +357,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     /**
-     * Query name field validation
-     * 1. This field is required
-     * 2. Query name should be unique
-     * @param queryName 
+     * Return edit mode as a string
      */
-    queryNameValidation(queryName: string){
-        this.queryNameValidateError = false;
-        if (_.isEmpty(queryName)) {
-        this.queryNameValidateErrorMsg = "Query name is required";
-        this.queryNameValidateError = true;
-        } else {
-            if (this.editQuery) {
-                if(queryName != this.queries[this.previousQueryIndex].queryName && this.queries.filter(query => { query.queryName == queryName }).length > 0){
-                    this.queryNameValidateErrorMsg = "Query name already exists";
-                    this.queryNameValidateError = true;
-                }
-            }
-            
-            if (this.addQuery){
-                if(this.queries && this.queries.filter(query => { query.queryName == queryName }).length > 0){
-                    this.queryNameValidateErrorMsg = "Query name already exists";
-                    this.queryNameValidateError = true;
-                }
-            }
-        }
+    getMode(){
+        let mode: string;
+        if(this.editQuery) mode = "EDIT";
+        else mode = "ADD";
 
-        return !this.queryNameValidateError;
+        return mode;
     }
 
     /**
@@ -395,8 +374,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     saveAdvSearchQuery() {
         //Double check query name field value
-        if(!this.queryNameValidation(this.currentQuery.queryName))
+        if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, this.queries[this.previousQueryIndex].queryName, this.getMode())){
+            this.queryNameValidateErrorMsg = "Query name is required";
+            this.queryNameValidateError = true;
             return;
+        }
 
         // Build this.searchValue
         this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
@@ -426,45 +408,43 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.dataChanged = false;
     }
 
-  /**
-   * Cancel query edit.
-   * Set previous query as current query.
-   * Set edit/add flag to false.
-   */
-  cancelAdvSearchQuery() {
-    this.editQuery = false;
-    this.addQuery = false;
-    this.searchValue = '';
-    this.dataChanged = false;
-    this.queryNameValidateError = false;
-    this.currentQueryIndex = this.previousQueryIndex;
-    if(this.currentQueryIndex != null)
-        this.setCurrentQuery(this.currentQueryIndex);
-    else
-        this.setCurrentQuery(0);
-    
-    this.setReadyEdit();
+    /**
+     * Cancel query edit.
+     * Set previous query as current query.
+     * Set edit/add flag to false.
+     */
+    cancelAdvSearchQuery() {
+        this.editQuery = false;
+        this.addQuery = false;
+        this.searchValue = '';
+        this.dataChanged = false;
+        this.queryNameValidateError = false;
+        this.currentQueryIndex = this.previousQueryIndex;
+        if(this.currentQueryIndex != null)
+            this.setCurrentQuery(this.currentQueryIndex);
+        else
+            this.setCurrentQuery(0);
+        
+        this.setReadyEdit();
 
 
-    // New function
-    if(this.queries.length > 0){
-        this.displayQuery(this.currentQueryIndex);
-    }else{
-        this.currentQuery = new Query();
-        this.currentQueryIndex = 0;
+        // New function
+        if(this.queries.length > 0){
+            this.displayQuery(this.currentQueryIndex);
+        }else{
+            this.currentQuery = new SDPQuery();
+            this.currentQueryIndex = 0;
+        }
     }
-  }
 
-  /*
-  * Execute query
-  */
-  executeQuery(query: Query) {
-      let lQueryValue = this.searchQueryService.buildSearchString(query);
-      this.searchService.setQueryValue(lQueryValue, '', '');
-      this.searchService.startSearching(true);
-    // this.queryString = "/#/search?q=" + queryValue + "&key=&queryAdvSearch=";
-    // window.open(this.queryString, '_self');
-  }
+    /*
+    * Execute query
+    */
+    executeQuery(query: SDPQuery) {
+        let lQueryValue = this.searchQueryService.buildSearchString(query);
+        this.searchService.setQueryValue(lQueryValue, '', '');
+        this.searchService.startSearching(true);
+    }
 
     /**
      * Show query in the right panel. Do nothing in edit/add mode.
@@ -487,12 +467,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         // New function
         if(this.queries.length > 0 && index < this.queries.length){
             this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
+
             this.currentQueryIndex = index;
             this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
             // Update search box in the top search panel
             this.searchService.setQueryValue(this.searchValue, '', ''); 
         }else{
-            this.currentQuery = new Query();
+            this.currentQuery = new SDPQuery();
             this.currentQueryIndex = 0;
 
             this.searchService.setQueryValue('', '', ''); 
@@ -548,7 +529,26 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * Return next unique row id
      * @param query - given query
      */
-    nextRowId(query: Query) {
-        return Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
+    nextRowId(query: SDPQuery) {
+        let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
+        if(id == null) return 1;
+        else return id;
+    }
+
+    /**
+     * Return next unique query id
+     */
+    nextQueryId() {
+        return Math.max.apply(Math, this.queries.map(function(o) { return o.id; })) + 1;
+    }
+
+    /**
+     * Look up field type
+     * @param fieldValue - input field value
+     */
+    getFieldType(fieldValue: string){
+        let field = this.fields.filter(field => field.value == fieldValue);
+        if(field && field.length>0) return field[0].label;
+        else return "";
     }
 }

@@ -19,7 +19,8 @@ describe('SearchPanelComponent', () => {
             AutoCompleteModule,
             FormsModule,
             MockModule,
-            BrowserAnimationsModule
+            BrowserAnimationsModule,
+            OverlayPanelModule
           ],
       declarations: [ SearchPanelComponent ]
     })
