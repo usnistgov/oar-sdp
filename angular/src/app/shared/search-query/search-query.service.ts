@@ -46,33 +46,25 @@ export class SearchQueryService {
     buildSearchString(query: SDPQuery) {
         let lSearchValue: string = '';
         // First of all, we need to handle duplicated field (row) name, if any
-
+        // If there are dup keys and operator is OR, we need to combine them together, separate values by comma.
         var dupNames = this.findDuplicates(query.queryRows)
-        var uniqRows: QueryRow[] = [];
-        let uniqQuerryRows: QueryRow[] = JSON.parse(JSON.stringify(query.queryRows));
 
         for(let i=0; i<dupNames.length; i++){
-            uniqQuerryRows = uniqQuerryRows.filter(q => q.fieldValue != dupNames[i]);
-
-            var dups = query.queryRows.filter(q => q.fieldValue === dupNames[i])
-            uniqRows.push(dups[0]);
-            for(let j=1; j<dups.length; j++){
-                if(dups[j].operator == "OR"){
-                    uniqRows[0].fieldText += "," + dups[j].fieldText;
-                }else{
-                    uniqRows.push(dups[j]);
+            let firstRow = query.queryRows.find(q => q.fieldValue == dupNames[i]);
+            for(let ii=0; ii<query.queryRows.length; ii++){
+                if(query.queryRows[ii].fieldValue == firstRow.fieldValue && query.queryRows[ii].id != firstRow.id){
+                    if(query.queryRows[ii].operator == "OR"){
+                        firstRow.fieldText += "," + query.queryRows[ii].fieldText;
+                        query.queryRows.splice(ii, 1);
+                    }                   
                 }
             }
         }
 
-        for(let k=0; k<uniqRows.length; k++)
-            uniqQuerryRows.push(uniqRows[k]);
-
-        query.queryRows = uniqQuerryRows;
-        console.log('uniqQuerryRows', uniqQuerryRows);
-
         // Processing rows
-        for (let i = 0; i < query.queryRows.length; i++) {
+        lSearchValue = query.queryRows[0].fieldValue + '=' + query.queryRows[0].fieldText;
+
+        for (let i = 1; i < query.queryRows.length; i++) {
             if (typeof query.queryRows[i].operator === 'undefined') {
                 query.queryRows[i].operator = 'AND';
             }
@@ -86,9 +78,8 @@ export class SearchQueryService {
             let fieldValue: string;
             fieldValue = query.queryRows[i].fieldValue;
 
-            lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;
-            if(i < query.queryRows.length - 1)
-                lSearchValue += ' ' + query.queryRows[i].operator + ' ';
+            lSearchValue += ' ' + query.queryRows[i].operator + ' ';
+            lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;                
         }
 
         return lSearchValue;

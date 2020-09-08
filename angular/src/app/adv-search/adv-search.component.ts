@@ -230,10 +230,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * Duplicate current row in current query
      * @param row - row to be duplicated
      */
-    duplicateRow(row: QueryRow){
+    duplicateRow(row: QueryRow, index: number){
+        console.log('index', index);
         let newRow: QueryRow = JSON.parse(JSON.stringify(row));
         newRow.id = this.nextRowId(this.currentQuery);
-        this.currentQuery.queryRows.push(newRow);
+        this.currentQuery.queryRows.splice(index, 0, newRow);
         this.onDataChange();
     }
 
