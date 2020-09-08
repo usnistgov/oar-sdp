@@ -11,8 +11,8 @@ export class QueryRow {
     constructor(
         public id: number = 0,
         public operator = 'AND',
-        public fieldText = '',
-        public fieldType = '',  // Field label
+        public fieldText = '',  // user input value for search
+        public fieldType = '',  // Field label - description
         public fieldValue = ''  // Field value
     ){
     }

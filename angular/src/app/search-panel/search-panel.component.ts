@@ -11,6 +11,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { AdvSearchComponent } from '../adv-search/adv-search.component';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
+import { Observable } from 'rxjs';
 import { SDPQuery, QueryRow } from '../shared/search-query/query';
 
 @Component({
@@ -45,7 +46,6 @@ export class SearchPanelComponent implements OnInit {
     confValues: Config;
     errorMessage: string;
     _searchValue: string = '';
-    taxonomies: SelectItem[];
     suggestedTaxonomies: string[];
     suggestedTaxonomyList: string[];
     searchTaxonomyKey: string;
@@ -67,6 +67,7 @@ export class SearchPanelComponent implements OnInit {
     fields: SelectItem[];
     currentState = 'initial';
     showDropdown: boolean = true;
+    observableFields: Observable<SelectItem[]>;
 
     @ViewChild('field') fieldElement: ElementRef;
     @ViewChild('field2') queryName: ElementRef;
@@ -92,7 +93,6 @@ export class SearchPanelComponent implements OnInit {
         private router: Router,
         private appConfig: AppConfig) {
         var ts = new Date();
-        this.taxonomies = [];
         this.suggestedTaxonomies = [];
         this.confValues = this.appConfig.getConfig();
 
@@ -112,15 +112,7 @@ export class SearchPanelComponent implements OnInit {
             });
         };
 
-        this.searchFieldsListService.getSearchFields().subscribe(
-            (fields) => {
-                this.fields = (fields as SelectItem[]);
-            },
-            (err) => {
-                console.log(err);
-                this.errorMessage = <any>err;
-            }
-        )
+        this.observableFields = this.searchFieldsListService.getSearchFields();
 
         this.searchService._watchQueryValue((queryObj) => {
             if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
@@ -152,7 +144,6 @@ export class SearchPanelComponent implements OnInit {
 
         this.SDPAPI = this.confValues.SDPAPI;
         this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-        this.getTaxonomies();
         this.getTaxonomySuggestions();
         this.searchOperators();
     }
@@ -208,18 +199,6 @@ export class SearchPanelComponent implements OnInit {
         }
     }
 
-    /**
-     * Handle the nameListService observable
-     */
-
-    getTaxonomies() {
-        this.taxonomyListService.get()
-        .subscribe(
-            taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
-            error => this.errorMessage = <any>error
-        );
-    }
-
     getTaxonomySuggestions() {
         this.taxonomyListService.get()
         .subscribe(
@@ -229,18 +208,21 @@ export class SearchPanelComponent implements OnInit {
     }
 
     /**
-     * Taxonomy items list
+     * Generate suggested taxonomy items list from a given taxonomy list. It's basically the list 
+     * of the labels of the given taxonomy list.
+     * @param taxonomies taxonomy list
      */
     toTaxonomySuggestedItems(taxonomies: any[]) {
         let items: string[] = [];
         for (let taxonomy of taxonomies) {
-        items.push(taxonomy.label);
+            items.push(taxonomy.label);
         }
         return items;
     }
 
     /**
-     * Taxonomy items list
+     * Generate a specific taxonomy items list from a given taxonomy list.
+     * @param taxonomies 
      */
     toTaxonomiesItems(taxonomies: any[]) {
         let items: SelectItem[] = [];
@@ -259,10 +241,10 @@ export class SearchPanelComponent implements OnInit {
         let suggTaxonomy = event.query;
         this.suggestedTaxonomyList = [];
         for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
-        let keyw = this.suggestedTaxonomies[i];
-        if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
-            this.suggestedTaxonomyList.push(keyw);
-        }
+            let keyw = this.suggestedTaxonomies[i];
+            if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
+                this.suggestedTaxonomyList.push(keyw);
+            }
         }
     }
 
@@ -273,7 +255,6 @@ export class SearchPanelComponent implements OnInit {
         this.operators = [];
         this.operators.push({ label: 'AND', value: 'AND' });
         this.operators.push({ label: 'OR', value: 'OR' });
-        this.operators.push({ label: 'NOT', value: 'NOT' });
     }
 
     /**
@@ -284,7 +265,6 @@ export class SearchPanelComponent implements OnInit {
 
         // Replace multiple spaces with single space
         searchValue = searchValue.replace(/  +/g, ' ');
-
         let params: NavigationExtras = {
         queryParams: {
             'q': this.convertSearchvalue(searchValue)
@@ -297,35 +277,40 @@ export class SearchPanelComponent implements OnInit {
      * Convert the text from search text box into url parameter. For example,
      * convert "Research Topic=water" to "topic.tag%3Dwater"
      * convert "Research Topic=water OR Research Topic=fire" to "topic.tag%3Dwater&logicalOp%3DOR=&topic.tag%3Dfire"
-     * @param searchvalue - search value typically from the search text box
+     * @param searchValue - search value typically from the search text box
      */
-    convertSearchvalue(searchvalue: string): string{
+    convertSearchvalue(searchValue: string): string{
         let searchString = '';
-        if(!searchvalue) return searchString;
+        if(!searchValue) return searchString;
 
-        searchString = searchvalue;
-
+        searchString = searchValue.trim();
         // Strip spaces around "="
         searchString = searchString.replace(new RegExp(' =', 'g'), '=');
-        searchString = searchString.replace(new RegExp('= ', 'g'), '=');
+        searchString = searchString.replace(new RegExp('= ', 'g'), '=&');
 
-        // Reserve "AND", "OR", "NOT"
-        searchString = searchString.replace(new RegExp('"OR"', 'g'), '"OaaaaaR"');
-        searchString = searchString.replace(new RegExp('"AND"', 'g'), '"ANaaaaaD"');
-        searchString = searchString.replace(new RegExp('"NOT"', 'g'), '"NOaaaaaT"');
+        // Reserve everything in quotes
+        let quotes = searchString.match(/\"(.*?)\"/g);
 
-        searchString = searchString.replace(new RegExp(' OR ', 'g'), '&logicalOp=OR&');
-        searchString = searchString.replace(new RegExp(' NOR ', 'g'), '&logicalOp=NOR&');
-        searchString = searchString.replace(new RegExp(' AND ', 'g'), '&logicalOp=AND&');
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                searchString = searchString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+            }
+        }
 
-        // Restore "AND", "OR", "NOT"
-        searchString = searchString.replace(new RegExp('"OaaaaaR"', 'g'), 'OR');
-        searchString = searchString.replace(new RegExp('"ANaaaaaD"', 'g'), 'AND');
-        searchString = searchString.replace(new RegExp('"NOaaaaaT"', 'g'), 'NOT');
+        searchString = searchString.replace(/ OR /g, '&logicalOp=OR&');
+        searchString = searchString.replace(/ NOR /g, '&logicalOp=NOR&');
+        searchString = searchString.replace(/ AND /g, '&logicalOp=AND&');
+        searchString = searchString.replace(/ /g, '&');
 
+        // Restore the contents in quotes
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                searchString = searchString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+            }
+        }
+        console.log('searchString5', searchString);
         return searchString;
     }
-
 
     /**
      *  Pass Search example popup value to home screen
@@ -358,8 +343,8 @@ export class SearchPanelComponent implements OnInit {
     }
 
     /*
-        * Popup dialog
-        */
+     * Popup dialog
+     */
     showPopupDialog( event, overlaypanel: OverlayPanel ) {
         overlaypanel.toggle(event);
 
@@ -403,14 +388,17 @@ export class SearchPanelComponent implements OnInit {
         },0);  
     }
 
-  /**
-   * Save the query string in the search box into query array
-   * This will remote execute the save query function in adv-search component
-   */
-  saveAdvQuery(queryName: string, overlaypanel: OverlayPanel){
-      if(queryName)
-          this.searchQueryService.saveAdvQueryFromString(this.searchValue, queryName);
+    /**
+     * Save the query string in the search box into query array
+     * This will remote execute the save query function in adv-search component
+     */
+    saveAdvQuery(queryName: string, overlaypanel: OverlayPanel){
+        console.log('queryName',queryName);
+        if(queryName)
+            this.searchQueryService.saveAdvQueryFromString(this.searchValue, queryName);
+        else
+            alert("Query name is required.");
 
-      overlaypanel.hide();
-  }
+        overlaypanel.hide();
+    }
 }

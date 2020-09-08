@@ -102,9 +102,9 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr style="text-align: center;">
+                        <th scope="col" style="width: 15%;">Operator</th>
                         <th scope="col" style="width: 35%;">Field Name</th>
                         <th scope="col" style="width: 35%;">Field Value</th>
-                        <th scope="col" style="width: 15%;">Operator</th>
                         <th scope="col" style="width: 15%;">Actions</th>
                     </tr>
                 </thead>
@@ -115,6 +115,15 @@
                         </td>
                     </tr>
                     <tr *ngFor="let queryRow of currentQuery.queryRows; index as rowIndex">
+                        <td *ngIf="rowIndex > 0">
+                            <select class="browser-default custom-select" [(ngModel)]="queryRow.operator"
+                                (change)="onDataChange()">
+                                <option *ngFor="let operator of operators;">{{operator.label}}</option>
+                            </select>
+                        </td>
+                        <td *ngIf="rowIndex == 0">
+
+                        </td>
                         <td>
                             <select class="browser-default custom-select italic" [(ngModel)]="queryRow.fieldType"
                                 (change)="onFieldTypeChange(queryRow)">
@@ -127,15 +136,7 @@
                                 placeholder="Fields text..." (focus)="setReadyEdit()"
                                 (keydown)="setMode()" (keyup)="onKeyup($event, 'searchValue')" />
                         </td>
-                        <td *ngIf="rowIndex < currentQuery.queryRows.length-1">
-                            <select class="browser-default custom-select" [(ngModel)]="queryRow.operator"
-                                (change)="onDataChange()">
-                                <option *ngFor="let operator of operators;">{{operator.label}}</option>
-                            </select>
-                        </td>
-                        <td *ngIf="rowIndex == currentQuery.queryRows.length-1">
 
-                        </td>
                         <td>
                             <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
                                 icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row"

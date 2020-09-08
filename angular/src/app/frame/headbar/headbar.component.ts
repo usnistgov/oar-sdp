@@ -33,6 +33,7 @@ export class HeadbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.queryLength = this.searchQueryService.getQueries().length;
   }
 
   executeQuery(query: SDPQuery){

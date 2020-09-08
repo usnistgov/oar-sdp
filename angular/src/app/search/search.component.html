@@ -69,7 +69,7 @@
                         'height': '140px','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
                     (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)"
-                    (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)">
+                    (onNodeExpand)="nodeExpanded = true" (onNodeCollapse)="nodeExpanded = false">
                     <ng-template let-node pTemplate="default">
                       <span> {{node.label.split("-")[0]}}&nbsp;</span>
                       <span class="w3-badge badge1" style="background-color: #1471AE;" *ngIf="node.label.split('-')[1] !=''">
@@ -78,7 +78,7 @@
                   </p-tree>
                   <div style="background-color: #F8F9F9;"
                     *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                    <a href="#" (click)="$event.preventDefault();showMoreResTopics()"
+                    <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = true;"
                       style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show More</a>
                   </div>
                 </div>
@@ -89,7 +89,7 @@
                         'height': 'auto','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
                     (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')"
-                    (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)">
+                    (onNodeExpand)="nodeExpanded = true" (onNodeCollapse)="nodeExpanded = false">
                     <ng-template let-node pTemplate="default">
                       <span> {{node.label.split("-")[0]}}&nbsp;</span>
                       <span class="w3-badge badge1" style="background-color: #1471AE;" *ngIf="node.label.split('-')[1] !=''">
@@ -98,7 +98,7 @@
                   </p-tree>
                   <div style="background-color: #F8F9F9;"
                     *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                    <a href="#" (click)="$event.preventDefault();showLessResTopics()"
+                    <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = false;"
                       style="background-color: #F8F9F9;color: #1f496e;;padding-left: 50px;">Show Less</a>
                   </div>
                 </div>
@@ -201,7 +201,7 @@
                         'padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
                   (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')"
-                  (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)">
+                  (onNodeExpand)="nodeExpanded = true" (onNodeCollapse)="nodeExpanded = false">
                   <ng-template let-node pTemplate="default">
                     <span class="invisible-scrollbar"> {{node.label.split("-")[0]}}&nbsp;</span>
                     <span class="w3-badge badge1 invisible-scrollbar" style="background-color: #1471AE"
@@ -210,7 +210,7 @@
                 </p-tree>
                 <div style="background-color: #F8F9F9"
                   *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                  <a href="#" (click)="$event.preventDefault();showMoreResTopics()"
+                  <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = true"
                     style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;"
                     *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">Show
                     More</a>
@@ -231,7 +231,7 @@
                 </p-tree>
                 <div style="background-color: #F8F9F9"
                   *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                  <a href="#" (click)="$event.preventDefault();showLessResTopics()"
+                  <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = false;"
                     style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show Less</a>
                 </div>
               </div>

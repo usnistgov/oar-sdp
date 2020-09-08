@@ -15,7 +15,7 @@ export class GoogleAnalyticsService {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd && event.url != '/') {
         setTimeout(() => {
-          console.log("Router gas() pageview: event URL", event.url, "title: pageview");
+        //   console.log("Router gas() pageview: event URL", event.url, "title: pageview");
           gas('send', 'pageview', event.url, 'pageview');
         }, 1000);
       }
@@ -26,7 +26,7 @@ export class GoogleAnalyticsService {
    * Tracking pageview
    */
   gaTrackPageview(url: string, title: string) {
-    console.log("Calling gas() pageview: URL", url, "title", title);
+    // console.log("Calling gas() pageview: URL", url, "title", title);
     gas('send', 'pageview', url, title);
   }
 
@@ -59,11 +59,6 @@ export class GoogleAnalyticsService {
 
     console.log("Calling gas(): Event category", category, "action", action, "label", label);
     gas('send', 'event', category, action, label, 1);
-
-    // setTimeout(() => {
-    //   console.log("Event category", category, "action", action, "label", label);
-    //   gas('send', 'event', category, action, label, 1);
-    // }, 1000);
   }
 
 /*

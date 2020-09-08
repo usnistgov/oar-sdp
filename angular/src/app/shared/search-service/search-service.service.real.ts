@@ -45,9 +45,11 @@ export class RealSearchService implements SearchService{
       return EMPTY;
     }
 
+    console.log('searchValue', searchValue);
+
     //Treat ',', ';' the same as space
-    searchValue = searchValue.replace(/\,/g, ' ');
-    searchValue = searchValue.replace(/\;/g, ' ');
+    // searchValue = searchValue.replace(/\,/g, ' ');
+    // searchValue = searchValue.replace(/\;/g, ' ');
 
     // Replace '%26' with '&'
     searchValue = searchValue.replace(/\%26/g, '&');
@@ -63,7 +65,22 @@ export class RealSearchService implements SearchService{
           searchKey = parameters[i].split("=")[0];
           if(searchKey.toUpperCase() == "ALL") searchKey = "searchphrase";
 
-          searchPhraseValue += searchKey + "=" + parameters[i].split("=")[1];;
+          let value01 = parameters[i].split("=")[1];
+          //If all content is in quotes, remove quotes. Otherwise keep it as it is.
+          let quotes = value01.match(/\"(.*?)\"/g);
+          let tempVal = value01;
+
+          if(quotes){
+              for(let i = 0; i < quotes.length; i++){
+                tempVal = tempVal.replace(quotes[i], quotes[i].match(/\"(.*?)\"/)[1]);
+              }
+              console.log('tempVal', tempVal);
+              if(value01 == '"'+tempVal+'"'){
+                value01 = tempVal;
+              }
+          }
+
+          searchPhraseValue += searchKey + "=" + value01;
         } else if (parameters[i].toLowerCase() == "logicalOp=and") {
           searchPhraseValue += 'logicalOp=AND';
         } else if (parameters[i].toLowerCase() == "logicalOp=or") {
@@ -76,6 +93,8 @@ export class RealSearchService implements SearchService{
         }
       }
     }
+
+    console.log('searchPhraseValue', searchPhraseValue);
 
     let keyString: string = '';
     if(searchTaxonomyKey){

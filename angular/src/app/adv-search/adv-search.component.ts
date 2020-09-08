@@ -145,9 +145,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.queryNameValidateErrorMsg = "Query name is required";
                 this.queryNameValidateError = true;
             } else {
-                if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
-                    this.queryNameValidateErrorMsg = "Query name is required";
-                    this.queryNameValidateError = true;
+                console.log("this.queries", this.queries)
+                if(this.queries.length > 0){
+                    if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
+                        this.queryNameValidateErrorMsg = "Query name is required";
+                        this.queryNameValidateError = true;
+                    }
                 }
             }
         }
@@ -197,7 +200,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.operators = [];
         this.operators.push({ label: 'AND', value: 'AND' });
         this.operators.push({ label: 'OR', value: 'OR' });
-        this.operators.push({ label: 'NOT', value: 'NOT' });
     }
 
     /**
@@ -327,10 +329,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     saveAdvSearchQuery() {
         //Double check query name field value
-        if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, this.queries[this.previousQueryIndex].queryName, this.getMode())){
-            this.queryNameValidateErrorMsg = "Query name is required";
-            this.queryNameValidateError = true;
-            return;
+        console.log('this.previousQueryIndex', this.previousQueryIndex);
+        if(this.queries.length > 0){
+            if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, this.queries[this.previousQueryIndex].queryName, this.getMode())){
+                this.queryNameValidateErrorMsg = "Query name is required";
+                this.queryNameValidateError = true;
+                return;
+            }
         }
 
         // Build this.searchValue

@@ -152,10 +152,9 @@
                                 Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND
                                 &ldquo;Physics&rdquo;; That is, returned records will contain both the phrase
                                 &ldquo;NIST Chemistry&rdquo; and &ldquo;Physics&rdquo;. Available operators are
-                                <span class="link-text" (click)="appendToSearchBox(' AND ')">AND</span>, <span
-                                    class="link-text" (click)="appendToSearchBox(' OR ')">OR</span> and <span
-                                    class="link-text" (click)="appendToSearchBox(' NOT ')">NOT</span> (all caps).
-                                <br>To search words "AND", "OR" or "NOT", put them in quotes.
+                                <span class="link-text" (click)="appendToSearchBox(' AND ')">AND</span> and <span
+                                    class="link-text" (click)="appendToSearchBox(' OR ')">OR</span> (all caps).
+                                <br>To search words "AND" or "OR", put them in quotes.
                             </td>
                         </tr>
                     </tbody>
@@ -198,10 +197,7 @@
                 <tr class="field-item operator" (click)="appendToSearchBox(' OR ', null, op1)">
                     <td>OR</td>
                 </tr>
-                <tr class="field-item border-bottom operator" (click)="appendToSearchBox(' NOT ', null, op1)">
-                    <td>NOT</td>
-                </tr>
-                <tr *ngFor="let field of fields" class="field-item" (click)="appendToSearchBox(field.value, '=', op1)">
+                <tr *ngFor="let field of observableFields | async" class="field-item" (click)="appendToSearchBox(field.value, '=', op1)">
                     <td>
                         {{field.label}} - {{field.value}}
                     </td>
@@ -227,7 +223,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let field of fields" class="field-item" (click)="appendToSearchBox(field.value, '=', op2)">
+                <tr *ngFor="let field of observableFields | async" class="field-item" (click)="appendToSearchBox(field.value, '=', op2);showPopupDialog($event, op4);">
                     <td class="link-text">
                         {{field.value}}
                     </td>
@@ -252,9 +248,6 @@
                 <tr class="field-item operator" (click)="appendToSearchBox(' OR ', null, op3)">
                     <td>OR</td>
                 </tr>
-                <tr class="field-item border-bottom operator" (click)="appendToSearchBox(' NOT ', null, op3)">
-                    <td>NOT</td>
-                </tr>
             </tbody>
         </table>
     </div>
@@ -263,7 +256,7 @@
 <!-- Popup dialog for input value -->
 <p-overlayPanel class="fileDialog" #op4 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
     appendToBody=true>
-    <div>
+    <div style="background-color: rgb(201, 201, 201);width: 100%; padding: .1em;">
         <span class="inner-addon">
             <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
                 (keyup.enter)="appendToSearchBox($event.target.value, null, op4)"
@@ -289,7 +282,7 @@
             <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
                 title="Clear the search box"></i>
         </span>
-        <button id="btn-append" type="button" (click)="saveAdvQuery($event.target.value, op5)" pButton type="submit">
+        <button id="btn-append" type="button" (click)="saveAdvQuery(field2.value, op5)" pButton type="submit">
             Save Query
         </button>
     </div>

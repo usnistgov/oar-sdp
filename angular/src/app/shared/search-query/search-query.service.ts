@@ -45,26 +45,75 @@ export class SearchQueryService {
      */
     buildSearchString(query: SDPQuery) {
         let lSearchValue: string = '';
+        // First of all, we need to handle duplicated field (row) name, if any
+
+        var dupNames = this.findDuplicates(query.queryRows)
+        var uniqRows: QueryRow[] = [];
+        let uniqQuerryRows: QueryRow[] = JSON.parse(JSON.stringify(query.queryRows));
+
+        for(let i=0; i<dupNames.length; i++){
+            uniqQuerryRows = uniqQuerryRows.filter(q => q.fieldValue != dupNames[i]);
+
+            var dups = query.queryRows.filter(q => q.fieldValue === dupNames[i])
+            uniqRows.push(dups[0]);
+            for(let j=1; j<dups.length; j++){
+                if(dups[j].operator == "OR"){
+                    uniqRows[0].fieldText += "," + dups[j].fieldText;
+                }else{
+                    uniqRows.push(dups[j]);
+                }
+            }
+        }
+
+        for(let k=0; k<uniqRows.length; k++)
+            uniqQuerryRows.push(uniqRows[k]);
+
+        query.queryRows = uniqQuerryRows;
+        console.log('uniqQuerryRows', uniqQuerryRows);
+
+        // Processing rows
         for (let i = 0; i < query.queryRows.length; i++) {
-        if (typeof query.queryRows[i].operator === 'undefined') {
-            query.queryRows[i].operator = 'AND';
-        }
-        if (typeof query.queryRows[i].fieldType === 'undefined' || query.queryRows[i].fieldType === 'All') {
-            query.queryRows[i].fieldType = 'searchphrase';
-        }
-        if (typeof query.queryRows[i].fieldText === 'undefined') {
-            query.queryRows[i].fieldText = '';
-        }
+            if (typeof query.queryRows[i].operator === 'undefined') {
+                query.queryRows[i].operator = 'AND';
+            }
+            if (typeof query.queryRows[i].fieldType === 'undefined' || query.queryRows[i].fieldType === 'All') {
+                query.queryRows[i].fieldType = 'searchphrase';
+            }
+            if (typeof query.queryRows[i].fieldText === 'undefined') {
+                query.queryRows[i].fieldText = '';
+            }
 
-        let fieldValue: string;
-        fieldValue = query.queryRows[i].fieldValue;
+            let fieldValue: string;
+            fieldValue = query.queryRows[i].fieldValue;
 
-        lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;
-        if(i < query.queryRows.length - 1)
-            lSearchValue += ' ' + query.queryRows[i].operator + ' ';
+            lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;
+            if(i < query.queryRows.length - 1)
+                lSearchValue += ' ' + query.queryRows[i].operator + ' ';
         }
 
         return lSearchValue;
+    }
+
+    /**
+     * Find duplicated query rows
+     * @param queryRows input query rows
+     */
+    findDuplicates(queryRows: QueryRow[]): string[]{
+        console.log('queryRows', queryRows);
+        var uniq = queryRows
+        .map((queryRow) => {
+          return {
+            count: 1,
+            fieldValue: queryRow.fieldValue
+          }
+        })
+        .reduce((a, b) => {
+          a[b.fieldValue] = (a[b.fieldValue] || 0) + b.count
+          return a
+        }, {})
+
+      var duplicates = Object.keys(uniq).filter((a) => uniq[a] > 1)
+      return duplicates;
     }
 
     /**
