@@ -83,7 +83,7 @@ export class SearchfieldsListService {
    */
   toFieldItems(fields: any[]): SelectItem[] {
     let items: SelectItem[] = [];
-    items.push({ label: this.ALL, value: 'All' });
+    items.push({ label: this.ALL, value: 'searchphrase' });
     let fieldItems: SelectItem[] = [];
     for (let field of fields) {
       if (_.includes(field.tags, 'searchable')) {
@@ -91,7 +91,7 @@ export class SearchfieldsListService {
       }
     };
     fieldItems = _.sortBy(fieldItems, ['label', 'value']);
-    fieldItems.unshift({ label: this.ALL, value: 'All' });
+    fieldItems.unshift({ label: this.ALL, value: 'searchphrase' });
 
     return fieldItems;
   }

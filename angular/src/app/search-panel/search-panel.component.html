@@ -208,7 +208,7 @@
 </p-overlayPanel>
 
 <!-- Popup dialog for field names -->
-<p-overlayPanel class="fileDialog" #op2 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
+<p-overlayPanel class="fileDialog" #op2 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
     appendToBody=true>
     <div class="table-wrapper">
         <table width="100%" class="popup-table">
@@ -223,7 +223,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let field of observableFields | async" class="field-item" (click)="appendToSearchBox(field.value, '=', op2);showPopupDialog($event, op4);">
+                <tr *ngFor="let field of observableFields | async" class="field-item" (click)="addKeyValuePairToSearchBox($event, field.value, op2, op4);">
                     <td class="link-text">
                         {{field.value}}
                     </td>
@@ -254,9 +254,9 @@
 </p-overlayPanel>
 
 <!-- Popup dialog for input value -->
-<p-overlayPanel class="fileDialog" #op4 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
+<p-overlayPanel class="fileDialog" #op4 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
     appendToBody=true>
-    <div style="background-color: rgb(201, 201, 201);width: 100%; padding: .1em;">
+    <div style="width: 100%; padding: 2em;">
         <span class="inner-addon">
             <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
                 (keyup.enter)="appendToSearchBox($event.target.value, null, op4)"
@@ -266,9 +266,11 @@
                 title="Clear the search box"></i>
         </span>
         <button id="btn-append" type="button" (click)="appendToSearchBox(field.value, null, op4)" pButton type="submit">
-            Append
+            Set
         </button>
+        <div style="font-style: italic; font-size: 12px; padding-top: .2em;">Example: Physics, "NIST Chemistry" </div>
     </div>
+    
 </p-overlayPanel>
 
 <!-- Popup dialog for query name -->

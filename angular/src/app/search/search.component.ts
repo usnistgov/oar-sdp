@@ -195,10 +195,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // Processing search value
     if(this.searchValue){
-        //Treat ',', ';' the same as space
-        // this.searchValue = this.searchValue.replace(/\,/g, ' ');
-        // this.searchValue = this.searchValue.replace(/\;/g, ' ');
-
       // Replace '%26' with '&'
         this.searchValue = this.searchValue.replace(/\%26/g, '&');
 
@@ -1421,14 +1417,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         if(!param) return searchValue;
 
         searchValue = param;
-        // for(let field of this.fieldTypes){
-        //     searchValue = searchValue.replace(new RegExp(field.value.replace('.', '\.'), 'gi'), field.label);
-        // }
 
         searchValue = searchValue.replace(new RegExp('&logicalOp=OR&', 'g'), ' OR ');
         searchValue = searchValue.replace(new RegExp('&logicalOp=NOR&', 'g'), ' NOR ');
         searchValue = searchValue.replace(new RegExp('&logicalOp=AND&', 'g'), ' AND ');
-        searchValue = searchValue.replace("searchphrase", "ALL FIELDS");
+        searchValue = searchValue.replace("&", " ");
 
         return searchValue;
     }

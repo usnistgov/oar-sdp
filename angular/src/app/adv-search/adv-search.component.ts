@@ -145,7 +145,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.queryNameValidateErrorMsg = "Query name is required";
                 this.queryNameValidateError = true;
             } else {
-                console.log("this.queries", this.queries)
                 if(this.queries.length > 0){
                     if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
                         this.queryNameValidateErrorMsg = "Query name is required";
@@ -231,7 +230,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * @param row - row to be duplicated
      */
     duplicateRow(row: QueryRow, index: number){
-        console.log('index', index);
         let newRow: QueryRow = JSON.parse(JSON.stringify(row));
         newRow.id = this.nextRowId(this.currentQuery);
         this.currentQuery.queryRows.splice(index, 0, newRow);
@@ -330,7 +328,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     saveAdvSearchQuery() {
         //Double check query name field value
-        console.log('this.previousQueryIndex', this.previousQueryIndex);
         if(this.queries.length > 0){
             if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, this.queries[this.previousQueryIndex].queryName, this.getMode())){
                 this.queryNameValidateErrorMsg = "Query name is required";
@@ -401,6 +398,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     */
     executeQuery(query: SDPQuery) {
         let lQueryValue = this.searchQueryService.buildSearchString(query);
+
         this.searchService.setQueryValue(lQueryValue, '', '');
         this.searchService.startSearching(true);
     }

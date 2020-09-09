@@ -8,6 +8,15 @@
       <li class="nav-item">
         <a class="nav-link" href="/"><i class="faa faa-home" style="font-size: 23px;"></i></a>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" (click)="toggleAbout()"> About </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': aboutCollapsed}">
+          <li><a class="dropdown-item" href="#" routerLink="/about" target='_self'>About NIST Data</a></li>
+          <li><a class="dropdown-item" href="#" routerLink="/policy" target='_self'>Policy</a></li>
+          <li><a class="dropdown-item" href="#" routerLink="/contactus" target='_self'>Help</a></li>
+        </ul>
+      </li>
       <li class="nav-item dropdown blurry">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" (click)="toggleKeyDatasets()"> Key Datasets </a>
@@ -40,15 +49,6 @@
         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': developerCollapsed}">
           <li><a class="dropdown-item" href="#" routerLink="/api">APIs</a></li>
           <li><a class="dropdown-item" href="https://github.com/usnistgov/oar-developer">GitHub (usnistgov)</a></li>
-        </ul>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" (click)="toggleAbout()"> About </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': aboutCollapsed}">
-          <li><a class="dropdown-item" href="#" routerLink="/about" target='_self'>About NIST Data</a></li>
-          <li><a class="dropdown-item" href="#" routerLink="/policy" target='_self'>Policy</a></li>
-          <li><a class="dropdown-item" href="#" routerLink="/contactus" target='_self'>Help</a></li>
         </ul>
       </li>
       <li class="nav-item dropdown">

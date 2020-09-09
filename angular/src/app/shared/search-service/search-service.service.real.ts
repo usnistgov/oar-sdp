@@ -45,8 +45,6 @@ export class RealSearchService implements SearchService{
       return EMPTY;
     }
 
-    console.log('searchValue', searchValue);
-
     //Treat ',', ';' the same as space
     // searchValue = searchValue.replace(/\,/g, ' ');
     // searchValue = searchValue.replace(/\;/g, ' ');
@@ -63,22 +61,8 @@ export class RealSearchService implements SearchService{
 
         if (parameters[i].includes("=")) {
           searchKey = parameters[i].split("=")[0];
-          if(searchKey.toUpperCase() == "ALL") searchKey = "searchphrase";
 
-          let value01 = parameters[i].split("=")[1];
-          //If all content is in quotes, remove quotes. Otherwise keep it as it is.
-          let quotes = value01.match(/\"(.*?)\"/g);
-          let tempVal = value01;
-
-          if(quotes){
-              for(let i = 0; i < quotes.length; i++){
-                tempVal = tempVal.replace(quotes[i], quotes[i].match(/\"(.*?)\"/)[1]);
-              }
-              console.log('tempVal', tempVal);
-              if(value01 == '"'+tempVal+'"'){
-                value01 = tempVal;
-              }
-          }
+        let value01 = parameters[i].split("=")[1];
 
           searchPhraseValue += searchKey + "=" + value01;
         } else if (parameters[i].toLowerCase() == "logicalOp=and") {
@@ -94,14 +78,14 @@ export class RealSearchService implements SearchService{
       }
     }
 
-    console.log('searchPhraseValue', searchPhraseValue);
-
     let keyString: string = '';
     if(searchTaxonomyKey){
         keyString = '&topic.tag=' + searchTaxonomyKey;
     }
 
     let url = this.RMMAPIURL + 'records?' + searchPhraseValue + keyString;
+    // console.log("url", url);
+
     return this.http.get(url);
   }
 

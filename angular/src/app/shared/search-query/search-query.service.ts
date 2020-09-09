@@ -30,6 +30,7 @@ export class SearchQueryService {
     displayCart : boolean = false;
     private _storage = localStorage;
     fields: SelectItem[];
+    operators: string[] = ["AND", "OR"];
 
     constructor(
         public searchFieldsListService: SearchfieldsListService,
@@ -41,9 +42,11 @@ export class SearchQueryService {
     }
 
     /**
-     * Advanced Search builder string
+     * Advanced Search string builder 
      */
-    buildSearchString(query: SDPQuery) {
+    buildSearchString(inputQuery: SDPQuery): string {
+        let query = JSON.parse(JSON.stringify(inputQuery));
+
         let lSearchValue: string = '';
         // First of all, we need to handle duplicated field (row) name, if any
         // If there are dup keys and operator is OR, we need to combine them together, separate values by comma.
@@ -68,7 +71,7 @@ export class SearchQueryService {
             if (typeof query.queryRows[i].operator === 'undefined') {
                 query.queryRows[i].operator = 'AND';
             }
-            if (typeof query.queryRows[i].fieldType === 'undefined' || query.queryRows[i].fieldType === 'All') {
+            if (typeof query.queryRows[i].fieldType === 'undefined') {
                 query.queryRows[i].fieldType = 'searchphrase';
             }
             if (typeof query.queryRows[i].fieldText === 'undefined') {
@@ -90,7 +93,6 @@ export class SearchQueryService {
      * @param queryRows input query rows
      */
     findDuplicates(queryRows: QueryRow[]): string[]{
-        console.log('queryRows', queryRows);
         var uniq = queryRows
         .map((queryRow) => {
           return {
@@ -113,7 +115,7 @@ export class SearchQueryService {
      */
     saveQueries(qureies: SDPQuery[]){
         this._storage.setItem('queries',JSON.stringify(qureies));
-        this.notificationService.showSuccessWithTimeout("Queries saved.", "", 3000);
+        this.notificationService.showSuccessWithTimeout("Queries updated.", "", 3000);
         this.queriesSub.next(qureies);
     }
 
@@ -126,59 +128,103 @@ export class SearchQueryService {
     }
 
     /**
-     * Parse query string, create a query object and append it to existing query list.
-     * @param queryString - string from the search box
-     * @param queryName - query name to be saved
+     * 
+     * @param queryString Query string
      */
-    public saveAdvQueryFromString(queryString: string, queryName: string) : SDPQuery[]{
+    buildQueryFromString(queryString: string, queryName?: string): SDPQuery{
+        let lQueryName: string;
+
         //We are not going to save empty string
         if(!queryString){
             return null;
         }
 
-        let currentQueries = this.getQueries();
-
-        // validate query name
-        if(!this.queryNameValidation(queryName, "", "ADD")){
-            console.log("Name already exist!", queryName);
-            alert("Query name already exist!");
-            return null;
+        if(queryName){
+            lQueryName = queryName;
+            // validate query name
+            if(!this.queryNameValidation(queryName, "", "ADD")){
+                console.log("Name already exist!", queryName);
+                alert("Query name already exist!");
+                return null;
+            }
+        }else{
+            lQueryName = "unknown";
         }
- 
+
         // Assume the query string follows this pattern:
         // key=value OP key=value OP ...
 
-        let lqString = queryString;
+        let lqString = queryString.trim();
         lqString = lqString.replace(new RegExp(' AND ', 'g'), '&AND&');
         lqString = lqString.replace(new RegExp(' OR ', 'g'), '&OR&');
-        lqString = lqString.replace(new RegExp(' NOT ', 'g'), '&NOT&');
 
-        let query: SDPQuery = new SDPQuery(this.nextQueryId(), queryName)
+        //Reserve everything in quotes
+        let quotes = lqString.match(/\"(.*?)\"/g);
+
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                lqString = lqString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+            }
+        }
+        //Trim spaces
+        lqString = lqString.replace(/\s+/g, ' ');
+
+        //Replace spaces with "&OR&"
+        lqString = lqString.replace(/ /g, '&OR&');
+
+        //Restore everything in quotes
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                lqString = lqString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+            }
+        }
+
+        let query: SDPQuery = new SDPQuery(this.nextQueryId(), lQueryName)
         let keyValue: string[];
         let row: QueryRow;
 
         let items = lqString.split('&');
         if(items && items.length > 0){
-            for (var i = 0; i < items.length; i=i+2) {
+            for (var i = 0; i < items.length; i++) {
                 keyValue = items[i].split("=");
                 row = new QueryRow(this.nextRowId(query));
+
+                // If first one is an operator, add it to the row and load next item
+                // Otherwise populate the row
+                if(i>0){
+                    if(this.operators.indexOf(items[i])>0){
+                        row.operator = items[i];
+                        i++;
+                        keyValue = items[i].split("=");
+                    }                  
+                }
+
                 if(keyValue.length > 1){
                     row.fieldValue = keyValue[0];
                     row.fieldType = this.searchFieldsListService.getFieldType(row.fieldValue);
                     row.fieldText = keyValue[1];
                 }else{
-                    row.fieldValue = "All";
+                    row.fieldValue = "searchphrase";
                     row.fieldType = this.searchFieldsListService.getFieldType(row.fieldValue);
                     row.fieldText = keyValue[0];
                 }
-                
-                // Check for operator
-                if(items[i+1]){
-                    row.operator = items[i+1];
-                }
+
                 query.queryRows.push(JSON.parse(JSON.stringify(row)));
             }
         }
+
+        return query;
+    }
+
+    /**
+     * Parse query string, create a query object and append it to existing query list.
+     * @param queryString - string from the search box
+     * @param queryName - query name to be saved
+     */
+    public saveAdvQueryFromString(queryString: string, queryName: string) {
+
+        let currentQueries = this.getQueries();
+        let query = this.buildQueryFromString(queryString, queryName);
 
         currentQueries.push(JSON.parse(JSON.stringify(query)));
         this.saveQueries(currentQueries);

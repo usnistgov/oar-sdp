@@ -65,19 +65,4 @@ describe('workspace-project App', () => {
     const text = element(by.css('sdp-search h4')).getText();
     expect<any>(text).toContain("SRD 101");
   });
-
-  it('Search for text SRD 101 should return SRD 101',()=>{
-    page.navigateTo('/');
-    browser.sleep(5000);
-    browser.ignoreSynchronization = true;
-    page.showExampleLink().click();
-    browser.sleep(5000);
-    page.getSearchExampleLink().click();
-    browser.sleep(5000);
-    page.getSearchButton().click();
-    browser.sleep(5000);
-
-    const text = element(by.css('sdp-search h4')).getText();
-    expect<any>(text).toContain("SRD 101");
-  });
 });

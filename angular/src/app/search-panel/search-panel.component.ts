@@ -261,13 +261,17 @@ export class SearchPanelComponent implements OnInit {
      * Set the search parameters and redirect to search page
      */
     search(searchValue: string, searchTaxonomyKey: string) {
-        this.searchTaxonomyKey = searchTaxonomyKey;
-
         // Replace multiple spaces with single space
         searchValue = searchValue.replace(/  +/g, ' ');
+
+        //Build query string
+        let lQueryString = this.searchQueryService.buildSearchString(this.searchQueryService.buildQueryFromString(searchValue));
+
+        this.searchTaxonomyKey = searchTaxonomyKey;
+
         let params: NavigationExtras = {
         queryParams: {
-            'q': this.convertSearchvalue(searchValue)
+            'q': this.convertSearchvalue(lQueryString)
         }
         };
         this.router.navigate(['/search'], params);
@@ -308,7 +312,6 @@ export class SearchPanelComponent implements OnInit {
                 searchString = searchString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
             }
         }
-        console.log('searchString5', searchString);
         return searchString;
     }
 
@@ -319,6 +322,30 @@ export class SearchPanelComponent implements OnInit {
         this.display = false;
         this._searchValue = popupValue;
         this.textRotate = !this.textRotate;
+    }
+
+        /**
+     * Apeend text to the search box
+     * @param field - text to be appended
+     * @param op - operator (usually "=")
+     * @param overlaypanel - the overlaypanel that is calling. It will be closed after this operation.
+     */
+    addKeyValuePairToSearchBox(event: any, field: string, overlay1: OverlayPanel, overlay2: OverlayPanel){
+        // Strip quotes
+        field = field.replace(new RegExp('"', 'g'), '');
+
+        if(field.indexOf(" ") > 0){
+            field = '"' + field + '"';
+        }
+        if(this.searchValue.substr(this.searchValue.length - 1) == " ")
+            this.searchValue += field + "=";
+        else
+            this.searchValue += " " + field + "=";
+
+        overlay2.show(event);
+
+        // if(overlay1) overlay1.hide();
+        field = "";
     }
 
     /**
@@ -334,8 +361,17 @@ export class SearchPanelComponent implements OnInit {
         if(field.indexOf(" ") > 0){
             field = '"' + field + '"';
         }
+        if(this.searchValue.substr(this.searchValue.length - 1) == " ")
+            this.searchValue += field;
+        else{
+            if(this.searchValue.substr(this.searchValue.length - 1) == "="){
+                this.searchValue += field;
+            }else{
+                this.searchValue += " " + field;
+            }
+            
+        }
 
-        this.searchValue += field;
         if(op) this.searchValue = this.searchValue.trim() + op;
 
         if(overlaypanel) overlaypanel.hide();
@@ -393,7 +429,6 @@ export class SearchPanelComponent implements OnInit {
      * This will remote execute the save query function in adv-search component
      */
     saveAdvQuery(queryName: string, overlaypanel: OverlayPanel){
-        console.log('queryName',queryName);
         if(queryName)
             this.searchQueryService.saveAdvQueryFromString(this.searchValue, queryName);
         else
