@@ -42,7 +42,7 @@ export class SearchQueryService {
     }
 
     /**
-     * Advanced Search string builder 
+     * Build search string from a given query object for displaying in the search text box
      */
     buildSearchString(inputQuery: SDPQuery): string {
         let query = JSON.parse(JSON.stringify(inputQuery));
@@ -65,7 +65,10 @@ export class SearchQueryService {
         }
 
         // Processing rows
-        lSearchValue = query.queryRows[0].fieldValue + '=' + query.queryRows[0].fieldText;
+        if(query.queryRows[0].fieldText == null || query.queryRows[0].fieldText == undefined || query.queryRows[0].fieldText.trim() == '')
+            lSearchValue = query.queryRows[0].fieldValue + '=" "';
+        else
+            lSearchValue = query.queryRows[0].fieldValue + '=' + query.queryRows[0].fieldText;
 
         for (let i = 1; i < query.queryRows.length; i++) {
             if (typeof query.queryRows[i].operator === 'undefined') {
@@ -82,7 +85,11 @@ export class SearchQueryService {
             fieldValue = query.queryRows[i].fieldValue;
 
             lSearchValue += ' ' + query.queryRows[i].operator + ' ';
-            lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;                
+
+            if(query.queryRows[i].fieldText == null || query.queryRows[i].fieldText == undefined || query.queryRows[i].fieldText.trim() == '')
+                lSearchValue += query.queryRows[i].fieldValue + '=" "';    
+            else
+                lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;      
         }
 
         return lSearchValue;
@@ -133,12 +140,10 @@ export class SearchQueryService {
      */
     buildQueryFromString(queryString: string, queryName?: string): SDPQuery{
         let lQueryName: string;
-
         //We are not going to save empty string
         if(!queryString){
-            return null;
+            queryString = "";
         }
-
         if(queryName){
             lQueryName = queryName;
             // validate query name
@@ -160,12 +165,13 @@ export class SearchQueryService {
 
         //Reserve everything in quotes
         let quotes = lqString.match(/\"(.*?)\"/g);
-
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
-                lqString = lqString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                if(quotes[i] != '""')
+                    lqString = lqString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
             }
         }
+
         //Trim spaces
         lqString = lqString.replace(/\s+/g, ' ');
 
@@ -175,7 +181,8 @@ export class SearchQueryService {
         //Restore everything in quotes
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
-                lqString = lqString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                if(quotes[i] != '""')
+                    lqString = lqString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
             }
         }
 
@@ -192,7 +199,7 @@ export class SearchQueryService {
                 // If first one is an operator, add it to the row and load next item
                 // Otherwise populate the row
                 if(i>0){
-                    if(this.operators.indexOf(items[i])>0){
+                    if(this.operators.indexOf(items[i])>=0){
                         row.operator = items[i];
                         i++;
                         keyValue = items[i].split("=");
@@ -212,7 +219,7 @@ export class SearchQueryService {
                 query.queryRows.push(JSON.parse(JSON.stringify(row)));
             }
         }
-
+        console.log("query", query);
         return query;
     }
 

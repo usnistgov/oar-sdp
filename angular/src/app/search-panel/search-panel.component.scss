@@ -355,15 +355,15 @@ table thead, table tbody tr {
     padding-left: 0em;
 }
 
-#btn-save-query {
+.btn-slim {
     float: left;
-    margin-left: 1.5em;
-    height: 30px;
+    margin: .5em 0 .5em 1.5em;
+    height: 20px;
     width: fit-content;
-    border-radius: 5px;
+    border-radius: 3px;
     color: white;
     background-color: #3e8e41;
-    padding: 4px .5em 0 .5em;
+    padding: 0px .5em 0 .5em;
     cursor: pointer;
 }
 

@@ -261,6 +261,7 @@ export class SearchPanelComponent implements OnInit {
      * Set the search parameters and redirect to search page
      */
     search(searchValue: string, searchTaxonomyKey: string) {
+        console.log('searchValue', searchValue);
         // Replace multiple spaces with single space
         searchValue = searchValue.replace(/  +/g, ' ');
 
@@ -297,7 +298,10 @@ export class SearchPanelComponent implements OnInit {
 
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
-                searchString = searchString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                if(quotes[i].match(/\"(.*?)\"/)[1].trim() != '')
+                    searchString = searchString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                else
+                    searchString = searchString.replace(quotes[i], 'Quooooote'+i);
             }
         }
 
@@ -309,7 +313,10 @@ export class SearchPanelComponent implements OnInit {
         // Restore the contents in quotes
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
-                searchString = searchString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                if(quotes[i].match(/\"(.*?)\"/)[1].trim() != '')
+                    searchString = searchString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                else
+                    searchString = searchString.replace('Quooooote'+i, quotes[i]);
             }
         }
         return searchString;

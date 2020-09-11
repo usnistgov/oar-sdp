@@ -199,7 +199,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchValue = this.searchValue.replace(/\%26/g, '&');
 
         let queryValue: string;
-
         queryValue = this.revertSearchvalue(this.searchValue);
 
         this.searchFieldsListService.getSearchFields().subscribe(
@@ -1419,9 +1418,19 @@ export class SearchComponent implements OnInit, OnDestroy {
         searchValue = param;
 
         searchValue = searchValue.replace(new RegExp('&logicalOp=OR&', 'g'), ' OR ');
-        searchValue = searchValue.replace(new RegExp('&logicalOp=NOR&', 'g'), ' NOR ');
+        searchValue = searchValue.replace(new RegExp('&logicalOp=NOT&', 'g'), ' NOT ');
         searchValue = searchValue.replace(new RegExp('&logicalOp=AND&', 'g'), ' AND ');
         searchValue = searchValue.replace("&", " ");
+
+        //If only thing in quotes is space, removes it
+        let quotes = searchValue.match(/\"(.*?)\"/g);
+
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i].match(/\"(.*?)\"/)[1].trim() == '')
+                searchValue = searchValue.replace(quotes[i], '');
+            }
+        }
 
         return searchValue;
     }

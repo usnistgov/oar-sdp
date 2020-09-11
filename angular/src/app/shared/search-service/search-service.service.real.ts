@@ -78,6 +78,16 @@ export class RealSearchService implements SearchService{
       }
     }
 
+    //If only thing in quotes is space, removes it
+    let quotes = searchPhraseValue.match(/\"(.*?)\"/g);
+
+    if(quotes){
+        for(let i = 0; i < quotes.length; i++){
+            if(quotes[i].match(/\"(.*?)\"/)[1].trim() == '')
+                searchPhraseValue = searchPhraseValue.replace(quotes[i], '');
+        }
+    }
+
     let keyString: string = '';
     if(searchTaxonomyKey){
         keyString = '&topic.tag=' + searchTaxonomyKey;
