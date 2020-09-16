@@ -138,15 +138,17 @@
                         </td>
 
                         <td>
-                            <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
-                                icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row"
-                                [disabled]="currentQuery.queryRows.length <= 1">
-                                <i class="faa faa-trash"></i>
-                            </button>
-                            <button type="button" class="btn-row-act" pButton (click)="duplicateRow(queryRow, rowIndex)"
-                                icon="ui-icon-content-copy" data-toggle="tooltip" title="Duplicate Row">
-                                <i class="faa faa-copy"></i>
-                            </button>
+                            <div style="text-align: center;height: 2.5em;">
+                                <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
+                                    icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row"
+                                    [disabled]="currentQuery.queryRows.length <= 1">
+                                    <i class="faa faa-trash"></i>
+                                </button>
+                                <button type="button" class="btn-row-act" pButton (click)="duplicateRow(queryRow, rowIndex)"
+                                    icon="ui-icon-content-copy" data-toggle="tooltip" title="Duplicate Row">
+                                    <i class="faa faa-copy"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

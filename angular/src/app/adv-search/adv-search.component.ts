@@ -228,6 +228,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     deleteRow(index: number){
         this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row.id != this.currentQuery.queryRows[index].id);
 
+        //Validate field value
+        if(this.currentQuery.queryRows.filter(row => row.validated == false).length > 0)
+            this.rowInputValidateError = true;
+        else
+            this.rowInputValidateError = false;
+
         this.onDataChange();
     }
 
