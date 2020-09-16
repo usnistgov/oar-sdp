@@ -442,8 +442,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         let compNoData: boolean = false;
         this.searchResultsError = [];
 
-        console.log('filteredResults', this.filteredResults);
-
         if (searchResults.length === 0) {
             this.resultStatus = this.RESULT_STATUS.noResult;
         }
@@ -507,7 +505,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.themes = [];
         this.msgs = [];
 
-        if((<any>error).status >= 400 && (<any>error).status < 500){
+        if((<any>error).status == 400){
             this.resultStatus = this.RESULT_STATUS.userError;
         }else{
             this.resultStatus = this.RESULT_STATUS.sysError;

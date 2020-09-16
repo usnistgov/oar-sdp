@@ -42,8 +42,8 @@
                 </div>
                 <div style="width: 100%;">
                     <div class="sample-line link-text-white">
-                        <span id="example" *ngIf="!showExampleStatus" (click)="showExampleStatus=true; changeState()">Show Examples</span>
-                        <span *ngIf="showExampleStatus" (click)="showExampleStatus=false;changeState()">Hide Examples</span>
+                        <span id="example" *ngIf="!showExampleStatus" (click)="changeState(true)">Show Examples</span>
+                        <span *ngIf="showExampleStatus" (click)="changeState(false)">Hide Examples</span>
                         <span *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em;">Advanced
                             Search</span>
                     </div>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="help-wrapper" [@changeDivSize]=currentState>
-            <span class="faa-stack fa-lg" style="float: right; cursor: pointer; margin: 5px;" (click)="changeState()">
+            <span class="faa-stack fa-lg" style="float: right; cursor: pointer; margin: 5px;" (click)="changeState(false)">
                 <i class="faa faa-remove faa-stack-1x icon-white" id="btn-close" aria-hidden="true"
                     data-toggle="tooltip" title="Hide Examples"></i>
             </span>
@@ -262,8 +262,8 @@
 <p-overlayPanel class="fileDialog" #op4 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
     appendToBody=true>
     <div style="width: 100%; padding: 2em;">
+        <div>Please enter a value for {{currentFieldValue}}</div>
         <span class="inner-addon">
-            <div>Please enter a value for {{currentFieldValue}}</div>
             <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
                 (keyup.enter)="processInputValue($event.target.value, op4)"
                 style="background-color: rgb(252, 246, 237);;" />

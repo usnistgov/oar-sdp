@@ -124,10 +124,8 @@ export class SearchPanelComponent implements OnInit {
         });
         
         this.searchQueryService._watchShowExamples((showExample) => {
-                if(showExample){
-                    this.showExampleStatus = true;
-                    this.changeState(); 
-                }
+                this.showExampleStatus = showExample;
+                this.changeState(showExample); 
             }
         );
 
@@ -154,7 +152,9 @@ export class SearchPanelComponent implements OnInit {
     /**
      * Show/hide syntax rules
      */
-    changeState() {
+    changeState(status: boolean) {
+        console.log("status", status);
+        this.showExampleStatus = status;
         if(this.showExampleStatus)
             this.currentState = 'final';
         else
