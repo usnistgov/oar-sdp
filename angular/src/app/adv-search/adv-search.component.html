@@ -132,9 +132,9 @@
                             </select>
                         </td>
                         <td>
-                            <input type="text" class="text-input field-name" [(ngModel)]="queryRow.fieldText"
-                                placeholder="Fields text..." (focus)="setReadyEdit()"
-                                (keydown)="setMode()" (keyup)="onKeyup($event, 'searchValue')" />
+                            <input type="text" class="text-input field-text" [ngClass]="{'field-text-grey': queryRow.validated, 'field-text-red':!queryRow.validated }" [(ngModel)]="queryRow.fieldText"
+                                placeholder="Field text is required..." (focus)="setReadyEdit()"
+                                (keydown)="setMode()" (keyup)="onKeyup($event, 'searchValue', queryRow)" />
                         </td>
 
                         <td>
@@ -161,13 +161,13 @@
                     </button>
 
                     <button id="btn-save" type="button" (click)="saveAdvSearchQuery()" pButton type="submit"
-                        [disabled]="(!editQuery && !addQuery) || !currentQuery.queryName || !dataChanged || queryNameValidateError">
+                        [disabled]="(!editQuery && !addQuery) || !currentQuery.queryName || !dataChanged || queryNameValidateError || rowInputValidateError">
                         <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
                         Save
                     </button>
 
                     <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery)" pButton type="submit"
-                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0">
+                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0 || rowInputValidateError">
                         <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
                         Execute
                     </button>

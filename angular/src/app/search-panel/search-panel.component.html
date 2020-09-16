@@ -42,8 +42,8 @@
                 </div>
                 <div style="width: 100%;">
                     <div class="sample-line link-text-white">
-                        <span id="example" *ngIf="!showExampleStatus" (click)="changeState()">Show Examples</span>
-                        <span *ngIf="showExampleStatus" (click)="changeState()">Hide Examples</span>
+                        <span id="example" *ngIf="!showExampleStatus" (click)="showExampleStatus=true; changeState()">Show Examples</span>
+                        <span *ngIf="showExampleStatus" (click)="showExampleStatus=false;changeState()">Hide Examples</span>
                         <span *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em;">Advanced
                             Search</span>
                     </div>
@@ -211,8 +211,8 @@
 <p-overlayPanel class="fileDialog" #op2 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
     appendToBody=true>
     <div style="text-align: right;width: 100%; height: 2.5em;background-color: #1471AE;margin-bottom: .5em;">
-        <div class="btn-slim" style="float: right; margin: 0.5em 1.5em 0 .5em;width: 50px;text-align: center;" (click)="appendToSearchBox(' OR ', null, null);">OR</div>
-        <div class="btn-slim" style="float: right;width: 50px;text-align: center;" (click)="appendToSearchBox(' AND ', null, null);">AND</div>
+        <div class="btn-slim" style="float: right; margin: 0.5em 1.5em 0 .5em;width: 50px;text-align: center;" (click)="appendToSearchBox('OR', null, null);">OR</div>
+        <div class="btn-slim" style="float: right;width: 50px;text-align: center;" (click)="appendToSearchBox('AND', null, null);">AND</div>
     </div>
     <div class="table-wrapper">
 
@@ -263,17 +263,21 @@
     appendToBody=true>
     <div style="width: 100%; padding: 2em;">
         <span class="inner-addon">
+            <div>Please enter a value for {{currentFieldValue}}</div>
             <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
-                (keyup.enter)="appendToSearchBox($event.target.value, null, op4)"
+                (keyup.enter)="processInputValue($event.target.value, op4)"
                 style="background-color: rgb(252, 246, 237);;" />
 
             <i class="faa faa-remove clear-box2" (click)="field.value=''" data-toggle="tooltip"
                 title="Clear the search box"></i>
         </span>
-        <button id="btn-append" type="button" (click)="appendToSearchBox(field.value, null, op4)" pButton type="submit">
+        <button id="btn-append" type="button" (click)="processInputValue(field.value, op4)" pButton type="submit">
             Set
         </button>
         <div style="font-style: italic; font-size: 12px; padding-top: .2em;">Example: Physics, "NIST Chemistry" </div>
+        <div *ngIf="inputValueMissing" style="color: red;">
+            A value is required.
+        </div>
     </div>
     
 </p-overlayPanel>

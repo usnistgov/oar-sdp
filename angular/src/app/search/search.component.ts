@@ -37,7 +37,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   exception: string;
   textRotate: boolean = true;
   display: boolean = false;
-  noResults: boolean;
   checked: boolean = false;
   errorMsg: string;
   showQueryName: boolean = false;
@@ -55,7 +54,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   // taxonomies: SelectItem[];
   sortItems: SelectItem[];
   fields: SelectItem[];
-  fieldTypes: SelectItem[];
   fieldsArray: any[];
   displayFields: string[] = [];
   selectedFields: string[] = ['Resource Description', 'Subject keywords'];
@@ -65,8 +63,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchRecord: string;
   searchAuthors: string;
   searchKeywords: string;
-  // suggestedTaxonomies: string[];
-  // suggestedTaxonomyList: string[];
   nodeExpanded: boolean = true;
   sortItemKey: string;
   showMoreLink: boolean = false;
@@ -115,7 +111,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   mobWidth: number;
   width: string;
   isActive: boolean = true;
-  sysError: boolean = false;
   imageURL: string;
   FiltersIsHidden: boolean = true;
 
@@ -134,6 +129,15 @@ export class SearchComponent implements OnInit, OnDestroy {
   confValues: Config;
   private PDRAPIURL;
   inputStyle: any = {'width': '100%','padding-left':'40px','height': '42px','font-weight': '400','font-style': 'italic'}
+
+  RESULT_STATUS = {
+      'success': 'SUCCESS',
+      'noResult': 'NO RESULT',
+      'userError': 'USER ERROR',
+      'sysError': 'SYS ERROR'
+  }
+
+  resultStatus: string;
   
   // injected as ViewChilds so that this class can send messages to it with a synchronous method call.
   @ViewChild(SearchPanelComponent)
@@ -180,40 +184,70 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     // this.getTaxonomySuggestions();
     this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-      this.searchValue = params['q'];
-      this.searchTaxonomyKey = params['key'];
-      this.queryAdvSearch = params['queryAdvSearch'];
-      this.page = params['page'];
-      this.searchResType = params['resType'];
-      this.searchResTopics = params['themes'];
-      this.searchRecord = params['compType'];
-      this.searchAuthors = params['authors'];
-      this.searchKeywords = params['keywords'];
+        this.searchValue = params['q'];
+        this.searchTaxonomyKey = params['key'];
+        this.queryAdvSearch = params['queryAdvSearch'];
+        this.page = params['page'];
+        this.searchResType = params['resType'];
+        this.searchResTopics = params['themes'];
+        this.searchRecord = params['compType'];
+        this.searchAuthors = params['authors'];
+        this.searchKeywords = params['keywords'];
 
-    //   this.searchPanel.searchValue = this.searchValue;
-    this.getSearchFields();
+    //searchValue is for UI display which should not be changed
+    //queryValue is for backend search
+        this.searchService.setQueryValue(this.searchValue, '', '');
 
-    // Processing search value
-    if(this.searchValue){
-      // Replace '%26' with '&'
-        this.searchValue = this.searchValue.replace(/\%26/g, '&');
-
-        let queryValue: string;
-        queryValue = this.revertSearchvalue(this.searchValue);
-
-        this.searchFieldsListService.getSearchFields().subscribe(
-            (fields) => {
-                this.fieldTypes = fields,
-                this.searchService.setQueryValue(queryValue, '', '');
-            },
-            (err) => {
-                this.errorMessage = <any>err;
-            }
-        )
-    }
-      this.doSearch(this.searchValue, this.searchTaxonomyKey, this.queryAdvSearch);
+        this.getSearchFields();
     });
   }
+
+    getSearchFields() {
+        this.searchFieldsListService.get()
+        .subscribe(
+            fields => {
+                this.fields = this.toSortItems(fields);
+
+                this.searchService.setQueryValue(this.searchValue, '', '');
+
+                let queryValue: string;
+                let lSearchValue = this.searchValue.replace(/  +/g, ' ');
+                queryValue = this.searchQueryService.buildSearchString(this.searchQueryService.buildQueryFromString(lSearchValue));
+
+                this.doSearch(queryValue, this.searchTaxonomyKey, this.queryAdvSearch);
+            },
+            error => {
+                this.errorMessage = <any>error
+            }
+        );
+    }
+
+    /**
+     * Advanced Search fields dropdown
+     */
+    toSortItems(fields: any[]) {
+        this.fieldsArray = fields;
+        let items: SelectItem[] = [];
+        let sortItems: SelectItem[] = [];
+        this.displayFields = [];
+
+        for (let field of fields) {
+            if (_.includes(field.tags, 'filterable')) {
+                if (field.type !== 'object') {
+                if (field.name !== 'component.topic.tag') {
+                    sortItems.push({ label: field.label, value: field.name });
+                }
+                if (field.label !== 'Resource Title') {
+                    if (field.name !== 'component.topic.tag') {
+                    this.displayFields.push(field.label);
+                    }
+                }
+                }
+            }
+        }
+        //sortItems = _.sortBy(sortItems, ['label','value']);
+        return sortItems;
+    }
 
   reset() {
     this.first = 0;
@@ -396,8 +430,7 @@ export class SearchComponent implements OnInit, OnDestroy {
      * @param searchResults 
      */
     onSuccess(searchResults: any[]) {
-        this.noResults = false;
-        this.sysError = false;
+        this.resultStatus = this.RESULT_STATUS.success;
         this.themesWithCount = [];
         this.componentsWithCount = [];
         this.sortable = [];
@@ -409,9 +442,10 @@ export class SearchComponent implements OnInit, OnDestroy {
         let compNoData: boolean = false;
         this.searchResultsError = [];
 
+        console.log('filteredResults', this.filteredResults);
+
         if (searchResults.length === 0) {
-        this.noResults = true;
-        this.searchResultsError.push({ severity: 'info', summary: 'Info Message', detail: 'No records found' });
+            this.resultStatus = this.RESULT_STATUS.noResult;
         }
         // collect Research topics with count
         this.collectThemesWithCount();
@@ -472,8 +506,13 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.keywords = [];
         this.themes = [];
         this.msgs = [];
-        this.noResults = true;
-        this.sysError = true;
+
+        if((<any>error).status >= 400 && (<any>error).status < 500){
+            this.resultStatus = this.RESULT_STATUS.userError;
+        }else{
+            this.resultStatus = this.RESULT_STATUS.sysError;
+        }
+
         this.exception = (<any>error).ex;
         this.errorMsg = (<any>error).message;
         this.status = (<any>error).httpStatus;
@@ -481,16 +520,17 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searching = false;
     }
 
+    showExamples(){
+        this.searchQueryService.setShowExamples(true);
+    }
+
     /**
      * call the Search service with parameters
      */
     search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
         this.searching = true;
-        this.noResults = false;
         this.keyword = '';
         let that = this;
-        let searchPhraseValue = '';
-        let searchKeyValue = '';
 
         return this.searchService.searchPhrase(searchValue, searchTaxonomyKey, queryAdvSearch)
         .subscribe(
@@ -1214,43 +1254,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         window.open(url);
     }
 
-    getSearchFields() {
-        this.searchFieldsListService.get()
-        .subscribe(
-            fields => {
-                this.fields = this.toSortItems(fields)
-            },
-            error => this.errorMessage = <any>error
-        );
-    }
-
-    /**
-     * Advanced Search fields dropdown
-     */
-    toSortItems(fields: any[]) {
-        this.fieldsArray = fields;
-        let items: SelectItem[] = [];
-        let sortItems: SelectItem[] = [];
-        this.displayFields = [];
-        //for (let field of fields) {
-        for (let field of fields) {
-        if (_.includes(field.tags, 'filterable')) {
-            if (field.type !== 'object') {
-            if (field.name !== 'component.topic.tag') {
-                sortItems.push({ label: field.label, value: field.name });
-            }
-            if (field.label !== 'Resource Title') {
-                if (field.name !== 'component.topic.tag') {
-                this.displayFields.push(field.label);
-                }
-            }
-            }
-        }
-        }
-        //sortItems = _.sortBy(sortItems, ['label','value']);
-        return sortItems;
-    }
-
     SortByFields() {
         let sortField: string[] = [];
         this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
@@ -1403,36 +1406,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         if (this._routeParamsSubscription) {
         this._routeParamsSubscription.unsubscribe();
         }
-    }
-
-    /**
-     * Revert url parameter into the search text in search box. For example,
-     * Revert "topic.tag%3Dwater" to "Research Topic=water" 
-     * Revert "topic.tag%3Dwater&logicalOp%3DOR=&topic.tag%3Dfire" to "Research Topic=water OR Research Topic=fire"
-     * @param param - search value from url parameters
-     */
-    revertSearchvalue(param: string): string{
-        let searchValue = '';
-        if(!param) return searchValue;
-
-        searchValue = param;
-
-        searchValue = searchValue.replace(new RegExp('&logicalOp=OR&', 'g'), ' OR ');
-        searchValue = searchValue.replace(new RegExp('&logicalOp=NOT&', 'g'), ' NOT ');
-        searchValue = searchValue.replace(new RegExp('&logicalOp=AND&', 'g'), ' AND ');
-        searchValue = searchValue.replace("&", " ");
-
-        //If only thing in quotes is space, removes it
-        let quotes = searchValue.match(/\"(.*?)\"/g);
-
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i].match(/\"(.*?)\"/)[1].trim() == '')
-                searchValue = searchValue.replace(quotes[i], '');
-            }
-        }
-
-        return searchValue;
     }
 
     resultTopBarClass(){

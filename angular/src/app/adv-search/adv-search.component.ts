@@ -42,6 +42,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     currentQuery: SDPQuery = new SDPQuery();
     currentQueryIndex: number = 0;
     previousQueryIndex: number = 0;
+    rowInputValidateError: boolean = false;
 
     // readyEdit: indecating current query is ready for editing. If user type in any character
     // in the query name field, edit mode will be set to true. Otherwise add mode will
@@ -135,24 +136,43 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * @param event - text input value
      * @param field - if this is query name field, validate query name
      */
-    onKeyup(event, field: string) {
+    onKeyup(event, field: string, queryRow?: QueryRow) {
         this.dataChanged = true;
         this.queryNameValidateErrorMsg = "";
         this.queryNameValidateError = false;
 
-        if(field = 'queryName'){
-            if (_.isEmpty(event.target.value)) {
-                this.queryNameValidateErrorMsg = "Query name is required";
-                this.queryNameValidateError = true;
-            } else {
-                if(this.queries.length > 0){
-                    if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
-                        this.queryNameValidateErrorMsg = "Query name is required";
-                        this.queryNameValidateError = true;
+        switch(field) { 
+            case 'queryName': { 
+                if (_.isEmpty(event.target.value)) {
+                    this.queryNameValidateErrorMsg = "Query name is required";
+                    this.queryNameValidateError = true;
+                } else {
+                    if(this.queries.length > 0){
+                        if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
+                            this.queryNameValidateErrorMsg = "Query name is required";
+                            this.queryNameValidateError = true;
+                        }
                     }
                 }
-            }
-        }
+
+                break; 
+            } 
+            case 'searchValue': { 
+                if (_.isEmpty(event.target.value)) {
+                    queryRow.validated = false;
+                    this.rowInputValidateError = true;
+                }else{
+                    queryRow.validated = true;
+                    this.rowInputValidateError = false;
+                }
+
+               break; 
+            } 
+            default: { 
+               //statements; 
+               break; 
+            } 
+         } 
     }
 
     /**
@@ -199,20 +219,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.operators = [];
         this.operators.push({ label: 'AND', value: 'AND' });
         this.operators.push({ label: 'OR', value: 'OR' });
-    }
-
-    /**
-     * Set the search parameters and redirect to search page
-     */
-    search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
-        let params: NavigationExtras = {
-        queryParams: {
-            'q': this.searchValue, 'key': searchTaxonomyKey ? searchTaxonomyKey : '',
-            'queryAdvSearch': queryAdvSearch
-        }
-        };
-
-        this.router.navigate(['/search'], params);
     }
 
     /**
@@ -398,9 +404,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     */
     executeQuery(query: SDPQuery) {
         let lQueryValue = this.searchQueryService.buildSearchString(query);
-
         this.searchService.setQueryValue(lQueryValue, '', '');
-        this.searchService.startSearching(true);
+        this.searchService.search(lQueryValue);
     }
 
     /**
@@ -427,6 +432,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
             this.currentQueryIndex = index;
             this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+
             // Update search box in the top search panel
             this.searchService.setQueryValue(this.searchValue, '', ''); 
         }else{
@@ -435,6 +441,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
             this.searchService.setQueryValue('', '', ''); 
         }
+
+        console.log('this.currentQuery', this.currentQuery);
     }
 
     /**

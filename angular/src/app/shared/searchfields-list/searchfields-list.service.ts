@@ -65,7 +65,6 @@ export class SearchfieldsListService {
         this.get().subscribe(
             (res) => {
                 let fields: SelectItem[] = this.toFieldItems(res);
-
                 subscriber.next(fields);
                 subscriber.complete();
             },
@@ -78,23 +77,23 @@ export class SearchfieldsListService {
     });
   }
 
-  /**
-   * Advanced Search fields dropdown
-   */
-  toFieldItems(fields: any[]): SelectItem[] {
-    let items: SelectItem[] = [];
-    items.push({ label: this.ALL, value: 'searchphrase' });
-    let fieldItems: SelectItem[] = [];
-    for (let field of fields) {
-      if (_.includes(field.tags, 'searchable')) {
-        fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
-      }
-    };
-    fieldItems = _.sortBy(fieldItems, ['label', 'value']);
-    fieldItems.unshift({ label: this.ALL, value: 'searchphrase' });
+    /**
+     * Advanced Search fields dropdown
+     */
+    toFieldItems(fields: any[]): SelectItem[] {
+        let items: SelectItem[] = [];
+        items.push({ label: this.ALL, value: 'searchphrase' });
+        let fieldItems: SelectItem[] = [];
+        for (let field of fields) {
+        if (_.includes(field.tags, 'searchable')) {
+            fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+        }
+        };
+        fieldItems = _.sortBy(fieldItems, ['label', 'value']);
+        fieldItems.unshift({ label: this.ALL, value: 'searchphrase' });
 
-    return fieldItems;
-  }
+        return fieldItems;
+    }
 
     /**
      * Look up field type

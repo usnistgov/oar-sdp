@@ -13,7 +13,8 @@ export class QueryRow {
         public operator = 'AND',
         public fieldText = '',  // user input value for search
         public fieldType = '',  // Field label - description
-        public fieldValue = ''  // Field value
+        public fieldValue = '',  // Field value
+        public validated = true  // For UI validation purpose
     ){
     }
 }

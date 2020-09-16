@@ -42,7 +42,8 @@ export class SearchQueryService {
     }
 
     /**
-     * Build search string from a given query object for displaying in the search text box
+     * Build search string from a given query object for backend
+     * @param inputQuery 
      */
     buildSearchString(inputQuery: SDPQuery): string {
         let query = JSON.parse(JSON.stringify(inputQuery));
@@ -65,12 +66,7 @@ export class SearchQueryService {
         }
 
         // Processing rows
-        if(query.queryRows[0].fieldText == null || query.queryRows[0].fieldText == undefined || query.queryRows[0].fieldText.trim() == '')
-            lSearchValue = query.queryRows[0].fieldValue + '=" "';
-        else
-            lSearchValue = query.queryRows[0].fieldValue + '=' + query.queryRows[0].fieldText;
-
-        for (let i = 1; i < query.queryRows.length; i++) {
+        for (let i = 0; i < query.queryRows.length; i++) {
             if (typeof query.queryRows[i].operator === 'undefined') {
                 query.queryRows[i].operator = 'AND';
             }
@@ -84,12 +80,14 @@ export class SearchQueryService {
             let fieldValue: string;
             fieldValue = query.queryRows[i].fieldValue;
 
-            lSearchValue += ' ' + query.queryRows[i].operator + ' ';
+            //Skip operator for the first row
+            if(i > 0)
+                lSearchValue += ' ' + query.queryRows[i].operator + ' ';
 
-            if(query.queryRows[i].fieldText == null || query.queryRows[i].fieldText == undefined || query.queryRows[i].fieldText.trim() == '')
-                lSearchValue += query.queryRows[i].fieldValue + '=" "';    
-            else
-                lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText;      
+            //If user didn't provide search value, ignore the row
+            if(query.queryRows[i].fieldText != null && query.queryRows[i].fieldText != undefined && query.queryRows[i].fieldText.trim() != ''){
+                lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText; 
+            }
         }
 
         return lSearchValue;
@@ -219,7 +217,6 @@ export class SearchQueryService {
                 query.queryRows.push(JSON.parse(JSON.stringify(row)));
             }
         }
-        console.log("query", query);
         return query;
     }
 
@@ -288,5 +285,17 @@ export class SearchQueryService {
         let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
         if(id == null) return 1;
         else return id;
+    }
+
+    /**
+     * Behavior subject to remotely set the search value. 
+     */
+    private _remoteShowExamples : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public _watchShowExamples(subscriber){
+        this._remoteShowExamples.subscribe(subscriber);
+    }
+
+    public setShowExamples(showExamples: boolean = false) {
+        this._remoteShowExamples.next(showExamples);
     }
 }

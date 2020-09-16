@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
 import { AppConfig, Config } from '../config-service/config-service.service';
 import { SearchService } from './search-service.service';
-// import * as mockSearchResult from '../../../assets/sample01.json';
+import { Router, NavigationExtras } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,7 @@ export class MockSearchService implements SearchService{
    * @constructor
    */
   constructor(private http: HttpClient,
+    private router: Router,
     private appConfig: AppConfig) {
     this.confValues = this.appConfig.getConfig();
     this.RMMAPIURL = this.confValues.RMMAPI;
@@ -74,17 +75,14 @@ export class MockSearchService implements SearchService{
     }
 
     /**
-     * Behavior subject to remotely start the search function. 
+     * Start search
      */
-    private _remoteStartSearch : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public _watchRemoteStart(subscriber) {
-        this._remoteStartSearch.subscribe(subscriber);
-    }
-
-    /**
-     * Remote start search
-     */
-    public startSearching(startSearch: boolean = true) {
-        this._remoteStartSearch.next(startSearch);
+    public search(searchValue: string) : void {
+        let params: NavigationExtras = {
+            queryParams: {
+                'q': searchValue
+            }
+        };
+        this.router.navigate(['/search'], params);
     }
 }

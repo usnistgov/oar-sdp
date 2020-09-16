@@ -379,3 +379,18 @@ background-cyanblue {
     width: 100%;
     text-align: center;
 }
+
+.link-text {
+    color: #1E6BA1;
+    text-decoration: underline; 
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.spinner {
+    width: mobWidth; 
+    height: 50vh; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}

@@ -8,7 +8,7 @@ export const HelpRoutes: Route[] = [
     children: [
       {
         path: '',
-        component: HelpComponent
+        component: ContactUsComponent
       }
     ]
   },
@@ -17,13 +17,13 @@ export const HelpRoutes: Route[] = [
     children: [
       {
         path: '',
-        component: HelpComponent
+        component: ContactUsComponent
       }
     ]
   },
   {
     path: 'help',
-    component: HelpComponent
+    component: ContactUsComponent
   },
   {
     path: 'contactus',

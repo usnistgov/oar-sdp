@@ -8,9 +8,9 @@ import 'rxjs/observable/throw';
 import { EMPTY } from 'rxjs'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
-// import { Config } from '../config/env.config';
 import { AppConfig, Config } from '../config-service/config-service.service';
 import { SearchService } from './search-service.service';
+import { Router, NavigationExtras } from '@angular/router';
 
 /**
  * This class provides the Search service with methods to search for records from tha rmm.
@@ -29,6 +29,7 @@ export class RealSearchService implements SearchService{
    * @constructor
    */
   constructor(private http: HttpClient,
+    private router: Router,
     private appConfig: AppConfig) {
     this.confValues = this.appConfig.getConfig();
     this.RMMAPIURL = this.confValues.RMMAPI;
@@ -45,35 +46,26 @@ export class RealSearchService implements SearchService{
       return EMPTY;
     }
 
-    //Treat ',', ';' the same as space
-    // searchValue = searchValue.replace(/\,/g, ' ');
-    // searchValue = searchValue.replace(/\;/g, ' ');
-
+    let lSearchValue = this.convertSearchvalue(searchValue);
     // Replace '%26' with '&'
-    searchValue = searchValue.replace(/\%26/g, '&');
+    lSearchValue = lSearchValue.replace(/\%26/g, '&');
 
     // let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-    let parameters = searchValue.split("&");
-    let searchKey = '';
+    let parameters = lSearchValue.split("&");
     if (!_.isEmpty(parameters)) {
       for (var i = 0; i < parameters.length; i++) {
         if(i > 0) searchPhraseValue += '&';
 
         if (parameters[i].includes("=")) {
-          searchKey = parameters[i].split("=")[0];
-
-        let value01 = parameters[i].split("=")[1];
-
-          searchPhraseValue += searchKey + "=" + value01;
+            searchPhraseValue += parameters[i].split("=")[0] + "=" + parameters[i].split("=")[1];
         } else if (parameters[i].toLowerCase() == "logicalOp=and") {
-          searchPhraseValue += 'logicalOp=AND';
+            searchPhraseValue += 'logicalOp=AND';
         } else if (parameters[i].toLowerCase() == "logicalOp=or") {
-          searchPhraseValue += 'logicalOp=OR';
+            searchPhraseValue += 'logicalOp=OR';
         } else if (parameters[i].toLowerCase() == "logicalOp=not") {
             searchPhraseValue += 'logicalOp=NOT';
         } else {
             searchPhraseValue += "searchphrase=" + parameters[i];
-            searchKey = "searchphrase";
         }
       }
     }
@@ -94,10 +86,54 @@ export class RealSearchService implements SearchService{
     }
 
     let url = this.RMMAPIURL + 'records?' + searchPhraseValue + keyString;
-    // console.log("url", url);
+    console.log("url", url);
 
     return this.http.get(url);
   }
+
+      /**
+     * Convert the text from search text box into url parameter. For example,
+     * convert "Research Topic=water" to "topic.tag%3Dwater"
+     * convert "Research Topic=water OR Research Topic=fire" to "topic.tag%3Dwater&logicalOp%3DOR=&topic.tag%3Dfire"
+     * @param searchValue - search value typically from the search text box
+     */
+    convertSearchvalue(searchValue: string): string{
+        let searchString = '';
+        if(!searchValue) return searchString;
+
+        searchString = searchValue.trim();
+        // Strip spaces around "="
+        searchString = searchString.replace(new RegExp(' =', 'g'), '=');
+        searchString = searchString.replace(new RegExp('= ', 'g'), '=&');
+
+        // Reserve everything in quotes
+        let quotes = searchString.match(/\"(.*?)\"/g);
+
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i].match(/\"(.*?)\"/)[1].trim() != '')
+                    searchString = searchString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                else
+                    searchString = searchString.replace(quotes[i], 'Quooooote'+i);
+            }
+        }
+
+        searchString = searchString.replace(/ OR /g, '&logicalOp=OR&');
+        searchString = searchString.replace(/ NOR /g, '&logicalOp=NOR&');
+        searchString = searchString.replace(/ AND /g, '&logicalOp=AND&');
+        searchString = searchString.replace(/ /g, '&');
+
+        // Restore the contents in quotes
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i].match(/\"(.*?)\"/)[1].trim() != '')
+                    searchString = searchString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                else
+                    searchString = searchString.replace('Quooooote'+i, quotes[i]);
+            }
+        }
+        return searchString;
+    }
 
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
@@ -128,22 +164,21 @@ export class RealSearchService implements SearchService{
     }
 
     public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
-        this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
+        if(queryString == null) queryString = "";
+        let lq = queryString.replace(/searchphrase=/g, '')
+        this._remoteQueryValue.next({queryString: lq, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
     }
 
     /**
-     * Behavior subject to remotely start the search function. 
+     * Start search
      */
-    private _remoteStartSearch : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public _watchRemoteStart(subscriber) {
-        this._remoteStartSearch.subscribe(subscriber);
-    }
-
-    /**
-     * Remote start search
-     */
-    public startSearching(startSearch: boolean = false) : void {
-        this._remoteStartSearch.next(startSearch);
+    public search(searchValue: string) : void {
+        let params: NavigationExtras = {
+            queryParams: {
+                'q': searchValue
+            }
+        };
+        this.router.navigate(['/search'], params);
     }
 }
 

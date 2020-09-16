@@ -67,6 +67,8 @@ export class SearchPanelComponent implements OnInit {
     fields: SelectItem[];
     currentState = 'initial';
     showDropdown: boolean = true;
+    currentFieldValue: string;  //To temporarily hold user selected field value
+    inputValueMissing: boolean = false;
     observableFields: Observable<SelectItem[]>;
 
     @ViewChild('field') fieldElement: ElementRef;
@@ -120,14 +122,15 @@ export class SearchPanelComponent implements OnInit {
                 this.searchService.setQueryValue(null, null, null); // Reset
             }
         });
-
-        this.searchService._watchRemoteStart((startQuery) => {
-            if (startQuery) {
-                this.search(this.searchValue, "");
-                this.searchService.startSearching(false);   // Reset
-            }
-        });
         
+        this.searchQueryService._watchShowExamples((showExample) => {
+                if(showExample){
+                    this.showExampleStatus = true;
+                    this.changeState(); 
+                }
+            }
+        );
+
         // Init search box size and breadcrumb position
         this.onWindowResize();
         var i = 0;
@@ -152,8 +155,10 @@ export class SearchPanelComponent implements OnInit {
      * Show/hide syntax rules
      */
     changeState() {
-        this.showExampleStatus = !this.showExampleStatus;
-        this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+        if(this.showExampleStatus)
+            this.currentState = 'final';
+        else
+            this.currentState = 'initial';
     }
 
     /**
@@ -261,65 +266,9 @@ export class SearchPanelComponent implements OnInit {
      * Set the search parameters and redirect to search page
      */
     search(searchValue: string, searchTaxonomyKey: string) {
-        console.log('searchValue', searchValue);
-        // Replace multiple spaces with single space
-        searchValue = searchValue.replace(/  +/g, ' ');
-
-        //Build query string
-        let lQueryString = this.searchQueryService.buildSearchString(this.searchQueryService.buildQueryFromString(searchValue));
-
         this.searchTaxonomyKey = searchTaxonomyKey;
 
-        let params: NavigationExtras = {
-        queryParams: {
-            'q': this.convertSearchvalue(lQueryString)
-        }
-        };
-        this.router.navigate(['/search'], params);
-    }
-
-    /**
-     * Convert the text from search text box into url parameter. For example,
-     * convert "Research Topic=water" to "topic.tag%3Dwater"
-     * convert "Research Topic=water OR Research Topic=fire" to "topic.tag%3Dwater&logicalOp%3DOR=&topic.tag%3Dfire"
-     * @param searchValue - search value typically from the search text box
-     */
-    convertSearchvalue(searchValue: string): string{
-        let searchString = '';
-        if(!searchValue) return searchString;
-
-        searchString = searchValue.trim();
-        // Strip spaces around "="
-        searchString = searchString.replace(new RegExp(' =', 'g'), '=');
-        searchString = searchString.replace(new RegExp('= ', 'g'), '=&');
-
-        // Reserve everything in quotes
-        let quotes = searchString.match(/\"(.*?)\"/g);
-
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i].match(/\"(.*?)\"/)[1].trim() != '')
-                    searchString = searchString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
-                else
-                    searchString = searchString.replace(quotes[i], 'Quooooote'+i);
-            }
-        }
-
-        searchString = searchString.replace(/ OR /g, '&logicalOp=OR&');
-        searchString = searchString.replace(/ NOR /g, '&logicalOp=NOR&');
-        searchString = searchString.replace(/ AND /g, '&logicalOp=AND&');
-        searchString = searchString.replace(/ /g, '&');
-
-        // Restore the contents in quotes
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i].match(/\"(.*?)\"/)[1].trim() != '')
-                    searchString = searchString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                else
-                    searchString = searchString.replace('Quooooote'+i, quotes[i]);
-            }
-        }
-        return searchString;
+        this.searchService.search(searchValue);
     }
 
     /**
@@ -331,28 +280,54 @@ export class SearchPanelComponent implements OnInit {
         this.textRotate = !this.textRotate;
     }
 
-        /**
+    /**
      * Apeend text to the search box
      * @param field - text to be appended
      * @param op - operator (usually "=")
      * @param overlaypanel - the overlaypanel that is calling. It will be closed after this operation.
      */
     addKeyValuePairToSearchBox(event: any, field: string, overlay1: OverlayPanel, overlay2: OverlayPanel){
-        // Strip quotes
-        field = field.replace(new RegExp('"', 'g'), '');
-
-        if(field.indexOf(" ") > 0){
-            field = '"' + field + '"';
-        }
-        if(this.searchValue.substr(this.searchValue.length - 1) == " ")
-            this.searchValue += field + "=";
-        else
-            this.searchValue += " " + field + "=";
+        this.currentFieldValue = field;
 
         overlay2.show(event);
+    }
 
-        // if(overlay1) overlay1.hide();
-        field = "";
+    processInputValue(inputValue: string, overlaypanel: OverlayPanel){
+        let lQueryConstrain: string;
+        let lInputValue = inputValue;
+
+        //If input value is empty, display message. Otherwise append the whole constrain to the search box
+        if(lInputValue  == null || lInputValue  == undefined || lInputValue .trim() == ""){
+            this.inputValueMissing = true;
+        }else{
+            this.inputValueMissing = false;
+
+            // Strip quotes
+            lInputValue  = lInputValue .replace(new RegExp('"', 'g'), '');
+
+            if(lInputValue .indexOf(" ") > 0){
+                lInputValue  = '"' + lInputValue  + '"';
+            }
+
+            if(this.currentFieldValue == "searchphrase"){
+                lQueryConstrain = lInputValue;
+            }else{
+                lQueryConstrain = this.currentFieldValue + "=" + lInputValue;
+            }
+
+            if(this.searchValue.substr(this.searchValue.length - 1) == " ")
+                this.searchValue += lQueryConstrain;
+            else{
+                if(this.searchValue.substr(this.searchValue.length - 1) == "="){
+                    this.searchValue += lQueryConstrain; 
+                    ;
+                }else{
+                    this.searchValue += " " + lQueryConstrain;
+                }
+            }
+
+            if(overlaypanel) overlaypanel.hide();
+        }
     }
 
     /**

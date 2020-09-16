@@ -98,12 +98,19 @@ input[type="file"] {
   margin-left:1em
 }
 
-.field-name {
-    border: 1px solid #d1d1d1;
+.field-text {
     width: 100%; 
     font-style: italic;
-    height: 2.3em;
+    height: 2.6em;
     padding-left: 10px;
+}
+
+.field-text-grey {
+    border: 1px solid #d1d1d1;
+}
+
+.field-text-red {
+    border: 1px solid #ff0000;
 }
 
 .italic {

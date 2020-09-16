@@ -15,9 +15,8 @@ export interface SearchService {
   searchPhraseTest(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any>;
 
   _watchQueryValue(subscriber);
-  _watchRemoteStart(subscriber);
 
-  startSearching(startSearch: boolean) : void;
+  search(searchValue: string) : void;
 
   setQueryValue(queryString: string, searchTaxonomyKey: string, queryAdvSearch: string): void;
 }

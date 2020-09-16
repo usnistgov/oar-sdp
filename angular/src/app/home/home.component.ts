@@ -11,6 +11,16 @@ import { Router, NavigationExtras } from '@angular/router';
 })
 
 export class HomeComponent implements OnInit {
+    searchPhrases = {
+        'IT': '"Information Technology"',
+        'MS': '"Mathematics and Statistics"',
+        'Manufacturing': 'Manufacturing',
+        'Forensics': 'Forensics',
+        'Materials': 'Materials',
+        'PN': '"Physics and Neutron"',
+        'AC': '"Advanced Communications"',
+        'Chemistry': 'Chemistry'
+    }
 
   constructor(private router: Router) {
   }
@@ -22,6 +32,7 @@ export class HomeComponent implements OnInit {
    * Set the search parameters and redirect to search page
    */
   search(searchValue: string) {
+      console.log('searchValue', searchValue);
     let queryValue = "topic.tag=" + searchValue;
 
     let params: NavigationExtras = {

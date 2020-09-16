@@ -57,12 +57,4 @@ describe('workspace-project App', () => {
     browser.ignoreSynchronization = true;
     expect<any>(element(by.id('title')).getText()).toEqual('APIs');
   });
-
-  it('Search for text SRD 69 should return SRD 101 (mock data)', () => {
-    page.navigateTo('/#/search?q="SRD 69"&key=&queryAdvSearch=');
-    browser.sleep(5000);
-    browser.ignoreSynchronization = true;
-    const text = element(by.css('sdp-search h4')).getText();
-    expect<any>(text).toContain("SRD 101");
-  });
 });
