@@ -69,6 +69,15 @@ export class SearchPanelComponent implements OnInit {
     showDropdown: boolean = true;
     currentFieldValue: string;  //To temporarily hold user selected field value
     inputValueMissing: boolean = false;
+    examples = [
+        {field: 'contactPoint.fn', example: 'Levine'},
+        {field: 'doi', example: '10.18434/M3TH4R'},
+        {field: 'ediid', example: '54AE54FB37AC022DE0531A570681D4291851'},
+        {field: 'contactPoint.hasEmail', example: 'richard.ricker@nist.gov'},
+        {field: '@type', example: 'Concept'},
+        {field: 'components.filepath', example: 'Dataset_UrbanDustOpticalProperties.zip'},
+        {field: 'landingPage', example: 'http://www.ctcms.nist.gov/oof/'}
+    ]
     observableFields: Observable<SelectItem[]>;
 
     @ViewChild('field') fieldElement: ElementRef;
@@ -417,5 +426,14 @@ export class SearchPanelComponent implements OnInit {
             alert("Query name is required.");
 
         overlaypanel.hide();
+    }
+
+    /**
+     * Return examples based on currentFieldValue
+     */
+    getExample(){
+        let example = this.examples.filter(ex=>ex.field == this.currentFieldValue);
+        if(example.length > 0) return example[0].example;
+        else return "physics";
     }
 }

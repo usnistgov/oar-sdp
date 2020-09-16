@@ -274,7 +274,9 @@
         <button id="btn-append" type="button" (click)="processInputValue(field.value, op4)" pButton type="submit">
             Set
         </button>
-        <div style="font-style: italic; font-size: 12px; padding-top: .2em;">Example: Physics, "NIST Chemistry" </div>
+        <div style="font-style: italic; font-size: 12px; padding-top: .2em;">Example: 
+            <span class="link-text" (click)="field.value=getExample()">{{getExample()}}</span>
+        </div>
         <div *ngIf="inputValueMissing" style="color: red;">
             A value is required.
         </div>
