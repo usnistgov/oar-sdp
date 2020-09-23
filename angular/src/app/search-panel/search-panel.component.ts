@@ -501,13 +501,6 @@ export class SearchPanelComponent implements OnInit {
             }
         }
 
-        if(this.queryStringError){
-            if(errorCount == 1)
-                this.queryStringErrorMessage = 'There is a syntax error in your query string. Click on Show Examples for more details: <i>'+lReturnQueryString+'</i>';
-            else
-                this.queryStringErrorMessage = 'There are syntax errors in your query string. Click on Show Examples for more details: <i>'+lReturnQueryString+'</i>';
-        }
-
         //Restore everything in quotes
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
@@ -517,6 +510,13 @@ export class SearchPanelComponent implements OnInit {
             }
         }      
         
+        if(this.queryStringError){
+            if(errorCount == 1)
+                this.queryStringErrorMessage = 'There is a syntax error in your query string. Click on Show Examples for more details: <i>'+lReturnQueryString+'</i>';
+            else
+                this.queryStringErrorMessage = 'There are syntax errors in your query string. Click on Show Examples for more details: <i>'+lReturnQueryString+'</i>';
+        }
+
         return lReturnQueryString;
     }
 }
