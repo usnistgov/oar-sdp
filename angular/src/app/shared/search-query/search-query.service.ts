@@ -189,9 +189,9 @@ export class SearchQueryService {
                 if(lqStringArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStringArray[i].trim()) < 0){
                     lFreeTextSearch += lqStringArray[i].trim() + " ";
                 }else{
-                    //If no operator between two key-value pairs, add a AND operator in between
-                    if(lqStringArray[i].indexOf("=")>-1 && i < lqStringArray.length-1 && lqStringArray[i+1].indexOf("=") > -1){
-                        lKeyValuePair += lqStringArray[i].trim() + " AND ";
+                    //If this is not the first item and no operator right before this key-value pair, add a AND operator
+                    if(i>0 && lqStringArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStringArray[i-1].trim()) < 0){                        
+                        lKeyValuePair += "AND " + lqStringArray[i].trim() + " ";
                     }else{
                         lKeyValuePair += lqStringArray[i].trim() + " ";
                     }
@@ -266,6 +266,8 @@ export class SearchQueryService {
                 }
             }
         }
+
+        console.log('query', query);
         return query;
     }
 
