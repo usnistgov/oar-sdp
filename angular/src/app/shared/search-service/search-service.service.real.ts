@@ -184,12 +184,17 @@ export class RealSearchService implements SearchService{
     /**
      * Start search
      */
-    public search(searchValue: string) : void {
+    public search(searchValue: string, url?: string) : void {
         let params: NavigationExtras = {
             queryParams: {
                 'q': searchValue
             }
         };
+
+        if(url == '/search'){
+            this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+            this.router.onSameUrlNavigation = 'reload';
+        }
 
         this.router.navigate(['/search'], params);
     }

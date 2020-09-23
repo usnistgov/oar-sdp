@@ -248,6 +248,8 @@ export class SearchQueryService {
 
                     // If first one is an operator, add it to the row and load next item
                     // Otherwise populate the row
+                    if(this.operators.indexOf(items[i]) > -1)
+
                     if(keyValue.length == 1){
                         if(this.operators.indexOf(items[i])>=0){
                             row.operator = items[i];
@@ -259,10 +261,12 @@ export class SearchQueryService {
                         }                  
                     }
 
-                    row.fieldValue = keyValue[0];
-                    row.fieldType = this.getFieldType(row.fieldValue, fields);
-                    row.fieldText = keyValue[1].replace(/['"]+/g, '').trim(); //Strip off quotes
-                    query.queryRows.push(JSON.parse(JSON.stringify(row)));
+                    if(keyValue.length == 2){
+                        row.fieldValue = keyValue[0];
+                        row.fieldType = this.getFieldType(row.fieldValue, fields);
+                        row.fieldText = keyValue[1].replace(/['"]+/g, '').trim(); //Strip off quotes
+                        query.queryRows.push(JSON.parse(JSON.stringify(row)));
+                    }
                 }
             }
         }
@@ -363,5 +367,77 @@ export class SearchQueryService {
             else return "";
         }
 
+    }
+
+    /**
+     * Query string validation. If error occurs, an error message will be returned. Otherwise return empty string.
+     * @param queryString input query string
+     */
+    validateQueryString(queryString: string){
+        let queryStringErrorMessage = "";
+        let lQueryString: string = "";
+        let errorCount: number = 0;
+
+        //Trim spaces
+        queryString = queryString.replace(/\s+/g, ' ');
+
+        if(!queryString){
+            return "";
+        }
+
+        //Reserve everything in quotes
+        let quotes = queryString.match(/\"(.*?)\"/g);
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i] != '""')
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+            }
+        }
+
+        // First of all we need to put all free text search phrases together
+        let lqStrArray:string[] = queryString.trim().split(" ");
+
+        for(let i = 0; i < lqStrArray.length; i++){
+            //If the item right before the freetext is an operator, or if an operator OR is between 
+            // freetext and key-value pair, mark it and display warning
+            if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
+                if(i == lqStrArray.length-1){
+                    lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
+                    errorCount++;
+                }else if(i < lqStrArray.length-1 && lqStrArray[i+1].indexOf("=") < 0){
+                    if(lqStrArray[i].trim() == "AND"){
+                        //Display warning here
+                        lQueryString += ' <mark> AND </mark> ';
+                        errorCount++;
+                        console.log('Operator AND cannot be in front of a freetext phrase.');
+                    }
+                }else if(i > 0 && i < lqStrArray.length-1 && lqStrArray[i-1].indexOf("=") < 0 && lqStrArray[i+1].indexOf("=") > -1 && lqStrArray[i].trim() == "OR"){
+                    lQueryString += "<mark> OR </mark>";
+                    errorCount++;
+                    console.log('Operator OR cannot be between freetext phrase and a key value pair:');
+                }else{
+                    lQueryString += lqStrArray[i] + " ";
+                }
+            }else{
+                lQueryString += lqStrArray[i] + " ";
+            }
+        }
+
+        //Restore everything in quotes
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i] != '""'){
+                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                }
+            }
+        }      
+        
+        if(errorCount == 1)
+            queryStringErrorMessage = 'Operator has been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details';
+
+        if(errorCount > 1)
+            queryStringErrorMessage = 'Operators have been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details';
+
+        return queryStringErrorMessage;
     }
 }

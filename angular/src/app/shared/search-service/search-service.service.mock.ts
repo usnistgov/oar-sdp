@@ -78,7 +78,7 @@ export class MockSearchService implements SearchService{
     /**
      * Start search
      */
-    public search(searchValue: string) : void {
+    public search(searchValue: string, url?: string) : void {
         let params: NavigationExtras = {
             queryParams: {
                 'q': searchValue

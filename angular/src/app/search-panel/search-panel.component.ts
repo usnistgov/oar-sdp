@@ -134,7 +134,7 @@ export class SearchPanelComponent implements OnInit {
         this.searchService._watchQueryValue((queryObj) => {
             if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
                 this.searchValue = queryObj.queryString;
-                this.validateQueryString(this.searchValue);
+                // this.validateQueryString(this.searchValue);
                 this.searchService.setQueryValue(null, null, null); // Reset
             }
         });
@@ -281,11 +281,13 @@ export class SearchPanelComponent implements OnInit {
      * Set the search parameters and redirect to search page
      */
     search(searchValue: string, searchTaxonomyKey: string) {
-        this.validateQueryString(searchValue);
-        if(!this.queryStringError){
-            this.searchTaxonomyKey = searchTaxonomyKey;
-            this.searchService.search(searchValue);
-        }
+        this.searchTaxonomyKey = searchTaxonomyKey;
+        // this.validateQueryString(searchValue);
+        // if(!this.queryStringError){
+
+        this.searchService.search(searchValue, this.router.url);
+
+        // }
     }
 
     /**
@@ -343,7 +345,7 @@ export class SearchPanelComponent implements OnInit {
                 }
             }
 
-            this.validateQueryString(this.searchValue);
+            // this.searchQueryService.validateQueryString(this.searchValue);
 
             if(overlaypanel) overlaypanel.hide();
         }
@@ -430,8 +432,13 @@ export class SearchPanelComponent implements OnInit {
      * This will remote execute the save query function in adv-search component
      */
     saveAdvQuery(queryName: string, overlaypanel: OverlayPanel){
-        if(queryName)
+        if(queryName){
+            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+            
+            if(this.queryStringErrorMessage != "") this.queryStringError = true;
+
             this.searchQueryService.saveAdvQueryFromString(this.searchValue, queryName, this.fields);
+        }
         else
             alert("Query name is required.");
 
@@ -445,78 +452,5 @@ export class SearchPanelComponent implements OnInit {
         let example = this.examples.filter(ex=>ex.field == this.currentFieldValue);
         if(example.length > 0) return example[0].example;
         else return "physics";
-    }
-
-    onKeyup(event){
-        this.validateQueryString(event.target.value);
-    }
-
-    validateQueryString(queryString: string){
-        this.queryStringError = false;
-        this.queryStringErrorMessage = "";
-        let lReturnQueryString: string = "";
-        let errorCount: number = 0;
-
-        //Trim spaces
-        queryString = queryString.replace(/\s+/g, ' ');
-
-        if(!queryString){
-            return "";
-        }
-
-        //Reserve everything in quotes
-        let quotes = queryString.match(/\"(.*?)\"/g);
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
-            }
-        }
-
-        // First of all we need to put all free text search phrases together
-        let lqStrArray:string[] = queryString.trim().split(" ");
-
-        for(let i = 0; i < lqStrArray.length; i++){
-            //If the item right before the freetext is an operator, or if an operator OR is between 
-            // freetext and key-value pair, mark it and display warning
-            if(this.operators.filter(op=>op.label==lqStrArray[i]).length > 0){
-                if(i == lqStrArray.length-1 || (i < lqStrArray.length-1 && lqStrArray[i+1].indexOf("=") < 0)){
-                    if(lqStrArray[i].trim() == "AND"){
-                        //Display warning here
-                        lReturnQueryString += ' <mark data-toggle="tooltip" title="Operator AND cannot be in front of a freetext phrase">AND</mark> ';
-                        this.queryStringError = true;
-                        errorCount++;
-                        console.log('Operator AND cannot be in front of a freetext phrase.');
-                    }
-                }else if(i > 0 && i < lqStrArray.length-1 && lqStrArray[i-1].indexOf("=") < 0 && lqStrArray[i+1].indexOf("=") > -1 && lqStrArray[i].trim() == "OR"){
-                    lReturnQueryString += "<mark> OR </mark>";
-                    this.queryStringError = true;
-                    errorCount++;
-                    console.log('Operator OR cannot be between freetext phrase and a key value pair:');
-                }else{
-                    lReturnQueryString += lqStrArray[i] + " ";
-                }
-            }else{
-                lReturnQueryString += lqStrArray[i] + " ";
-            }
-        }
-
-        //Restore everything in quotes
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""'){
-                    lReturnQueryString = lReturnQueryString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                }
-            }
-        }      
-        
-        if(this.queryStringError){
-            if(errorCount == 1)
-                this.queryStringErrorMessage = 'There is a syntax error in your query string. Click on Show Examples for more details: <i>'+lReturnQueryString+'</i>';
-            else
-                this.queryStringErrorMessage = 'There are syntax errors in your query string. Click on Show Examples for more details: <i>'+lReturnQueryString+'</i>';
-        }
-
-        return lReturnQueryString;
     }
 }

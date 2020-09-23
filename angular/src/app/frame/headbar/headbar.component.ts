@@ -36,11 +36,4 @@ export class HeadbarComponent implements OnInit {
     this.queryLength = this.searchQueryService.getQueries().length;
     this.queries = this.searchQueryService.getQueries();
   }
-
-  executeQuery(query: SDPQuery){
-    let lQueryValue = this.searchQueryService.buildSearchString(query);
-    this.searchService.setQueryValue(lQueryValue, '', '');
-
-    this.searchService.search(lQueryValue);
-  }
 }

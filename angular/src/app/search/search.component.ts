@@ -139,6 +139,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   resultStatus: string;
+  queryStringError: boolean = false;
+  queryStringErrorMessage: string = "";
+  operators: string[] = ["AND", "OR", "NOT"];
   
   // injected as ViewChilds so that this class can send messages to it with a synchronous method call.
   @ViewChild(SearchPanelComponent)
@@ -195,6 +198,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchAuthors = params['authors'];
         this.searchKeywords = params['keywords'];
 
+        console.log('this.searchValue', this.searchValue);
     //searchValue is for UI display which should not be changed
     //queryValue is for backend search
         this.searchService.setQueryValue(this.searchValue, '', '');
@@ -209,6 +213,12 @@ export class SearchComponent implements OnInit, OnDestroy {
             fields => {
                 this.fields = this.toSortItems(fields);
                 this.searchService.setQueryValue(this.searchValue, '', '');
+                this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+                console.log('this.queryStringErrorMessage', this.queryStringErrorMessage);
+                if(! this.queryStringErrorMessage){ 
+                    this.queryStringError = true;
+                }
+
                 let lSearchValue = this.searchValue.replace(/  +/g, ' ');
 
                 //Convert to a query then search

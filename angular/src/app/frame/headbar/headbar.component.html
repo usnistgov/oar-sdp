@@ -11,20 +11,7 @@
           <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                 <i></i>
             </a>
-      <a style="position: absolute; right: 1em; top: 25px; z-index: 1" href="javascript:;" (click)="op.toggle($event)" ><span class="textlinks" style="vertical-align:5px; color: white;"><b>Queries </b></span>
+      <a style="position: absolute; right: 1em; top: 25px; z-index: 1" href="javascript:;"><span class="textlinks" style="vertical-align:5px; color: white;" [routerLink]="['/advanced']"><b>Queries </b></span>
         <span class="w3-badge badge-notify1" >{{queryLength}}</span></a>
      </span>
   </div>
-<p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
-  <ul class="line-separated" style="list-style-type: none;margin-right:20px">
-  <li *ngFor="let query of queries| slice:0:5;let i = index">
-    <div>
-        <span (click)="op.hide($event); executeQuery(query)" style="cursor: pointer">{{query.queryName}}</span>
-      <!-- <a href="/search?q={{entities.data.queryValue}}&key=&queryAdvSearch=" (click) = "op.hide($event)" target="_parent">{{entities.data.id}}</a> -->
-    </div>
-  </li>
-  </ul>
-  <div style="text-align:center">
-    <a href="/advanced?"   class="btn btn-default" (click) = "op.hide($event)" style="background-color:green;color:white;zoom:75%" target="_parent">More</a>
-  </div>
-</p-overlayPanel>

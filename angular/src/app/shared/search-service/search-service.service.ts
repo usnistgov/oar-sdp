@@ -17,7 +17,7 @@ export interface SearchService {
 
   _watchQueryValue(subscriber);
 
-  search(searchValue: string) : void;
+  search(searchValue: string, url?: string) : void;
 
   setQueryValue(queryString: string, searchTaxonomyKey: string, queryAdvSearch?: string): void;
 }
