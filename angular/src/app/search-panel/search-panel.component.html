@@ -32,13 +32,16 @@
                                 </ng-template>
                             </p-autoComplete>
                         </div>
-                        <i class="faa faa-remove clear-box" (click)="searchValue=''" data-toggle="tooltip"
+                        <i class="faa faa-remove clear-box" (click)="searchValue='';queryStringError= false;" data-toggle="tooltip"
                             title="Clear the search box"></i>
                     </div>
                     <div [ngClass]="getSearchBtnClass()" class="bigSearchButton"
                         (click)="hideAllHelp();search(searchValue,searchTaxonomyKey)">
                         <p style="margin-top: 10px;">Search</p>
                     </div>
+                </div>
+                <div style="width: 100%;text-align: left;color: rgb(255, 162, 162);" *ngIf="queryStringError" [innerHTML]="queryStringErrorMessage">
+
                 </div>
                 <div style="width: 100%;">
                     <div class="sample-line link-text-white">
@@ -58,6 +61,8 @@
             </span>
             <div class="title-text"><b>Syntax Rules</b>
             </div>
+            <div style="width: 100%; text-align: left; padding-left: 20px;">Operator AND cannot be in front of a freetext phrase. <b>For example:</b> Chemical AND Physics.</div>
+            <div style="width: 100%; text-align: left; padding-left: 20px;">Operator OR cannot be between freetext phrase and a key value pair. <b>For example:</b> Chemical OR keyword=Physics.</div>
             <div class="table-wrapper">
                 <table width="100%" border="1">
                     <thead>
@@ -144,14 +149,13 @@
                             </td>
                             <td width="30%">
                                 <a class="examples"
-                                    (click)="$event.preventDefault();searchExample('&quot;NIST Chemistry&quot; AND Physics');"
-                                    href="#!">"NIST Chemistry" AND Physics
+                                    (click)="$event.preventDefault();searchExample('keyword=Chemistry AND topic.tag=Physics');"
+                                    href="#!">keyword=Chemistry AND topic.tag=Physics
                                 </a>
                             </td>
                             <td width="50%">
-                                Search Results will match the Phrase &ldquo;NIST Chemistry&rdquo; AND
-                                &ldquo;Physics&rdquo;; That is, returned records will contain both the phrase
-                                &ldquo;NIST Chemistry&rdquo; and &ldquo;Physics&rdquo;. Available operators are
+                                Search Results will match the keyword &ldquo;Chemistry&rdquo; AND topic
+                                &ldquo;Physics&rdquo;; That is, returned records will contain both keyword=Chemistry and topic=Physics. Available operators are
                                 <span class="link-text" (click)="appendToSearchBox(' AND ')">AND</span> and <span
                                     class="link-text" (click)="appendToSearchBox(' OR ')">OR</span> (all caps).
                                 <br>To search words "AND" or "OR", put them in quotes.
@@ -164,7 +168,7 @@
                 <div class="btn-slim" style="margin-top: 0;" (click)="showQueryNameDialog($event, op5);">Save Query</div>
 
                 <b>More Examples: </b>
-                <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
+                <a class="examples" (click)="$event.preventDefault();appendToSearchBox('&quot;Kinetics database&quot;');"
                     href="#!">"Kinetics database" </a> &nbsp;
                 <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
                 </a>&nbsp;

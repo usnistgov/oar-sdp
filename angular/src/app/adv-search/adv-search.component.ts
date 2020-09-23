@@ -168,6 +168,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
                break; 
             } 
+            case 'freeText': { 
+                //validation goes here
+               break; 
+            } 
             default: { 
                //statements; 
                break; 
@@ -339,11 +343,19 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * 2. Add the new query to the list
      */
     saveAdvSearchQuery() {
-        //Double check query name field value
+        //Validate query name
         if(this.queries.length > 0){
             if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, this.queries[this.previousQueryIndex].queryName, this.getMode())){
                 this.queryNameValidateErrorMsg = "Query name is required";
                 this.queryNameValidateError = true;
+                return;
+            }
+        }
+
+        // Make sure all field names have been selected
+        for(let i=0; i < this.currentQuery.queryRows.length; i++){
+            if(!this.currentQuery.queryRows[i].fieldType){
+                alert("Please select a field name.");
                 return;
             }
         }
@@ -447,8 +459,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
             this.searchService.setQueryValue('', '', ''); 
         }
-
-        console.log('this.currentQuery', this.currentQuery);
     }
 
     /**
@@ -512,15 +522,5 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     nextQueryId() {
         return Math.max.apply(Math, this.queries.map(function(o) { return o.id; })) + 1;
-    }
-
-    /**
-     * Look up field type
-     * @param fieldValue - input field value
-     */
-    getFieldType(fieldValue: string){
-        let field = this.fields.filter(field => field.value == fieldValue);
-        if(field && field.length>0) return field[0].label;
-        else return "";
     }
 }

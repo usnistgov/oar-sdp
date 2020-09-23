@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 import { SearchPanelComponent } from '../search-panel/search-panel.component';
+import { SDPQuery } from '../shared/search-query/query';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -37,7 +38,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   exception: string;
   textRotate: boolean = true;
   display: boolean = false;
-  checked: boolean = false;
+  allChecked: boolean = false;
   errorMsg: string;
   showQueryName: boolean = false;
   status: string;
@@ -207,14 +208,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         .subscribe(
             fields => {
                 this.fields = this.toSortItems(fields);
-
                 this.searchService.setQueryValue(this.searchValue, '', '');
-
-                let queryValue: string;
                 let lSearchValue = this.searchValue.replace(/  +/g, ' ');
-                queryValue = this.searchQueryService.buildSearchString(this.searchQueryService.buildQueryFromString(lSearchValue));
 
-                this.doSearch(queryValue, this.searchTaxonomyKey, this.queryAdvSearch);
+                //Convert to a query then search
+                this.doSearch(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields));
             },
             error => {
                 this.errorMessage = <any>error
@@ -525,12 +523,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     /**
      * call the Search service with parameters
      */
-    search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
+    search(query: SDPQuery, searchTaxonomyKey?: string) {
         this.searching = true;
         this.keyword = '';
         let that = this;
 
-        return this.searchService.searchPhrase(searchValue, searchTaxonomyKey, queryAdvSearch)
+        return this.searchService.searchPhrase(query, searchTaxonomyKey)
         .subscribe(
             searchResults => {
             that.onSuccess(searchResults.ResultData);
@@ -539,10 +537,10 @@ export class SearchComponent implements OnInit, OnDestroy {
         );
     }
 
-    doSearch(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
+    doSearch(query: SDPQuery, searchTaxonomyKey?: string) {
         this.msgs = [];
         this.searchResultsError = [];
-        this.search(searchValue, searchTaxonomyKey, queryAdvSearch);
+        this.search(query, searchTaxonomyKey);
 
         this.selectedResourceTypeNode = [];
         this.selectedThemesNode = [];
@@ -1256,45 +1254,60 @@ export class SearchComponent implements OnInit, OnDestroy {
         let sortField: string[] = [];
         this.filteredResults = _.sortBy(this.filteredResults, this.sortItemKey);
         for (let field of this.fieldsArray) {
-        if (field.name === this.sortItemKey) {
-            this.selectedFields = [...this.selectedFields, field.label];
-        }
+            if (field.name === this.sortItemKey) {
+                this.selectedFields = [...this.selectedFields, field.label];
+            }
         }
         return this.filteredResults;
-
     }
 
-    SortByFieldsTest(filteredResults, sortItemKey) {
-        let sortField: string[] = [];
-        filteredResults = _.sortBy(filteredResults, sortItemKey);
-        for (let field of this.fieldsArray) {
-        if (field.name === sortItemKey) {
-            this.selectedFields = [...this.selectedFields, field.label];
-        }
-        }
-        return filteredResults;
-    }
-
-
+    /**
+     * Reset the checkbox status to default
+     */
     ResetSelectedFields() {
         this.selectedFields = ['Resource Description', 'Subject keywords'];
-        this.checked = false;
+        this.allChecked = false;
     }
 
+    /**
+     * Check all checkboxes
+     */
     SelectAllFields() {
         this.selectedFields = [];
-        if (this.checked) {
-        for (let field of this.fieldsArray) {
-            if (_.includes(field.tags, 'filterable')) {
-            if (field.type !== 'object') {
-                if (field.label !== 'Resource Title') {
-                if (field.name !== 'component.topic.tag') {
-                    this.selectedFields.push(field.label);
+        if (this.allChecked) {
+            for (let field of this.fieldsArray) {
+                if (_.includes(field.tags, 'filterable')) {
+                    if (field.type !== 'object') {
+                        if (field.label !== 'Resource Title') {
+                            if (field.name !== 'component.topic.tag') {
+                                this.selectedFields.push(field.label);
+                            }
+                        }
+                    }
                 }
-                }
-            }
             }
         }
+    }
+
+    /**
+     * Update the checkbox's status when user checks or unchecks a box
+     */
+    updateFields(){
+        this.allChecked = true;
+
+        for (let field of this.fieldsArray) {
+            if (_.includes(field.tags, 'filterable')) {
+                if (field.type !== 'object') {
+                    if (field.label !== 'Resource Title') {
+                        if (field.name !== 'component.topic.tag') {
+                            if(this.selectedFields.indexOf(field.label) < 0){
+                                this.allChecked = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

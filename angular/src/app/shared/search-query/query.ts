@@ -2,6 +2,7 @@ export class SDPQuery {
     constructor(
         public id: number = 0,
         public queryName: string = '',
+        public freeText = '',   // Free text search value
         public queryRows: QueryRow[] = [],
         public date: Date = null
     ){}

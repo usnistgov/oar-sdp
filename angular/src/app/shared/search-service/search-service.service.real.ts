@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { AppConfig, Config } from '../config-service/config-service.service';
 import { SearchService } from './search-service.service';
 import { Router, NavigationExtras } from '@angular/router';
+import { SDPQuery } from '../search-query/query';
 
 /**
  * This class provides the Search service with methods to search for records from tha rmm.
@@ -22,6 +23,11 @@ import { Router, NavigationExtras } from '@angular/router';
 export class RealSearchService implements SearchService{
   confValues: Config;
   private RMMAPIURL: string;
+  operators = {
+      'AND': 'logicalOp=AND',
+      'OR': 'logicalOp=OR',
+      'NOT': 'logicalOp=NOT'
+  }
 
   /**
    * Creates a new SearchService with the injected Http.
@@ -39,44 +45,36 @@ export class RealSearchService implements SearchService{
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  searchPhrase(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
+  searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch?: string): Observable<any> {
     let searchPhraseValue = '';
     let finalKeyValueStr = '';
-    if(searchValue == undefined){
-      return EMPTY;
-    }
 
-    let lSearchValue = this.convertSearchvalue(searchValue);
-    // Replace '%26' with '&'
-    lSearchValue = lSearchValue.replace(/\%26/g, '&');
+    if(query.freeText != null && query.freeText != undefined && query.freeText.trim()!= "")
+        searchPhraseValue = 'searchphrase=' + query.freeText.trim();
 
-    // let parameters = searchValue.match(/(?:[^\s"]+|"[^"]*")+/g);
-    let parameters = lSearchValue.split("&");
-    if (!_.isEmpty(parameters)) {
-      for (var i = 0; i < parameters.length; i++) {
-        if(i > 0) searchPhraseValue += '&';
-
-        if (parameters[i].includes("=")) {
-            searchPhraseValue += parameters[i].split("=")[0] + "=" + parameters[i].split("=")[1];
-        } else if (parameters[i].toLowerCase() == "logicalOp=and") {
-            searchPhraseValue += 'logicalOp=AND';
-        } else if (parameters[i].toLowerCase() == "logicalOp=or") {
-            searchPhraseValue += 'logicalOp=OR';
-        } else if (parameters[i].toLowerCase() == "logicalOp=not") {
-            searchPhraseValue += 'logicalOp=NOT';
-        } else {
-            searchPhraseValue += "searchphrase=" + parameters[i];
+    // Processing rows
+    for (let i = 0; i < query.queryRows.length; i++) {
+        if (typeof query.queryRows[i].operator === 'undefined') {
+            query.queryRows[i].operator = 'AND';
         }
-      }
-    }
 
-    //If only thing in quotes is space, removes it
-    let quotes = searchPhraseValue.match(/\"(.*?)\"/g);
+        let fieldValue: string; //This is field name
+        fieldValue = query.queryRows[i].fieldValue;
 
-    if(quotes){
-        for(let i = 0; i < quotes.length; i++){
-            if(quotes[i].match(/\"(.*?)\"/)[1].trim() == '')
-                searchPhraseValue = searchPhraseValue.replace(quotes[i], '');
+        //Skip operator for the first row
+        if(i > 0){
+            if(query.queryRows[i].operator.trim() == "AND")
+                finalKeyValueStr += '&';
+            else
+                finalKeyValueStr += '&' + this.operators[query.queryRows[i].operator] + '&';
+        }
+
+        //If user didn't provide search value, ignore the row
+        if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldType)){
+            if(finalKeyValueStr[finalKeyValueStr.length-1] != "&")
+                finalKeyValueStr = finalKeyValueStr.trim() + " ";
+
+            finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace('/"/g', ''); 
         }
     }
 
@@ -85,11 +83,25 @@ export class RealSearchService implements SearchService{
         keyString = '&topic.tag=' + searchTaxonomyKey;
     }
 
-    let url = this.RMMAPIURL + 'records?' + searchPhraseValue + keyString;
+    let url = this.RMMAPIURL + 'records?' + searchPhraseValue.trim();
+    
+    if(searchPhraseValue.trim()!="" && finalKeyValueStr.trim() != "")
+        url += '&'
+        
+    url += finalKeyValueStr.trim() + keyString.trim();
+
     console.log("url", url);
 
     return this.http.get(url);
   }
+
+    /**
+     * Check if a string object is empty
+     * @param stringValue 
+     */
+    isEmpty(stringValue: string){
+        return stringValue == null || stringValue == undefined || stringValue.trim() == '';
+    }
 
       /**
      * Convert the text from search text box into url parameter. For example,
@@ -104,7 +116,7 @@ export class RealSearchService implements SearchService{
         searchString = searchValue.trim();
         // Strip spaces around "="
         searchString = searchString.replace(new RegExp(' =', 'g'), '=');
-        searchString = searchString.replace(new RegExp('= ', 'g'), '=&');
+        searchString = searchString.replace(new RegExp('= ', 'g'), '=');
 
         // Reserve everything in quotes
         let quotes = searchString.match(/\"(.*?)\"/g);
@@ -178,6 +190,7 @@ export class RealSearchService implements SearchService{
                 'q': searchValue
             }
         };
+
         this.router.navigate(['/search'], params);
     }
 }

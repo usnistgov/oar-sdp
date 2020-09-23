@@ -85,6 +85,7 @@
         </div>
 
         <div [className]="resultsClass" style="background-color:white">
+            <!-- Query name -->
             <div class="ui-g-12 ui-md-12" style="display: flex;vertical-align: middle;">
                 <label for="queryName" style="white-space: nowrap;">Query Name</label>
 
@@ -99,6 +100,20 @@
             </div>
             <div *ngIf="queryNameValidateError" style="color:red;padding-left: 1em;">{{queryNameValidateErrorMsg}}</div>
 
+            <!-- free text input -->
+            <label for="freeText" style="white-space: nowrap; margin-left: .2em;">Free Text Search:</label>
+
+            <input class="query-name" type="text" id="freeText" [(ngModel)]="currentQuery.freeText"
+                (focus)="setReadyEdit()" (keydown)="setMode()"
+                (keyup)="onKeyup($event, 'freeText')" />
+
+            <div style="margin: 0 0 .5em 9em;"><b>Examples: </b> 
+                <span class="link-text" (click)="currentQuery.freeText='&quot;Kinetics database&quot;';readyEdit=true;dataChanged=true;setMode()">"Kinetics database"</span>
+                <span class="link-text" style="padding-left: .5em;" (click)="currentQuery.freeText='Gallium';readyEdit=true;dataChanged=true;setMode()">Gallium</span>
+                <span class="link-text" style="padding-left: .5em;" (click)="currentQuery.freeText='&quot;Kinetics database&quot; Gallium';readyEdit=true;dataChanged=true;setMode()">"Kinetics database" Gallium</span>
+                </div>
+
+            <!-- query rows -->
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr style="text-align: center;">
@@ -121,14 +136,14 @@
                                 <option *ngFor="let operator of operators;">{{operator.label}}</option>
                             </select>
                         </td>
-                        <td *ngIf="rowIndex == 0">
-
+                        <td *ngIf="rowIndex == 0" style="vertical-align: middle;">
+                            <span style="margin-left:.8em;padding-bottom: -2em;font-size:16px;">AND</span>
                         </td>
                         <td>
                             <select class="browser-default custom-select italic" [(ngModel)]="queryRow.fieldType"
                                 (change)="onFieldTypeChange(queryRow)">
                                 <option hidden value="" disabled selected>Select Field Name</option>
-                                <option *ngFor="let field of fields;">{{field.label}}</option>
+                                <option *ngFor="let field of fields;" data-toggle="tooltip" title="{{field.value}}">{{field.label}}</option>
                             </select>
                         </td>
                         <td>

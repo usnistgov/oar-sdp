@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { AppConfig, Config } from '../config-service/config-service.service';
 import { SearchService } from './search-service.service';
 import { Router, NavigationExtras } from '@angular/router';
+import { SDPQuery } from '../search-query/query';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class MockSearchService implements SearchService{
    * @return {string[]} The Observable for the HTTP request.
    */
 
-  searchPhrase(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
+  searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
     var mockSearchResult = require('../../../assets/sample01.json');
     return of(mockSearchResult);
   }

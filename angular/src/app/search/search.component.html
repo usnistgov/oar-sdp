@@ -337,18 +337,18 @@
                   (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
                   <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
                     <div style="width: 100%;margin-top:0em;text-align: left;">
-                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()"
+                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked" (onChange)="SelectAllFields()"
                         [(ngModel)]="selectedFields"></p-checkbox>
                         <b>Display Fields</b> <a href="#" (click)="$event.preventDefault();ResetSelectedFields()"
                         style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
                     </div>
                     <div style="text-align: left">
-                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All"
+                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked" label="Select All"
                         (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                     </div>
                     <div *ngFor="let field of displayFields" style="text-align: left">
                         <p-checkbox inputId={{field}} name={{field}} class="label" value={{field}} label={{field}}
-                        [(ngModel)]="selectedFields"></p-checkbox>
+                        [(ngModel)]="selectedFields" (onChange)="updateFields()"></p-checkbox>
                     </div>
                     <div style="border-top:.5px solid #e6e6e6;margin-top:5px;padding-top:5px;text-align: left">
                         <b>Sort Results</b> <br>

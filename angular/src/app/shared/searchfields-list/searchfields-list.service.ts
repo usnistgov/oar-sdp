@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 export class SearchfieldsListService {
   confValues: Config;
   private RMMAPIURL: string;
-  fields: SelectItem[];
   ALL: string = 'ALL FIELDS';
 
   /**
@@ -23,15 +22,6 @@ export class SearchfieldsListService {
     private appConfig: AppConfig) {
       this.confValues = this.appConfig.getConfig();
       this.RMMAPIURL = this.confValues.RMMAPI;
-
-      this.getSearchFields().subscribe(
-        (fields) => {
-            this.fields = (fields as SelectItem[]);
-        },
-        (err) => {
-            console.log("Error getting fields.", err);
-        }
-      );
     }
 
     ngOnInit(): void {
@@ -81,8 +71,8 @@ export class SearchfieldsListService {
      * Advanced Search fields dropdown
      */
     toFieldItems(fields: any[]): SelectItem[] {
-        let items: SelectItem[] = [];
-        items.push({ label: this.ALL, value: 'searchphrase' });
+        // let items: SelectItem[] = [];
+        // items.push({ label: this.ALL, value: 'searchphrase' });
         let fieldItems: SelectItem[] = [];
         for (let field of fields) {
         if (_.includes(field.tags, 'searchable')) {
@@ -90,18 +80,8 @@ export class SearchfieldsListService {
         }
         };
         fieldItems = _.sortBy(fieldItems, ['label', 'value']);
-        fieldItems.unshift({ label: this.ALL, value: 'searchphrase' });
+        // fieldItems.unshift({ label: this.ALL, value: 'searchphrase' });
 
         return fieldItems;
-    }
-
-    /**
-     * Look up field type
-     * @param fieldValue - input field value
-     */
-    getFieldType(fieldValue: string){
-        let field = this.fields.filter(field => field.value == fieldValue);
-        if(field && field.length>0) return field[0].label;
-        else return "";
     }
 }

@@ -29,8 +29,7 @@ export class SearchQueryService {
     showAddAllCartSpinner : boolean = false;
     displayCart : boolean = false;
     private _storage = localStorage;
-    fields: SelectItem[];
-    operators: string[] = ["AND", "OR"];
+    operators: string[] = ["AND", "OR", "NOT"];
 
     constructor(
         public searchFieldsListService: SearchfieldsListService,
@@ -47,8 +46,12 @@ export class SearchQueryService {
      */
     buildSearchString(inputQuery: SDPQuery): string {
         let query = JSON.parse(JSON.stringify(inputQuery));
-
         let lSearchValue: string = '';
+        //Handle freetext search
+        if(!this.isEmpty(inputQuery.freeText)){
+            lSearchValue = inputQuery.freeText.trim() + " ";
+        }
+
         // First of all, we need to handle duplicated field (row) name, if any
         // If there are dup keys and operator is OR, we need to combine them together, separate values by comma.
         var dupNames = this.findDuplicates(query.queryRows)
@@ -70,12 +73,6 @@ export class SearchQueryService {
             if (typeof query.queryRows[i].operator === 'undefined') {
                 query.queryRows[i].operator = 'AND';
             }
-            if (typeof query.queryRows[i].fieldType === 'undefined') {
-                query.queryRows[i].fieldType = 'searchphrase';
-            }
-            if (typeof query.queryRows[i].fieldText === 'undefined') {
-                query.queryRows[i].fieldText = '';
-            }
 
             let fieldValue: string;
             fieldValue = query.queryRows[i].fieldValue;
@@ -85,12 +82,22 @@ export class SearchQueryService {
                 lSearchValue += ' ' + query.queryRows[i].operator + ' ';
 
             //If user didn't provide search value, ignore the row
-            if(query.queryRows[i].fieldText != null && query.queryRows[i].fieldText != undefined && query.queryRows[i].fieldText.trim() != ''){
+            if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldType)){
+                if(query.queryRows[i].fieldText.trim().indexOf(" ") > 0) 
+                    query.queryRows[i].fieldText = '"' + query.queryRows[i].fieldText.trim() + '"';
+
                 lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText; 
             }
         }
-
         return lSearchValue;
+    }
+
+    /**
+     * Check if a string object is empty
+     * @param stringValue 
+     */
+    isEmpty(stringValue: string){
+        return stringValue == null || stringValue == undefined || stringValue.trim() == '';
     }
 
     /**
@@ -136,7 +143,10 @@ export class SearchQueryService {
      * 
      * @param queryString Query string
      */
-    buildQueryFromString(queryString: string, queryName?: string): SDPQuery{
+    buildQueryFromString(queryString: string, queryName?: string, fields?: SelectItem[]): SDPQuery{
+        //Trim spaces
+        queryString = queryString.replace(/\s+/g, ' ');
+
         let lQueryName: string;
         //We are not going to save empty string
         if(!queryString){
@@ -154,67 +164,106 @@ export class SearchQueryService {
             lQueryName = "unknown";
         }
 
-        // Assume the query string follows this pattern:
-        // key=value OP key=value OP ...
-
-        let lqString = queryString.trim();
-        lqString = lqString.replace(new RegExp(' AND ', 'g'), '&AND&');
-        lqString = lqString.replace(new RegExp(' OR ', 'g'), '&OR&');
-
         //Reserve everything in quotes
-        let quotes = lqString.match(/\"(.*?)\"/g);
+        let quotes = queryString.match(/\"(.*?)\"/g);
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                    lqString = lqString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
             }
         }
 
-        //Trim spaces
-        lqString = lqString.replace(/\s+/g, ' ');
+        // First of all we need to put all free text search phrases together
+        let lqStringArray = queryString.trim().split(" ");
 
-        //Replace spaces with "&OR&"
-        lqString = lqString.replace(/ /g, '&OR&');
+        let lFreeTextSearch: string = '';
+        let lKeyValuePair: string = ''; 
+
+        for(let i = 0; i < lqStringArray.length; i++){
+            //If the item right before the freetext is an operator, drop it. If it's an operator AND, display a warning
+            if(this.operators.indexOf(lqStringArray[i].trim())>-1 && i < lqStringArray.length-1 && lqStringArray[i+1].indexOf("=") < 0){
+                if(lqStringArray[i].trim() == "AND"){
+                    console.log('Operator AND cannot be in front of a freetext phrase.')
+                }
+            }else{
+                if(lqStringArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStringArray[i].trim()) < 0){
+                    lFreeTextSearch += lqStringArray[i].trim() + " ";
+                }else{
+                    //If no operator between two key-value pairs, add a AND operator in between
+                    if(lqStringArray[i].indexOf("=")>-1 && i < lqStringArray.length-1 && lqStringArray[i+1].indexOf("=") > -1){
+                        lKeyValuePair += lqStringArray[i].trim() + " AND ";
+                    }else{
+                        lKeyValuePair += lqStringArray[i].trim() + " ";
+                    }
+                }
+            }
+        }
 
         //Restore everything in quotes
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""')
-                    lqString = lqString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                if(quotes[i] != '""'){
+                    lKeyValuePair = lKeyValuePair.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+
+                    lFreeTextSearch = lFreeTextSearch.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                }
             }
         }
 
-        let query: SDPQuery = new SDPQuery(this.nextQueryId(), lQueryName)
-        let keyValue: string[];
-        let row: QueryRow;
+        let query: SDPQuery = new SDPQuery(this.nextQueryId(), lQueryName);
+        query.freeText = lFreeTextSearch.trim();
 
-        let items = lqString.split('&');
-        if(items && items.length > 0){
-            for (var i = 0; i < items.length; i++) {
-                keyValue = items[i].split("=");
-                row = new QueryRow(this.nextRowId(query));
+        // Assume the query string follows this pattern:
+        // key=value OP key=value OP ...
 
-                // If first one is an operator, add it to the row and load next item
-                // Otherwise populate the row
-                if(i>0){
-                    if(this.operators.indexOf(items[i])>=0){
-                        row.operator = items[i];
-                        i++;
-                        keyValue = items[i].split("=");
-                    }                  
-                }
+        if(!this.isEmpty(lKeyValuePair)){
 
-                if(keyValue.length > 1){
+            lKeyValuePair = lKeyValuePair.replace(new RegExp(' AND ', 'g'), '&AND&');
+            lKeyValuePair = lKeyValuePair.replace(new RegExp('AND ', 'g'), 'AND&');
+            lKeyValuePair = lKeyValuePair.replace(new RegExp(' OR ', 'g'), '&OR&');
+            lKeyValuePair = lKeyValuePair.replace(new RegExp('OR ', 'g'), 'OR&');
+
+            //Trim spaces
+            lKeyValuePair = lKeyValuePair.replace(/\s+/g, ' ').trim();
+
+            //Replace spaces with "&OR&"
+            // lKeyValuePair = lKeyValuePair.replace(/ /g, '&OR&');
+
+            let keyValue: string[];
+            let row: QueryRow;
+            let items = lKeyValuePair.split('&');
+
+            // If first item is an operator, and it's an "OR", we need to display a warning
+            if(this.operators.indexOf(items[0]) > -1){
+                //set warning message here. Or this validation should be done before call this function...
+
+                //Remove this operator
+                items.shift();
+            }
+
+            if(items && items.length > 0 && items[0].trim()!=""){
+                for (var i = 0; i < items.length; i++) {
+                    keyValue = items[i].split("=");
+                    row = new QueryRow(this.nextRowId(query));
+
+                    // If first one is an operator, add it to the row and load next item
+                    // Otherwise populate the row
+                    if(keyValue.length == 1){
+                        if(this.operators.indexOf(items[i])>=0){
+                            row.operator = items[i];
+                            if(i == items.length-1) break;
+                            else{
+                                i++;
+                                keyValue = items[i].split("=");
+                            }
+                        }                  
+                    }
+
                     row.fieldValue = keyValue[0];
-                    row.fieldType = this.searchFieldsListService.getFieldType(row.fieldValue);
-                    row.fieldText = keyValue[1];
-                }else{
-                    row.fieldValue = "searchphrase";
-                    row.fieldType = this.searchFieldsListService.getFieldType(row.fieldValue);
-                    row.fieldText = keyValue[0];
+                    row.fieldType = this.getFieldType(row.fieldValue, fields);
+                    row.fieldText = keyValue[1].replace(/['"]+/g, '').trim(); //Strip off quotes
+                    query.queryRows.push(JSON.parse(JSON.stringify(row)));
                 }
-
-                query.queryRows.push(JSON.parse(JSON.stringify(row)));
             }
         }
         return query;
@@ -225,10 +274,10 @@ export class SearchQueryService {
      * @param queryString - string from the search box
      * @param queryName - query name to be saved
      */
-    public saveAdvQueryFromString(queryString: string, queryName: string) {
+    public saveAdvQueryFromString(queryString: string, queryName: string, fields: SelectItem[]) {
 
         let currentQueries = this.getQueries();
-        let query = this.buildQueryFromString(queryString, queryName);
+        let query = this.buildQueryFromString(queryString, queryName, fields);
 
         currentQueries.push(JSON.parse(JSON.stringify(query)));
         this.saveQueries(currentQueries);
@@ -297,5 +346,20 @@ export class SearchQueryService {
 
     public setShowExamples(showExamples: boolean = false) {
         this._remoteShowExamples.next(showExamples);
+    }
+
+    /**
+     * Look up field type
+     * @param fieldValue - input field value
+     */
+    getFieldType(fieldValue: string, fields?: SelectItem[]){
+        if(fields == null || fields == undefined){
+            return "";
+        }else{
+            let field = fields.filter(field => field.value == fieldValue);
+            if(field && field.length>0) return field[0].label;
+            else return "";
+        }
+
     }
 }

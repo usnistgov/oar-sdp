@@ -124,3 +124,17 @@ textarea {
     font-size: 1em;
     font-weight: bold;
 }
+
+.link-text {
+    color: #1E6BA1;
+    text-decoration: underline; 
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.link-text-white {
+    color: white;
+    text-decoration: underline; 
+    white-space: nowrap;
+    cursor: pointer;
+}
