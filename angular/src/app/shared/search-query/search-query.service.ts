@@ -10,6 +10,18 @@ import { SDPQuery, QueryRow } from './query';
 import { SearchfieldsListService } from '../../shared/searchfields-list/index';
 import { NotificationService } from '../../shared/notification-service/notification.service';
 
+export class queryStrings {
+    freeTextString: string;
+    keyValuePairString: string;
+    parseErrorMessage: string;
+
+    constructor(){
+        this.freeTextString = "";
+        this.keyValuePairString = "";
+        this.parseErrorMessage = "";
+    }
+}
+
 /**
  * The cart service provides an way to store the cart in local store.
  **/
@@ -173,48 +185,22 @@ export class SearchQueryService {
             }
         }
 
-        // First of all we need to put all free text search phrases together
-        let lqStringArray = queryString.trim().split(" ");
-
-        let lFreeTextSearch: string = '';
-        let lKeyValuePair: string = ''; 
-
-        for(let i = 0; i < lqStringArray.length; i++){
-            //If the item right before the freetext is an operator, drop it. If it's an operator AND, display a warning
-            if(this.operators.indexOf(lqStringArray[i].trim())>-1 && i < lqStringArray.length-1 && lqStringArray[i+1].indexOf("=") < 0){
-                if(lqStringArray[i].trim() == "AND"){
-                    console.log('Operator AND cannot be in front of a freetext phrase.')
-                }
-            }else{
-                if(lqStringArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStringArray[i].trim()) < 0){
-                    lFreeTextSearch += lqStringArray[i].trim() + " ";
-                }else{
-                    //If this is not the first item and no operator right before this key-value pair, add a AND operator
-                    if(i>0 && lqStringArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStringArray[i-1].trim()) < 0){                        
-                        lKeyValuePair += "AND " + lqStringArray[i].trim() + " ";
-                    }else{
-                        lKeyValuePair += lqStringArray[i].trim() + " ";
-                    }
-                }
-            }
-        }
+        let queryStringObject = this.parseQueryString(queryString);
 
         //Restore everything in quotes
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    lKeyValuePair = lKeyValuePair.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-
-                    lFreeTextSearch = lFreeTextSearch.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }
 
+        let lFreeTextSearch: string = queryStringObject.freeTextString;
+        let lKeyValuePair: string = queryStringObject.keyValuePairString; 
         let query: SDPQuery = new SDPQuery(this.nextQueryId(), lQueryName);
         query.freeText = lFreeTextSearch.trim();
-
-        // Assume the query string follows this pattern:
-        // key=value OP key=value OP ...
 
         if(!this.isEmpty(lKeyValuePair)){
 
@@ -223,23 +209,20 @@ export class SearchQueryService {
             lKeyValuePair = lKeyValuePair.replace(new RegExp(' OR ', 'g'), '&OR&');
             lKeyValuePair = lKeyValuePair.replace(new RegExp('OR ', 'g'), 'OR&');
 
-            //Trim spaces
+            //Trim extra spaces
             lKeyValuePair = lKeyValuePair.replace(/\s+/g, ' ').trim();
-
-            //Replace spaces with "&OR&"
-            // lKeyValuePair = lKeyValuePair.replace(/ /g, '&OR&');
 
             let keyValue: string[];
             let row: QueryRow;
             let items = lKeyValuePair.split('&');
 
             // If first item is an operator, and it's an "OR", we need to display a warning
-            if(this.operators.indexOf(items[0]) > -1){
-                //set warning message here. Or this validation should be done before call this function...
+            // if(this.operators.indexOf(items[0]) > -1){
+            //     //set warning message here. Or this validation should be done before call this function...
 
-                //Remove this operator
-                items.shift();
-            }
+            //     //Remove this operator
+            //     items.shift();
+            // }
 
             if(items && items.length > 0 && items[0].trim()!=""){
                 for (var i = 0; i < items.length; i++) {
@@ -294,6 +277,7 @@ export class SearchQueryService {
      * 1. This field is required
      * 2. Query name should be unique
      * @param queryName 
+     * @param prevQueryName previous query if any - for undo purpose 
      * @param remote - if this is a remote save, treat it the same as add
      */
     queryNameValidation(queryName: string, prevQueryName: string, mode: string = "ADD"){
@@ -369,6 +353,123 @@ export class SearchQueryService {
 
     }
 
+    parseQueryString(queryString: string): queryStrings {
+        let returnObject: queryStrings = new queryStrings();
+        let lQueryString: string = "";
+        let errorCount: number = 0;
+
+        //Trim spaces
+        queryString = queryString.replace(/\s+/g, ' ');
+
+        if(!queryString){
+            return returnObject;
+        }
+
+        //Reserve everything in quotes
+        let quotes = queryString.match(/\"(.*?)\"/g);
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i] != '""')
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+            }
+        }
+
+        // First of all we need to put all free text search phrases together
+        let lqStrArray:string[] = queryString.trim().split(" ");
+        for(let i = 0; i < lqStrArray.length; i++){
+            //If the phrase starts with "=" and the phrase before this phrase is not an operator or 
+            //key value pair, 
+            if(i == 0 && lqStrArray[i].substr(0,1) == "="){
+                lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
+                errorCount++;
+            }else if(lqStrArray[i].substr(lqStrArray[i].length - 1) == "="){
+                //If this is not the last phrase, check next phrase. 
+                if(i < lqStrArray.length - 1){
+                    if(lqStrArray[i+1].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i+1].trim()) < 0){
+                        returnObject.keyValuePairString += lqStrArray[i].trim() + lqStrArray[i+1].trim();
+                        lQueryString += lqStrArray[i] + lqStrArray[i+1];
+                        i++;
+                    }else{
+                        lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
+                        errorCount++;
+                    }
+                }else{ // Otherwise, ignore
+                    lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
+                    errorCount++;
+                }
+            }else if(i < lqStrArray[i].length - 1 && lqStrArray[i+1].substr(0,1) == "="){
+                if(lqStrArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i].trim()) < 0){
+                    returnObject.keyValuePairString += lqStrArray[i].trim()+lqStrArray[i+1].trim();
+                    i++;
+                }else{
+                    if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
+                        lQueryString += ' <mark> ' + lqStrArray[i].trim() + " " + lqStrArray[i+1].trim() + ' </mark> ';
+                        errorCount++;
+                        i++
+                    }else{
+                        lQueryString += lqStrArray[i].trim() + ' <mark> ' + lqStrArray[i+1].trim() + ' </mark> ';
+                        errorCount++;
+                        i++
+                    }
+                }
+            }else if(i == 0 && this.operators.indexOf(lqStrArray[i].trim()) >= 0){
+                lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
+                errorCount++;
+            }else if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
+                //If the item right before the freetext is an operator, or if an operator OR is between 
+                // freetext and key-value pair, mark it and display warning
+                if(i == lqStrArray.length-1){
+                    lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
+                    errorCount++;
+                }else if(i < lqStrArray.length-1 && lqStrArray[i+1].indexOf("=") < 0){
+                    if(lqStrArray[i].trim() == "AND"){
+                        //Display warning here
+                        lQueryString += ' <mark> AND </mark> ';
+                        errorCount++;
+                        console.log('Operator AND cannot be in front of a freetext phrase.');
+                    }
+                }else if(i > 0 && i < lqStrArray.length-1 && lqStrArray[i-1].indexOf("=") < 0 && lqStrArray[i+1].indexOf("=") > -1 && lqStrArray[i].trim() == "OR"){
+                    lQueryString += "<mark> OR </mark>";
+                    errorCount++;
+                    console.log('Operator OR cannot be between freetext phrase and a key value pair:');
+                }else{
+                    lQueryString += lqStrArray[i] + " ";
+                    returnObject.keyValuePairString += lqStrArray[i] + " ";
+                }
+            }else{   //This is not am operator
+                if(lqStrArray[i].indexOf("=") < 0){
+                    returnObject.freeTextString += lqStrArray[i].trim() + " ";
+                }else{
+                    //If this is not the first item and no operator right before this key-value pair, add a AND operator
+                    if(i>0 && lqStrArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStrArray[i-1].trim()) < 0){                        
+                        returnObject.keyValuePairString += "AND " + lqStrArray[i].trim() + " ";
+                    }else{
+                        returnObject.keyValuePairString += lqStrArray[i].trim() + " ";
+                    }
+                }
+
+                lQueryString += lqStrArray[i] + " ";
+            }
+        }
+
+        //Restore everything in quotes
+        if(quotes){
+            for(let i = 0; i < quotes.length; i++){
+                if(quotes[i] != '""'){
+                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                }
+            }
+        }      
+        
+        if(errorCount == 1)
+            returnObject.parseErrorMessage = 'Operator/phrase has been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details.';
+
+        if(errorCount > 1)
+            returnObject.parseErrorMessage = 'Operators/phrases have been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details.';
+
+        return returnObject;
+    }
+
     /**
      * Query string validation. If error occurs, an error message will be returned. Otherwise return empty string.
      * @param queryString input query string
@@ -394,50 +495,19 @@ export class SearchQueryService {
             }
         }
 
-        // First of all we need to put all free text search phrases together
-        let lqStrArray:string[] = queryString.trim().split(" ");
-
-        for(let i = 0; i < lqStrArray.length; i++){
-            //If the item right before the freetext is an operator, or if an operator OR is between 
-            // freetext and key-value pair, mark it and display warning
-            if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
-                if(i == lqStrArray.length-1){
-                    lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
-                    errorCount++;
-                }else if(i < lqStrArray.length-1 && lqStrArray[i+1].indexOf("=") < 0){
-                    if(lqStrArray[i].trim() == "AND"){
-                        //Display warning here
-                        lQueryString += ' <mark> AND </mark> ';
-                        errorCount++;
-                        console.log('Operator AND cannot be in front of a freetext phrase.');
-                    }
-                }else if(i > 0 && i < lqStrArray.length-1 && lqStrArray[i-1].indexOf("=") < 0 && lqStrArray[i+1].indexOf("=") > -1 && lqStrArray[i].trim() == "OR"){
-                    lQueryString += "<mark> OR </mark>";
-                    errorCount++;
-                    console.log('Operator OR cannot be between freetext phrase and a key value pair:');
-                }else{
-                    lQueryString += lqStrArray[i] + " ";
-                }
-            }else{
-                lQueryString += lqStrArray[i] + " ";
-            }
-        }
+        let queryStringObject = this.parseQueryString(queryString);
 
         //Restore everything in quotes
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.parseErrorMessage = queryStringObject.parseErrorMessage.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }      
-        
-        if(errorCount == 1)
-            queryStringErrorMessage = 'Operator has been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details';
 
-        if(errorCount > 1)
-            queryStringErrorMessage = 'Operators have been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details';
-
-        return queryStringErrorMessage;
+        return queryStringObject.parseErrorMessage;
     }
 }

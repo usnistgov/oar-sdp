@@ -92,7 +92,7 @@
                             </td>
                             <td width="50%">
                                 Records that include either &ldquo;analytical&rdquo; or &ldquo;chemistry&rdquo; are
-                                returned.
+                                returned (case insensitive).
                             </td>
                         </tr>
                         <tr>
@@ -107,22 +107,7 @@
                             </td>
                             <td width="50%">
                                 Records that contain the phrase &ldquo;analytical Chemistry&rdquo; (the two words
-                                adjacent to each other in that order) will be returned.&nbsp;
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="20%">
-                                Phrase with Individual terms
-                            </td>
-                            <td width="30%">
-                                <a class="examples"
-                                    (click)="$event.preventDefault();searchExample('&quot;analytical chemistry&quot; physics');"
-                                    href="#!">"analytical chemistry" physics
-                                </a>
-                            </td>
-                            <td width="50%">
-                                Search Results will match the Phrase &ldquo;analytical Chemistry&rdquo; or
-                                &ldquo;physics&rdquo;; That is, returned records will contain the phrase &ldquo;analytical Chemistry&rdquo; or &ldquo;physics&rdquo;.
+                                adjacent to each other in that order) will be returned (case insensitive).
                             </td>
                         </tr>
                         <tr>
@@ -143,7 +128,9 @@
                         </tr>
                         <tr>
                             <td width="20%">
-                                <span class="link-text" (click)="op3.toggle($event)">Logical Operation</span>
+                                <span>Logical Operation:</span><br>
+                                <span class="link-text" (click)="appendToSearchBox(' AND ')">AND</span>, <span
+                                    class="link-text" (click)="appendToSearchBox(' OR ')">OR</span>
                             </td>
                             <td width="30%">
                                 <a class="examples"
@@ -238,23 +225,6 @@
                     <td>
                         {{field.label}}
                     </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</p-overlayPanel>
-
-<!-- Popup dialog for operators -->
-<p-overlayPanel class="fileDialog" #op3 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
-    appendToBody=true>
-    <div class="table-wrapper">
-        <table width="100px">
-            <tbody>
-                <tr class="field-item operator" (click)="appendToSearchBox(' AND ', null, op3)">
-                    <td>AND</td>
-                </tr>
-                <tr class="field-item operator" (click)="appendToSearchBox(' OR ', null, op3)">
-                    <td>OR</td>
                 </tr>
             </tbody>
         </table>

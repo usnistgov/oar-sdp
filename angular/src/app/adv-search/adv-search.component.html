@@ -108,9 +108,8 @@
                 (keyup)="onKeyup($event, 'freeText')" />
 
             <div style="margin: 0 0 .5em 9em;"><b>Examples: </b> 
-                <span class="link-text" (click)="currentQuery.freeText='&quot;Kinetics database&quot;';readyEdit=true;dataChanged=true;setMode()">"Kinetics database"</span>
-                <span class="link-text" style="padding-left: .5em;" (click)="currentQuery.freeText='Gallium';readyEdit=true;dataChanged=true;setMode()">Gallium</span>
-                <span class="link-text" style="padding-left: .5em;" (click)="currentQuery.freeText='&quot;Kinetics database&quot; Gallium';readyEdit=true;dataChanged=true;setMode()">"Kinetics database" Gallium</span>
+                <span class="link-text" (click)="addExample('&quot;Kinetics database&quot;')">"Kinetics database"</span>
+                <span class="link-text" style="padding-left: .5em;" (click)="addExample('Gallium')">Gallium</span>
                 </div>
 
             <!-- query rows -->

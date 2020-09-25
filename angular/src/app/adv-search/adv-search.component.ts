@@ -148,8 +148,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                     this.queryNameValidateError = true;
                 } else {
                     if(this.queries.length > 0){
-                        if(!this.searchQueryService.queryNameValidation(event.target.value, this.queries[this.previousQueryIndex].queryName, this.getMode())){
-                            this.queryNameValidateErrorMsg = "Query name is required";
+                        let prevQueryName: string = "";
+
+                        if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
+                            prevQueryName = this.queries[this.previousQueryIndex].queryName;
+                        
+                        if(!this.searchQueryService.queryNameValidation(event.target.value, prevQueryName, this.getMode())){
+                            this.queryNameValidateErrorMsg = "Query name is already taken";
                             this.queryNameValidateError = true;
                         }
                     }
@@ -319,6 +324,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     setReadyEdit(){
         this.readyEdit = false;
+
         if(this.currentQuery.queryName && !this.addQuery && !this.editQuery)
         {
             this.previousQueryIndex = this.currentQueryIndex;
@@ -344,19 +350,32 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     saveAdvSearchQuery() {
         //Validate query name
+        if(this.currentQuery.queryName == null || this.currentQuery.queryName == undefined || this.currentQuery.queryName.trim()==""){
+            this.queryNameValidateErrorMsg = "Query name is required";
+            this.queryNameValidateError = true;
+            return;
+        }
+
         if(this.queries.length > 0){
-            if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, this.queries[this.previousQueryIndex].queryName, this.getMode())){
-                this.queryNameValidateErrorMsg = "Query name is required";
+            let prevQueryName: string = "";
+
+            if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
+                prevQueryName = this.queries[this.previousQueryIndex].queryName;
+
+            if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName, this.getMode())){
+                this.queryNameValidateErrorMsg = "Query name is already taken";
                 this.queryNameValidateError = true;
                 return;
             }
         }
 
-        // Make sure all field names have been selected
-        for(let i=0; i < this.currentQuery.queryRows.length; i++){
-            if(!this.currentQuery.queryRows[i].fieldType){
-                alert("Please select a field name.");
-                return;
+        // Either the freetext or one of query row need be populated
+        if(this.currentQuery.freeText == null || this.currentQuery.freeText == undefined || this.currentQuery.freeText.trim()==""){
+            for(let i=0; i < this.currentQuery.queryRows.length; i++){
+                if(!this.currentQuery.queryRows[i].fieldType){
+                    alert("Please select a field name.");
+                    return;
+                }
             }
         }
 
@@ -499,6 +518,29 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
             this.editQuery = false;
             this.createQueryInit();
         }
+    }
+
+    addExample(sampleText: string){
+        this.dataChanged=true;
+        this.readyEdit = false;
+
+        //If no query in the list yet, and it's not add or edit mode, set it to ad mode
+        if(this.currentQuery == null || (this.currentQuery.queryName.trim()=="" && !this.addQuery)){
+            if(!this.editQuery && !this.addQuery){
+                this.addQuery = true;
+                this.editQuery = false;
+                this.createQueryInit();
+            }
+            this.previousQueryIndex = null;
+        }else{
+            if(!this.editQuery && !this.addQuery){
+                this.addQuery = false;
+                this.editQuery = true;
+            }   
+            this.previousQueryIndex = this.currentQueryIndex;         
+        }
+
+        this.currentQuery.freeText = sampleText;
     }
 
     setDropdown(){
