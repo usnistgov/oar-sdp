@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef, HostListener, AfterViewInit } from '@angular/core';
+import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, HostListener, AfterViewInit } from '@angular/core';
 import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
@@ -96,7 +96,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.fields = (fields as SelectItem[]);
                 this.queries = this.searchQueryService.getQueries();
                 if(this.queries && this.queries.length > 0){
-                    this.currentQueryIndex = 0;
+                    this.currentQueryIndex = this.searchQueryService.getCurrentQueryIndex();
+                    if(this.currentQueryIndex > this.queries.length-1) this.currentQueryIndex = 0;
                     this.displayQuery(this.currentQueryIndex);
                 }
             },
@@ -131,57 +132,62 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.onWindowResize();
     }
 
+    setRowText(fieldValue: string, queryRow: QueryRow){
+        if (_.isEmpty(fieldValue)) {
+            queryRow.validated = false;
+            this.rowInputValidateError = true;
+        }else{
+            queryRow.validated = true;
+            this.rowInputValidateError = false;
+
+            if(!_.isEmpty(queryRow.fieldType)){
+                this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+                // Update search box in the top search panel
+                this.searchService.setQueryValue(this.searchValue, '', '');
+            }
+        }
+    }
+
     /**
-     * Do validation and variable init when user keys in a text input field.
-     * @param event - text input value
-     * @param field - if this is query name field, validate query name
+     * Validate query name field
+     * @param queryName - if query name provided and it's the same as current query name, do nothing
+     *                  - otherwise check query name and set mode
      */
-    onKeyup(event, field: string, queryRow?: QueryRow) {
-        this.dataChanged = true;
+    checkQueryName(queryName?: string) {
+        if(queryName != null && queryName != undefined){
+            if(this.currentQuery.queryName == queryName)
+                return;
+            else
+                this.currentQuery.queryName = queryName;
+        }
+        
         this.queryNameValidateErrorMsg = "";
         this.queryNameValidateError = false;
 
-        switch(field) { 
-            case 'queryName': { 
-                if (_.isEmpty(event.target.value)) {
-                    this.queryNameValidateErrorMsg = "Query name is required";
+        if (_.isEmpty(this.currentQuery.queryName)) {
+            this.queryNameValidateErrorMsg = "Query name is required";
+            this.queryNameValidateError = true;
+        } else {
+            if(this.queries.length > 0){
+                let prevQueryName: string = "";
+
+                if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
+                    prevQueryName = this.queries[this.previousQueryIndex].queryName;
+                
+                if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName, this.getMode())){
+                    this.queryNameValidateErrorMsg = "Query name is already taken";
                     this.queryNameValidateError = true;
-                } else {
-                    if(this.queries.length > 0){
-                        let prevQueryName: string = "";
-
-                        if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
-                            prevQueryName = this.queries[this.previousQueryIndex].queryName;
-                        
-                        if(!this.searchQueryService.queryNameValidation(event.target.value, prevQueryName, this.getMode())){
-                            this.queryNameValidateErrorMsg = "Query name is already taken";
-                            this.queryNameValidateError = true;
-                        }
-                    }
                 }
+            }
+        }
 
-                break; 
-            } 
-            case 'searchValue': { 
-                if (_.isEmpty(event.target.value)) {
-                    queryRow.validated = false;
-                    this.rowInputValidateError = true;
-                }else{
-                    queryRow.validated = true;
-                    this.rowInputValidateError = false;
-                }
+        if(!this.editQuery && !this.addQuery){
+            this.addQuery = false;
+            this.editQuery = true;
+            this.previousQueryIndex = this.currentQueryIndex;  
+        }   
 
-               break; 
-            } 
-            case 'freeText': { 
-                //validation goes here
-               break; 
-            } 
-            default: { 
-               //statements; 
-               break; 
-            } 
-         } 
+        this.dataChanged = true;
     }
 
     /**
@@ -396,6 +402,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.searchQueryService.saveQueries(this.queries);
         // Set current query index
         this.currentQueryIndex = this.queries.findIndex(query => query.queryName == this.currentQuery.queryName);
+        this.searchQueryService.saveCurrentQueryIndex(this.currentQueryIndex);
         // Refresh the right panel (query details)
         this.displayQuery(this.currentQueryIndex);
 
@@ -439,7 +446,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     /*
     * Execute query
     */
-    executeQuery(query: SDPQuery) {
+    executeQuery(query: SDPQuery, index: number) {
+        this.setCurrentQuery(index);
+        this.searchQueryService.saveCurrentQueryIndex(index);
         let lQueryValue = this.searchQueryService.buildSearchString(query);
         this.searchService.setQueryValue(lQueryValue, '', '');
         this.searchService.search(lQueryValue);
@@ -475,9 +484,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         }else{
             this.currentQuery = new SDPQuery();
             this.currentQueryIndex = 0;
-
-            this.searchService.setQueryValue('', '', ''); 
+            this.searchQueryService.saveCurrentQueryIndex(0);
         }
+
+        this.searchQueryService.saveCurrentQueryIndex(this.currentQueryIndex);
     }
 
     /**
@@ -497,6 +507,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         let field = this.fields.filter(field => field.label == row.fieldType);
         if(field != null && field.length > 0)   
             row.fieldValue = field[0].value;
+
+        if(!_.isEmpty(row.fieldText)){
+            this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+            // Update search box in the top search panel
+            this.searchService.setQueryValue(this.searchValue, '', '');
+        }
 
         this.onDataChange();
     }
@@ -520,11 +536,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         }
     }
 
-    addExample(sampleText: string){
+    setFreeText(sampleText: string){
         this.dataChanged=true;
         this.readyEdit = false;
 
-        //If no query in the list yet, and it's not add or edit mode, set it to ad mode
+        //If no query in the list yet, and it's not add or edit mode, set it to add mode
         if(this.currentQuery == null || (this.currentQuery.queryName.trim()=="" && !this.addQuery)){
             if(!this.editQuery && !this.addQuery){
                 this.addQuery = true;
@@ -541,6 +557,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         }
 
         this.currentQuery.freeText = sampleText;
+
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
     }
 
     setDropdown(){

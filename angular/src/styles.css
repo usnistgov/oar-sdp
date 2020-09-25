@@ -138,3 +138,7 @@ textarea {
     white-space: nowrap;
     cursor: pointer;
 }
+
+.inner-addon {
+    position: relative;
+}

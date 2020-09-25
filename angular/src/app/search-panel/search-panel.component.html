@@ -151,7 +151,10 @@
                 </table>
             </div>
             <div style="padding-bottom: 1em;">
-                <div class="btn-slim" style="margin-top: 0;" (click)="showQueryNameDialog($event, op5);">Save Query</div>
+                <!-- <div class="btn-slim" style="margin-top: 0;" (click)="showQueryNameDialog($event, op5);">Save Query</div> -->
+                <button class="btn-save02" style="float: left; margin-left: 1.5em;" type="button" [disabled]="_editmode" (click)="showQueryNameDialog($event, op5)" pButton type="submit">
+                    Save Query
+                </button>
 
                 <b>More Examples: </b>
                 <a class="examples" (click)="$event.preventDefault();appendToSearchBox('&quot;Kinetics database&quot;');"
@@ -244,7 +247,7 @@
             <i class="faa faa-remove clear-box2" (click)="field.value=''" data-toggle="tooltip"
                 title="Clear the search box"></i>
         </span>
-        <button id="btn-append" type="button" (click)="processInputValue(field.value, op4)" pButton type="submit">
+        <button class="btn-append" type="button" (click)="processInputValue(field.value, op4)" pButton type="submit">
             Set
         </button>
         <div style="font-style: italic; font-size: 12px; padding-top: .2em;">Example: 
@@ -268,7 +271,7 @@
             <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
                 title="Clear the search box"></i>
         </span>
-        <button id="btn-append" type="button" (click)="saveAdvQuery(field2.value, op5)" pButton type="submit">
+        <button class="btn-append" type="button" (click)="saveAdvQuery(field2.value, op5)" pButton type="submit">
             Save Query
         </button>
     </div>

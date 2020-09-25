@@ -36,4 +36,8 @@ export class HeadbarComponent implements OnInit {
     this.queryLength = this.searchQueryService.getQueries().length;
     this.queries = this.searchQueryService.getQueries();
   }
+
+  hideExamples(){
+      this.searchQueryService.setShowExamples(false);
+  }
 }

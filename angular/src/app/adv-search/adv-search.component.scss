@@ -90,7 +90,7 @@ input[type="file"] {
 .query-name {
   border: 1px solid #a0a0a0;
   background-color: #FFFFFF;
-  width: 70%;
+  width: 60%;
   height: 30px;
   font-weight: 400;
   padding-left: 0.5em;
@@ -165,6 +165,16 @@ input[type="file"] {
     background-color: green;
     margin-right: .5em;
     float: right;
+    width: 100px;
+}
+
+#btn-add {
+    height:2em;
+    border:none;
+    background-color: #1471AE;
+    margin-right: 1em;
+    margin-left: 1em;
+    // float: right;
     width: 100px;
 }
 
@@ -290,3 +300,12 @@ tr.active {
     background-color:hsl(210, 96%, 80%) !important;
     color: white !important;
 } 
+
+.inner-addon .clear-box {
+    position: absolute;
+    right: 10px;
+    top: -1px;
+    font-size: 20px;
+    color: rgb(143, 143, 143);
+    cursor: pointer;
+}

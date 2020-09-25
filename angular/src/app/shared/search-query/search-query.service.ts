@@ -152,6 +152,25 @@ export class SearchQueryService {
     }
 
     /**
+     * Save current query index to local storage
+     * @param index 
+     */
+    saveCurrentQueryIndex(index: number){
+        this._storage.setItem('currentQueryIndex',index.toString());
+    }
+
+    /**
+     * Get current query index from local storage
+     */
+    getCurrentQueryIndex(): number{
+        let index = this._storage.getItem('currentQueryIndex');
+        if(index == null || index == undefined)
+            return 0;
+        else
+            return Number(index);
+    }
+
+    /**
      * 
      * @param queryString Query string
      */

@@ -7,7 +7,7 @@
         <li id='title' class="active breadcrumb-item">Advanced Search Builder</li>
     </ol>
 </div>
-<app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false'
+<app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' [(editmode)]='editQuery || addQuery'
     jumbotronHeight='27vh' jumbotronPadding='2em 2em 0em 2em'></app-search-panel>
 
 <div class="ui-fluid" style="background-color: #EFEFEF">
@@ -50,7 +50,7 @@
                                         <i class="faa faa-pencil" style="float: right;"></i>
                                     </a>
                                     <a href="javascript:void(0);"
-                                        (click)="executeQuery(query); showDropdown=false;">Execute
+                                        (click)="executeQuery(query, i); showDropdown=false;">Execute
                                         <i class="faa faa-play" style="float: right;"></i>
                                     </a>
                                     <a href="javascript:void(0);"
@@ -86,30 +86,53 @@
 
         <div [className]="resultsClass" style="background-color:white">
             <!-- Query name -->
-            <div class="ui-g-12 ui-md-12" style="display: flex;vertical-align: middle;">
-                <label for="queryName" style="white-space: nowrap;">Query Name</label>
+            <div class="ui-g-12 ui-md-12" style="vertical-align: middle;">
+                <label for="queryName" style="white-space: nowrap;margin-left: -5px;">Query Name</label>
 
-                <input class="query-name" type="text" id="queryName" [(ngModel)]="currentQuery.queryName"
-                    (focus)="setReadyEdit()" (keydown)="setMode()"
-                    (keyup)="onKeyup($event, 'queryName')" />
+                <span class="inner-addon">
+                    <input class="query-name" #queryname type="text" id="queryName" [(ngModel)]="currentQuery.queryName"
+                        (focus)="setReadyEdit()" (keydown)="setMode()"
+                        (keyup)="checkQueryName()" />
 
-                <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
+                    <i class="faa faa-remove clear-box" (click)="checkQueryName('');" data-toggle="tooltip"
+                    title="Clear query name"></i>
+                </span>
+                <!-- <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
                     [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Add Query">
                     <i class="faa faa-plus-circle faa-2x"></i>
-                </button>
+                </button> -->
+                <div style="float: right;">
+                    <button id="btn-cancel" type="button" (click)="cancelConfirm()" pButton type="submit"
+                        [disabled]="(!editQuery && !addQuery)">
+                        <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i>
+                        Cancel
+                    </button>
+
+                    <button id="btn-add" type="button" (click)="$event.preventDefault();createQueryInit()" 
+                        pButton type="submit"
+                        [disabled]="editQuery || addQuery">
+                        <i class="faa faa-plus icon-white"></i>
+                        Add
+                    </button>
+                </div>
             </div>
+
             <div *ngIf="queryNameValidateError" style="color:red;padding-left: 1em;">{{queryNameValidateErrorMsg}}</div>
 
             <!-- free text input -->
             <label for="freeText" style="white-space: nowrap; margin-left: .2em;">Free Text Search:</label>
 
-            <input class="query-name" type="text" id="freeText" [(ngModel)]="currentQuery.freeText"
-                (focus)="setReadyEdit()" (keydown)="setMode()"
-                (keyup)="onKeyup($event, 'freeText')" />
+            <span class="inner-addon">
+                <input class="query-name" #freetext type="text" id="freeText" [(ngModel)]="currentQuery.freeText"
+                    (focus)="setReadyEdit()" (keydown)="setMode()"
+                    (keyup)="setFreeText($event.target.value)" />
 
+                    <i class="faa faa-remove clear-box" (click)="setFreeText('')" data-toggle="tooltip"
+                    title="Clear free text"></i>
+            </span>
             <div style="margin: 0 0 .5em 9em;"><b>Examples: </b> 
-                <span class="link-text" (click)="addExample('&quot;Kinetics database&quot;')">"Kinetics database"</span>
-                <span class="link-text" style="padding-left: .5em;" (click)="addExample('Gallium')">Gallium</span>
+                <span class="link-text" (click)="setFreeText('&quot;Kinetics database&quot;')">"Kinetics database"</span>
+                <span class="link-text" style="padding-left: .5em;" (click)="setFreeText('Gallium')">Gallium</span>
                 </div>
 
             <!-- query rows -->
@@ -148,7 +171,7 @@
                         <td>
                             <input type="text" class="text-input field-text" [ngClass]="{'field-text-grey': queryRow.validated, 'field-text-red':!queryRow.validated }" [(ngModel)]="queryRow.fieldText"
                                 placeholder="Field text is required..." (focus)="setReadyEdit()"
-                                (keydown)="setMode()" (keyup)="onKeyup($event, 'searchValue', queryRow)" />
+                                (keydown)="setMode()" (keyup)="setRowText($event.target.value, queryRow)" />
                         </td>
 
                         <td>
@@ -182,7 +205,7 @@
                         Save
                     </button>
 
-                    <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery)" pButton type="submit"
+                    <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery,currentQueryIndex)" pButton type="submit"
                         [disabled]="editQuery || addQuery || queries == null || queries?.length == 0 || rowInputValidateError">
                         <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
                         Execute

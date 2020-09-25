@@ -42,7 +42,16 @@ export class SearchPanelComponent implements OnInit {
     @Input() advanceLink: boolean;
     @Input() jumbotronPadding: string = '1em';
     @Input() homePage: boolean = false;
+    @Input() 
+    set editmode(val: any) {
+        this._editmode = val;
+    }
+    @Input()
+    set setExampleState(state: string) {
+        this.currentState = state;
+    }
 
+      _editmode: boolean = false;
     confValues: Config;
     errorMessage: string;
     _searchValue: string = '';

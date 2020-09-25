@@ -308,11 +308,26 @@ table thead, table tbody tr {
     background-color: rgb(252, 246, 237);
 }
 
-#btn-append {
+.btn-append {
     background-color: green;
     border: 1px solid green;
     border-radius: 0 4px 4px 0;
     color: white;
+}
+
+.btn-save02 {
+    background-color: green;
+    border: 1px solid green;
+    border-radius: 4px;
+    color: white;
+}
+
+.btn-save02:disabled,
+.btn-save02[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  border-radius: 4px;
+  color: #666666;
 }
 
 .overlay-input {
