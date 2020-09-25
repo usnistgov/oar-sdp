@@ -397,7 +397,7 @@ export class SearchQueryService {
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                     errorCount++;
                 }
-            }else if(i < lqStrArray[i].length - 1 && lqStrArray[i+1].substr(0,1) == "="){
+            }else if(i < lqStrArray.length - 1 && lqStrArray[i+1].substr(0,1) == "="){
                 if(lqStrArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i].trim()) < 0){
                     returnObject.keyValuePairString += lqStrArray[i].trim()+lqStrArray[i+1].trim();
                     i++;
