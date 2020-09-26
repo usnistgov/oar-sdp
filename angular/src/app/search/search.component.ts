@@ -54,7 +54,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchValue: string;
   // taxonomies: SelectItem[];
   sortItems: SelectItem[];
-  fields: SelectItem[];
+  fields: SelectItem[] = [];
+  filterableFields: SelectItem[];
   fieldsArray: any[];
   displayFields: string[] = [];
   selectedFields: string[] = ['Resource Description', 'Subject keywords'];
@@ -202,15 +203,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     //queryValue is for backend search
         this.searchService.setQueryValue(this.searchValue, '', '');
 
-        this.getSearchFields();
+        this.getFields();
     });
   }
 
-    getSearchFields() {
-        this.searchFieldsListService.get()
-        .subscribe(
+    getFields() {
+        this.searchFieldsListService.get().subscribe(
             fields => {
-                this.fields = this.toSortItems(fields);
+                this.filterableFields = this.toSortItems(fields);
                 this.searchService.setQueryValue(this.searchValue, '', '');
                 this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
                 if(! this.queryStringErrorMessage){ 
@@ -250,8 +250,13 @@ export class SearchComponent implements OnInit, OnDestroy {
                 }
                 }
             }
+
+            if (_.includes(field.tags, 'searchable')) {
+                this.fields.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+            }
         }
-        //sortItems = _.sortBy(sortItems, ['label','value']);
+
+        this.fields = _.sortBy(this.fields, ['label','value']);
         return sortItems;
     }
 
