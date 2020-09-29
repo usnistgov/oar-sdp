@@ -728,22 +728,24 @@ export class SearchComponent implements OnInit, OnDestroy {
         var filteredResults: any[] = [];
 
         if (selectedComponents.length > 0) {
-        if (searchResults !== null && searchResults.length > 0) {
-            let components: SelectItem[] = [];
-            let componentsArray: string[] = [];
-            let resultItemComp: string[] = [];
-            for (let resultItem of searchResults) {
-            if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
-                for (let resultItemComponents of resultItem.inventory) {
-                let comp = resultItemComponents.byType;
-                if (comp !== null) {
-                    for (let type of comp) {
-                    let compType = type.forType;
-                    compType = _.startCase(_.split(compType, ':')[1]);
-                    for (let comps of selectedComponents) {
-                        if (comps !== null) {
-                        if (compType.indexOf(comps) === 0) {
-                            filteredResults.push(resultItem);
+            if (searchResults !== null && searchResults.length > 0) {
+                let components: SelectItem[] = [];
+                let componentsArray: string[] = [];
+                let resultItemComp: string[] = [];
+                for (let resultItem of searchResults) {
+                if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+                    for (let resultItemComponents of resultItem.inventory) {
+                    let comp = resultItemComponents.byType;
+                    if (comp !== null) {
+                        for (let type of comp) {
+                        let compType = type.forType;
+                        compType = _.startCase(_.split(compType, ':')[1]);
+                        for (let comps of selectedComponents) {
+                            if (comps !== null) {
+                                if (compType.indexOf(comps) === 0) {
+                                    filteredResults.push(resultItem);
+                                }
+                            }
                         }
                         }
                     }
@@ -751,11 +753,9 @@ export class SearchComponent implements OnInit, OnDestroy {
                 }
                 }
             }
-            }
-        }
-        return filteredResults;
+            return filteredResults;
         } else {
-        return searchResults;
+            return searchResults;
         }
     }
 
