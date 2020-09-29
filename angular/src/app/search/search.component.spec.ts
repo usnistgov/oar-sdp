@@ -51,7 +51,7 @@ describe('SearchComponent', () => {
 
   it('should filter the results by components', (() => {
     let results = searchCompService.filterByComponents(searchResults, ['Data File']);
-    expect(results.length).toBe(1);
+    expect(results.length).toBe(2);
   })
   );
 

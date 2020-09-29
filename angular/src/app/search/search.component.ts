@@ -339,32 +339,32 @@ export class SearchComponent implements OnInit, OnDestroy {
   collectComponents(searchResults: any[]) {
     let components: SelectItem[] = [];
     let componentsArray: string[] = [];
-    let componentsAllArray: string[] = [];
-    let resultItemComp: string[] = [];
-    let comp: any[] = [];
     let compType: string;
     this.componentsAllArray = [];
+
     for (let resultItem of searchResults) {
-      if (resultItem.inventory && resultItem.inventory !== null && resultItem.inventory.length > 0) {
+      if(resultItem['components'] != null && resultItem['components'] != undefined && resultItem['components'].length > 0){
         this.uniqueComp = [];
-        for (let resultItemComponents of resultItem.inventory) {
-          comp = resultItemComponents.byType;
-          for (let type of comp) {
-            let compType = type.forType;
-            if ((_.includes(compType, 'nrdp'))) {
-              //this.componentsAllArray.push(_.startCase(_.split(compType, ':')[1]));
-              this.uniqueComp.push(_.startCase(_.split(compType, ':')[1]));
-              if (componentsArray.indexOf(compType) < 0) {
+        let allcomponents = resultItem['components'];
+        for(let component of allcomponents){
+          let resTypeArray = component['@type'];
+          for (var i = 0; i < resTypeArray.length; i++) {
+            compType = _.startCase(_.split(resTypeArray[i], ':')[1])
+            if(this.uniqueComp.indexOf(compType) < 0)
+              this.uniqueComp.push(compType);
+    
+            if(compType != null && compType != undefined && _.includes(resTypeArray[i], 'nrdp')){
+              if (componentsArray.indexOf(resTypeArray[i]) < 0) {
                 components.push({
-                  label: _.startCase(_.split(compType, ':')[1]),
-                  value: _.startCase(_.split(compType, ':')[1])
+                  label: compType,
+                  value: compType
                 });
-                componentsArray.push(compType);
+                componentsArray.push(resTypeArray[i]);
               }
-            }
+            }   
           }
-          this.uniqueComp = this.uniqueComp.filter(this.onlyUnique);
         }
+
         for (let comp of this.uniqueComp) {
           this.componentsAllArray.push(comp);
         }
