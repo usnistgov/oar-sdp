@@ -89,7 +89,7 @@ export class RealSearchService implements SearchService{
         url += '&'
         
     url += finalKeyValueStr.trim() + keyString.trim();
-
+    
     return this.http.get(url);
   }
 

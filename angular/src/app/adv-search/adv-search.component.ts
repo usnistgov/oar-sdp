@@ -133,6 +133,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     setRowText(fieldValue: string, queryRow: QueryRow){
+        this.dataChanged = true;
         if (_.isEmpty(fieldValue)) {
             queryRow.validated = false;
             this.rowInputValidateError = true;
