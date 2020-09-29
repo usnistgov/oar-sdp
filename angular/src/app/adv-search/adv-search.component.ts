@@ -243,6 +243,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     deleteRow(index: number){
         this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row.id != this.currentQuery.queryRows[index].id);
 
+        if(this.currentQuery.queryRows.length <= 0){
+            this.currentQuery.queryRows.push(new QueryRow());
+        }
+
         //Validate field value
         if(this.currentQuery.queryRows.filter(row => row.validated == false).length > 0)
             this.rowInputValidateError = true;
@@ -584,5 +588,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     nextQueryId() {
         return Math.max.apply(Math, this.queries.map(function(o) { return o.id; })) + 1;
+    }
+
+    showExamples(){
+        this.searchQueryService.setShowExamples(true);
     }
 }

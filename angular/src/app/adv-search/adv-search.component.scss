@@ -90,12 +90,23 @@ input[type="file"] {
 .query-name {
   border: 1px solid #a0a0a0;
   background-color: #FFFFFF;
-  width: 60%;
+  width: calc(100% - 150px);
   height: 30px;
   font-weight: 400;
   padding-left: 0.5em;
   vertical-align:middle;
   margin-left:1em
+}
+
+.terms {
+    border: 1px solid #a0a0a0;
+    background-color: #FFFFFF;
+    width: calc(100% - 250px);
+    height: 30px;
+    font-weight: 400;
+    padding-left: 0.5em;
+    vertical-align:middle;
+    margin-left:1em
 }
 
 .field-text {
@@ -111,6 +122,14 @@ input[type="file"] {
 
 .field-text-red {
     border: 1px solid #ff0000;
+}
+
+.field-text-bk-white {
+    background-color: white;
+}
+
+.field-text-bk-yellow {
+    background-color: rgb(255, 250, 219);
 }
 
 .italic {
@@ -132,7 +151,7 @@ input[type="file"] {
 }
 
 .add-query-button {
-  float: right;
+//   float: right;
   vertical-align: middle;
   width: 2.7em;
   height:2.3em;
@@ -308,4 +327,15 @@ tr.active {
     font-size: 20px;
     color: rgb(143, 143, 143);
     cursor: pointer;
+}
+
+.free-text-lable {
+    white-space: nowrap; 
+    margin-left: .2em;
+}
+
+.show-example {
+    padding-top: 20px;
+    vertical-align: bottom;
+    padding-left: .5em;
 }
