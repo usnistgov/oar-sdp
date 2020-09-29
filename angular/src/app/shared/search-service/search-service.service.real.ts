@@ -90,8 +90,6 @@ export class RealSearchService implements SearchService{
         
     url += finalKeyValueStr.trim() + keyString.trim();
 
-    console.log("url", url);
-
     return this.http.get(url);
   }
 

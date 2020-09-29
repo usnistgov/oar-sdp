@@ -387,3 +387,13 @@ background-cyanblue {
     justify-content: center; 
     align-items: center;
 }
+
+.lbl-display-fields {
+    width: 110%;
+    margin:0em -10px 10px -10px;
+    padding-left: 13px;
+    padding-right: 13px;
+    line-height: 30px;
+    text-align: left;
+    background-color: rgb(255, 226, 171);
+}

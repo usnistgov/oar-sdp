@@ -241,18 +241,23 @@ export class SearchComponent implements OnInit, OnDestroy {
             if (_.includes(field.tags, 'filterable')) {
                 if (field.type !== 'object') {
                 if (field.name !== 'component.topic.tag') {
-                    sortItems.push({ label: field.label, value: field.name });
+                    if(sortItems.filter(item => {item.label==field.label && item.value==field.name}).length == 0)
+                        sortItems.push({ label: field.label, value: field.name });
                 }
                 if (field.label !== 'Resource Title') {
                     if (field.name !== 'component.topic.tag') {
-                    this.displayFields.push(field.label);
+                        if(this.displayFields.indexOf(field.label) < 0)
+                            this.displayFields.push(field.label);
                     }
                 }
                 }
             }
 
             if (_.includes(field.tags, 'searchable')) {
-                this.fields.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+                let lValue = field.name.replace('component.', 'components.');
+
+                this.fields.push({ label: field.label, value: lValue });
+
             }
         }
 

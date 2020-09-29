@@ -272,8 +272,6 @@ export class SearchQueryService {
                 }
             }
         }
-
-        console.log('query', query);
         return query;
     }
 

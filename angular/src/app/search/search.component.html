@@ -334,13 +334,11 @@
                 <!-- Display Fields config -->
                 <div [ngClass]="flexgrow(1)" style="padding:5px 10px 5px 0px;">
                   <button type="text" style="background-color: #606165;font-weight: 700;height: 2em;max-width: 300px;" pButton
-                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize View</button>
                   <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
-                    <div style="width: 100%;margin-top:0em;text-align: left;">
-                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked" (onChange)="SelectAllFields()"
-                        [(ngModel)]="selectedFields"></p-checkbox>
-                        <b>Display Fields</b> <a href="#" (click)="$event.preventDefault();ResetSelectedFields()"
-                        style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
+                    <div class="lbl-display-fields">
+                        <b>Display Fields</b> 
+                        <span class="link-text" style="float: right;" (click)="$event.preventDefault();ResetSelectedFields()"><i class="faa faa-refresh"></i> Reset</span>
                     </div>
                     <div style="text-align: left">
                         <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked" label="Select All"
@@ -350,8 +348,10 @@
                         <p-checkbox inputId={{field}} name={{field}} class="label" value={{field}} label={{field}}
                         [(ngModel)]="selectedFields" (onChange)="updateFields()"></p-checkbox>
                     </div>
-                    <div style="border-top:.5px solid #e6e6e6;margin-top:5px;padding-top:5px;text-align: left">
+                    <div class="lbl-display-fields">
                         <b>Sort Results</b> <br>
+                    </div>
+                    <div>
                         <p-dropdown [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name"
                         (onChange)="SortByFields()"
                         [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
@@ -455,7 +455,7 @@
             <!-- Display Fields config -->
             <div [ngClass]="flexgrow(1)" style="padding:5px 10px 5px 0px;">
               <button type="text" style="background-color: #606165;font-weight: 700;height: 2em;max-width: 300px;" pButton
-              (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+              (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize View</button>
             </div>
           </div>
 
