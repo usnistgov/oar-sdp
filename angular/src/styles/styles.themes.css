@@ -15,7 +15,7 @@ body .ui-button.ui-button-text-icon-left, body .ui-datepicker-buttonpane > butto
 }
 
 body .ui-state-active, body .ui-state-highlight {
-  background-color: #03A9F4;
+  background-color: #cacaca;
   color: #ffffff; }
 
 body .ui-paginator > a {
@@ -181,3 +181,9 @@ body .ui-dialog .ui-dialog-titlebar {
   color:#ffffff;
 }
 
+.dropdown .dropdown-menu a:hover
+{
+  color: #fff;
+  background-color: #cacaca;
+  border-color: #fff;
+}

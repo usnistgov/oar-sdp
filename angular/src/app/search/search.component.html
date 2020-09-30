@@ -1,90 +1,48 @@
+<app-search-panel title='' [subtitle]='false' [helpicon]='false' [advanceLink]='true' jumbotronPadding='1em 1em 0em 1em'></app-search-panel>
+
 <div class="ui-fluid searchColor">
-  <!-- The search session on top -->
-  <div class="ui-g">
-    <div class="ui-g-12 frontPanel" [ngStyle]="{ 'background-color':'black','background-image': 'url(' + imageURL + ')'}">
-      <div class="ui-g form-group">
-        <div class="ui-g-12 ui-lg-2 ui-md-1">
+    <!-- Handle no search result -->
+    <div *ngIf="resultStatus == RESULT_STATUS.noResult">
+        <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
+        <div class="ui-g-2"></div>
+        <div class="ui-g-10">
+            There are no records that match your search query. 
         </div>
-
-        <!-- Search text box -->
-        <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px;">
-          <div class="inner-addon left-addon element" style="background-color: #FFFFFF;" tabindex="0">
-            <i class="glyphicon faa faa-search" ></i><label for="searchinput" class="hideLabel">Search Input</label>
-            <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic'}" [(ngModel)]="searchValue" inputId="searchinput" name="searchinput"
-              (keyup.enter)="doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)"
-              [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)" [minLength]="1"
-              [maxlength]="2048" [size]="50">
-            </p-autoComplete>
-          </div>
         </div>
-
-        <!-- Taxonomy drop down -->
-        <div class="ui-g-12 ui-lg-2 ui-md-4" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <p-dropdown [options]="taxonomies" [style]="{'width':'100%','display': 'flex','align-items':'center',
-        'background-color': '#FFFFFF','height': '42px'
-        ,'font-weight': '900','font-style': 'italic'}" [(ngModel)]="searchTaxonomyKey">
-          </p-dropdown>
-        </div>
-
-        <!-- Search button -->
-        <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <button class="searchButton" (click)="doSearch(searchValue,searchTaxonomyKey,queryAdvSearch)" pButton
-            label="Search" type="submit" aria-label="Search"></button> </div>
-
-        <!-- Advanced Search link --> 
-        <div class="ui-g-12 ui-md-2">
-          &nbsp;&nbsp;<a href="#" [routerLink]="['/advanced']"
-            style="color: white;text-decoration: underline;display:table-cell;vertical-align: middle"> Advanced Search
-          </a>
-        </div>
-      </div>
-
-      <!-- Add 2 columns of space to the left of "Examples" -->
-      <div class="ui-g-12 ui-md-2">
-      </div>
-
-      <!-- Examples -->
-      <div class="ui-g-12 ui-md-6">
-        <b style="color: white;"> Examples: </b>
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
-          href="#">"Kinetics database" </a> &nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#">Gallium </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#">"SRD 101"
-        </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#">XPDB </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
-          href="#">Interatomic Potentials </a>&nbsp;
-      </div>
+        <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
     </div>
-  </div>
 
-  <!-- Handle no search result -->
-  <div *ngIf="noResults">
-    <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
-      <div class="ui-g-2"></div>
-      <div class="ui-g-10" *ngIf="noResults && !sysError">
-        <!-- <p-messages [(value)]="searchResultsError" style="text-align:center"></p-messages>
-        <p-messages [(value)]="msgs" style="text-align:center;background-color: red"></p-messages> -->
-        Your search generates no results. Please click on <a href="#help" (click)="gaService.gaTrackPageview('/help', 'help')"> Search Rules</a> for more information.
-      </div>
-      <div class="ui-g-10" *ngIf="sysError">
-        Oops! It looks like our site had a problem completing your search. Please try again. If this error persists you
-        may contact <a
-          href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= " (click)="gaService.gaTrackEvent('Email', $event, 'Contact')">datasupport@nist.gov</a>.
-      </div>
+    <!-- Handle user error -->
+    <div *ngIf="resultStatus == RESULT_STATUS.userError">
+        <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
+            <div class="ui-g-2"></div>
+            <div class="ui-g-10">
+                There is a syntax error in your search input. Please review your search input and correct the error. Click on <span class="link-text" (click)="showExamples()"> Show Examples</span> for how to construct your search. 
+            </div>
+        </div>
+        <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
     </div>
-    <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
-  </div>
 
-  <!-- Display spinner while waiting for search result -->
-  <div class="ui-g" *ngIf="searching"
-    style="width: mobWidth; height: 50vh; display: flex; justify-content: center; align-items: center;">
-    <p-progressSpinner></p-progressSpinner>
-  </div>
+    <!-- Handle sys error -->
+    <div *ngIf="resultStatus == RESULT_STATUS.sysError">
+        <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
+            <div class="ui-g-2"></div>
+            <div class="ui-g-10">
+                Oops! It looks like our site had a problem completing your search. If this error persists you
+                may contact <a
+                href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= " (click)="gaService.gaTrackEvent('Email', $event, 'Contact')">datasupport@nist.gov</a>.
+            </div>
+        </div>
+        <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
+    </div>
+
+    <!-- Display spinner while waiting for search result -->
+    <div class="ui-g spinner" *ngIf="searching">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
 
   <!-- Display search result if any -->
-  <div *ngIf="!noResults">
+  <div *ngIf="resultStatus == RESULT_STATUS.success">
     <div *ngIf="filteredResults.length > 0">
       <div class="ui-g " style="background-color: #F8F9F9;">
         <!-- Filter panel for mobile device -->
@@ -99,8 +57,7 @@
                 [ngClass]="getFilterImgClass()" style="zoom: 100%;color: #fff;"></i></span>
                 <a href="#" style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF"
                   (click)="$event.preventDefault();clearFilters()">
-                  <i style="vertical-align: middle;zoom: 80%" class="material-icons"> clear
-                  </i>Clear All</a>
+                  <i style="vertical-align: middle;zoom: 80%;margin-right: .3em;" class="faa faa-remove"></i>Clear All</a>
               </div>
 
               <!-- Filter body -->
@@ -128,7 +85,7 @@
                         'height': '140px','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
                     (onNodeUnselect)="filterResults($event)" (onNodeSelect)="filterResults($event)"
-                    (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)">
+                    (onNodeExpand)="nodeExpanded = true" (onNodeCollapse)="nodeExpanded = false">
                     <ng-template let-node pTemplate="default">
                       <span> {{node.label.split("-")[0]}}&nbsp;</span>
                       <span class="w3-badge badge1" style="background-color: #1471AE;" *ngIf="node.label.split('-')[1] !=''">
@@ -137,7 +94,7 @@
                   </p-tree>
                   <div style="background-color: #F8F9F9;"
                     *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                    <a href="#" (click)="$event.preventDefault();showMoreResTopics()"
+                    <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = true;"
                       style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show More</a>
                   </div>
                 </div>
@@ -148,7 +105,7 @@
                         'height': 'auto','padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
                     (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')"
-                    (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)">
+                    (onNodeExpand)="nodeExpanded = true" (onNodeCollapse)="nodeExpanded = false">
                     <ng-template let-node pTemplate="default">
                       <span> {{node.label.split("-")[0]}}&nbsp;</span>
                       <span class="w3-badge badge1" style="background-color: #1471AE;" *ngIf="node.label.split('-')[1] !=''">
@@ -157,7 +114,7 @@
                   </p-tree>
                   <div style="background-color: #F8F9F9;"
                     *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                    <a href="#" (click)="$event.preventDefault();showLessResTopics()"
+                    <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = false;"
                       style="background-color: #F8F9F9;color: #1f496e;;padding-left: 50px;">Show Less</a>
                   </div>
                 </div>
@@ -231,7 +188,7 @@
                   class="faa faa-angle-double-left" style="zoom: 100%;color: #fff;cursor: pointer;"></i></a>
               <a href="#" style="float: right;font-weight:900;vertical-align: middle;color: #FFFFFF"
                 (click)="$event.preventDefault();clearFilters()">
-                <i style="vertical-align: middle;zoom: 70%" class="material-icons"> clear
+                <i style="vertical-align: middle;zoom: 70%;margin-right: .3em;" class="faa faa-remove">
                 </i>Clear All</a>
             </div>
 
@@ -260,7 +217,7 @@
                         'padding-bottom': '.5em',
                         'background-color': '#F8F9F9'}" [(selection)]="selectedThemesNode"
                   (onNodeUnselect)="filterResults($event,'')" (onNodeSelect)="filterResults($event,'')"
-                  (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)">
+                  (onNodeExpand)="nodeExpanded = true" (onNodeCollapse)="nodeExpanded = false">
                   <ng-template let-node pTemplate="default">
                     <span class="invisible-scrollbar"> {{node.label.split("-")[0]}}&nbsp;</span>
                     <span class="w3-badge badge1 invisible-scrollbar" style="background-color: #1471AE"
@@ -269,7 +226,7 @@
                 </p-tree>
                 <div style="background-color: #F8F9F9"
                   *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                  <a href="#" (click)="$event.preventDefault();showMoreResTopics()"
+                  <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = true"
                     style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;"
                     *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">Show
                     More</a>
@@ -290,7 +247,7 @@
                 </p-tree>
                 <div style="background-color: #F8F9F9"
                   *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                  <a href="#" (click)="$event.preventDefault();showLessResTopics()"
+                  <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = false;"
                     style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show Less</a>
                 </div>
               </div>
@@ -364,41 +321,38 @@
         <div *ngIf="!searching" [className]="resultsClass" style="padding: 0px;background-color: #FFFFFF">
           
           <!-- Top bar -->
-          <div class="ui-g ui-grid-responsive" style="padding: 0em;">
-            <div class="ui-g-12" style="padding: 0em">
-              <div class="ui-g-12 ui-md-4 ui-sm-12">
-                <div style="color: #000;font-weight: 800;float: left;padding-top: 10px">
+          <div class="ui-g ui-grid-responsive" style="padding: 0em; border-bottom: 1px solid rgb(224, 224, 224);">
+            <div [ngClass]="resultTopBarClass()" style="width: 100%;">
+                <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
                     &nbsp;&nbsp;{{filteredResults.length}} records found</div>
-              </div>
-              <div class="ui-g-12 ui-md-8 ui-sm-12">
 
                 <!-- Pagination -->
-                <div style="float:left;padding-top:10px;">
+                <div [ngClass]="flexgrow(8)" style="padding:5px 10px 5px 0px;">
                     <pagination-controls class="my-pagination" (pageChange)="onPageChange($event); false"></pagination-controls>
                 </div>
 
                 <!-- Display Fields config -->
-                <div style="float: right;padding-right:10px;padding-top:10px;">
-                  <button type="text" style="background-color: #606165;font-weight: 900" pButton
-                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
+                <div [ngClass]="flexgrow(1)" style="padding:5px 10px 5px 0px;">
+                  <button type="text" style="background-color: #606165;font-weight: 700;height: 2em;max-width: 300px;" pButton
+                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize View</button>
                   <p-overlayPanel #op1 [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}">
-                    <div style="width: 100%;margin-top:0em;text-align: left;">
-                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" (onChange)="SelectAllFields()"
-                        [(ngModel)]="selectedFields"></p-checkbox>
-                        <b>Display Fields</b> <a href="#" (click)="$event.preventDefault();ResetSelectedFields()"
-                        style="float: right;"><i class="faa faa-refresh"></i> Reset</a>
+                    <div class="lbl-display-fields">
+                        <b>Display Fields</b> 
+                        <span class="link-text" style="float: right;" (click)="$event.preventDefault();ResetSelectedFields()"><i class="faa faa-refresh"></i> Reset</span>
                     </div>
                     <div style="text-align: left">
-                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="checked" label="Select All"
+                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked" label="Select All"
                         (onChange)="SelectAllFields()" [(ngModel)]="selectedFields"></p-checkbox>
                     </div>
-                    <div *ngFor="let fields of displayFields" style="text-align: left">
-                        <p-checkbox inputId={{fields}} name={{fields}} class="label" value={{fields}} label={{fields}}
-                        [(ngModel)]="selectedFields"></p-checkbox>
+                    <div *ngFor="let field of displayFields" style="text-align: left">
+                        <p-checkbox inputId={{field}} name={{field}} class="label" value={{field}} label={{field}}
+                        [(ngModel)]="selectedFields" (onChange)="updateFields()"></p-checkbox>
                     </div>
-                    <div style="border-top:.5px solid #e6e6e6;margin-top:5px;padding-top:5px;text-align: left">
+                    <div class="lbl-display-fields">
                         <b>Sort Results</b> <br>
-                        <p-dropdown [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name"
+                    </div>
+                    <div>
+                        <p-dropdown [options]="filterableFields" [(ngModel)]="sortItemKey" placeholder="Field Name"
                         (onChange)="SortByFields()"
                         [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
                         </p-dropdown>
@@ -406,8 +360,10 @@
                     <div class="EmptyBox20"></div>
                   </p-overlayPanel>
                 </div>
-              </div>
             </div>
+
+            <!-- Display error message if any -->
+            <div style="width: 100%;text-align: left;padding-left: 10px;color: rgb(255, 115, 0);" [innerHTML]="queryStringErrorMessage">
           </div>
 
           <!-- List of search result -->
@@ -447,7 +403,7 @@
                       </div>
                       <div class="ui-grid-row" *ngIf="selectedFields.indexOf('Research Topic') !==-1">
                         <div class="ui-grid-col-12"><b>Research Topic: </b> <i style="color: gray;">
-                            {{resultItem.topic[0].tag}}
+                            {{resultItem.topic[0]?.tag}}
                           </i>
                         </div>
                       </div>
@@ -487,25 +443,22 @@
           </ul>
 
           <!-- Bottom bar -->
-          <div class="ui-g-12" style="padding: 0em">
-            <div class="ui-g-12 ui-md-4 ui-sm-12">
-              <div style="color: #000;font-weight: 800;float: left;padding-top: 10px">
+          <div [ngClass]="resultTopBarClass()" style="width: 100%;">
+            <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
                 &nbsp;&nbsp;{{filteredResults.length}} records found</div>
-            </div>
 
             <!-- Pagination -->
-            <div class="ui-g-12 ui-md-8 ui-sm-12">
-              <div style="float:left;padding-top:10px;">
+            <div [ngClass]="flexgrow(8)" style="padding:5px 10px 5px 0px;">
                 <pagination-controls class="my-pagination" (pageChange)="onPageChange($event); false"></pagination-controls>
-              </div>
+            </div>
 
-              <!-- Customize Fields config -->
-              <div style="float: right;padding-right:10px;padding-top:10px;">
-                <button type="text" style="background-color: #606165;font-weight: 900" pButton
-                  (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize Fields</button>
-              </div>
+            <!-- Display Fields config -->
+            <div [ngClass]="flexgrow(1)" style="padding:5px 10px 5px 0px;">
+              <button type="text" style="background-color: #606165;font-weight: 700;height: 2em;max-width: 300px;" pButton
+              (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize View</button>
             </div>
           </div>
+
         </div>
       </div>
     </div>

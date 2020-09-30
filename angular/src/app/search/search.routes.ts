@@ -1,6 +1,5 @@
 import { Routes, RouterModule } from '@angular/router';
-import { SearchPanelComponent } from './search.component';
-import { SearchTopBarComponent } from '../app.searchtopbar.component';
+import { SearchComponent } from './search.component';
 
 
 export const SearchRoutes: Routes = [
@@ -9,12 +8,7 @@ export const SearchRoutes: Routes = [
     children: [
       {
         path: '',
-        component: SearchPanelComponent
-      },
-      {
-        path: '',
-        component: SearchTopBarComponent,
-        outlet: 'route1'
+        component: SearchComponent
       }
     ]
   }

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfig, Config } from '../config-service/config-service.service';
+import { SelectItem } from 'primeng/primeng';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,7 @@ import { AppConfig, Config } from '../config-service/config-service.service';
 export class SearchfieldsListService {
   confValues: Config;
   private RMMAPIURL: string;
+  ALL: string = 'ALL FIELDS';
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -19,6 +22,10 @@ export class SearchfieldsListService {
     private appConfig: AppConfig) {
       this.confValues = this.appConfig.getConfig();
       this.RMMAPIURL = this.confValues.RMMAPI;
+    }
+
+    ngOnInit(): void {
+
     }
 
   /**
@@ -39,4 +46,52 @@ export class SearchfieldsListService {
     console.error(errMsg); // log to console instead
     return Observable.throw(errMsg);
   }
+
+  /**
+   * Get database fields for Advanced Search builder
+   */
+  getSearchFields(): Observable<SelectItem[]> {
+    return new Observable<SelectItem[]>(subscriber => {
+        this.get().subscribe(
+            (res) => {
+                let fields: SelectItem[] = this.toFieldItems(res);
+                subscriber.next(fields);
+                subscriber.complete();
+            },
+            (error) => {
+                console.log(error);
+                subscriber.next(error);
+                subscriber.complete();
+            }
+        );
+    });
+  }
+
+    /**
+     * Advanced Search fields dropdown
+     */
+    toFieldItems(fields: any[]): SelectItem[] {
+        // let items: SelectItem[] = [];
+        // items.push({ label: this.ALL, value: 'searchphrase' });
+        let fieldItems: SelectItem[] = [];
+        for (let field of fields) {
+            if (_.includes(field.tags, 'searchable')) {
+                let dup = false;
+                //For some reason, the filter function does not work for fields. Have to use this loop...
+                for(let item of fieldItems){
+                    if(item.label == field.label && item.value == field.name.replace('component.', 'components.')){
+                        dup = true;
+                        break;
+                    }
+                }
+
+                if(!dup){
+                    fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+                }
+            }
+        };
+        fieldItems = _.sortBy(fieldItems, ['label', 'value']);
+
+        return fieldItems;
+    }
 }

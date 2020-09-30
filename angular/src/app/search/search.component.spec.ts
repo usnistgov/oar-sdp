@@ -1,16 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { SearchPanelComponent } from './search.component';
+import { SearchComponent } from './search.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MockModule } from '../mock.module';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
+import { ToastrModule } from 'ngx-toastr';
 
 describe('SearchComponent', () => {
-  let searchCompService: SearchPanelComponent;
-  let fixture: ComponentFixture<SearchPanelComponent>;
+  let searchCompService: SearchComponent;
+  let fixture: ComponentFixture<SearchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -18,9 +19,10 @@ describe('SearchComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         NgxPaginationModule,
-        MockModule
+        MockModule,
+        ToastrModule.forRoot()
       ],
-      declarations: [SearchPanelComponent],
+      declarations: [SearchComponent],
       providers: [
         {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}
       ],
@@ -30,7 +32,7 @@ describe('SearchComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SearchPanelComponent);
+    fixture = TestBed.createComponent(SearchComponent);
     searchCompService = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -49,7 +51,7 @@ describe('SearchComponent', () => {
 
   it('should filter the results by components', (() => {
     let results = searchCompService.filterByComponents(searchResults, ['Data File']);
-    expect(results.length).toBe(2);
+    expect(results.length).toBe(1);
   })
   );
 

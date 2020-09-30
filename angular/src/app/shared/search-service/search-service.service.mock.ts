@@ -6,10 +6,12 @@ import 'rxjs/operator/map';
 import 'rxjs/operator/catch';
 import 'rxjs/observable/throw';
 import { EMPTY } from 'rxjs'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
 import { AppConfig, Config } from '../config-service/config-service.service';
 import { SearchService } from './search-service.service';
-// import * as mockSearchResult from '../../../assets/sample01.json';
+import { Router, NavigationExtras } from '@angular/router';
+import { SDPQuery } from '../search-query/query';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +27,7 @@ export class MockSearchService implements SearchService{
    * @constructor
    */
   constructor(private http: HttpClient,
+    private router: Router,
     private appConfig: AppConfig) {
     this.confValues = this.appConfig.getConfig();
     this.RMMAPIURL = this.confValues.RMMAPI;
@@ -35,7 +38,7 @@ export class MockSearchService implements SearchService{
    * @return {string[]} The Observable for the HTTP request.
    */
 
-  searchPhrase(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
+  searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
     var mockSearchResult = require('../../../assets/sample01.json');
     return of(mockSearchResult);
   }
@@ -59,5 +62,28 @@ export class MockSearchService implements SearchService{
         });
     }
   }
-}
 
+    /**
+     * Set/watch the search value in the search text box
+     */
+    private _remoteQueryValue : BehaviorSubject<object> = new BehaviorSubject<object>({queryString: '', searchTaxonomyKey: '', queryAdvSearch: 'yes'});
+    public _watchQueryValue(subscriber){
+        this._remoteQueryValue.subscribe(subscriber);
+    }
+
+    public setQueryValue(queryString: string = "", searchTaxonomyKey: string = '', queryAdvSearch: string = 'yes') {
+        this._remoteQueryValue.next({queryString: queryString, searchTaxonomyKey: searchTaxonomyKey, queryAdvSearch: queryAdvSearch});
+    }
+
+    /**
+     * Start search
+     */
+    public search(searchValue: string, url?: string) : void {
+        let params: NavigationExtras = {
+            queryParams: {
+                'q': searchValue
+            }
+        };
+        this.router.navigate(['/search'], params);
+    }
+}

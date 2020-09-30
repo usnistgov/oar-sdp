@@ -1,7 +1,6 @@
 import {Route} from '@angular/router';
 import {HelpComponent} from './help.component';
-import {SearchTopBarComponent} from "../app.searchtopbar.component";
-
+import { ContactUsComponent } from './contact-us/contact-us.component';
 
 export const HelpRoutes: Route[] = [
   {
@@ -9,12 +8,7 @@ export const HelpRoutes: Route[] = [
     children: [
       {
         path: '',
-        component: HelpComponent
-      },
-      {
-        path: '',
-        component: SearchTopBarComponent,
-        outlet: 'route1'
+        component: ContactUsComponent
       }
     ]
   },
@@ -23,14 +17,17 @@ export const HelpRoutes: Route[] = [
     children: [
       {
         path: '',
-        component: HelpComponent
-      },
-      {
-        path: '',
-        component: SearchTopBarComponent,
-        outlet: 'route1'
+        component: ContactUsComponent
       }
     ]
+  },
+  {
+    path: 'help',
+    component: ContactUsComponent
+  },
+  {
+    path: 'contactus',
+    component: ContactUsComponent
   }
 ];
 

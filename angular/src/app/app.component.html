@@ -1,7 +1,6 @@
 <div class="layout-wrapper" [ngClass]="{'layout-compact':layoutCompact}" (click)="onLayoutClick()">
 
-  <div #layoutContainer class="layout-container"
-       [ngClass]="{'menu-layout-static': !isOverlay(),
+  <div #layoutContainer class="layout-container" [ngClass]="{'menu-layout-static': !isOverlay(),
             'menu-layout-overlay': isOverlay(),
             'layout-menu-overlay-active': overlayMenuActive,
             'menu-layout-horizontal': isHorizontal(),
@@ -9,20 +8,10 @@
             'layout-menu-static-inactive': staticMenuDesktopInactive,
             'layout-menu-static-active': staticMenuMobileActive}">
 
-    <router-outlet name="route1"></router-outlet>
-
-    <div class="layout-menu" [ngClass]="{'layout-menu-dark':darkMenu}" (click)="onMenuClick($event)">
-      <div #layoutMenuScroller class="nano">
-        <div class="nano-content menu-scroll-content">
-          <inline-profile *ngIf="profileMode=='inline'&&!isHorizontal()"></inline-profile>
-          <app-menu [reset]="resetMenu"></app-menu>
-        </div>
-      </div>
-    </div>
-    <div class="layout-main">
-      <router-outlet></router-outlet>
-      <sdp-footbar></sdp-footbar>
-    </div>
+    <app-headbar></app-headbar>
+    <app-top-menu-bar></app-top-menu-bar>
+    <router-outlet></router-outlet>
+    <sdp-footbar></sdp-footbar>
     <div class="layout-mask"></div>
   </div>
 </div>

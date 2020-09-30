@@ -1,674 +1,597 @@
-import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, ElementRef } from '@angular/core';
-import { SelectItem, DropdownModule, ConfirmationService, Message } from 'primeng/primeng';
+import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, HostListener, AfterViewInit } from '@angular/core';
+import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
-// import { SearchService } from '../shared/search-service/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { Router, NavigationExtras } from '@angular/router';
-import { Data } from '../shared/search-query/data';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
-import { SearchEntity } from '../shared/search-query/search.entity';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
-import { timer } from 'rxjs/observable/timer';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
-import { AdvSearchService } from './adv-search.service';
-
+import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { SDPQuery, QueryRow } from '../shared/search-query/query';
 import * as _ from 'lodash';
 
 /**
  * This class represents the lazy loaded HomeComponent.
  */
 @Component({
-  selector: 'sdp-advsearch',
-  templateUrl: 'adv-search.component.html',
-  styleUrls: ['adv-search.component.css'],
-  providers: [ConfirmationService]
+    selector: 'sdp-advsearch',
+    templateUrl: 'adv-search.component.html',
+    styleUrls: ['adv-search.component.scss'],
+    providers: [ConfirmationService]
 
 })
 
-export class AdvSearchComponent extends FormCanDeactivate implements OnInit {
+export class AdvSearchComponent extends FormCanDeactivate implements OnInit, AfterViewInit {
 
-  errorMessage: string;
-  searchValue: string = '';
-  advSearchValue: string[];
-  taxonomies: SelectItem[];
-  advSearchList: SelectItem[] = [];
-  suggestedTaxonomyList: string[];
-  suggestedTaxonomies: string[] = [];
-  textRotate: boolean = true;
-  searchTaxonomyKey: string;
-  display: boolean = false;
-  displayQueryBuilder: boolean = false;
-  queryAdvSearch: string = '';
-  showAdvancedSearch: boolean = false;
-  showAdvSearchBuilder: boolean = false;
-  queryName: string = '';
-  showSaveQueryDialog: boolean = false;
-  rows: any[] = [];
-  fields: SelectItem[];
-  duplicateQuery: boolean = false;
-  ALL: string = 'ALL FIELDS';
-  showDeleteButton: boolean = false;
-  operators: SelectItem[];
-  searchEntities: SearchEntity[] = [];
-  selectedAdvSearch: string = '';
-  queryValue: string[];
-  editQuery: boolean = false;
-  addQuery: boolean = false;
-  cloneQuery: boolean = false;
-  mobHeight: number;
-  mobWidth: number;
-  width: string;
-  isActive: boolean = true;
-  filterClass: string = "ui-g-12 ui-md-9 ui-lg-9";
-  resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
-  msgs: Message[] = [];
-  queryNameReq: boolean = false;
-  oldQueryName: string = '';
-  queryString: string;
-  caretDown = 'faa faa-angle-down';
-  placeholder: string;
-  startup: boolean = true;
-  placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
+    errorMessage: string;
+    searchValue: string = '';
+    fields: SelectItem[];
+    operators: SelectItem[];
+    editQuery: boolean = false;
+    addQuery: boolean = false;
+    mobHeight: number;
+    mobWidth: number;
+    resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
+    breadcrumb_top: string = '6em';
+    showDropdown: boolean = false;
+    queryNameValidateError: boolean = false;
+    queryNameValidateErrorMsg: string = '';
+    screenWidth: number;
+    queries: SDPQuery[] = [];
+    currentQuery: SDPQuery = new SDPQuery();
+    currentQueryIndex: number = 0;
+    previousQueryIndex: number = 0;
+    rowInputValidateError: boolean = false;
 
-  @ViewChild('input1') inputEl: ElementRef;
-  @ViewChild('dataChanged')
-  dataChanged: boolean = false;
+    // readyEdit: indecating current query is ready for editing. If user type in any character
+    // in the query name field, edit mode will be set to true. Otherwise add mode will
+    // set to true
+    readyEdit: boolean = false; 
 
-  displayFields: any[] = ['Authors', 'contactPoint', 'description', 'DOI', 'Keyword', 'Publisher', 'Rights', 'Theme',
-    'Title'];
-  /**
-   * Constructor
-   */
-  constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
-    public ngZone: NgZone,
-    public taxonomyListService: TaxonomyListService,
-    public searchFieldsListService: SearchfieldsListService,
-    public gaService: GoogleAnalyticsService,
-    // public searchService: SearchService,
-    private router: Router,
-    public searchQueryService: SearchQueryService,
-    public advSearchService: AdvSearchService,
-    private confirmationService: ConfirmationService,
-    private renderer: Renderer2) {
+    @ViewChild('dataChanged') dataChanged: boolean = false; 
 
-    super();
+    /**
+     * Constructor
+     */
+    constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
+        public ngZone: NgZone,
+        public taxonomyListService: TaxonomyListService,
+        public searchFieldsListService: SearchfieldsListService,
+        public gaService: GoogleAnalyticsService,
+        private router: Router,
+        public searchQueryService: SearchQueryService,
+        private renderer: Renderer2) {
 
-    this.taxonomies = [];
-    this.fields = [];
-    setTimeout(() => {
-      this.getSearchQueryList();
-      // console.log("+++++++++++length+++++++" + this.searchEntities.length);
-    }, 100);
+        super();
 
-    this.mobHeight = (window.innerHeight);
-    this.mobWidth = (window.innerWidth);
+        this.renderer.listen('window', 'click',(e:Event)=>{ 
+            // If user clicks on the dropdown button, display the action popup list
+            //otherwise hide it.
+            if(e.target['name'] == 'dropdownButton')
+                this.showDropdown = true;
+            else
+                this.showDropdown = false;
+        })
 
-    window.onresize = (e) => {
-      ngZone.run(() => {
+        this.fields = [];
+        this.mobHeight = (window.innerHeight);
+        this.mobWidth = (window.innerWidth);
+        // Init search box size and breadcrumb position
+        this.onWindowResize();
+    }
+
+    /**
+     * init
+     */
+    ngOnInit() {
+        var i = 0;
+        this.searchOperators();
+
+        this.editQuery = false;
+        this.addQuery = false;
+
+        this.searchFieldsListService.getSearchFields().subscribe(
+            (fields) => {
+                this.fields = (fields as SelectItem[]);
+                this.queries = this.searchQueryService.getQueries();
+                if(this.queries && this.queries.length > 0){
+                    this.currentQueryIndex = this.searchQueryService.getCurrentQueryIndex();
+                    if(this.currentQueryIndex > this.queries.length-1) this.currentQueryIndex = 0;
+                    this.displayQuery(this.currentQueryIndex);
+                }
+            },
+            (err) => {
+                this.errorMessage = <any>err;
+            }
+        );
+
+        this.searchQueryService.watchQueries().subscribe(value => {
+            if(value)
+                this.queries = value as SDPQuery[];
+        });
+    }
+
+    /**
+     *  Following functions detect screen size
+     */
+    @HostListener("window:resize", [])
+    public onResize() {
+        this.detectScreenSize();
+    }
+
+    public ngAfterViewInit() {
+        this.detectScreenSize();
+    }
+
+    private detectScreenSize() {
+        this.screenWidth = window.innerWidth;
         this.mobWidth = window.innerWidth;
         this.mobHeight = window.innerHeight;
-      });
-    };
 
-    // Watch search request from other module
-    this.advSearchService._watchRemoteSearch().subscribe((queryValue) => {
-        // we don't want to execute the query at startup. So always skip the first check 
-        if (!this.startup && queryValue) {
-            this.executeQuery(queryValue);
+        this.onWindowResize();
+    }
+
+    setRowText(fieldValue: string, queryRow: QueryRow){
+        this.dataChanged = true;
+        if (_.isEmpty(fieldValue)) {
+            queryRow.validated = false;
+            this.rowInputValidateError = true;
+        }else{
+            queryRow.validated = true;
+            this.rowInputValidateError = false;
+
+            if(!_.isEmpty(queryRow.fieldType)){
+                this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+                // Update search box in the top search panel
+                this.searchService.setQueryValue(this.searchValue, '', '');
+            }
         }
-
-        this.startup = false;
-    });
-  }
-
-
-  /**
-   * init
-   */
-  ngOnInit() {
-    var i = 0;
-    const source = timer(1000, 2000);
-    source.subscribe(val => {
-      if (i < loopLength) {
-        i++;
-        this.placeholder = this.placeHolderText[i];
-      } else {
-        this.placeholder = this.placeHolderText[0];
-        i = 0;
-      }
-    });
-
-    this.getTaxonomies();
-    this.getSearchFields();
-
-    this.rows = [];
-    this.searchOperators();
-    var loopLength = this.placeHolderText.length;
-
-    this.editQuery = false;
-    this.addQuery = false;
-    this.queryName = '';
-  }
-
-  /**
-   * Key press event
-   */
-  onKeydown(event) {
-    this.dataChanged = true;
-  }
-
-  /**
-   * Get search query list
-   */
-  getSearchQueryList() {
-    this.searchQueryService.getAllSearchEntities().then(function (result) {
-      this.searchEntities = _.sortBy(result, [function (o) { return o.date; }]);
-      this.searchEntities = _.reverse(this.searchEntities);
-    }.bind(this), function (err) {
-      alert("something went wrong while fetching the products");
-    });
-  }
-
-  /**
-   * Confirm cancel query edit
-   */
-  cancelConfirm() {
-    if (this.dataChanged) {
-      if (confirm("Do you really want to cancel this edit?")) {
-        this.cancelAdvSearchQuery()
-      }
-    } else {
-      this.cancelAdvSearchQuery();
-    }
-  }
-
-  /*
-  * Delete confirm popup
-  */
-  deleteConfirmQuery(queryName: string) {
-    if (confirm("Do you really want to delete this query?")) {
-      this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != queryName);
-      this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
     }
 
-  }
+    /**
+     * Validate query name field
+     * @param queryName - if query name provided and it's the same as current query name, do nothing
+     *                  - otherwise check query name and set mode
+     */
+    checkQueryName(queryName?: string) {
+        if(queryName != null && queryName != undefined){
+            if(this.currentQuery.queryName == queryName)
+                return;
+            else
+                this.currentQuery.queryName = queryName;
+        }
+        
+        this.queryNameValidateErrorMsg = "";
+        this.queryNameValidateError = false;
 
-  /*
-  * Set column width - seems not been used
-  */
-  setResultsWidth() {
-    this.isActive = !this.isActive;
-    if (!this.isActive) {
-      this.resultsClass = "ui-g-12 ui-md-11 ui-lgc-11";
-      this.filterClass = "ui-g-12 ui-md-11 ui-lgc-1";
-    } else {
-      this.resultsClass = "ui-g-12 ui-md-9 ui-lg-9";
-    }
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
-  showDialog() {
-    this.display = true;
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
-  showAdvSearch(queryName: any) {
-    this.queryName = queryName;
-    if (!this.cloneQuery) {
-      this.oldQueryName = queryName;
-    } else {
-      this.oldQueryName = "";
-    }
-    this.rows = [{}];
-    let k = 1;
-    for (let resultItem of this.searchEntities) {
-      if (queryName == resultItem.data.queryName) {
-        this.searchValue = resultItem.data.queryValue;
-        this.queryValue = resultItem.data.queryValue.split('&');
-
-        if (this.queryValue.length > 1) {
-          for (var i = 0; i < this.queryValue.length; i++) {
-            if (i == 0) {
-              this.rows[i] = [{}];
-              let row = this.queryValue[i].split('=');
-              if (row[0].includes('searchphrase')) {
-                this.rows[i].column3 = 'All'
-              } else {
-                this.rows[i].column3 = row[0];
-              }
-              this.rows[i].column2 = row[1];
-            }
-
-            if (i != 0) {
-              if (i % 2 != 0) {
-                this.rows[k] = [{}];
-                let row = this.queryValue[i].split('=');
-                this.rows[k].column1 = row[1];
-                i++;
-                row = this.queryValue[i].split('=');
-                if (row[0].includes('searchphrase')) {
-                  this.rows[k].column3 = 'All'
-                } else {
-                  this.rows[k].column3 = row[0];
-                }
-                this.rows[k].column2 = row[1];
-                k++;
-              }
-            }
-          }
+        if (_.isEmpty(this.currentQuery.queryName)) {
+            this.queryNameValidateErrorMsg = "Query name is required";
+            this.queryNameValidateError = true;
         } else {
-          // this.rows[0].column2 = this.searchValue;
-          // this.rows[0] = [{}];
-          let row = this.queryValue[0].split('=');
-          if (row[0].includes('searchphrase')) {
-            this.rows[0].column3 = 'All'
-          } else {
-            this.rows[0].column3 = row[0];
-          }
-          this.rows[0].column2 = row[1];
+            if(this.queries.length > 0){
+                let prevQueryName: string = "";
+
+                if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
+                    prevQueryName = this.queries[this.previousQueryIndex].queryName;
+                
+                if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName, this.getMode())){
+                    this.queryNameValidateErrorMsg = "Query name is already taken";
+                    this.queryNameValidateError = true;
+                }
+            }
         }
-      }
+
+        if(!this.editQuery && !this.addQuery){
+            this.addQuery = false;
+            this.editQuery = true;
+            this.previousQueryIndex = this.currentQueryIndex;  
+        }   
+
+        this.dataChanged = true;
     }
-  }
 
-  /**
-   * Advanced Search builder string
-   */
-  saveSearch() {
-    this.constructSearchString();
-    this.dataChanged = true;
-  }
-
-  /**
-   * Construct the search string
-   */
-  constructSearchString(){
-    this.searchValue = '';
-    this.queryAdvSearch = 'yes';
-
-    for (let i = 0; i < this.rows.length; i++) {
-      if (typeof this.rows[i].column1 === 'undefined') {
-        this.rows[i].column1 = 'AND';
-      }
-      if (typeof this.rows[i].column3 === 'undefined' || this.rows[i].column3 === 'All') {
-        this.rows[i].column3 = 'searchphrase';
-      }
-      if (typeof this.rows[i].column2 === 'undefined') {
-        this.rows[i].column2 = '';
-      }
-
-      let fieldValue: string;
-      fieldValue = this.rows[i].column3;
-      fieldValue = fieldValue.replace(/\s+/g, '');
-
-      if (i > 0) {
-        this.searchValue += '&logicalOp=' + this.rows[i].column1 + '&' + fieldValue + '=' + this.rows[i].column2;
-      } else {
-        if (!_.isEmpty(fieldValue) || !_.isEmpty(this.rows[i].columns)) {
-          this.searchValue += fieldValue + '=' + this.rows[i].column2;
+    /**
+     * When window resized, we need to resize the search text box and reposition breadcrumb accordingly
+     * When top menu bar collapse, we want to place breadcrumb inside the top menu bar
+     */
+    onWindowResize(){
+        if(this.mobWidth > 767){
+            this.breadcrumb_top = '0em';
+        }else{
+            this.breadcrumb_top = '-2.5em';
         }
-      }
     }
-  }
 
-  /**
-   * Handle the nameListService observable
-   */
-  getTaxonomies() {
-    this.taxonomyListService.get()
-      .subscribe(
-        taxonomies => this.taxonomies = this.toTaxonomiesItems(taxonomies),
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  getTaxonomySuggestions() {
-    this.taxonomyListService.get()
-      .subscribe(
-        taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  /**
-   * Set the display to show the examples dialog
-   */
-  toggleTextRotate() {
-    if (this.searchValue == "") {
-      this.textRotate = !this.textRotate;
-    }
-  }
-
-  /**
-   * Filter keywords for suggestive search
-   */
-  filterTaxonomies(event: any) {
-    let suggTaxonomy = event.query;
-    this.suggestedTaxonomyList = [];
-    for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
-      let keyw = this.suggestedTaxonomies[i];
-      if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
-        this.suggestedTaxonomyList.push(keyw);
-      }
-    }
-  }
-
-
-  /**
-   * Taxonomy items list
-   */
-  toTaxonomySuggestedItems(taxonomies: any[]) {
-    let items: string[] = [];
-    for (let taxonomy of taxonomies) {
-      items.push(taxonomy.label);
-    }
-    return items;
-  }
-
-  /**
-   * Taxonomy items list
-   */
-  toTaxonomiesItems(taxonomies: any[]) {
-    let items: SelectItem[] = [];
-    items.push({ label: 'ALL RESEARCH', value: '' });
-    for (let taxonomy of taxonomies) {
-      items.push({ label: taxonomy.label, value: taxonomy.label });
-    }
-    return items;
-  }
-
-  /**
-   * Get database fields for Advanced Search builder
-   */
-  getSearchFields() {
-    this.searchFieldsListService.get()
-      .subscribe(
-        fields => this.fields = this.toFieldItems(fields),
-        error => this.errorMessage = <any>error
-      );
-  }
-
-  /**
-   * Advanced Search fields dropdown
-   */
-  toFieldItems(fields: any[]) {
-    let items: SelectItem[] = [];
-    items.push({ label: this.ALL, value: 'All' });
-    let fieldItems: SelectItem[] = [];
-    for (let field of fields) {
-      if (_.includes(field.tags, 'searchable')) {
-        fieldItems.push({ label: field.label, value: field.name });
-      }
-    };
-    fieldItems = _.sortBy(fieldItems, ['label', 'value']);
-    fieldItems.unshift({ label: this.ALL, value: 'All' });
-
-    return fieldItems;
-  }
-
-  /**
-   * Define Search operators for the drop down
-   */
-  searchOperators() {
-    this.operators = [];
-    this.operators.push({ label: 'AND', value: 'AND' });
-    this.operators.push({ label: 'OR', value: 'OR' });
-    this.operators.push({ label: 'NOT', value: 'NOT' });
-  }
-
-  /**
-   * Set the search parameters and redirect to search page
-   */
-  search(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string) {
-    this.searchTaxonomyKey = searchTaxonomyKey;
-    let params: NavigationExtras = {
-      queryParams: {
-        'q': searchValue, 'key': this.searchTaxonomyKey ? this.searchTaxonomyKey : '',
-        'queryAdvSearch': this.queryAdvSearch
-      }
-    };
-
-    this.router.navigate(['/search'], params);
-  }
-
-  /**
-   * Display advanced search block
-   */
-  advancedSearch(advSearch: boolean) {
-    this.showAdvancedSearch = advSearch;
-  }
-
-  /**
-   *  Pass Search example popup value to home screen
-   */
-  searchExample(popupValue: string) {
-    this.display = false;
-    this.searchValue = popupValue;
-    this.textRotate = !this.textRotate;
-  }
-
-  /**
-   * Add rows - Advanced Search block
-   */
-  addRow() {
-    let rows = [...this.rows, {}];
-    this.rows = rows;
-  }
-
-  /**
-   * Delete rows - Advanced Search block
-   */
-  deleteRow(rowIndex: number) {
-    this.rows = this.rows.filter((val, i) => i != rowIndex);
-    this.saveSearch();
-  }
-
-  /**
-   * Copy rows
-   */
-  copyRow(row: any[]) {
-    let rows = [...this.rows, this.clone(row)];
-    //let rows = [...this.rows,row];
-    this.rows = rows;
-  }
-
-  /**
-   * Clone one object
-   */
-  clone(obj) {
-    if (obj == null || typeof (obj) != 'object')
-      return obj;
-
-    var temp = new obj.constructor();
-    for (var key in obj)
-      temp[key] = this.clone(obj[key]);
-
-    return temp;
-  }
-
-  /**
-   * Clear search text box - on focus
-   */
-  clearText() {
-    var field = (<HTMLInputElement>document.getElementById('advsearchinput'));
-    if (!Boolean(this.searchValue.trim())) {
-      field.value = ' ';
-    }
-  }
-
-  /**
-   * Display placeholder - on blur
-   */
-  addPlaceholder() {
-    var field = (<HTMLInputElement>document.getElementById('advsearchinput'));
-    if (!Boolean(this.searchValue)) {
-      field.value = '';
-    }
-  }
-
-  /**
-   * Duplicate query
-   */
-  copyQuery(queryName: any, queryValue: string) {
-    // this.showSaveQueryDialog = true;
-
-    this.editQuery = false;
-    this.addQuery = true;
-    this.cloneQuery = true;
-    this.searchValue = queryValue;
-    this.showAdvSearch(queryName);
-    //data = {'queryName':queryName,'queryValue':this.searchValue,'id':queryName};
-    //this.searchQueryService.saveAdvSearchQuery(data);
-
-  }
-
-  /**
-   * Export query list
-   */
-  exportList() {
-    var hiddenElement = document.createElement('a');
-    hiddenElement.href = 'data:attachment/text,' + encodeURI(JSON.stringify(this.searchEntities));
-    hiddenElement.target = '_blank';
-    hiddenElement.download = 'NIST-SDP-Queries.json';
-    hiddenElement.click();
-  }
-
-  /**
-   * Import query list
-   */
-  importList(event) {
-    var files = event.srcElement.files;
-    files = files[0];
-    var dataFile = [];
-    var read: FileReader = new FileReader();
-    read.readAsText(files);
-    read.onloadend = function () {
-      let fileData = read.result;
-      let fileJson = JSON.parse(fileData.toString());
-      for (let i in fileJson) {
-        let dataset = fileJson[i].data;
-        var dataQuery = JSON.stringify(dataset)
-        dataFile.push(dataQuery);
-      }
-    }
-    setTimeout(() => {
-      for (let i = 0; i < dataFile.length; i++) {
-        let data = dataFile[i];    //voila!
-        this.searchQueryService.saveSearchQuery(JSON.parse(data));
-      }
-    }, 100);
-    setTimeout(() => {
-      this.getSearchQueryList();
-      // console.log("+++++++++++length+++++++" + this.searchEntities.length);
-    }, 100);
-  }
-
-  /**
-   * Init for creating new query
-   */
-  createQueryInit() {
-    this.oldQueryName = '';
-    this.editQuery = false;
-    this.addQuery = true;
-    this.cloneQuery = false;
-    this.rows = [];
-    this.addRow();
-  }
-
-  /**
-   * Save query
-   */
-  saveQuery(queryName: any) {
-    this.saveAdvSearchQuery(queryName, this.addQuery);
-  }
-
-  /**
-   * Save query - detail
-   */
-  saveAdvSearchQuery(queryName: any, addQuery: boolean) {
-    this.duplicateQuery = false;
-    this.queryNameReq = false;
-
-    if (_.isEmpty(this.queryName)) {
-      this.queryNameReq = true;
-    } else {
-      if (this.editQuery) {
-        queryName = this.queryName;
-
-        let data: Data;
-        var date = new Date();
-        data = { 'queryName': queryName, 'queryValue': this.searchValue, 'id': queryName, 'date': date.getTime() };
-        for (let resultItem of this.searchEntities) {
-          if (queryName == resultItem.data.queryName && queryName != this.oldQueryName) {
-            this.duplicateQuery = true;
-            this.showSaveQueryDialog = true;
-          }
+    /**
+     * Confirm cancel query edit
+     */
+    cancelConfirm() {
+        if (this.dataChanged) {
+        if (confirm("Do you really want to cancel this edit?")) {
+            this.cancelAdvSearchQuery()
         }
-        if (!this.duplicateQuery) {
-          this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
-          this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
-          this.searchQueryService.saveSearchQuery(data);
-          this.getSearchQueryList();
-          this.editQuery = false;
-          this.dataChanged = false;
-          this.cloneQuery = false;
+        } else {
+        this.cancelAdvSearchQuery();
         }
-      } else if (this.addQuery || addQuery) {
-
-        this.getSearchQueryList();
-        this.duplicateQuery = false;
-        for (let resultItem of this.searchEntities) {
-          if (queryName == resultItem.data.queryName) {
-            this.duplicateQuery = true;
-            this.showSaveQueryDialog = true;
-          }
-        }
-        if (!this.duplicateQuery) {
-          let data: Data;
-          var date = new Date();
-          data = { 'queryName': queryName, 'queryValue': this.searchValue, 'id': queryName, 'date': date.getTime() };
-          this.searchEntities = this.searchEntities.filter(entry => entry.data.queryName != this.oldQueryName);
-          this.searchQueryService.saveListOfSearchEntities(this.searchEntities);
-          this.searchQueryService.saveSearchQuery(data);
-          this.getSearchQueryList();
-          this.duplicateQuery = false;
-          this.showSaveQueryDialog = false;
-          this.addQuery = false;
-          this.editQuery = false;
-          this.dataChanged = false;
-          this.cloneQuery = false;
-        }
-      }
     }
-  }
 
-  /*
-  * Cancel query edit
-  */
-  cancelAdvSearchQuery() {
-    this.editQuery = false;
-    this.rows = [];
-    // this.displayQueryBuilder = false;
-    this.editQuery = false;
-    this.addQuery = false;
-    this.queryName = '';
-    this.searchValue = '';
-    this.queryNameReq = false;
-    this.duplicateQuery = false;
-    this.dataChanged = false;
-    this.cloneQuery = false;
-  }
+    /*
+    * Delete query confirm popup
+    */
+    deleteConfirmQuery(queryName: string) {
+        if (confirm("Do you really want to delete this query?")) {
+            this.queries = this.queries.filter(query => query.queryName != queryName);
+            // Save to local storage
+            this.searchQueryService.saveQueries(this.queries);
+            this.setCurrentQuery(0)
+        }
+    }
 
-  /*
-  * Execute query
-  */
-  executeQuery(queryValue: string) {
-    this.searchValue = queryValue;
-    this.search(queryValue, this.searchTaxonomyKey, 'yes');
-  }
+    /**
+     * Define Search operators for the drop down
+     */
+    searchOperators() {
+        this.operators = [];
+        this.operators.push({ label: 'AND', value: 'AND' });
+        this.operators.push({ label: 'OR', value: 'OR' });
+    }
+
+    /**
+     * Delete a row in current query
+     * @param index - index number of the row to be deleted
+     */
+    deleteRow(index: number){
+        this.currentQuery.queryRows = this.currentQuery.queryRows.filter(row => row.id != this.currentQuery.queryRows[index].id);
+
+        if(this.currentQuery.queryRows.length <= 0){
+            this.currentQuery.queryRows.push(new QueryRow());
+        }
+
+        //Validate field value
+        if(this.currentQuery.queryRows.filter(row => row.validated == false).length > 0)
+            this.rowInputValidateError = true;
+        else
+            this.rowInputValidateError = false;
+
+        this.onDataChange();
+    }
+
+    /**
+     * Duplicate current row in current query
+     * @param row - row to be duplicated
+     */
+    duplicateRow(row: QueryRow, index: number){
+        let newRow: QueryRow = JSON.parse(JSON.stringify(row));
+        newRow.id = this.nextRowId(this.currentQuery);
+        this.currentQuery.queryRows.splice(index, 0, newRow);
+        this.onDataChange();
+    }
+
+    /**
+     * Duplicate query
+     * Creates a new query then populates it with the given query
+     * No need to update search box in the top search panel since this is a duplicate
+     */
+    dupQuery(index: number) {
+        this.currentQueryIndex = null;
+        this.previousQueryIndex = index;
+        this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
+        this.currentQuery.queryName = this.currentQuery.queryName + " copy";
+        this.dataChanged = true;
+        this.editQuery = false;
+        this.addQuery = true;
+    }
+
+    /**
+     * Export query list
+     */
+    exportList() {
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:attachment/text,' + encodeURI(JSON.stringify(this.queries));
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'NIST-SDP-Queries.json';
+        hiddenElement.click();
+    }
+
+    /**
+     * Import query list
+     */
+    importList(event) {
+        var files = event.srcElement.files;
+        files = files[0];
+        let _this = this;
+        var dataFile = [];
+        var read: FileReader = new FileReader();
+        read.readAsText(files);
+        read.onloadend = function () {
+        let fileData = read.result;
+        _this.queries = JSON.parse(fileData.toString());
+        // Save to local storage
+        _this.searchQueryService.saveQueries(_this.queries);
+        _this.setCurrentQuery(0);
+        }
+    }
+
+    /**
+     * Init for creating new query
+     */
+    createQueryInit(row: any = {}) {
+        this.previousQueryIndex = this.currentQueryIndex;
+        this.currentQueryIndex = null;
+        this.readyEdit = false;
+        this.editQuery = false;
+        this.addQuery = true;
+
+        this.currentQuery = new SDPQuery();
+        this.currentQuery.queryRows = [new QueryRow()];
+
+    }
+
+    /**
+     * When query name input field focused
+     * If not in edit/add mode and query name field already populated, it means this is an existing query
+     *  - set the readyEdit flag to true 
+     */
+    setReadyEdit(){
+        this.readyEdit = false;
+
+        if(this.currentQuery.queryName && !this.addQuery && !this.editQuery)
+        {
+            this.previousQueryIndex = this.currentQueryIndex;
+            this.readyEdit = true;
+        } 
+    }
+
+    /**
+     * Return edit mode as a string
+     */
+    getMode(){
+        let mode: string;
+        if(this.editQuery) mode = "EDIT";
+        else mode = "ADD";
+
+        return mode;
+    }
+
+    /**
+     * Save query 
+     * 1. Filter current query from the list
+     * 2. Add the new query to the list
+     */
+    saveAdvSearchQuery() {
+        //Validate query name
+        if(this.currentQuery.queryName == null || this.currentQuery.queryName == undefined || this.currentQuery.queryName.trim()==""){
+            this.queryNameValidateErrorMsg = "Query name is required";
+            this.queryNameValidateError = true;
+            return;
+        }
+
+        if(this.queries.length > 0){
+            let prevQueryName: string = "";
+
+            if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
+                prevQueryName = this.queries[this.previousQueryIndex].queryName;
+
+            if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName, this.getMode())){
+                this.queryNameValidateErrorMsg = "Query name is already taken";
+                this.queryNameValidateError = true;
+                return;
+            }
+        }
+
+        // Either the freetext or one of query row need be populated
+        if(this.currentQuery.freeText == null || this.currentQuery.freeText == undefined || this.currentQuery.freeText.trim()==""){
+            for(let i=0; i < this.currentQuery.queryRows.length; i++){
+                if(!this.currentQuery.queryRows[i].fieldType){
+                    alert("Please select a field name.");
+                    return;
+                }
+            }
+        }
+
+        // Build this.searchValue
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+
+        // If this is edit mode, replace previous query in the query list with the current query. Otherwise just insert
+        // the current query to the list.
+        if(this.editQuery){
+            // Remove previous query in the list (saved as previousQueryIndex)
+            this.queries = this.queries.filter(query => query.queryName != this.queries[this.previousQueryIndex].queryName);
+        }
+        // Add current query
+        this.queries.push(JSON.parse(JSON.stringify(this.currentQuery)));
+        // Sort by query name
+        this.queries.sort((a, b) => a.queryName.localeCompare(b.queryName));
+        // Save to local storage
+        this.searchQueryService.saveQueries(this.queries);
+        // Set current query index
+        this.currentQueryIndex = this.queries.findIndex(query => query.queryName == this.currentQuery.queryName);
+        this.searchQueryService.saveCurrentQueryIndex(this.currentQueryIndex);
+        // Refresh the right panel (query details)
+        this.displayQuery(this.currentQueryIndex);
+
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
+
+        this.addQuery = false;
+        this.editQuery = false;
+        this.dataChanged = false;
+    }
+
+    /**
+     * Cancel query edit.
+     * Set previous query as current query.
+     * Set edit/add flag to false.
+     */
+    cancelAdvSearchQuery() {
+        this.editQuery = false;
+        this.addQuery = false;
+        this.searchValue = '';
+        this.dataChanged = false;
+        this.queryNameValidateError = false;
+        this.currentQueryIndex = this.previousQueryIndex;
+        if(this.currentQueryIndex != null)
+            this.setCurrentQuery(this.currentQueryIndex);
+        else
+            this.setCurrentQuery(0);
+        
+        this.setReadyEdit();
+
+
+        // If query list is not empty, diaplay current query. Otherwise set current query to blank.
+        if(this.queries.length > 0){
+            this.displayQuery(this.currentQueryIndex);
+        }else{
+            this.currentQuery = new SDPQuery();
+            this.currentQueryIndex = 0;
+        }
+    }
+
+    /*
+    * Execute query
+    */
+    executeQuery(query: SDPQuery, index: number) {
+        this.setCurrentQuery(index);
+        this.searchQueryService.saveCurrentQueryIndex(index);
+        let lQueryValue = this.searchQueryService.buildSearchString(query);
+        this.searchService.setQueryValue(lQueryValue, '', '');
+        this.searchService.search(lQueryValue);
+    }
+
+    /**
+     * Show query in the right panel. Do nothing in edit/add mode.
+     * @param queryName - query to be displayed
+     */
+    displayQuery(index: number){
+        if(!this.editQuery && !this.addQuery)
+        {
+            this.editQuery=false;
+            this.addQuery=false;
+            this.setCurrentQuery(index);         
+        }
+    }
+    
+    /**
+     * Set the current query, build the search string. 
+     * @param index - the index number of the current query
+     */
+    setCurrentQuery(index: number){
+        // New function
+        if(this.queries.length > 0 && index < this.queries.length){
+            this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
+
+            this.currentQueryIndex = index;
+            this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+
+            // Update search box in the top search panel
+            this.searchService.setQueryValue(this.searchValue, '', ''); 
+        }else{
+            this.currentQuery = new SDPQuery();
+            this.currentQueryIndex = 0;
+            this.searchQueryService.saveCurrentQueryIndex(0);
+        }
+
+        this.searchQueryService.saveCurrentQueryIndex(this.currentQueryIndex);
+    }
+
+    /**
+     * When field type dropdown changed, if not edit/add mode, set to edit mode.
+     * @param event 
+     */
+    onDataChange() {
+        // Check if this is an existing query, if so, note current query index for backup purpose
+        // and set readyEdit flag to true.
+        this.setReadyEdit();
+
+        this.dataChanged = true;
+        this.setMode();
+    }
+
+    onFieldTypeChange(row: QueryRow){
+        let field = this.fields.filter(field => field.label == row.fieldType);
+        if(field != null && field.length > 0)   
+            row.fieldValue = field[0].value;
+
+        if(!_.isEmpty(row.fieldText)){
+            this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+            // Update search box in the top search panel
+            this.searchService.setQueryValue(this.searchValue, '', '');
+        }
+
+        this.onDataChange();
+    }
+
+    /**
+     * Set current mode (edit or add) based on readEdit flag.
+     */
+    setMode(){
+        if(this.readyEdit) {
+            this.previousQueryIndex = this.currentQueryIndex;
+            this.editQuery = true;
+            this.addQuery = false;
+            this.readyEdit = false;
+        }
+    
+        if(!this.editQuery && !this.addQuery){
+            this.previousQueryIndex = null;
+            this.addQuery = true;
+            this.editQuery = false;
+            this.createQueryInit();
+        }
+    }
+
+    setFreeText(sampleText: string){
+        this.dataChanged=true;
+        this.readyEdit = false;
+
+        //If no query in the list yet, and it's not add or edit mode, set it to add mode
+        if(this.currentQuery == null || (this.currentQuery.queryName.trim()=="" && !this.addQuery)){
+            if(!this.editQuery && !this.addQuery){
+                this.addQuery = true;
+                this.editQuery = false;
+                this.createQueryInit();
+            }
+            this.previousQueryIndex = null;
+        }else{
+            if(!this.editQuery && !this.addQuery){
+                this.addQuery = false;
+                this.editQuery = true;
+            }   
+            this.previousQueryIndex = this.currentQueryIndex;         
+        }
+
+        this.currentQuery.freeText = sampleText;
+
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
+    }
+
+    setDropdown(){
+        this.ngZone.run(() => {
+            this.showDropdown = true;
+        });
+    }
+
+    /**
+     * Return next unique row id
+     * @param query - given query
+     */
+    nextRowId(query: SDPQuery) {
+        let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
+        if(id == null) return 1;
+        else return id;
+    }
+
+    /**
+     * Return next unique query id
+     */
+    nextQueryId() {
+        return Math.max.apply(Math, this.queries.map(function(o) { return o.id; })) + 1;
+    }
+
+    showExamples(){
+        this.searchQueryService.setShowExamples(true);
+    }
 }

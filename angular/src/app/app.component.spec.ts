@@ -7,11 +7,12 @@ import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
 import { GoogleAnalyticsServiceMock } from "./shared/ga-service/google-analytics.service.mock";
+import { ToastrModule } from 'ngx-toastr';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterModule, RouterTestingModule],
+      imports: [HttpClientTestingModule, RouterModule, RouterTestingModule, ToastrModule.forRoot()],
       providers: [Location, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}],
       declarations: [
         AppComponent

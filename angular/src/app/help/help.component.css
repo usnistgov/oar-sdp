@@ -53,7 +53,7 @@ li.links {
 }
 
 .description {
-  color: #12659c;
+  color: gray;
   font-size: 90%;
 }
 
@@ -73,10 +73,6 @@ div.section {
 
 li {
   cursor:pointer;
-}
-
-.adv-step {
-  margin:40px 0 20px 0;
 }
 
 .adv-img {

@@ -506,20 +506,9 @@ img {
 .glyphicon
 {
   color: #1471AE;
-}
-
-
-/* enable absolute positioning */
-.inner-addon {
-  position: relative;
-}
-
-/* style icon */
-.inner-addon .glyphicon {
-  position: absolute;
-  padding: 10px;
-  pointer-events: none;
-  font-size: 25px;
+  font-size: 30px; 
+  padding: .2em; 
+  z-index: 999;
 }
 
 /* align icon */
@@ -533,3 +522,5 @@ img {
 .hideLabel {
   display: none;
 }
+
+

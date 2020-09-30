@@ -1,0 +1,278 @@
+<!-- <div class="jumbotron" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')', 'padding': jumbotronPadding, 'margin-bottom':'-1em'}"> -->
+<div class="search-panel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')','margin-bottom':'-1em'}">
+    <div class="content">
+        <!-- <div style="width: 100%;display: inline-block; margin: 0em auto 1em;"> -->
+        <h3 *ngIf="title" class="title">{{title}}</h3>
+        <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
+            <i class="faa faa-question-circle help-icon" data-toggle="tooltip"
+                title="How to build Advanced Search Queries"></i>
+        </a>
+        <p *ngIf="subtitle" class="TexAlCenter subTitle"><i>Explore data, tools, and resources for Science, Engineering,
+                Technology and
+                <a href="" [routerLink]="['/about']" style="color: #FFFFFF"><u>more</u></a></i></p>
+
+        <div>
+            <label for="searchinput" class="hideLabel">Search Input</label>
+            <div style="margin: auto;" [ngStyle]="{'width': mobWidth < 725? '100%' : mobWidth < 960? '80%' : '60%'}">
+                <div [ngStyle]="{'display': mobWidth < 461? 'block' : 'flex'}">
+                    <div class="inner-addon left-addon background-white search-box">
+                        <i class="glyphicon faa faa-search"></i>
+                        <div style="margin-right: 50px;">
+                            <p-autoComplete [inputStyle]="inputStyle" (onFocus)="clearText()"
+                                (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
+                                inputId="searchinput" name="searchinput"
+                                 (keyup.enter)="search(searchValue,searchTaxonomyKey)"
+                                [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)"
+                                [minLength]="1" [maxlength]="2048" [size]="100">
+
+                                <ng-template let-taxonomy pTemplate="item">
+                                    <div class="autoComplete" [ngStyle]="{'color':'black'}">
+                                        {{taxonomy}}
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <i class="faa faa-remove clear-box" (click)="searchValue='';queryStringError= false;" data-toggle="tooltip"
+                            title="Clear the search box"></i>
+                    </div>
+                    <div [ngClass]="getSearchBtnClass()" class="bigSearchButton"
+                        (click)="hideAllHelp();search(searchValue,searchTaxonomyKey)">
+                        <p style="margin-top: 10px;">Search</p>
+                    </div>
+                </div>
+
+                <div style="width: 100%;text-align: left;color: rgb(255, 162, 162);" *ngIf="queryStringError" [innerHTML]="queryStringErrorMessage"> 
+                </div>
+
+                <div style="width: 100%;">
+                    <div class="sample-line link-text-white">
+                        <span id="example" *ngIf="!showExampleStatus" (click)="changeState(true)">Show Examples</span>
+                        <span *ngIf="showExampleStatus" (click)="changeState(false)">Hide Examples</span>
+                        <span *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em;">Advanced
+                            Search</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-wrapper" [@changeDivSize]=currentState>
+            <span class="faa-stack fa-lg" style="float: right; cursor: pointer; margin: 5px;" (click)="changeState(false)">
+                <i class="faa faa-remove faa-stack-1x icon-white" id="btn-close" aria-hidden="true"
+                    data-toggle="tooltip" title="Hide Examples"></i>
+            </span>
+            <div class="title-text"><b>Syntax Rules</b>
+            </div>
+            <!-- <div style="width: 100%; text-align: left; padding-left: 20px;">Operator AND cannot be in front of a freetext phrase. <b>For example:</b> Chemical AND Physics.</div>
+            <div style="width: 100%; text-align: left; padding-left: 20px;">Operator OR cannot be between freetext phrase and a key value pair. <b>For example:</b> Chemical OR keyword=Physics.</div> -->
+            <div class="table-wrapper">
+                <table width="100%" border="1">
+                    <thead>
+                        <tr>
+                            <th width="20%">
+                                Search Criteria
+                            </th>
+                            <th width="30%">
+                                Keyword Examples
+                            </th>
+                            <th width="50%">
+                                Description
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="20%">
+                                Individual terms
+                            </td>
+                            <td width="30%">
+                                <a class="examples" (click)="$event.preventDefault();searchExample('analytical chemistry');"
+                                    href="#!">analytical
+                                    chemistry
+                                </a>
+                            </td>
+                            <td width="50%">
+                                Records that include either &ldquo;analytical&rdquo; or &ldquo;chemistry&rdquo; are
+                                returned (case insensitive).
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                Phrase
+                            </td>
+                            <td width="30%">
+                                <a class="examples"
+                                    (click)="$event.preventDefault();searchExample('&quot;analytical chemistry&quot;');"
+                                    href="#!">"analytical chemistry"
+                                </a>
+                            </td>
+                            <td width="50%">
+                                Records that contain the phrase &ldquo;analytical Chemistry&rdquo; (the two words
+                                adjacent to each other in that order) will be returned (case insensitive).
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                <span class="link-text" (click)="op2.toggle($event)">Key</span>&nbsp;
+                                <span class="link-text" (click)="showPopupDialog($event, op4);">Value</span>&nbsp;pair
+                            </td>
+                            <td width="30%">
+                                <a class="examples"
+                                    (click)="$event.preventDefault();searchExample('contactPoint.fn=Levine');"
+                                    href="#!">contactPoint.fn=Levine
+                                </a>
+                            </td>
+                            <td width="50%">
+                                Records whose field, contactPoint.fn, contains &ldquo;Levine&rdquo; are
+                                returned.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">
+                                <span>Logical Operation:</span><br>
+                                <span class="link-text" (click)="appendToSearchBox(' AND ')">AND</span>, <span
+                                    class="link-text" (click)="appendToSearchBox(' OR ')">OR</span>
+                            </td>
+                            <td width="30%">
+                                <a class="examples"
+                                    (click)="$event.preventDefault();searchExample('keyword=chemistry AND topic.tag=physics');"
+                                    href="#!">keyword=chemistry AND topic.tag=physics
+                                </a>
+                            </td>
+                            <td width="50%">
+                                Search Results will match the keyword &ldquo;chemistry&rdquo; AND topic
+                                &ldquo;physics&rdquo;. <br>Available operators are
+                                <span class="link-text" (click)="appendToSearchBox(' AND ')">AND</span> and <span
+                                    class="link-text" (click)="appendToSearchBox(' OR ')">OR</span> (all caps).
+                                <br>To search words "AND" or "OR", put them in quotes.
+                                <br>Operators can only appear between key-value pairs.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding-bottom: 1em;">
+                <!-- <div class="btn-slim" style="margin-top: 0;" (click)="showQueryNameDialog($event, op5);">Save Query</div> -->
+                <button class="btn-save02" style="float: left; margin-left: 1.5em;" type="button" [disabled]="_editmode" (click)="showQueryNameDialog($event, op5)" pButton type="submit">
+                    Save Query
+                </button>
+
+                <b>More Examples: </b>
+                <a class="examples" (click)="$event.preventDefault();appendToSearchBox('&quot;Kinetics database&quot;');"
+                    href="#!">"Kinetics database" </a> &nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
+                </a>&nbsp;
+                <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
+                    href="#!">"SRD 101"
+                </a>&nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB
+                </a>&nbsp;
+                <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
+                    href="#!">Interatomic Potentials </a>&nbsp;
+            </div>
+        </div>
+
+        <!-- Spacing for home page -->
+        <div *ngIf="homePage" style="height: 3em;">
+
+        </div>
+    </div>
+</div>
+
+<!-- Popup dialog for operators and field names -->
+<p-overlayPanel class="fileDialog" #op1 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
+    appendToBody=true>
+    <div class="table-wrapper">
+        <table width="100%">
+            <tbody>
+                <tr class="field-item operator" (click)="appendToSearchBox(' AND ', null, op1)">
+                    <td>AND</td>
+                </tr>
+                <tr class="field-item operator" (click)="appendToSearchBox(' OR ', null, op1)">
+                    <td>OR</td>
+                </tr>
+                <tr *ngFor="let field of observableFields | async" class="field-item" (click)="appendToSearchBox(field.value, '=', op1)">
+                    <td>
+                        {{field.label}} - {{field.value}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</p-overlayPanel>
+
+<!-- Popup dialog for field names -->
+<p-overlayPanel class="fileDialog" #op2 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
+    appendToBody=true>
+    <div style="text-align: right;width: 100%; height: 2.5em;background-color: #1471AE;margin-bottom: .5em;">
+        <div class="btn-slim" style="float: right; margin: 0.5em 1.5em 0 .5em;width: 50px;text-align: center;" (click)="appendToSearchBox('OR', null, null);">OR</div>
+        <div class="btn-slim" style="float: right;width: 50px;text-align: center;" (click)="appendToSearchBox('AND', null, null);">AND</div>
+    </div>
+    <div class="table-wrapper">
+
+        <table width="100%" class="popup-table">
+            <thead>
+                <tr>
+                    <th width="50%">
+                        Searchable Fields
+                    </th>
+                    <th width="50%">
+                        Description
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let field of observableFields | async" class="field-item" (click)="addKeyValuePairToSearchBox($event, field.value, op2, op4);">
+                    <td class="link-text">
+                        {{field.value}}
+                    </td>
+                    <td>
+                        {{field.label}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</p-overlayPanel>
+
+<!-- Popup dialog for input value -->
+<p-overlayPanel class="fileDialog" #op4 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
+    appendToBody=true>
+    <div style="width: 100%; padding: 2em;">
+        <div>Please enter a value for {{currentFieldValue}}</div>
+        <span class="inner-addon">
+            <input type="text" class="text-input overlay-input" #field placeholder="Please enter a value here"
+                (keyup.enter)="processInputValue($event.target.value, op4)"
+                style="background-color: rgb(252, 246, 237);;" />
+
+            <i class="faa faa-remove clear-box2" (click)="field.value=''" data-toggle="tooltip"
+                title="Clear the search box"></i>
+        </span>
+        <button class="btn-append" type="button" (click)="processInputValue(field.value, op4)" pButton type="submit">
+            Set
+        </button>
+        <div style="font-style: italic; font-size: 12px; padding-top: .2em;">Example: 
+            <span class="link-text" (click)="field.value=getExample()">{{getExample()}}</span>
+        </div>
+        <div *ngIf="inputValueMissing" style="color: red;">
+            A value is required.
+        </div>
+    </div>
+    
+</p-overlayPanel>
+
+<!-- Popup dialog for query name -->
+<p-overlayPanel class="fileDialog" #op5 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
+    appendToBody=true>
+    <div>
+        <span class="inner-addon">
+            <input type="text" class="text-input overlay-input" #field2 placeholder="Please enter unique query name"
+                (keyup.enter)="saveAdvQuery($event.target.value, op5)" style="background-color: rgb(252, 246, 237);;" />
+
+            <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
+                title="Clear the search box"></i>
+        </span>
+        <button class="btn-append" type="button" (click)="saveAdvQuery(field2.value, op5)" pButton type="submit">
+            Save Query
+        </button>
+    </div>
+</p-overlayPanel>

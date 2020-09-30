@@ -14,6 +14,7 @@ import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.se
 export class ApiComponent {
   confValues: Config;
   RestAPIURL: any;
+  imageURL: string;
 
     /**
    * Create an instance of services for Home
@@ -24,5 +25,10 @@ export class ApiComponent {
     public gaService: GoogleAnalyticsService) {
       this.confValues = this.appConfig.getConfig();
       this.RestAPIURL = this.confValues.RMMAPI;
+  }
+
+  ngOnInit() {
+    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
+
   }
 }

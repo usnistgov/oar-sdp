@@ -18,3 +18,9 @@ h2 {
   color: #fff;
   font-weight: 300;
 }
+
+.main-image{
+  float: right; 
+  padding: 0em 1em 0em 0em; 
+}
+

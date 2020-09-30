@@ -43,3 +43,8 @@ hr {
   font-weight: 300;
 }
 
+.main-image{
+    width:50%; 
+    margin: 1em 0em 0em 0em;
+    min-width: 200px;
+}

@@ -1,222 +1,201 @@
-<div class="ui-g" style="background-color: #153971;color: #FFFFFF">
-  <div class="ui-g-2">
-  </div>
-  <div class="ui-g-10">
-    <div class="EmptyBox20"></div>
-    <label id='title' style="font-size: xx-large;float: left;display: block;"><i
-        class="faa faa-cogs faa-lg"></i>Advanced Search Builder</label>
+<!-- Use absolute position for breadcrumb so it won't affect other elements' layout
+     We have onWindowResize() to dynamically adjust breadcrumb location -->
+<div style="position: absolute; right: 1em; " [ngStyle]="{'margin-top': breadcrumb_top}">
     <ol class="breadcrumb" style="float: right;">
-      <li class="breadcrumb-item"><a href='#' style="color: #fff;" (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-      <li class="active breadcrumb-item" style="color: rgb(196, 196, 196);">Advanced Search Builder</li>
+        <li class="breadcrumb-item"><a href='/' style="color: #fff;"
+                (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
+        <li id='title' class="active breadcrumb-item">Advanced Search Builder</li>
     </ol>
-    <div class="EmptyBox20"></div>
-  </div>
 </div>
+<app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' [(editmode)]='editQuery || addQuery'
+    jumbotronHeight='27vh' jumbotronPadding='2em 2em 0em 2em'></app-search-panel>
+
 <div class="ui-fluid" style="background-color: #EFEFEF">
-  <div class="ui-g ">
-    <div class="ui-g-12">
-      <div class="ui-g form-group">
-        <div class="ui-g-12 ui-lg-2 ui-md-1">
-        </div>
-        <div class="ui-g-12 ui-md-4" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px">
-          <label for="advsearchinput" class="hideLabel">Search Input</label>
-          <div class="inner-addon left-addon " style="background-color: #FFFFFF">
-            <i class="glyphicon faa faa-search"></i>
-            <p-autoComplete [inputStyle]="{'width': '100%','padding-left':'40px','height': '42px','font-weight': '400',
-        'font-style': 'italic'}" (onFocus)="clearText()" (onBlur)="addPlaceholder()" [placeholder]="placeholder"
-              [(ngModel)]="searchValue" inputId="advsearchinput"
-              (keyup.enter)="search(searchValue,searchTaxonomyKey,queryAdvSearch)" [suggestions]="suggestedTaxonomyList"
-              (completeMethod)="filterTaxonomies($event)" [minLength]="1" [maxlength]="2048" [size]="50">
-            </p-autoComplete>
-          </div>
-        </div>
-        <div class="ui-g-12 ui-lg-2 ui-md-4" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <p-dropdown [options]="taxonomies" inputId="searchtaxonomy" [style]="{'width':'100%',
-        'background-color': '#FFFFFF','height': '42px'
-        ,'font-weight': '900','font-style': 'italic','display': 'flex','align-items':'center'}"
-            [(ngModel)]="searchTaxonomyKey">
-          </p-dropdown>
-        </div>
-        <div class="ui-g-12 ui-md-1" style="padding-left: 0px;padding-right: 0px;padding-bottom: 0px">
-          <button class="searchButton" (click)="search(searchValue,searchTaxonomyKey,'yes')" pButton label="Search"
-            type="submit"></button> </div>
-        <div class="ui-g-12 ui-md-2 how-to-build">
-          &nbsp;&nbsp;<a href="#!" class="how-to-build-link" [routerLink]="['/help/how-advanced-search']"
-            target="_blank">How to build Advanced Search Queries</a>
+    <div class="ui-g ">
+        <p-confirmDialog key="queryDelete"></p-confirmDialog>
+        <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="left-panel">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 95%;">Queries</th>
+                        <th scope="col" style="width: 5%;">Act</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="queries == null || queries?.length == 0">
+                        <td colspan="2">
+                            No query found
+                        </td>
+                    </tr>
+                    <tr id="query-list1" *ngFor="let query of queries; index as i"
+                        [class.active]="i == currentQueryIndex">
+                        <th scope="row" (click)="displayQuery(i)" *ngIf="!editQuery && !addQuery">
+                            <a href="javascript:void(0);" style="margin-left: .5em;">{{query.queryName}}</a>
+                        </th>
+                        <th scope="row" *ngIf="editQuery || addQuery">
+                            <span style="margin-left: .5em; color: darkgray;">{{query.queryName}}</span>
+                        </th>
+                        <td>
+                            <div class="dropdown">
+                                <button class="dropbtn" name="dropdownButton" [disabled]="editQuery || addQuery"
+                                    data-toggle="tooltip" title="Actions" (mouseover)='showDropdown=true;' (click)='showDropdown=true;'>...</button>
+                                <div class="dropdown-content" *ngIf='showDropdown'
+                                    [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
+                                    <a href="javascript:void(0);"
+                                        (click)="displayQuery(i); showDropdown=false;">View
+                                        <i class="faa faa-eye" style="float: right;"></i>
+                                    </a>
+                                    <a href="javascript:void(0);"
+                                        (click)="editQuery=true;addQuery=false;setCurrentQuery(i); showDropdown=false;">Edit
+                                        <i class="faa faa-pencil" style="float: right;"></i>
+                                    </a>
+                                    <a href="javascript:void(0);"
+                                        (click)="executeQuery(query, i); showDropdown=false;">Execute
+                                        <i class="faa faa-play" style="float: right;"></i>
+                                    </a>
+                                    <a href="javascript:void(0);"
+                                        (click)="dupQuery(i); showDropdown=false;">Duplicate
+                                        <i class="faa faa-copy" style="float: right;"></i>
+                                    </a>
+                                    <a href="javascript:void(0);"
+                                        (click)="deleteConfirmQuery(query.queryName); showDropdown=false;">Delete
+                                        <i class="faa faa-trash" style="float: right;"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div>
+                <div class="ui-g-12 ui-md-12" style="text-align: center;">
+                    <div class="file-io btn btn-sm btn-primary"
+                        [ngStyle]="{'opacity': editQuery || addQuery? '.65' : '1', 'cursor': editQuery||addQuery? 'default' : 'pointer'}">
+                        <label for="file"
+                            [ngStyle]="{'cursor': editQuery||addQuery? 'default' : 'pointer'}">Import</label>
+                        <input type="file" id="file" (change)="importList($event)" [disabled]="editQuery || addQuery">
+                    </div>
+                    <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
+                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0">
+                        Export
+                    </button>
+                </div>
+            </div>
         </div>
 
-      </div>
-      <div class="ui-g-12 ui-md-2">
-      </div>
-      <div class="ui-g-12 ui-md-6">
-        <b> Examples: </b>
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;Kinetics database&quot;');"
-          href="#!">"Kinetics database" </a>
-        &nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');" href="#!">"SRD 101"
-        </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB </a>&nbsp;
-        <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
-          href="#!">Interatomic Potentials
-        </a>&nbsp;
-      </div>
-    </div>
-    <p-confirmDialog key="queryDelete"></p-confirmDialog>
-    <div class="ui-g-12 ui-md-3 ui-lg-3 collapse1 in width" id="demo"
-      style="background-color: #F8F9F9;padding-left: 5px;">
-      <div style="padding: 0px;">
-        <div class="ui-g-12 ui-md-12"
-          style="background-color: #0872B9;border-bottom:.5px solid #e6e6e6;width: 100%;padding: .625em;box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);">
+        <div [className]="resultsClass" style="background-color:white">
+            <!-- Query name -->
+            <div class="ui-g-12 ui-md-12" style="vertical-align: middle;">
+                <label for="queryName" style="white-space: nowrap;margin-left: -5px;">Query Name:</label>
 
-          <a style="color: #FFFFFF;font-weight: 900;text-decoration:none;">Queries </a> <a class="btn-sm collapse1 in"
-            (click)="setResultsWidth()" data-toggle="collapse"
-            style="border-color: #025277; color: #FFF;padding: 0em;border: 0em" data-target="#demo" aria-label="Queries"></a>
+                <span class="inner-addon">
+                    <input class="query-name" [ngClass]="{'field-text-grey':!queryNameValidateError,'field-text-red':queryNameValidateError,'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" #queryname type="text" id="queryName" [(ngModel)]="currentQuery.queryName"
+                        (focus)="setReadyEdit()" (keydown)="setMode()"
+                        (keyup)="checkQueryName()"/>
 
-          <a href="#" *ngIf="!editQuery && !addQuery"
-            style="float: right;padding-right: 2em;vertical-align: middle;color: #FFFFFF"
-            (click)="$event.preventDefault();createQueryInit()">
-            <i style="vertical-align: middle;zoom: 80%" class="material-icons"> add
-            </i>Create Query</a>
-
-          <span *ngIf="editQuery || addQuery" style="float: right;padding-right: 2em; color:darkgray">
-            <i style="vertical-align: middle;zoom: 80%" class="material-icons"> add
-            </i>Create Query
-          </span>
-        </div>
-        <div class="ui-g-12 ui-md-12">
-          <p-dataTable [value]="searchEntities" [style]="{'border':'.5px solid #e6e6e6'}" emptyMessage="No entry found">
-            <p-column field="data.queryName"
-              [style]="{'word-wrap': 'break-word','width':'30%','font-weight':'700','border':'.5px solid #e6e6e6'}"
-              header="Name">
-              <ng-template let-row="rowData" pTemplate type="body">
-                <button type="button" class="btn btn-link" [disabled]="editQuery || addQuery"
-                  (click)="editQuery=false;addQuery=false;showAdvSearch(row.data.queryName)">{{row.data.queryName}}</button>
-              </ng-template>
-            </p-column>
-            <p-column header="Actions" [style]="{'width':'25%','font-weight':'700'}" styleClass="col-button">
-              <ng-template let-row="rowData" pTemplate="body">
-                <button type="button" class="buttonSize" pButton (click)="deleteConfirmQuery(row.data.queryName)"
-                  icon="ui-icon-delete" [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Delete Query">
-                  <i class="faa faa-trash"></i></button>
-                <button type="button" class="buttonSize" pButton
-                  (click)="copyQuery(row.data.queryName,row.data.queryValue);" icon="ui-icon-content-copy"
-                  [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Duplicate Query">
-                  <i class="faa faa-copy"></i>
+                    <i class="faa faa-remove clear-box" (click)="checkQueryName('');" data-toggle="tooltip"
+                    title="Clear query name"></i>
+                </span>
+                <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
+                    [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Add Query">
+                    <i class="faa faa-plus-circle faa-2x"></i>
                 </button>
-                <button type="button" pButton class="buttonSize"
-                  (click)="editQuery=true;addQuery=false;showAdvSearch(row.data.queryName)" icon="ui-icon-edit"
-                  [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Edit Query">
-                  <i class="faa faa-pencil"></i>
-                </button>
-                <button type="button" pButton class="buttonSize" icon="ui-icon-circle"
-                  [disabled]="editQuery || addQuery" (click)="executeQuery(row.data.queryValue)" data-toggle="tooltip"
-                  title="Execute Query"><i class="faa faa-play"></i></button>
-              </ng-template>
-            </p-column>
-          </p-dataTable>
-        </div>
-        <div class="ui-g-12 ui-md-12" style="display:flex;justify-content:center;">
-          <div style="width:30%;margin: 1em">
-            <label *ngIf="editQuery || addQuery" class="_buttonSize ui-button ui-button-text ui-corner-all ui-widget"
-              style="font-weight:normal;line-height:1.5em;height:2em;background-color:rgb(185, 210, 227); cursor: default;">
-              <input type="file" id="fileInput" label="Import" (change)="importList($event)" disabled
-                style="cursor: default;" />
-              <i style="vertical-align: middle;zoom: 80%" class="material-icons" label="Import"> import_export</i>
-              Import
-            </label>
-            <label *ngIf="!editQuery && !addQuery" class="_buttonSize ui-button ui-button-text ui-corner-all ui-widget"
-              style="font-weight:normal;line-height:1.5em;height:2em;" disabled>
-              <input type="file" id="fileInput" label="Import" (change)="importList($event)" />
-              <i style="vertical-align: middle;zoom: 80%" class="material-icons" label="Import"> import_export</i>
-              Import
-            </label>
-          </div>
+                <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;">{{queryNameValidateErrorMsg}}</div>
+            </div>
 
-          <div style="width:30%;margin: 1em">
-            <button type="button" pButton class="_buttonSize" *ngIf="searchEntities.length == 0" (click)="exportList()"
-              [disabled]="editQuery || addQuery" style="font-weight:normal;line-height:1.5em;height:2em;" label=" "><i
-                style="vertical-align: middle;zoom: 80%" class="material-icons"> import_export
-              </i>Export</button>
+            <!-- free text input -->
+            <div style="margin-bottom: .5em;">
+                <label for="freeText" class="free-text-lable">Terms/Phrases:</label>
 
-            <button type="button" pButton class="_buttonSize" *ngIf="searchEntities.length > 0" (click)="exportList()"
-              style="font-weight:normal;line-height:1.5em;height:2em;" label=" " [disabled]="editQuery || addQuery"><i
-                style="vertical-align: middle;zoom: 80%" class="material-icons"> import_export </i> Export</button>
-          </div>
+                <span class="inner-addon">
+                    <input class="terms" #freetext type="text" id="freeText" [ngClass]="{'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="currentQuery.freeText"
+                        (focus)="setReadyEdit()" (keydown)="setMode()"
+                        (keyup)="setFreeText($event.target.value)" />
+
+                        <i class="faa faa-remove clear-box" (click)="setFreeText('')" data-toggle="tooltip"
+                        title="Clear free text"></i>
+                </span>
+                <span class="link-text show-example" (click)="showExamples()">Show Examples</span>
+            </div>
+
+            <!-- query rows -->
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr style="text-align: center;">
+                        <th scope="col" style="width: 15%;">Operator</th>
+                        <th scope="col" style="width: 35%;">Field Name</th>
+                        <th scope="col" style="width: 35%;">Field Value</th>
+                        <th scope="col" style="width: 15%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="currentQuery.queryRows.length == 0">
+                        <td colspan="4">
+                            No detail found
+                        </td>
+                    </tr>
+                    <tr *ngFor="let queryRow of currentQuery.queryRows; index as rowIndex">
+                        <td *ngIf="rowIndex > 0">
+                            <select class="browser-default custom-select" [ngClass]="{'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="queryRow.operator"
+                                (change)="onDataChange()">
+                                <option *ngFor="let operator of operators;">{{operator.label}}</option>
+                            </select>
+                        </td>
+                        <td *ngIf="rowIndex == 0" style="vertical-align: middle;">
+                            <span style="margin-left:.8em;padding-bottom: -2em;font-size:16px;">AND</span>
+                        </td>
+                        <td>
+                            <select class="browser-default custom-select italic" [ngClass]="{'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="queryRow.fieldType"
+                                (change)="onFieldTypeChange(queryRow)">
+                                <option hidden value="" disabled selected>Select Field Name</option>
+                                <option *ngFor="let field of fields;" data-toggle="tooltip" title="{{field.value}}">{{field.label}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="text-input field-text"[ngClass]="{'field-text-grey': queryRow.validated, 'field-text-red':!queryRow.validated, 'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="queryRow.fieldText"
+                                placeholder="Field text is required..." (focus)="setReadyEdit()"
+                                (keydown)="setMode()" (keyup)="setRowText($event.target.value, queryRow)" />
+                        </td>
+
+                        <td>
+                            <div style="text-align: center;height: 2.5em;">
+                                <button type="button" class="btn-row-act" pButton (click)="duplicateRow(queryRow, rowIndex)"
+                                    icon="ui-icon-content-copy" [disabled]="queryRow.fieldText=='' || queryRow.fieldType==''" data-toggle="tooltip" title="Duplicate Row">
+                                    <i class="faa faa-copy"></i>
+                                </button>
+                                <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
+                                    icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row">
+                                    <i class="faa faa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="ui-g-12 search-builder-background">
+                <div class="ui-g-12 ui-lg-8 ui-md-12 ui-sm-12" style="float:right;">
+                    <button id="btn-cancel" type="button" (click)="cancelConfirm()" pButton type="submit"
+                        [disabled]="(!editQuery && !addQuery)">
+                        <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i>
+                        Cancel
+                    </button>
+
+                    <button id="btn-save" type="button" (click)="saveAdvSearchQuery()" pButton type="submit"
+                        [disabled]="(!editQuery && !addQuery) || !currentQuery.queryName || !dataChanged || queryNameValidateError || rowInputValidateError">
+                        <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
+                        Save
+                    </button>
+
+                    <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery,currentQueryIndex)" pButton type="submit"
+                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0 || rowInputValidateError">
+                        <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
+                        Execute
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
+        <div style="height:150px;background-color: #fff"></div>
     </div>
-
-    <div [className]="resultsClass" style="background-color:white">
-      <div class="ui-g-12 ui-md-12" style="display: flex;vertical-align: middle;">
-        <label for="queryName">Query Name : </label>
-
-        <input *ngIf="addQuery || editQuery" class="text-input" type="text" id="queryName"
-          style="width: 50%;border:.5px solid #e6e6e6;background-color: #FFFFFF;height: 25px;font-weight: 400;vertical-align:middle;margin-left:1em"
-          [(ngModel)]="queryName" (keydown)="onKeydown($event)" />
-        <div style="float:left;padding-left:1em;" *ngIf="!editQuery && !addQuery">{{this.queryName}}</div>
-        <span *ngIf="queryNameReq" style="color:red;padding-left: 1em;">* Field is required</span>
-        <span *ngIf="duplicateQuery" style="color:red;padding-left: 1em;">Query name already exists</span>
-      </div>
-      <div class="ui-g-12 ui-md-12 search-builder-background">
-        <p-dataTable [value]="rows" emptyMessage="No entry found" [style]="{'border':'.5px solid #e6e6e6'}">
-          <p-column field="data.queryName" header="Operator" [style]="{'width':'15%','font-weight':'700'}">
-            <ng-template let-row="rowData" let-i="rowIndex" pTemplate type="body">
-              <p-dropdown [dropdownIcon]="caretDown" *ngIf="i != 0" (click)="saveSearch()"
-                [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px','font-weight': '400','font-style': 'italic','border':'.5px solid #e6e6e6'}"
-                [options]="operators" [(ngModel)]="row.column1" [disabled]="!editQuery && !addQuery">
-              </p-dropdown>
-            </ng-template>
-          </p-column>
-          <p-column field="data.queryName" header="Field Text" [style]="{'width':'35%','font-weight':'700'}">
-            <ng-template let-row="rowData" pTemplate type="body">
-              <input type="text" id="fieldstext" class="text-input" style="width: 100%; font-style: italic"
-                [(ngModel)]="row.column2" (keyup)="saveSearch()" placeholder="Fields text..."
-                [disabled]="!editQuery && !addQuery" (keydown)="onKeydown($event)" />
-            </ng-template>
-          </p-column>
-          <p-column field="data.queryName" header="Field Type" [style]="{'width':'35%','font-weight':'700'}">
-            <ng-template let-row="rowData" pTemplate type="body">
-              <p-dropdown [dropdownIcon]="caretDown" [options]="fields"
-                [style]="{'width':'100%','background-color': '#FFFFFF','height': '30px','font-weight': '400','font-style': 'italic','border':'.5px solid #e6e6e6','vertical-align':'bottom'}"
-                [(ngModel)]="row.column3" (click)="saveSearch()" [disabled]="!editQuery && !addQuery">
-              </p-dropdown>
-            </ng-template>
-          </p-column>
-
-          <p-column header="Actions" styleClass="col-button" [style]="{'width':'15%','font-weight':'700'}">
-            <ng-template let-rowIndex="rowIndex" let-row="rowData" pTemplate="body">
-              <button type="button" class="buttonSize" pButton (click)="deleteRow(rowIndex)" icon="ui-icon-delete"
-                [disabled]="!editQuery && !addQuery" data-toggle="tooltip" title="Delete Row">
-                <i class="faa faa-trash"></i>
-              </button>
-              <button type="button" class="buttonSize" pButton (click)="copyRow(row)" icon="ui-icon-content-copy"
-                [disabled]="!editQuery && !addQuery" data-toggle="tooltip" title="Duplicate Row">
-                <i class="faa faa-copy"></i>
-              </button>
-            </ng-template>
-          </p-column>
-        </p-dataTable>
-      </div>
-      <p-confirmDialog></p-confirmDialog>
-      <div class="ui-g-12 search-builder-background">
-        <div class="ui-g-12 ui-md-6 ui-sm-6"></div>
-        <div class="ui-g-12 ui-md-6 ui-sm-6">
-          <div class="ui-g-12 ui-lg-4 ui-md-3 ui-sm-12" style="float:right;">
-            <button (click)="cancelConfirm()" *ngIf="!editQuery && !addQuery" disabled pButton label="Cancel"
-              type="submit" icon="ui-icon-cancel" style="height:2em;border:none;background-color:rgb(82, 82, 82)"></button>
-            <button (click)="cancelConfirm()" *ngIf="rows.length>0 && (editQuery || addQuery)" pButton label="Cancel"
-              type="submit" icon="ui-icon-cancel" style="height:2em;border:none;background-color: rgb(82, 82, 82)"></button>
-          </div>
-          <div class="ui-g-12 ui-lg-4 ui-md-3 ui-sm-12" style="float:right;">
-            <button (click)="saveQuery(queryName)" *ngIf="!editQuery && !addQuery" disabled pButton label="Save"
-              type="submit" icon="ui-icon-save" style="height:2em;border:none;background-color: green"></button>
-            <button (click)="saveQuery(queryName)" *ngIf="rows.length>0 && (editQuery || addQuery)" pButton label="Save"
-              type="submit" icon="ui-icon-save" style="height:2em;border:none;background-color: green"></button>
-          </div>
-        </div>
-      </div>
-      <div style="height:150px;background-color: #fff"></div>
-    </div>
-  </div>
 </div>

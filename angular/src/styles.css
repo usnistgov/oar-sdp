@@ -1,3 +1,15 @@
+/* @font-face {
+  font-family: Roboto;
+  src: url('/assets/fonts/roboto-v15-latin-300.ttf') format("truetype");
+} */
+
+/* * {
+  font-family: Roboto !important;
+  font-size: 14px;
+} */
+
+@import "~ngx-toastr/toastr.css";
+
 /* You can add global styles to this file, and also import other style files */
 a:link {
   color: #1E6BA1;
@@ -40,4 +52,93 @@ a:visited {
   max-width: 400px !important;
   min-width: 300px !important;   
   width: 50% !important;
+}
+
+body {
+    font-family: "Roboto";
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* .ui-state-highlight {
+  background: #03A9F4!important;
+  color: black !important;
+} */
+
+.ui-overlaypanel-close {
+  color: white !important;
+  background-color: green !important;
+}
+
+.breadcrumb > .active span {
+  font-weight: 900 !important;
+  color: white !important;
+}
+
+.breadcrumb { 
+  color: rgb(204, 204, 204);
+  background-color:transparent !important; 
+}
+
+.top-banner {
+  width: 100%;
+  background-color: #153971;
+  color: #FFFFFF;
+  background-position: center 63%;
+  padding:1.5em 2.5em 1em 2em;
+}
+
+.text-body {
+  padding: 2em 0em; 
+  background-color: white; 
+  font-size:18px;
+  line-height: 1.3em;
+  min-height: 50vh;
+}
+
+.inner-top-banner {
+  display: block; 
+  width: 100%; 
+}
+
+.adv-step {
+    margin:40px 0 20px 0;
+}
+
+.toast-bootstrap-compatibility-fix {
+    opacity:1;
+}
+
+.toast-success {
+    color: white;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.link-text {
+    color: #1E6BA1;
+    text-decoration: underline; 
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.link-text-white {
+    color: white;
+    text-decoration: underline; 
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.inner-addon {
+    position: relative;
 }

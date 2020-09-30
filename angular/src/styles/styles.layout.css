@@ -18,16 +18,16 @@
 .layout-container .layout-menu.layout-menu-dark .profile-menu {
   border-bottom: 1px solid #676767; }
 
-.layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a {
+/* .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a {
   background-color: #1471AE;}
 
 .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
-  background-color: #03A9F4; }
+  background-color: #03A9F4; } */
 
 .layout-container .layout-main {
   padding: 96px 0px 0px 0px;}
 
-.layout-container .ultima-menu li a {
+/* .layout-container .ultima-menu li a {
   color: #fff;}
 
 .layout-container .ultima-menu li a i {
@@ -51,7 +51,7 @@
 
 .layout-container .ultima-menu li.active-menuitem > a {
   color: #1471AE;
-  background-color: #03A5EF; }
+  background-color: #03A5EF; } */
 
 .layout-container .topbar-items > li > ul {
   top: 55px;}
@@ -67,7 +67,7 @@
   color: #fff;
 }
 
-.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a {
+/* .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a {
   color: #fff;
   padding-right:1.5em;
 }
@@ -87,12 +87,12 @@
   background-color: #02bfe7; }
 
 .layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
-  background-color: #205493; }
+  background-color: #205493; } */
 
 .layout-container .topbar .topbar-right .topbar-items > li > a:hover {
   background-color: #205493; }
 
-.layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+/* .layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
   background-color: #205493; }
 
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a {
@@ -103,7 +103,7 @@
 .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink > i
 {
   color: #fff;
-}
+} */
 
 .layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
   padding-top: 90px;

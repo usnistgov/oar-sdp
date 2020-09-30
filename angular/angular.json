@@ -24,16 +24,16 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/primeng/resources/themes/bootstrap/theme.css",
+              "src/styles/font-awesome/css/font-awesome.min.css",
               "node_modules/primeng/resources/primeng.css",
               "node_modules/primeicons/primeicons.css",
-              "src/styles/ultima-ng-5.2.4/assets/layout/css/layout-indigo.css",
-              "src/styles/ultima-ng-5.2.4/assets/theme/theme-indigo.css",
-              "src/styles/font-awesome/css/font-awesome.min.css",
               "src/styles/main.css",
               "src/styles/styles.layout.css",
-              "src/styles/styles.themes.css"
+              "src/styles/styles.themes.css",
+              "src/assets/fontcss/roboto.css",
+              "src/styles.css"
             ],
             "scripts": [
               "node_modules/lodash/lodash.min.js",
@@ -100,8 +100,6 @@
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "src/styles/ultima-ng-5.2.4/assets/layout/css/layout-indigo.css",
-              "src/styles/ultima-ng-5.2.4/assets/theme/theme-indigo.css",
               "node_modules/primeicons/primeicons.css",
               "src/styles/font-awesome/css/font-awesome.min.css",
               "src/styles/main.css"

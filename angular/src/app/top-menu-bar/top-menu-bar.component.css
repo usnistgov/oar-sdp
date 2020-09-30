@@ -1,0 +1,55 @@
+.navbar {
+  width: 100% !important;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+  font-size: 16px;
+}
+
+.navbar-nav li:hover > ul.dropdown-menu
+ {
+  display: block;
+  top: 38px;
+}
+
+.dropdown-submenu {
+  position:relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  
+}
+
+/* rotate caret on hover */
+.dropdown-menu > li > a:hover:after {
+  text-decoration: underline;
+  transform: rotate(-90deg);
+} 
+
+.navbar-custom { 
+  background-color: #082c4d !important; 
+} 
+
+.dropdown-menu {
+  background-color: rgba(255,255,255,0.9);
+}
+
+.dropdown-menu li > a {
+  color:rgb(59, 59, 59); 
+}
+
+.navbar .navbar-nav > li > a,
+.navbar .navbar-nav > .active > a{
+    color: rgb(255, 255, 255);
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.navbar .navbar-nav > li > a:hover,
+.navbar .navbar-nav > li > a:focus,
+.navbar .navbar-nav > .active > a:hover,
+.navbar .navbar-nav > .active > a:focus {
+    color: black;
+    background-color: rgb(0, 195, 255);
+}
+
