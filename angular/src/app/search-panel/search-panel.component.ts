@@ -280,7 +280,7 @@ export class SearchPanelComponent implements OnInit {
         this.suggestedTaxonomyList = [];
         for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
             let keyw = this.suggestedTaxonomies[i];
-            if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0) {
+            if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0 && this.suggestedTaxonomyList.indexOf(keyw) < 0) {
                 this.suggestedTaxonomyList.push(keyw);
             }
         }

@@ -352,7 +352,7 @@
                         <b>Sort Results</b> <br>
                     </div>
                     <div>
-                        <p-dropdown [options]="fields" [(ngModel)]="sortItemKey" placeholder="Field Name"
+                        <p-dropdown [options]="filterableFields" [(ngModel)]="sortItemKey" placeholder="Field Name"
                         (onChange)="SortByFields()"
                         [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
                         </p-dropdown>

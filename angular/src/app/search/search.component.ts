@@ -236,12 +236,21 @@ export class SearchComponent implements OnInit, OnDestroy {
         let items: SelectItem[] = [];
         let sortItems: SelectItem[] = [];
         this.displayFields = [];
+        this.fields = [];
+        let dupFound: boolean = false;
 
         for (let field of fields) {
             if (_.includes(field.tags, 'filterable')) {
                 if (field.type !== 'object') {
                 if (field.name !== 'component.topic.tag') {
-                    if(sortItems.filter(item => {item.label==field.label && item.value==field.name}).length == 0)
+                    dupFound = false;
+                    for(let item of sortItems){
+                        if(item.label==field.label && item.value==field.name){
+                            dupFound = true;
+                            break;
+                        }
+                    }
+                    if(!dupFound)
                         sortItems.push({ label: field.label, value: field.name });
                 }
                 if (field.label !== 'Resource Title') {
@@ -256,12 +265,20 @@ export class SearchComponent implements OnInit, OnDestroy {
             if (_.includes(field.tags, 'searchable')) {
                 let lValue = field.name.replace('component.', 'components.');
 
-                this.fields.push({ label: field.label, value: lValue });
-
+                dupFound = false;
+                for(let item of this.fields){
+                    if(item.label==field.label && item.value==lValue){
+                        dupFound = true;
+                        break;
+                    }
+                }
+                if(!dupFound)
+                    this.fields.push({ label: field.label, value: lValue });
             }
         }
 
         this.fields = _.sortBy(this.fields, ['label','value']);
+
         return sortItems;
     }
 
