@@ -1,1 +1,10 @@
-
+#logo-text {
+    font-family: Roboto,'Helvetica Neue',sans-serif;
+    line-height: 16.5px;
+    display: table-cell;
+    vertical-align: text-top;
+    color: #FFFFFF;
+    font-size:14px;
+    padding-left: 4%;
+    white-space: nowrap;
+}

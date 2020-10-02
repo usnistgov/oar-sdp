@@ -188,10 +188,12 @@ export class SearchPanelComponent implements OnInit {
      */
     changeState(status: boolean) {
         this.showExampleStatus = status;
-        if(this.showExampleStatus)
+        if(this.showExampleStatus){
             this.currentState = 'final';
-        else
+        }
+        else{
             this.currentState = 'initial';
+        }
     }
 
     /**

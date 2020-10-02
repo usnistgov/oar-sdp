@@ -138,9 +138,20 @@ export class SearchQueryService {
      * @param qureies - queries to save to local storage
      */
     saveQueries(qureies: SDPQuery[]){
-        this._storage.setItem('queries',JSON.stringify(qureies));
-        this.notificationService.showSuccessWithTimeout("Queries updated.", "", 3000);
-        this.queriesSub.next(qureies);
+        let lQueries: SDPQuery[] = [];
+
+        //Remove any null query
+        for(let query of qureies){
+            if(query != null && query != undefined){
+                lQueries.push(query);
+            }
+        }
+
+        if(lQueries != null && lQueries != undefined){
+            this._storage.setItem('queries',JSON.stringify(qureies));
+            this.notificationService.showSuccessWithTimeout("Queries updated.", "", 3000);
+            this.queriesSub.next(qureies);
+        }
     }
 
     /**
@@ -148,7 +159,21 @@ export class SearchQueryService {
      */
     getQueries(): SDPQuery[]{
         let queriesAsObject = JSON.parse(this._storage.getItem('queries'));
-        return queriesAsObject == null? [] : queriesAsObject as SDPQuery[];
+
+        let lQueries: SDPQuery[] = [];
+
+        //Remove any null query
+        if(queriesAsObject == null || queriesAsObject == undefined){
+            return [];
+        }else{
+            for(let query of queriesAsObject){
+                if(query != null && query != undefined){
+                    lQueries.push(query);
+                }
+            }
+
+            return lQueries == null? [] : lQueries;
+        }
     }
 
     /**
@@ -285,8 +310,10 @@ export class SearchQueryService {
         let currentQueries = this.getQueries();
         let query = this.buildQueryFromString(queryString, queryName, fields);
 
-        currentQueries.push(JSON.parse(JSON.stringify(query)));
-        this.saveQueries(currentQueries);
+        if(query != null){
+            currentQueries.push(JSON.parse(JSON.stringify(query)));
+            this.saveQueries(currentQueries);
+        }
     }
 
     /**
