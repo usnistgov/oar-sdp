@@ -202,6 +202,7 @@ export class SearchPanelComponent implements OnInit {
     hideAllHelp() {
         this.showExampleStatus = false;
         this.currentState = 'initial';
+        this.searchQueryService.setShowExamples(false);
     }
 
     /**
