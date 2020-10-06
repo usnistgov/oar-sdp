@@ -1,3 +1,4 @@
+import { SwitchView } from '@angular/common/src/directives/ng_switch';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 
@@ -11,16 +12,6 @@ import { Router, NavigationExtras } from '@angular/router';
 })
 
 export class HomeComponent implements OnInit {
-    searchPhrases = {
-        'IT': '"Information Technology"',
-        'MS': '"Mathematics and Statistics"',
-        'Manufacturing': 'Manufacturing',
-        'Forensics': 'Forensics',
-        'Materials': 'Materials',
-        'PN': '"Physics and Neutron"',
-        'AC': '"Advanced Communications"',
-        'Chemistry': 'Chemistry'
-    }
 
   constructor(private router: Router) {
   }
@@ -32,8 +23,46 @@ export class HomeComponent implements OnInit {
    * Set the search parameters and redirect to search page
    */
   search(searchValue: string) {
-      console.log('searchValue', searchValue);
-    let queryValue = "topic.tag=" + searchValue;
+    let queryValue: string;
+    
+    switch(searchValue) { 
+        case 'IT': { 
+            queryValue = 'topic.tag="Information Technology"';
+            break; 
+        } 
+        case 'MS': { 
+            queryValue = 'topic.tag=Mathematics AND topic.tag=Statistics';
+            break; 
+        } 
+        case 'Manufacturing': { 
+            queryValue = 'topic.tag=Manufacturing';
+            break; 
+        } 
+        case 'Forensics': { 
+            queryValue = 'topic.tag=Forensics';
+            break; 
+        } 
+        case 'Materials': { 
+            queryValue = 'topic.tag=Materials';
+            break; 
+        } 
+        case 'PN': { 
+            queryValue = 'topic.tag=Physics AND topic.tag=Neutron'; 
+            break; 
+        } 
+        case 'AC': { 
+            queryValue = '"Advanced Communications"';
+            break; 
+        } 
+        case 'Chemistry': { 
+            queryValue = 'topic.tag=Chemistry';
+            break; 
+        } 
+        default: { 
+            queryValue = 'topic.tag="Information Technology"';
+            break; 
+        } 
+     } 
 
     let params: NavigationExtras = {
       queryParams: {
