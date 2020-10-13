@@ -336,6 +336,8 @@ export class SearchQueryService {
             currentQueries.push(JSON.parse(JSON.stringify(query)));
             this.saveQueries(currentQueries);
         }
+
+        this.saveCurrentQueryInfo(new CurrentQueryInfo(query, -1, false));
     }
 
     /**
