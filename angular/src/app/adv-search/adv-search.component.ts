@@ -216,7 +216,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     deleteConfirmQuery(queryName: string, index: number) {
         this.confirmDialogSvc.confirm(
             'Do you really want to delete this query?',   //Title
-            '', //Message
+            'Query name: ' + queryName, //Message
             false,   //Show warning sign
             true,   //Show second button
             false,  // Hide third button
