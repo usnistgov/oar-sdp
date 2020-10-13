@@ -339,3 +339,52 @@ tr.active {
     vertical-align: bottom;
     padding-left: .5em;
 }
+
+.overlay-input {
+    width: 400px;
+    height:2em;
+    border: 1px solid lightgrey;
+}
+
+.btn-append {
+    height:2em;
+    background-color: green;
+    border: 1px solid green;
+    border-radius: 0 4px 4px 0;
+    color: white;
+    margin-top: 2em;
+}
+
+.inner-addon .clear-box2 {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    font-size: 15px;
+    color: rgb(143, 143, 143);
+    cursor: pointer;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    background-color: #153971;
+    color: #FFFFFF;
+    margin-bottom: 1em;
+}
+
+#cd-button-one {
+    width:100px;
+    height:2em;
+    vertical-align: middle;
+    background-color: green;
+    color: white;
+}
+
+#cd-button-two {
+    width:100px;
+    height:2em;
+    vertical-align: middle;
+    background-color: grey;
+    color: white;
+    margin-left: .5em;
+}

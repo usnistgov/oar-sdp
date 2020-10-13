@@ -142,3 +142,7 @@ textarea {
 .inner-addon {
     position: relative;
 }
+
+.myCustomModalClass .modal-dialog {
+    max-width: 565px;
+}

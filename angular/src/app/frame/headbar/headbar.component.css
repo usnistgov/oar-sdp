@@ -7,3 +7,10 @@
     padding-left: 4%;
     white-space: nowrap;
 }
+
+#logo {
+    display:inline-block; 
+    background-color: #000000; 
+    margin-left: 10px;
+    cursor: pointer;
+}

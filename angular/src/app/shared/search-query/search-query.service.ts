@@ -6,7 +6,7 @@ import {Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
 import 'rxjs/add/operator/toPromise';
-import { SDPQuery, QueryRow } from './query';
+import { SDPQuery, QueryRow, CurrentQueryInfo } from './query';
 import { SearchfieldsListService } from '../../shared/searchfields-list/index';
 import { NotificationService } from '../../shared/notification-service/notification.service';
 
@@ -42,6 +42,8 @@ export class SearchQueryService {
     displayCart : boolean = false;
     private _storage = localStorage;
     operators: string[] = ["AND", "OR", "NOT"];
+    CURRENT_QUERY_INFO: string = "current_query_info";
+    // CURRENT_QUERY_STRING: string = "current_query_string";
 
     constructor(
         public searchFieldsListService: SearchfieldsListService,
@@ -86,15 +88,12 @@ export class SearchQueryService {
                 query.queryRows[i].operator = 'AND';
             }
 
-            let fieldValue: string;
-            fieldValue = query.queryRows[i].fieldValue;
-
             //Skip operator for the first row
             if(i > 0)
                 lSearchValue += ' ' + query.queryRows[i].operator + ' ';
 
             //If user didn't provide search value, ignore the row
-            if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldType)){
+            if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldValue)){
                 if(query.queryRows[i].fieldText.trim().indexOf(" ") > 0) 
                     query.queryRows[i].fieldText = '"' + query.queryRows[i].fieldText.trim() + '"';
 
@@ -137,21 +136,55 @@ export class SearchQueryService {
      * Save queries to local storage and broadcast so header bar can update.
      * @param qureies - queries to save to local storage
      */
-    saveQueries(qureies: SDPQuery[]){
+    saveQueries(queries: SDPQuery[]){
         let lQueries: SDPQuery[] = [];
 
         //Remove any null query
-        for(let query of qureies){
+        for(let query of queries){
             if(query != null && query != undefined){
                 lQueries.push(query);
             }
         }
 
         if(lQueries != null && lQueries != undefined){
-            this._storage.setItem('queries',JSON.stringify(qureies));
+            this._storage.setItem('queries',JSON.stringify(queries));
             this.notificationService.showSuccessWithTimeout("Queries updated.", "", 3000);
-            this.queriesSub.next(qureies);
+            this.queriesSub.next(queries);
         }
+    }
+
+    saveCurrentQueryInfo(queryInfo: CurrentQueryInfo){
+        this._storage.setItem(this.CURRENT_QUERY_INFO,JSON.stringify(queryInfo));
+    }
+
+
+    getCurrentQueryInfo(): CurrentQueryInfo {
+        let queryAsObject: CurrentQueryInfo = JSON.parse(this._storage.getItem(this.CURRENT_QUERY_INFO));
+
+        if(_.isEmpty(queryAsObject)){
+            queryAsObject = new CurrentQueryInfo();
+        }
+
+        return queryAsObject;
+    }
+
+    /**
+     * Save current query to local storage
+     * @param query current query
+     */
+    saveCurrentQuery(query: SDPQuery){
+        console.log("Current query", query);
+        let queryAsObject: CurrentQueryInfo = new CurrentQueryInfo(query, -1, false);
+        console.log("queryAsObject", queryAsObject);
+        this._storage.setItem(this.CURRENT_QUERY_INFO,JSON.stringify(queryAsObject));
+    }
+
+    /**
+     * Get current query from local storage. If nothing in local storage, return an empty query object. 
+     */
+    getCurrentQuery(): SDPQuery {
+        let queryAsObject: CurrentQueryInfo = this.getCurrentQueryInfo();
+        return queryAsObject.query;
     }
 
     /**
@@ -177,22 +210,16 @@ export class SearchQueryService {
     }
 
     /**
-     * Save current query index to local storage
-     * @param index 
-     */
-    saveCurrentQueryIndex(index: number){
-        this._storage.setItem('currentQueryIndex',index.toString());
-    }
-
-    /**
      * Get current query index from local storage
      */
     getCurrentQueryIndex(): number{
-        let index = this._storage.getItem('currentQueryIndex');
-        if(index == null || index == undefined)
-            return 0;
-        else
-            return Number(index);
+        let queryAsObject: CurrentQueryInfo = this.getCurrentQueryInfo();
+        return queryAsObject.queryIndex;
+        // let index = this._storage.getItem('currentQueryIndex');
+        // if(index == null || index == undefined)
+        //     return 0;
+        // else
+        //     return Number(index);
     }
 
     /**
@@ -260,14 +287,6 @@ export class SearchQueryService {
             let row: QueryRow;
             let items = lKeyValuePair.split('&');
 
-            // If first item is an operator, and it's an "OR", we need to display a warning
-            // if(this.operators.indexOf(items[0]) > -1){
-            //     //set warning message here. Or this validation should be done before call this function...
-
-            //     //Remove this operator
-            //     items.shift();
-            // }
-
             if(items && items.length > 0 && items[0].trim()!=""){
                 for (var i = 0; i < items.length; i++) {
                     keyValue = items[i].split("=");
@@ -292,6 +311,9 @@ export class SearchQueryService {
                         row.fieldValue = keyValue[0];
                         row.fieldType = this.getFieldType(row.fieldValue, fields);
                         row.fieldText = keyValue[1].replace(/['"]+/g, '').trim(); //Strip off quotes
+                        if(query.queryRows[0].fieldValue == ""){
+                            query.queryRows.shift();
+                        }
                         query.queryRows.push(JSON.parse(JSON.stringify(row)));
                     }
                 }

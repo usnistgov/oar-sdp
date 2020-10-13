@@ -7,7 +7,7 @@
         <li id='title' class="active breadcrumb-item">Advanced Search Builder</li>
     </ol>
 </div>
-<app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' [(editmode)]='editQuery || addQuery'
+<app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' [(editmode)]='dataChanged'
     jumbotronHeight='27vh' jumbotronPadding='2em 2em 0em 2em'></app-search-panel>
 
 <div class="ui-fluid" style="background-color: #EFEFEF">
@@ -27,38 +27,31 @@
                             No query found
                         </td>
                     </tr>
-                    <tr id="query-list1" *ngFor="let query of queries; index as i"
+                    <tr #overlayTarget id="query-list1" *ngFor="let query of queries; index as i"
                         [class.active]="i == currentQueryIndex">
-                        <th scope="row" (click)="displayQuery(i)" *ngIf="!editQuery && !addQuery">
+                        <th scope="row" (click)="setCurrentQuery(queries[i], $event, i)">
                             <a href="javascript:void(0);" style="margin-left: .5em;">{{query.queryName}}</a>
-                        </th>
-                        <th scope="row" *ngIf="editQuery || addQuery">
-                            <span style="margin-left: .5em; color: darkgray;">{{query.queryName}}</span>
                         </th>
                         <td>
                             <div class="dropdown">
-                                <button class="dropbtn" name="dropdownButton" [disabled]="editQuery || addQuery"
+                                <button class="dropbtn" name="dropdownButton" 
                                     data-toggle="tooltip" title="Actions" (mouseover)='showDropdown=true;' (click)='showDropdown=true;'>...</button>
                                 <div class="dropdown-content" *ngIf='showDropdown'
                                     [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
                                     <a href="javascript:void(0);"
-                                        (click)="displayQuery(i); showDropdown=false;">View
+                                        (click)="setCurrentQuery(queries[i], $event, i); showDropdown=false;">View
                                         <i class="faa faa-eye" style="float: right;"></i>
                                     </a>
-                                    <a href="javascript:void(0);"
-                                        (click)="editQuery=true;addQuery=false;setCurrentQuery(i); showDropdown=false;">Edit
+                                    <!-- <a href="javascript:void(0);"
+                                        (click)="dataChanged=true;setCurrentQuery(queries[i], $event, i); showDropdown=false;">Edit
                                         <i class="faa faa-pencil" style="float: right;"></i>
-                                    </a>
+                                    </a> -->
                                     <a href="javascript:void(0);"
                                         (click)="executeQuery(query, i); showDropdown=false;">Execute
                                         <i class="faa faa-play" style="float: right;"></i>
                                     </a>
                                     <a href="javascript:void(0);"
-                                        (click)="dupQuery(i); showDropdown=false;">Duplicate
-                                        <i class="faa faa-copy" style="float: right;"></i>
-                                    </a>
-                                    <a href="javascript:void(0);"
-                                        (click)="deleteConfirmQuery(query.queryName); showDropdown=false;">Delete
+                                        (click)="deleteConfirmQuery(query.queryName, i); showDropdown=false;">Delete
                                         <i class="faa faa-trash" style="float: right;"></i>
                                     </a>
                                 </div>
@@ -71,13 +64,13 @@
             <div>
                 <div class="ui-g-12 ui-md-12" style="text-align: center;">
                     <div class="file-io btn btn-sm btn-primary"
-                        [ngStyle]="{'opacity': editQuery || addQuery? '.65' : '1', 'cursor': editQuery||addQuery? 'default' : 'pointer'}">
+                        [ngStyle]="{'cursor': 'pointer'}">
                         <label for="file"
-                            [ngStyle]="{'cursor': editQuery||addQuery? 'default' : 'pointer'}">Import</label>
-                        <input type="file" id="file" (change)="importList($event)" [disabled]="editQuery || addQuery">
+                            [ngStyle]="{'cursor': 'pointer'}">Import</label>
+                        <input type="file" id="file" (change)="importList($event)">
                     </div>
                     <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
-                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0">
+                        [disabled]="queries == null || queries?.length == 0">
                         Export
                     </button>
                 </div>
@@ -85,32 +78,12 @@
         </div>
 
         <div [className]="resultsClass" style="background-color:white">
-            <!-- Query name -->
-            <div class="ui-g-12 ui-md-12" style="vertical-align: middle;">
-                <label for="queryName" style="white-space: nowrap;margin-left: -5px;">Query Name:</label>
-
-                <span class="inner-addon">
-                    <input class="query-name" [ngClass]="{'field-text-grey':!queryNameValidateError,'field-text-red':queryNameValidateError,'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" #queryname type="text" id="queryName" [(ngModel)]="currentQuery.queryName"
-                        (focus)="setReadyEdit()" (keydown)="setMode()"
-                        (keyup)="checkQueryName()"/>
-
-                    <i class="faa faa-remove clear-box" (click)="checkQueryName('');" data-toggle="tooltip"
-                    title="Clear query name"></i>
-                </span>
-                <button class="btn add-query-button" (click)="$event.preventDefault();createQueryInit()"
-                    [disabled]="editQuery || addQuery" data-toggle="tooltip" title="Add Query">
-                    <i class="faa faa-plus-circle faa-2x"></i>
-                </button>
-                <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;">{{queryNameValidateErrorMsg}}</div>
-            </div>
-
             <!-- free text input -->
-            <div style="margin-bottom: .5em;">
+            <div style="margin: 1em 0 .5em 0;">
                 <label for="freeText" class="free-text-lable">Terms/Phrases:</label>
 
                 <span class="inner-addon">
-                    <input class="terms" #freetext type="text" id="freeText" [ngClass]="{'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="currentQuery.freeText"
-                        (focus)="setReadyEdit()" (keydown)="setMode()"
+                    <input class="terms" #freetext type="text" id="freeText" [ngClass]="{'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="currentQuery.freeText"
                         (keyup)="setFreeText($event.target.value)" />
 
                         <i class="faa faa-remove clear-box" (click)="setFreeText('')" data-toggle="tooltip"
@@ -137,8 +110,8 @@
                     </tr>
                     <tr *ngFor="let queryRow of currentQuery.queryRows; index as rowIndex">
                         <td *ngIf="rowIndex > 0">
-                            <select class="browser-default custom-select" [ngClass]="{'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="queryRow.operator"
-                                (change)="onDataChange()">
+                            <select class="browser-default custom-select" [ngClass]="{'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="queryRow.operator"
+                                (change)="onOperatorChange()">
                                 <option *ngFor="let operator of operators;">{{operator.label}}</option>
                             </select>
                         </td>
@@ -146,16 +119,16 @@
                             <span style="margin-left:.8em;padding-bottom: -2em;font-size:16px;">AND</span>
                         </td>
                         <td>
-                            <select class="browser-default custom-select italic" [ngClass]="{'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="queryRow.fieldType"
+                            <select class="browser-default custom-select italic" [ngClass]="{'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="queryRow.fieldType"
                                 (change)="onFieldTypeChange(queryRow)">
                                 <option hidden value="" disabled selected>Select Field Name</option>
                                 <option *ngFor="let field of fields;" data-toggle="tooltip" title="{{field.value}}">{{field.label}}</option>
                             </select>
                         </td>
                         <td>
-                            <input type="text" class="text-input field-text"[ngClass]="{'field-text-grey': queryRow.validated, 'field-text-red':!queryRow.validated, 'field-text-bk-white':!editQuery && !addQuery, 'field-text-bk-yellow':editQuery || addQuery }" [(ngModel)]="queryRow.fieldText"
-                                placeholder="Field text is required..." (focus)="setReadyEdit()"
-                                (keydown)="setMode()" (keyup)="setRowText($event.target.value, queryRow)" />
+                            <input type="text" class="text-input field-text"[ngClass]="{'field-text-grey': queryRow.validated, 'field-text-red':!queryRow.validated, 'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="queryRow.fieldText"
+                                [placeholder]="getFieldTextPlacehoder(queryRow)" 
+                                (keyup)="setRowText($event.target.value, queryRow)" />
                         </td>
 
                         <td>
@@ -176,20 +149,18 @@
 
             <div class="ui-g-12 search-builder-background">
                 <div class="ui-g-12 ui-lg-8 ui-md-12 ui-sm-12" style="float:right;">
-                    <button id="btn-cancel" type="button" (click)="cancelConfirm()" pButton type="submit"
-                        [disabled]="(!editQuery && !addQuery)">
+                    <button id="btn-cancel" type="button" (click)="clearConfirm()" pButton type="submit">
                         <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i>
-                        Cancel
+                        Clear
                     </button>
 
-                    <button id="btn-save" type="button" (click)="saveAdvSearchQuery()" pButton type="submit"
-                        [disabled]="(!editQuery && !addQuery) || !currentQuery.queryName || !dataChanged || queryNameValidateError || rowInputValidateError">
+                    <button id="btn-save" type="button" (click)="confirmSaveAdvSearchQuery($event, op5)" pButton type="submit">
                         <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
                         Save
                     </button>
 
                     <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery,currentQueryIndex)" pButton type="submit"
-                        [disabled]="editQuery || addQuery || queries == null || queries?.length == 0 || rowInputValidateError">
+                        [disabled]="rowInputValidateError">
                         <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
                         Execute
                     </button>
@@ -199,3 +170,72 @@
         <div style="height:150px;background-color: #fff"></div>
     </div>
 </div>
+
+<!-- Confirm dialog -->
+<p-overlayPanel class="fileDialog" #op1 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
+    appendToBody=true>
+    <div>
+        <div class="header">
+            <h4>You have unsaved data</h4>
+        </div>
+        <div style="margin-bottom: 1em;">
+            <i class="faa faa-warning"
+                style="color: rgb(252, 122, 0);padding-left: .2em;padding-right: .5em;"></i>
+            <span>Would you like to save current query?</span>
+        </div>
+        <div>
+            <button type="button" pButton id="cd-button-one" type="submit"
+            (click)="op1.hide();op2.toggle($event);">
+                <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i> Save
+            </button>
+            <button type="button" pButton type="submit"
+            id="cd-button-two" (click)="setCurrentQueryNoAsk(nextQuery, nextQueryIndex);op1.hide();">
+                <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i> Continue
+            </button>
+            <button type="button" pButton type="submit"
+            id="cd-button-two" (click)="op1.hide();">
+                <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i> Cancel
+            </button>
+        </div>
+    </div>
+</p-overlayPanel>
+
+<!-- Save dialog -->
+<p-overlayPanel class="fileDialog" #op2 [dismissable]="false" [showCloseIcon]="false" [style]="overlayStyle()"
+    appendToBody=true>
+    <div>
+        <div style="margin-bottom: 1em;">
+            <span class="inner-addon">Query Name: 
+                <input type="text" class="text-input overlay-input" #field1 [(ngModel)]="currentQuery.queryName" placeholder="Please enter unique query name"
+                    (keyup.enter)="saveAdvQuery(currentQuery, op2);setCurrentQueryNoAsk(nextQuery, nextQueryIndex);" style="background-color: rgb(252, 246, 237);;" />
+    
+                <i class="faa faa-remove clear-box2" (click)="field1.value=''" data-toggle="tooltip"
+                    title="Clear the search box"></i>
+            </span>
+        </div>
+        <div>
+            <button type="button" pButton id="cd-button-one" type="submit"
+            (click)="saveAdvQuery(currentQuery, op2);setCurrentQueryNoAsk(nextQuery, nextQueryIndex);">Save</button>
+            <button type="button" pButton type="submit"
+            id="cd-button-two" (click)="op2.hide();">Cancel</button>
+        </div>
+    </div>
+</p-overlayPanel>
+
+<!-- Popup dialog for query name -->
+<p-overlayPanel class="fileDialog" #op5 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
+    appendToBody=true>
+    <div>
+        <span class="inner-addon">
+            <input type="text" class="text-input overlay-input" #field2 [(ngModel)]="currentQuery.queryName" placeholder="Please enter unique query name" (keyup)="checkQueryName()"
+                (keyup.enter)="saveAdvQuery(currentQuery, op5)" style="background-color: rgb(252, 246, 237);;" />
+
+            <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
+                title="Clear the search box"></i>
+        </span>
+        <button class="btn-append" type="button" (click)="saveAdvQuery(currentQuery, op5)" pButton type="submit">
+            Save Query
+        </button>
+        <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;text-align: left !important;">{{queryNameValidateErrorMsg}}</div>
+    </div>
+</p-overlayPanel>

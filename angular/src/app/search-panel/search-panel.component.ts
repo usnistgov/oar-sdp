@@ -12,7 +12,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { AdvSearchComponent } from '../adv-search/adv-search.component';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 import { Observable } from 'rxjs';
-import { SDPQuery, QueryRow } from '../shared/search-query/query';
+import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/query';
 
 @Component({
     selector: 'app-search-panel',
@@ -68,8 +68,6 @@ export class SearchPanelComponent implements OnInit {
     mobHeight: number;
     mobWidth: number;
     placeholder: string;
-    display: boolean = false;
-    textRotate: boolean = true;
     showExampleStatus: boolean = false;
     searchBottonWith: string = '10%';
     breadcrumb_top: string = '6em';
@@ -143,8 +141,8 @@ export class SearchPanelComponent implements OnInit {
         this.searchService._watchQueryValue((queryObj) => {
             if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
                 this.searchValue = queryObj.queryString;
-                // this.validateQueryString(this.searchValue);
-                this.searchService.setQueryValue(null, null, null); // Reset
+            }else{
+                this.searchValue = "";
             }
         });
         
@@ -181,6 +179,18 @@ export class SearchPanelComponent implements OnInit {
         this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
         this.getTaxonomySuggestions();
         // this.searchOperators();
+    }
+
+    /**
+     * When search value changed, convert it to query object and set current query 
+     * so it can show up in the adv search page
+     */
+    onSearchValueChange(){
+        let query: SDPQuery = this.searchQueryService.buildQueryFromString(this.searchValue, null, this.fields);
+
+        if(!_.isEmpty(query)){
+            this.searchQueryService.saveCurrentQueryInfo(new CurrentQueryInfo(query, -1, true));
+        }
     }
 
     /**
@@ -305,10 +315,9 @@ export class SearchPanelComponent implements OnInit {
     /**
      *  Pass Search example popup value to home screen
      */
-    searchExample(popupValue: string) {
-        this.display = false;
+    setSearchValue(popupValue: string) {
         this._searchValue = popupValue;
-        this.textRotate = !this.textRotate;
+        this.onSearchValueChange();
     }
 
     /**
@@ -357,6 +366,7 @@ export class SearchPanelComponent implements OnInit {
                 }
             }
 
+            this.onSearchValueChange();
             // this.searchQueryService.validateQueryString(this.searchValue);
 
             if(overlaypanel) overlaypanel.hide();
@@ -388,6 +398,8 @@ export class SearchPanelComponent implements OnInit {
         }
 
         if(op) this.searchValue = this.searchValue.trim() + op;
+
+        this.onSearchValueChange();
 
         if(overlaypanel) overlaypanel.hide();
         field = "";

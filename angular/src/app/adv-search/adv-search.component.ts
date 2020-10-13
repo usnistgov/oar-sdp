@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, HostListener, AfterViewInit } from '@angular/core';
+import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, HostListener, AfterViewInit, ElementRef } from '@angular/core';
 import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
@@ -8,7 +8,9 @@ import { SearchQueryService } from '../shared/search-query/search-query.service'
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../shared/config-service/config-service.service';
-import { SDPQuery, QueryRow } from '../shared/search-query/query';
+import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/query';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { ConfirmService } from '../shared/confirm/confirm.service';
 import * as _ from 'lodash';
 
 /**
@@ -27,9 +29,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     errorMessage: string;
     searchValue: string = '';
     fields: SelectItem[];
-    operators: SelectItem[];
-    editQuery: boolean = false;
-    addQuery: boolean = false;
+    operators: SelectItem[] = [
+        { label: 'AND', value: 'AND' },
+        { label: 'OR', value: 'OR' }
+    ];
+    // editQuery: boolean = false;
+    // addQuery: boolean = false;
     mobHeight: number;
     mobWidth: number;
     resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
@@ -39,17 +44,21 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     queryNameValidateErrorMsg: string = '';
     screenWidth: number;
     queries: SDPQuery[] = [];
+    currentQueryInfo: CurrentQueryInfo;
     currentQuery: SDPQuery = new SDPQuery();
     currentQueryIndex: number = 0;
     previousQueryIndex: number = 0;
     rowInputValidateError: boolean = false;
-
-    // readyEdit: indecating current query is ready for editing. If user type in any character
-    // in the query name field, edit mode will be set to true. Otherwise add mode will
-    // set to true
-    readyEdit: boolean = false; 
+    nextQuery: SDPQuery;
+    nextQueryIndex: number;
 
     @ViewChild('dataChanged') dataChanged: boolean = false; 
+    @ViewChild('field2') queryName: ElementRef;
+    @ViewChild('op1') op_confirm: OverlayPanel;
+    @ViewChild('op5') op: OverlayPanel;
+    @ViewChild('overlayTarget') overlayTarget: ElementRef;
+
+    toggleOverlay = ({ originalEvent }) => this.op.toggle(originalEvent);
 
     /**
      * Constructor
@@ -61,7 +70,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         public gaService: GoogleAnalyticsService,
         private router: Router,
         public searchQueryService: SearchQueryService,
-        private renderer: Renderer2) {
+        private renderer: Renderer2,
+        private confirmDialogSvc: ConfirmService) {
 
         super();
 
@@ -86,20 +96,17 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     ngOnInit() {
         var i = 0;
-        this.searchOperators();
-
-        this.editQuery = false;
-        this.addQuery = false;
+        // this.editQuery = false;
+        // this.addQuery = false;
 
         this.searchFieldsListService.getSearchFields().subscribe(
             (fields) => {
                 this.fields = (fields as SelectItem[]);
                 this.queries = this.searchQueryService.getQueries();
-                if(this.queries && this.queries.length > 0){
-                    this.currentQueryIndex = this.searchQueryService.getCurrentQueryIndex();
-                    if(this.currentQueryIndex > this.queries.length-1) this.currentQueryIndex = 0;
-                    this.displayQuery(this.currentQueryIndex);
-                }
+                this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
+                this.currentQuery = this.currentQueryInfo.query;
+                this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
+                this.currentQueryIndex = this.currentQueryInfo.queryIndex;
             },
             (err) => {
                 this.errorMessage = <any>err;
@@ -142,6 +149,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
             this.rowInputValidateError = false;
 
             if(!_.isEmpty(queryRow.fieldType)){
+                this.currentQueryInfo.query = this.currentQuery;
+                this.searchQueryService.saveCurrentQueryInfo(this.currentQueryInfo);
+
                 this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
                 // Update search box in the top search panel
                 this.searchService.setQueryValue(this.searchValue, '', '');
@@ -171,22 +181,19 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         } else {
             if(this.queries.length > 0){
                 let prevQueryName: string = "";
-
-                if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
-                    prevQueryName = this.queries[this.previousQueryIndex].queryName;
                 
-                if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName, this.getMode())){
-                    this.queryNameValidateErrorMsg = "Query name is already taken";
+                if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName)){
+                    this.queryNameValidateErrorMsg = "Existing query will be overwritten if continue!";
                     this.queryNameValidateError = true;
                 }
             }
         }
 
-        if(!this.editQuery && !this.addQuery){
-            this.addQuery = false;
-            this.editQuery = true;
-            this.previousQueryIndex = this.currentQueryIndex;  
-        }   
+        // if(!this.editQuery && !this.addQuery){
+        //     this.addQuery = false;
+        //     this.editQuery = true;
+        //     this.previousQueryIndex = this.currentQueryIndex;  
+        // }   
 
         this.dataChanged = true;
     }
@@ -203,38 +210,35 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         }
     }
 
-    /**
-     * Confirm cancel query edit
-     */
-    cancelConfirm() {
-        if (this.dataChanged) {
-        if (confirm("Do you really want to cancel this edit?")) {
-            this.cancelAdvSearchQuery()
-        }
-        } else {
-        this.cancelAdvSearchQuery();
-        }
-    }
-
     /*
     * Delete query confirm popup
     */
-    deleteConfirmQuery(queryName: string) {
-        if (confirm("Do you really want to delete this query?")) {
-            this.queries = this.queries.filter(query => query.queryName != queryName);
-            // Save to local storage
-            this.searchQueryService.saveQueries(this.queries);
-            this.setCurrentQuery(0)
-        }
-    }
-
-    /**
-     * Define Search operators for the drop down
-     */
-    searchOperators() {
-        this.operators = [];
-        this.operators.push({ label: 'AND', value: 'AND' });
-        this.operators.push({ label: 'OR', value: 'OR' });
+    deleteConfirmQuery(queryName: string, index: number) {
+        this.confirmDialogSvc.confirm(
+            'Do you really want to delete this query?',   //Title
+            '', //Message
+            false,   //Show warning sign
+            true,   //Show second button
+            false,  // Hide third button
+            'Yes',  // Button one caption
+            'Cance'    // Button two caption
+        )
+        .then((returnValue) => {
+            if (returnValue.trim().toLowerCase() == 'yes'){
+                this.queries.splice(index, 1);
+                // Save to local storage
+                this.searchQueryService.saveQueries(this.queries);
+                // If this is current query, clear data input boxes
+                if(index == this.currentQueryIndex){
+                    this.clearAdvSearchQuery();
+                }
+            }
+            else
+                console.log("User canceled discard request");
+        })
+        .catch(() => {
+            console.log("User canceled discard request (indirectly)");
+        });
     }
 
     /**
@@ -247,6 +251,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         if(this.currentQuery.queryRows.length <= 0){
             this.currentQuery.queryRows.push(new QueryRow());
         }
+
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
 
         //Validate field value
         if(this.currentQuery.queryRows.filter(row => row.validated == false).length > 0)
@@ -265,6 +273,21 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         let newRow: QueryRow = JSON.parse(JSON.stringify(row));
         newRow.id = this.nextRowId(this.currentQuery);
         this.currentQuery.queryRows.splice(index, 0, newRow);
+
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
+
+        this.onDataChange();
+    }
+
+    /**
+     * When user changes operator, update the query string in the main search box and set mode
+     */
+    onOperatorChange(){
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
         this.onDataChange();
     }
 
@@ -279,8 +302,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
         this.currentQuery.queryName = this.currentQuery.queryName + " copy";
         this.dataChanged = true;
-        this.editQuery = false;
-        this.addQuery = true;
+        // this.editQuery = false;
+        // this.addQuery = true;
     }
 
     /**
@@ -309,49 +332,27 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         _this.queries = JSON.parse(fileData.toString());
         // Save to local storage
         _this.searchQueryService.saveQueries(_this.queries);
-        _this.setCurrentQuery(0);
         }
     }
 
     /**
      * Init for creating new query
      */
-    createQueryInit(row: any = {}) {
+    InitCurrentQuery() {
         this.previousQueryIndex = this.currentQueryIndex;
-        this.currentQueryIndex = null;
-        this.readyEdit = false;
-        this.editQuery = false;
-        this.addQuery = true;
+        this.currentQueryIndex = -1;
+        this.dataChanged = false;
 
         this.currentQuery = new SDPQuery();
-        this.currentQuery.queryRows = [new QueryRow()];
-
+        this.saveCurrentQueryInfo();
     }
 
     /**
-     * When query name input field focused
-     * If not in edit/add mode and query name field already populated, it means this is an existing query
-     *  - set the readyEdit flag to true 
+     * Save current query info to local storage
      */
-    setReadyEdit(){
-        this.readyEdit = false;
-
-        if(this.currentQuery.queryName && !this.addQuery && !this.editQuery)
-        {
-            this.previousQueryIndex = this.currentQueryIndex;
-            this.readyEdit = true;
-        } 
-    }
-
-    /**
-     * Return edit mode as a string
-     */
-    getMode(){
-        let mode: string;
-        if(this.editQuery) mode = "EDIT";
-        else mode = "ADD";
-
-        return mode;
+    saveCurrentQueryInfo(){
+        this.currentQueryInfo = new CurrentQueryInfo(this.currentQuery, this.currentQueryIndex, this.dataChanged);
+        this.searchQueryService.saveCurrentQueryInfo(this.currentQueryInfo);
     }
 
     /**
@@ -359,64 +360,66 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * 1. Filter current query from the list
      * 2. Add the new query to the list
      */
-    saveAdvSearchQuery() {
-        //Validate query name
-        if(this.currentQuery.queryName == null || this.currentQuery.queryName == undefined || this.currentQuery.queryName.trim()==""){
-            this.queryNameValidateErrorMsg = "Query name is required";
-            this.queryNameValidateError = true;
-            return;
+    confirmSaveAdvSearchQuery(event, overlaypanel: OverlayPanel) {
+        overlaypanel.toggle(event);
+
+        setTimeout(()=>{ 
+            this.queryName.nativeElement.focus();
+        },0); 
+    }
+
+    saveAdvQuery(inputQuery: SDPQuery, overlaypanel: OverlayPanel){
+        if(inputQuery.queryName){
+            this.queries = this.queries.filter(query => query.queryName != inputQuery.queryName);
+            this.queries.push(inputQuery);
+            this.searchQueryService.saveQueries(this.queries);
+            this.dataChanged = false;
+            this.currentQueryIndex = -1;
+            overlaypanel.hide();
         }
+        else
+            alert("Query name is required.");
+    }
 
-        if(this.queries.length > 0){
-            let prevQueryName: string = "";
-
-            if(this.previousQueryIndex != null && this.previousQueryIndex != undefined)
-                prevQueryName = this.queries[this.previousQueryIndex].queryName;
-
-            if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName, this.getMode())){
-                this.queryNameValidateErrorMsg = "Query name is already taken";
-                this.queryNameValidateError = true;
-                return;
-            }
+    /**
+     * This is for the case when user right click on the search text box. An overlay panel with field value
+     * will popup. This function returns overlay panel style based on the screen size.
+     */
+    overlayStyle(){
+        if(this.mobWidth > 461){
+            return {'position':'related','left':'50%','max-width':'800px'};
         }
-
-        // Either the freetext or one of query row need be populated
-        if(this.currentQuery.freeText == null || this.currentQuery.freeText == undefined || this.currentQuery.freeText.trim()==""){
-            for(let i=0; i < this.currentQuery.queryRows.length; i++){
-                if(!this.currentQuery.queryRows[i].fieldType){
-                    alert("Please select a field name.");
-                    return;
-                }
-            }
+        else{
+            return {'position':'related','left':'50%','max-width':'400px'};
         }
+    }
 
-        // Build this.searchValue
-        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
-
-        // If this is edit mode, replace previous query in the query list with the current query. Otherwise just insert
-        // the current query to the list.
-        if(this.editQuery){
-            // Remove previous query in the list (saved as previousQueryIndex)
-            this.queries = this.queries.filter(query => query.queryName != this.queries[this.previousQueryIndex].queryName);
+    /**
+     * Confirm cancel query edit
+     */
+    clearConfirm() {
+        if (this.dataChanged) {
+            this.confirmDialogSvc.confirm(
+                'You have unsaved data!',   //Title
+                'Do you really want to cancel this edit?', //Message
+                true,   //Show warning sign
+                true,   //Show second button
+                false,  // Hide third button
+                'Yes',  // Button one caption
+                'Cance'    // Button two caption
+                )
+                .then((returnValue) => {
+                    if (returnValue.trim().toLowerCase() == 'yes')
+                        this.clearAdvSearchQuery()
+                    else
+                        console.log("User canceled discard request");
+                })
+                .catch(() => {
+                    console.log("User canceled discard request (indirectly)");
+                });
+        } else {
+            this.clearAdvSearchQuery();
         }
-        // Add current query
-        this.queries.push(JSON.parse(JSON.stringify(this.currentQuery)));
-        // Sort by query name
-        this.queries.sort((a, b) => a.queryName.localeCompare(b.queryName));
-        // Save to local storage
-        this.searchQueryService.saveQueries(this.queries);
-        // Set current query index
-        this.currentQueryIndex = this.queries.findIndex(query => query.queryName == this.currentQuery.queryName);
-        this.searchQueryService.saveCurrentQueryIndex(this.currentQueryIndex);
-        // Refresh the right panel (query details)
-        this.displayQuery(this.currentQueryIndex);
-
-        // Update search box in the top search panel
-        this.searchService.setQueryValue(this.searchValue, '', '');
-
-        this.addQuery = false;
-        this.editQuery = false;
-        this.dataChanged = false;
     }
 
     /**
@@ -424,75 +427,52 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * Set previous query as current query.
      * Set edit/add flag to false.
      */
-    cancelAdvSearchQuery() {
-        this.editQuery = false;
-        this.addQuery = false;
+    clearAdvSearchQuery() {
         this.searchValue = '';
         this.dataChanged = false;
         this.queryNameValidateError = false;
-        this.currentQueryIndex = this.previousQueryIndex;
-        if(this.currentQueryIndex != null)
-            this.setCurrentQuery(this.currentQueryIndex);
-        else
-            this.setCurrentQuery(0);
-        
-        this.setReadyEdit();
-
-
-        // If query list is not empty, diaplay current query. Otherwise set current query to blank.
-        if(this.queries.length > 0){
-            this.displayQuery(this.currentQueryIndex);
-        }else{
-            this.currentQuery = new SDPQuery();
-            this.currentQueryIndex = 0;
-        }
+        this.currentQueryIndex = -1;
+        this.setCurrentQuery(new SDPQuery());
+        this.saveCurrentQueryInfo();
     }
 
     /*
     * Execute query
     */
     executeQuery(query: SDPQuery, index: number) {
-        this.setCurrentQuery(index);
-        this.searchQueryService.saveCurrentQueryIndex(index);
+        //Save current query info first
+        this.saveCurrentQueryInfo();
+
         let lQueryValue = this.searchQueryService.buildSearchString(query);
         this.searchService.setQueryValue(lQueryValue, '', '');
         this.searchService.search(lQueryValue);
-    }
-
-    /**
-     * Show query in the right panel. Do nothing in edit/add mode.
-     * @param queryName - query to be displayed
-     */
-    displayQuery(index: number){
-        if(!this.editQuery && !this.addQuery)
-        {
-            this.editQuery=false;
-            this.addQuery=false;
-            this.setCurrentQuery(index);         
-        }
     }
     
     /**
      * Set the current query, build the search string. 
      * @param index - the index number of the current query
      */
-    setCurrentQuery(index: number){
-        // New function
-        if(this.queries.length > 0 && index < this.queries.length){
-            this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
-
-            this.currentQueryIndex = index;
-            this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
-
-            // Update search box in the top search panel
-            this.searchService.setQueryValue(this.searchValue, '', ''); 
+    setCurrentQuery(query: SDPQuery, event?: any, index: number = -1){
+        if(this.dataChanged){
+            this.nextQuery = query;
+            this.nextQueryIndex = index;
+            // this.op_confirm.toggle(event);
+            this.op_confirm.show(event, this.overlayTarget.nativeElement);
         }else{
-            this.currentQuery = new SDPQuery();
-            this.currentQueryIndex = 0;
-            this.searchQueryService.saveCurrentQueryIndex(0);
+            this.setCurrentQueryNoAsk(query, index);
         }
 
-        this.searchQueryService.saveCurrentQueryIndex(this.currentQueryIndex);
+    }
+
+    setCurrentQueryNoAsk(query: SDPQuery, index: number = -1){
+        this.currentQuery = JSON.parse(JSON.stringify(query));  
+        this.currentQueryIndex = index;
+        this.dataChanged = false;
+        this.saveCurrentQueryInfo();
+
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', ''); 
     }
 
     /**
@@ -500,12 +480,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * @param event 
      */
     onDataChange() {
-        // Check if this is an existing query, if so, note current query index for backup purpose
-        // and set readyEdit flag to true.
-        this.setReadyEdit();
-
         this.dataChanged = true;
-        this.setMode();
+        this.currentQueryIndex = -1;
+        this.saveCurrentQueryInfo();
     }
 
     onFieldTypeChange(row: QueryRow){
@@ -522,46 +499,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.onDataChange();
     }
 
-    /**
-     * Set current mode (edit or add) based on readEdit flag.
-     */
-    setMode(){
-        if(this.readyEdit) {
-            this.previousQueryIndex = this.currentQueryIndex;
-            this.editQuery = true;
-            this.addQuery = false;
-            this.readyEdit = false;
-        }
-    
-        if(!this.editQuery && !this.addQuery){
-            this.previousQueryIndex = null;
-            this.addQuery = true;
-            this.editQuery = false;
-            this.createQueryInit();
-        }
-    }
-
     setFreeText(sampleText: string){
-        this.dataChanged=true;
-        this.readyEdit = false;
-
-        //If no query in the list yet, and it's not add or edit mode, set it to add mode
-        if(this.currentQuery == null || (this.currentQuery.queryName.trim()=="" && !this.addQuery)){
-            if(!this.editQuery && !this.addQuery){
-                this.addQuery = true;
-                this.editQuery = false;
-                this.createQueryInit();
-            }
-            this.previousQueryIndex = null;
-        }else{
-            if(!this.editQuery && !this.addQuery){
-                this.addQuery = false;
-                this.editQuery = true;
-            }   
-            this.previousQueryIndex = this.currentQueryIndex;         
-        }
-
         this.currentQuery.freeText = sampleText;
+        this.onDataChange();
 
         this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
         // Update search box in the top search panel
@@ -593,5 +533,13 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
     showExamples(){
         this.searchQueryService.setShowExamples(true);
+    }
+
+    getFieldTextPlacehoder(queryRow: QueryRow){
+        if(!_.isEmpty(queryRow.fieldValue)){
+            return "Field value is required...";
+        }else{
+            return "Enter field value..."
+        }
     }
 }
