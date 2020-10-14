@@ -12,6 +12,7 @@ import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/que
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ConfirmService } from '../shared/confirm/confirm.service';
 import * as _ from 'lodash';
+import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -51,11 +52,14 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     rowInputValidateError: boolean = false;
     nextQuery: SDPQuery;
     nextQueryIndex: number;
+    tobeRenamedQuery: SDPQuery;
+    tempName: string;
 
     @ViewChild('dataChanged') dataChanged: boolean = false; 
     @ViewChild('field2') queryName: ElementRef;
     @ViewChild('op1') op_confirm: OverlayPanel;
     @ViewChild('op5') op: OverlayPanel;
+    @ViewChild('op6') op_rename: OverlayPanel;
     @ViewChild('overlayTarget') overlayTarget: ElementRef;
 
     toggleOverlay = ({ originalEvent }) => this.op.toggle(originalEvent);
@@ -168,25 +172,22 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * @param queryName - if query name provided and it's the same as current query name, do nothing
      *                  - otherwise check query name and set mode
      */
-    checkQueryName(queryName?: string) {
-        if(queryName != null && queryName != undefined){
-            if(this.currentQuery.queryName == queryName)
-                return;
-            else
-                this.currentQuery.queryName = queryName;
+    checkQueryName(newName: string, prevName?: string) {
+        if(!_.isEmpty(prevName) && newName == prevName){
+            return;
         }
         
         this.queryNameValidateErrorMsg = "";
         this.queryNameValidateError = false;
 
-        if (_.isEmpty(this.currentQuery.queryName)) {
+        if (_.isEmpty(newName)) {
             this.queryNameValidateErrorMsg = "Query name is required";
             this.queryNameValidateError = true;
         } else {
             if(this.queries.length > 0){
                 let prevQueryName: string = "";
                 
-                if(!this.searchQueryService.queryNameValidation(this.currentQuery.queryName, prevQueryName)){
+                if(!this.searchQueryService.queryNameValidation(newName, prevQueryName)){
                     this.queryNameValidateErrorMsg = "Existing query will be overwritten if continue!";
                     this.queryNameValidateError = true;
                 }
@@ -225,7 +226,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
             true,   //Show second button
             false,  // Hide third button
             'Yes',  // Button one caption
-            'Cance'    // Button two caption
+            'Cancel'    // Button two caption
         )
         .then((returnValue) => {
             if (returnValue.trim().toLowerCase() == 'yes'){
@@ -362,6 +363,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * 2. Add the new query to the list
      */
     confirmSaveAdvSearchQuery(event, overlaypanel: OverlayPanel) {
+        this.tempName = this.currentQuery.queryName;
         overlaypanel.toggle(event);
 
         setTimeout(()=>{ 
@@ -369,7 +371,16 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         },0); 
     }
 
-    saveAdvQuery(inputQuery: SDPQuery, overlaypanel: OverlayPanel){
+    saveAdvQuery(inputQuery: SDPQuery, overlaypanel: OverlayPanel, newName? : string){
+        if(_.isEmpty(inputQuery)){
+            console.log("Query cannot be empty!");
+            return;
+        }
+
+        if(!_.isEmpty(newName)){
+            inputQuery.queryName = newName;
+        }
+
         if(inputQuery.queryName){
             this.queries = this.queries.filter(query => query.queryName != inputQuery.queryName);
             this.queries.push(inputQuery);
@@ -536,11 +547,33 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.searchQueryService.setShowExamples(true);
     }
 
+    /**
+     * Return placeholder text based on query row status
+     * @param queryRow 
+     */
     getFieldTextPlacehoder(queryRow: QueryRow){
         if(!_.isEmpty(queryRow.fieldValue)){
             return "Field value is required...";
         }else{
             return "Enter field value..."
         }
+    }
+
+    /**
+     * Rename a query
+     * @param query - query to be renamed
+     * @param event - 
+     * @param index - query index in quert list 
+     */
+    renameQuery(query: SDPQuery, event: any, index: number){
+        this.tobeRenamedQuery = query;
+        this.tempName = query.queryName;
+        this.op_rename.show(event, this.overlayTarget.nativeElement);
+    }
+
+    saveRenamedQuery(queryName: string, op: OverlayPanel){
+        this.tobeRenamedQuery.queryName=queryName; 
+        this.searchQueryService.saveQueries(this.queries);
+        op.hide();
     }
 }

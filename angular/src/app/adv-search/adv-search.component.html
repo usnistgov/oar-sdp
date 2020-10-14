@@ -39,10 +39,6 @@
                                 <div class="dropdown-content" *ngIf='showDropdown'
                                     [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
                                     <a href="javascript:void(0);"
-                                        (click)="setCurrentQuery(queries[i], $event, i); showDropdown=false;">View
-                                        <i class="faa faa-eye" style="float: right;"></i>
-                                    </a>
-                                    <a href="javascript:void(0);"
                                         (click)="setCurrentQuery(queries[i], $event, i); dataChanged=true;showDropdown=false;">Edit
                                         <i class="faa faa-pencil" style="float: right;"></i>
                                     </a>
@@ -57,6 +53,10 @@
                                     <a href="javascript:void(0);"
                                         (click)="deleteConfirmQuery(query.queryName, i); showDropdown=false;">Delete
                                         <i class="faa faa-trash" style="float: right;"></i>
+                                    </a>
+                                    <a href="javascript:void(0);"
+                                        (click)="renameQuery(queries[i], $event, i); showDropdown=false;">Rename
+                                        <i class="faa faa-eye" style="float: right;"></i>
                                     </a>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                     <button id="btn-execute" type="button" (click)="$event.preventDefault();executeQuery(currentQuery,currentQueryIndex)" pButton type="submit"
                         [disabled]="rowInputValidateError">
                         <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
-                        Execute
+                        Search
                     </button>
                 </div>
             </div>
@@ -231,14 +231,32 @@
     appendToBody=true>
     <div>
         <span class="inner-addon">
-            <input type="text" class="text-input overlay-input" #field2 [(ngModel)]="currentQuery.queryName" placeholder="Please enter unique query name" (keyup)="checkQueryName()"
-                (keyup.enter)="saveAdvQuery(currentQuery, op5)" style="background-color: rgb(252, 246, 237);;" />
+            <input type="text" class="text-input overlay-input" #field2 [(ngModel)]="tempName" placeholder="Please enter unique query name" (keyup)="checkQueryName(tempName, currentQuery.queryName)"
+                (keyup.enter)="saveAdvQuery(currentQuery, op5, tempName)" style="background-color: rgb(252, 246, 237);;" />
 
             <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
                 title="Clear the search box"></i>
         </span>
-        <button class="btn-append" type="button" (click)="saveAdvQuery(currentQuery, op5)" pButton type="submit">
+        <button class="btn-append" type="button" (click)="saveAdvQuery(currentQuery, op5, tempName)" pButton type="submit">
             Save Query
+        </button>
+        <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;text-align: left !important;">{{queryNameValidateErrorMsg}}</div>
+    </div>
+</p-overlayPanel>
+
+<!-- Popup dialog for query rename -->
+<p-overlayPanel class="fileDialog" #op6 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
+    appendToBody=true>
+    <div>
+        <span class="inner-addon">
+            <input type="text" class="text-input overlay-input" #field6 [(ngModel)]="tempName" placeholder="Please enter unique query name" (keyup)="checkQueryName(field6.value, tobeRenamedQuery.queryName)"
+                (keyup.enter)="saveRenamedQuery(field6.value, op6)" style="background-color: rgb(252, 246, 237);;" />
+
+            <i class="faa faa-remove clear-box2" (click)="field6.value=''" data-toggle="tooltip"
+                title="Clear the search box"></i>
+        </span>
+        <button class="btn-append" type="button" (click)="saveRenamedQuery(field6.value, op6)" pButton type="submit">
+            Rename
         </button>
         <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;text-align: left !important;">{{queryNameValidateErrorMsg}}</div>
     </div>
