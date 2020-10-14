@@ -42,14 +42,18 @@
                                         (click)="setCurrentQuery(queries[i], $event, i); showDropdown=false;">View
                                         <i class="faa faa-eye" style="float: right;"></i>
                                     </a>
-                                    <!-- <a href="javascript:void(0);"
-                                        (click)="dataChanged=true;setCurrentQuery(queries[i], $event, i); showDropdown=false;">Edit
-                                        <i class="faa faa-pencil" style="float: right;"></i>
-                                    </a> -->
                                     <a href="javascript:void(0);"
-                                        (click)="executeQuery(query, i); showDropdown=false;">Execute
+                                        (click)="setCurrentQuery(queries[i], $event, i); dataChanged=true;showDropdown=false;">Edit
+                                        <i class="faa faa-pencil" style="float: right;"></i>
+                                    </a>
+                                    <a href="javascript:void(0);"
+                                        (click)="executeQuery(query, i); showDropdown=false;">Search
                                         <i class="faa faa-play" style="float: right;"></i>
                                     </a>
+                                    <a href="javascript:void(0);"
+                                    (click)="dupQuery(i); showDropdown=false;">Copy
+                                    <i class="faa faa-play" style="float: right;"></i>
+                                </a>
                                     <a href="javascript:void(0);"
                                         (click)="deleteConfirmQuery(query.queryName, i); showDropdown=false;">Delete
                                         <i class="faa faa-trash" style="float: right;"></i>

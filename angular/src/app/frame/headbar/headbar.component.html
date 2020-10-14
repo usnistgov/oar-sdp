@@ -12,7 +12,8 @@
           <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
                 <i></i>
             </a>
-      <a style="position: absolute; right: 1em; top: 25px; z-index: 1" href="javascript:;"><span class="textlinks" style="vertical-align:5px; color: white;" [routerLink]="['/advanced']" (click)="hideExamples()"><b>Queries </b></span>
+      <a style="position: absolute; right: 2em; top: 15px; z-index: 1" href="javascript:;"><span class="textlinks" style="color: white;" [routerLink]="['/advanced']" (click)="hideExamples()"><b>
+          <div>Saved</div><div style="margin-top: -5px;">Queries </div></b></span>
         <span class="w3-badge badge-notify1" >{{queryLength}}</span></a>
      </span>
   </div>

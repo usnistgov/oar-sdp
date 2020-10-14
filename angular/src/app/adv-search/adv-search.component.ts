@@ -107,6 +107,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.currentQuery = this.currentQueryInfo.query;
                 this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
                 this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+
+                this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+                // Update search box in the top search panel
+                this.searchService.setQueryValue(this.searchValue, '', '');
             },
             (err) => {
                 this.errorMessage = <any>err;
@@ -297,13 +301,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * No need to update search box in the top search panel since this is a duplicate
      */
     dupQuery(index: number) {
-        this.currentQueryIndex = null;
-        this.previousQueryIndex = index;
-        this.currentQuery = JSON.parse(JSON.stringify(this.queries[index]));
-        this.currentQuery.queryName = this.currentQuery.queryName + " copy";
-        this.dataChanged = true;
-        // this.editQuery = false;
-        // this.addQuery = true;
+        let query: SDPQuery = JSON.parse(JSON.stringify(this.queries[index]));
+        query.queryName = query.queryName + "_copy";
+        this.queries.push(query);
+        this.searchQueryService.saveQueries(this.queries);
     }
 
     /**
