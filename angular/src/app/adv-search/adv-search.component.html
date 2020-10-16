@@ -67,12 +67,13 @@
 
             <div>
                 <div class="ui-g-12 ui-md-12" style="text-align: center;">
-                    <div class="file-io btn btn-sm btn-primary"
-                        [ngStyle]="{'cursor': 'pointer'}">
-                        <label for="file"
-                            [ngStyle]="{'cursor': 'pointer'}">Import</label>
-                        <input type="file" id="file" (change)="importList($event)">
-                    </div>
+                    <input type="file" id="file" #fileupload (change)="importList($event)" style="visibility: hidden;">
+
+                    <button type="button" class="file-io btn btn-sm btn-primary" (click)="fileupload.value=''; fileupload.click();"
+                        [disabled]="queries == null || queries?.length == 0">
+                        Import
+                    </button>
+                    
                     <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
                         [disabled]="queries == null || queries?.length == 0">
                         Export
