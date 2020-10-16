@@ -4,7 +4,7 @@ export class SDPQuery {
         public queryName: string = 'Unknown',
         public freeText = '',   // Free text search value
         public queryRows: QueryRow[] = [new QueryRow()],
-        public date: Date = null
+        public modifiedDate: Date = new Date()
     ){}
 }
 

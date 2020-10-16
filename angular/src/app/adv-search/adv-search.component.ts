@@ -100,8 +100,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     ngOnInit() {
         var i = 0;
-        // this.editQuery = false;
-        // this.addQuery = false;
 
         this.searchFieldsListService.getSearchFields().subscribe(
             (fields) => {
@@ -194,12 +192,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
             }
         }
 
-        // if(!this.editQuery && !this.addQuery){
-        //     this.addQuery = false;
-        //     this.editQuery = true;
-        //     this.previousQueryIndex = this.currentQueryIndex;  
-        // }   
-
         this.dataChanged = true;
     }
 
@@ -257,6 +249,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
             this.currentQuery.queryRows.push(new QueryRow());
         }
 
+        this.currentQuery.modifiedDate = new Date();
+
         this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
         // Update search box in the top search panel
         this.searchService.setQueryValue(this.searchValue, '', '');
@@ -278,6 +272,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         let newRow: QueryRow = JSON.parse(JSON.stringify(row));
         newRow.id = this.nextRowId(this.currentQuery);
         this.currentQuery.queryRows.splice(index, 0, newRow);
+        this.currentQuery.modifiedDate = new Date();
 
         this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
         // Update search box in the top search panel
@@ -290,6 +285,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * When user changes operator, update the query string in the main search box and set mode
      */
     onOperatorChange(){
+        this.currentQuery.modifiedDate = new Date();
         this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
         // Update search box in the top search panel
         this.searchService.setQueryValue(this.searchValue, '', '');
@@ -323,18 +319,19 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      * Import query list
      */
     importList(event) {
-        var files = event.srcElement.files;
-        files = files[0];
         let _this = this;
-        var dataFile = [];
-        var read: FileReader = new FileReader();
-        read.readAsText(files);
-        read.onloadend = function () {
-        let fileData = read.result;
-        _this.queries = JSON.parse(fileData.toString());
-        // Save to local storage
-        _this.searchQueryService.saveQueries(_this.queries);
+        let importedQueries: SDPQuery[];
+        let file = event.target.files[0];
+        let fileReader = new FileReader();
+        fileReader.onloadend = (e) => {
+            let fileData = fileReader.result;
+            importedQueries = JSON.parse(fileData.toString());
+            _this.queries = _this.searchQueryService.mergeQueries(_this.queries, importedQueries);
+            // Save to local storage
+            _this.searchQueryService.saveQueries(_this.queries);
         }
+        if(file != undefined)
+            fileReader.readAsText(file);
     }
 
     /**
@@ -346,6 +343,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.dataChanged = false;
 
         this.currentQuery = new SDPQuery();
+        this.currentQuery.queryName = this.searchQueryService.getUniqueQueryName();
         this.saveCurrentQueryInfo();
     }
 
@@ -444,7 +442,10 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.dataChanged = false;
         this.queryNameValidateError = false;
         this.currentQueryIndex = -1;
-        this.setCurrentQuery(new SDPQuery());
+
+        let query = new SDPQuery();
+        query.queryName = this.searchQueryService.getUniqueQueryName();
+        this.setCurrentQuery(query);
         this.saveCurrentQueryInfo();
     }
 
@@ -494,6 +495,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     onDataChange() {
         this.dataChanged = true;
         this.currentQueryIndex = -1;
+        this.currentQuery.modifiedDate = new Date();
         this.saveCurrentQueryInfo();
     }
 

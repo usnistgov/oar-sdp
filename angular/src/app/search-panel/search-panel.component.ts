@@ -187,7 +187,8 @@ export class SearchPanelComponent implements OnInit {
      */
     onSearchValueChange(){
         let query: SDPQuery = this.searchQueryService.buildQueryFromString(this.searchValue, null, this.fields);
-
+        query.queryName = this.searchQueryService.getUniqueQueryName();
+        
         if(!_.isEmpty(query)){
             this.searchQueryService.saveCurrentQueryInfo(new CurrentQueryInfo(query, -1, true));
         }

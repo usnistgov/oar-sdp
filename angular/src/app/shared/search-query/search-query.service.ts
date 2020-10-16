@@ -173,9 +173,7 @@ export class SearchQueryService {
      * @param query current query
      */
     saveCurrentQuery(query: SDPQuery){
-        console.log("Current query", query);
         let queryAsObject: CurrentQueryInfo = new CurrentQueryInfo(query, -1, false);
-        console.log("queryAsObject", queryAsObject);
         this._storage.setItem(this.CURRENT_QUERY_INFO,JSON.stringify(queryAsObject));
     }
 
@@ -577,5 +575,73 @@ export class SearchQueryService {
         }      
 
         return queryStringObject.parseErrorMessage;
+    }
+
+    /**
+     * Return unique query name that's not been used yet. Will return query001 or querry002... query099.
+     * If all 99 query names are taken (which is unlikely), it will just return "Unknown". 
+     */
+    getUniqueQueryName(){
+        let uniqueQueryNamefound: boolean = false;
+        let counter: number = 1;
+        let baseQueryName: string = "query";
+        let returnQueryName: string;
+        let queries = this.getQueries();
+
+        while(!uniqueQueryNamefound && counter < 100){
+            returnQueryName = baseQueryName + ("00" + counter).slice(-2);
+            let nameExist: boolean = false;
+
+            for(let i = 0; i < queries.length; i++){
+                if(queries[i].queryName == returnQueryName)
+                {
+                    nameExist = true;
+                    break;
+                }
+            }
+
+            uniqueQueryNamefound = !nameExist;
+
+            counter++;
+        }
+
+        if(!uniqueQueryNamefound)
+            return "Unknown";
+        else    
+            return returnQueryName;
+    }
+
+    /**
+     * Merge two query list and return merged list. If both lists contain same query, the most recent one wins.
+     * @param queries01 query list #1 to be merged.
+     * @param queries02 query list #2 to be merged.
+     */
+    mergeQueries(queries01: SDPQuery[], queries02: SDPQuery[]){
+        let returnqueries: SDPQuery[] = [];
+
+        for(let q1 of queries01){
+            let found: boolean = false;
+            queries02.forEach( (query, index) => {
+                if(q1.queryName == query.queryName){
+                    if(q1.modifiedDate < query.modifiedDate){
+                        returnqueries.push(query);
+                    }else{
+                        returnqueries.push(q1);
+                    }
+                    queries02.splice(index, 1);
+                    found = true;
+                }
+            });
+
+            if(!found){
+                returnqueries.push(q1);
+            }
+        }
+
+        for(let q of queries02){
+            returnqueries.push(q);
+        }
+
+        return returnqueries;
     }
 }
