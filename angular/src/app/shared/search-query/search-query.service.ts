@@ -66,22 +66,6 @@ export class SearchQueryService {
             lSearchValue = inputQuery.freeText.trim() + " ";
         }
 
-        // First of all, we need to handle duplicated field (row) name, if any
-        // If there are dup keys and operator is OR, we need to combine them together, separate values by comma.
-        var dupNames = this.findDuplicates(query.queryRows)
-
-        for(let i=0; i<dupNames.length; i++){
-            let firstRow = query.queryRows.find(q => q.fieldValue == dupNames[i]);
-            for(let ii=0; ii<query.queryRows.length; ii++){
-                if(query.queryRows[ii].fieldValue == firstRow.fieldValue && query.queryRows[ii].id != firstRow.id){
-                    if(query.queryRows[ii].operator == "OR"){
-                        firstRow.fieldText += "," + query.queryRows[ii].fieldText;
-                        query.queryRows.splice(ii, 1);
-                    }                   
-                }
-            }
-        }
-
         // Processing rows
         for (let i = 0; i < query.queryRows.length; i++) {
             if (typeof query.queryRows[i].operator === 'undefined') {
@@ -256,12 +240,11 @@ export class SearchQueryService {
 
         let queryStringObject = this.parseQueryString(queryString);
 
-        //Restore everything in quotes
+        //Restore everything in quotes to free text string
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
                     queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }
@@ -284,6 +267,9 @@ export class SearchQueryService {
             let keyValue: string[];
             let row: QueryRow;
             let items = lKeyValuePair.split('&');
+            if(query.queryRows[0].fieldValue == ""){
+                query.queryRows.shift();
+            }
 
             if(items && items.length > 0 && items[0].trim()!=""){
                 for (var i = 0; i < items.length; i++) {
@@ -306,13 +292,29 @@ export class SearchQueryService {
                     }
 
                     if(keyValue.length == 2){
-                        row.fieldValue = keyValue[0];
-                        row.fieldType = this.getFieldType(row.fieldValue, fields);
-                        row.fieldText = keyValue[1].replace(/['"]+/g, '').trim(); //Strip off quotes
-                        if(query.queryRows[0].fieldValue == ""){
-                            query.queryRows.shift();
+                        let fieldValue = keyValue[0];
+                        let fieldType = this.getFieldType(fieldValue, fields);
+                        let keyValues = keyValue[1].split(",");
+                        for(let jjj = 0; jjj < keyValues.length; jjj++){
+                            if(jjj > 0)
+                                row.operator = "OR";
+
+                            row.fieldValue = fieldValue;
+                            row.fieldType = fieldType
+                            row.fieldText = keyValues[jjj];
+
+                            //Restore everything in quotes
+                            if(quotes){
+                                for(let i = 0; i < quotes.length; i++){
+                                    if(quotes[i] != '""'){
+                                        row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+
+                                        row.fieldText = row.fieldText.replace(/['"]+/g, '').trim(); //Strip off quotes
+                                    }
+                                }
+                            }
+                            query.queryRows.push(JSON.parse(JSON.stringify(row)));
                         }
-                        query.queryRows.push(JSON.parse(JSON.stringify(row)));
                     }
                 }
             }
@@ -412,9 +414,11 @@ export class SearchQueryService {
         if(fields == null || fields == undefined){
             return "";
         }else{
-            let field = fields.filter(field => field.value == fieldValue);
-            if(field && field.length>0) return field[0].label;
-            else return "";
+            for(let field of fields){
+                if(field.value == fieldValue)
+                    return field.label;
+            }
+            return "";
         }
 
     }
