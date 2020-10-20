@@ -313,6 +313,7 @@ export class SearchQueryService {
                                     }
                                 }
                             }
+                            row.id = this.nextRowId(query);
                             query.queryRows.push(JSON.parse(JSON.stringify(row)));
                         }
                     }
@@ -389,9 +390,14 @@ export class SearchQueryService {
      * @param query - given query
      */
     nextRowId(query: SDPQuery) {
-        let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
-        if(id == null) return 1;
-        else return id;
+        let nextId = 1;
+        for(let row of query.queryRows)   {
+            if(row.id >= nextId) nextId = row.id + 1;
+        }     
+        // let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
+        // if(id == null) return 1;
+        // else return id;
+        return nextId;
     }
 
     /**
