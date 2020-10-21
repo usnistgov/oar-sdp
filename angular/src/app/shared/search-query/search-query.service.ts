@@ -197,11 +197,6 @@ export class SearchQueryService {
     getCurrentQueryIndex(): number{
         let queryAsObject: CurrentQueryInfo = this.getCurrentQueryInfo();
         return queryAsObject.queryIndex;
-        // let index = this._storage.getItem('currentQueryIndex');
-        // if(index == null || index == undefined)
-        //     return 0;
-        // else
-        //     return Number(index);
     }
 
     /**
@@ -234,17 +229,16 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
-
         let queryStringObject = this.parseQueryString(queryString);
 
         //Restore everything in quotes to free text string
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }
@@ -307,7 +301,7 @@ export class SearchQueryService {
                             if(quotes){
                                 for(let i = 0; i < quotes.length; i++){
                                     if(quotes[i] != '""'){
-                                        row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                                        row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
 
                                         row.fieldText = row.fieldText.replace(/['"]+/g, '').trim(); //Strip off quotes
                                     }
@@ -446,7 +440,7 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
 
@@ -532,7 +526,7 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }      
@@ -567,7 +561,7 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
 
@@ -577,9 +571,9 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                    queryStringObject.parseErrorMessage = queryStringObject.parseErrorMessage.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.parseErrorMessage = queryStringObject.parseErrorMessage.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }      
