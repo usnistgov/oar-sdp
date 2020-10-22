@@ -71,7 +71,7 @@ export class RealSearchService implements SearchService{
             if(finalKeyValueStr[finalKeyValueStr.length-1] != "&")
                 finalKeyValueStr = finalKeyValueStr.trim() + " ";
 
-            finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace('/"/g', ''); 
+            finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace(/"/g, ''); 
         }
     }
 

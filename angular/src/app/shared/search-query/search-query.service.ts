@@ -43,7 +43,6 @@ export class SearchQueryService {
     private _storage = localStorage;
     operators: string[] = ["AND", "OR", "NOT"];
     CURRENT_QUERY_INFO: string = "current_query_info";
-    // CURRENT_QUERY_STRING: string = "current_query_string";
 
     constructor(
         public searchFieldsListService: SearchfieldsListService,
@@ -76,14 +75,28 @@ export class SearchQueryService {
             if(i > 0)
                 lSearchValue += ' ' + query.queryRows[i].operator + ' ';
 
-            //If user didn't provide search value, ignore the row
+            // Only add the row that has key and value
             if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldValue)){
-                if(query.queryRows[i].fieldText.trim().indexOf(" ") > 0) 
-                    query.queryRows[i].fieldText = '"' + query.queryRows[i].fieldText.trim() + '"';
+                // If user forgot to put quotes around phrases, add quotes
+                let items = query.queryRows[i].fieldText.split(',');
+                let lFieldText: string = "";
+                let count = 0;
+                for(let item of items){
+                    if(count > 0)
+                        lFieldText += ',';
+                    if(item.trim().indexOf(' ') > 0 && item.trim().indexOf('"') < 0){
+                        lFieldText += '"' + item.trim() + '"';
+                    }else{
+                        lFieldText += item.trim();
+                    }
 
-                lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText; 
+                    count++;
+                }
+
+                lSearchValue += query.queryRows[i].fieldValue + '=' + lFieldText; 
             }
         }
+
         return lSearchValue;
     }
 
@@ -232,6 +245,7 @@ export class SearchQueryService {
                 queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
+
         let queryStringObject = this.parseQueryString(queryString);
 
         //Restore everything in quotes to free text string
@@ -272,8 +286,6 @@ export class SearchQueryService {
 
                     // If first one is an operator, add it to the row and load next item
                     // Otherwise populate the row
-                    if(this.operators.indexOf(items[i]) > -1)
-
                     if(keyValue.length == 1){
                         if(this.operators.indexOf(items[i])>=0){
                             row.operator = items[i];
@@ -287,29 +299,21 @@ export class SearchQueryService {
 
                     if(keyValue.length == 2){
                         let fieldValue = keyValue[0];
+                        row.fieldValue = fieldValue;
                         let fieldType = this.getFieldType(fieldValue, fields);
-                        let keyValues = keyValue[1].split(",");
-                        for(let jjj = 0; jjj < keyValues.length; jjj++){
-                            if(jjj > 0)
-                                row.operator = "OR";
-
-                            row.fieldValue = fieldValue;
-                            row.fieldType = fieldType
-                            row.fieldText = keyValues[jjj];
-
-                            //Restore everything in quotes
-                            if(quotes){
-                                for(let i = 0; i < quotes.length; i++){
-                                    if(quotes[i] != '""'){
-                                        row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-
-                                        row.fieldText = row.fieldText.replace(/['"]+/g, '').trim(); //Strip off quotes
-                                    }
+                        row.fieldType = fieldType
+                        // For key-value pair, we keep it as it is.
+                        row.fieldText = keyValue[1].trim();
+                        //Restore everything in quotes
+                        if(quotes){
+                            for(let i = 0; i < quotes.length; i++){
+                                if(quotes[i] != '""'){
+                                    row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                                 }
                             }
-                            row.id = this.nextRowId(query);
-                            query.queryRows.push(JSON.parse(JSON.stringify(row)));
-                        }
+                        }  
+
+                        query.queryRows.push(JSON.parse(JSON.stringify(row)));
                     }
                 }
             }
@@ -424,6 +428,9 @@ export class SearchQueryService {
     }
 
     parseQueryString(queryString: string): queryStrings {
+        // All phrases in quotes should have been converted to special strings in the input queryString 
+        // so we can treat all items as words or operators. Phrases will be restored later.
+
         let returnObject: queryStrings = new queryStrings();
         let lQueryString: string = "";
         let errorCount: number = 0;
@@ -435,25 +442,19 @@ export class SearchQueryService {
             return returnObject;
         }
 
-        //Reserve everything in quotes
-        let quotes = queryString.match(/\"(.*?)\"/g);
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
-            }
-        }
-
-        // First of all we need to put all free text search phrases together
+        // We need to put all free text search phrases together
         let lqStrArray:string[] = queryString.trim().split(" ");
         for(let i = 0; i < lqStrArray.length; i++){
-            //If the phrase starts with "=" and the phrase before this phrase is not an operator or 
-            //key value pair, 
+            //If an item starts with "=" and the phrase before this phrase is not an operator or 
+            //key value pair, mark the item as illegal and ignore it in the search string.
             if(i == 0 && lqStrArray[i].substr(0,1) == "="){
                 lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                 errorCount++;
             }else if(lqStrArray[i].substr(lqStrArray[i].length - 1) == "="){
-                //If this is not the last phrase, check next phrase. 
+                //If an item ends with "=" and this is not the last phrase, check next item.
+                //If next word is not "=" or an operator, use next item as the value of the "=" sign.
+                //If this is the last item in the search string, mark it as illegal item and 
+                //ignore it in the search string.
                 if(i < lqStrArray.length - 1){
                     if(lqStrArray[i+1].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i+1].trim()) < 0){
                         returnObject.keyValuePairString += lqStrArray[i].trim() + lqStrArray[i+1].trim();
@@ -467,6 +468,13 @@ export class SearchQueryService {
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                     errorCount++;
                 }
+            // If this is not the last item and not a key/value pair or an operator 
+            // and next item starts with "=", combine this and next item a key/value pair.
+            // e.g., keyword =physics will be converted to keyword=physics.
+            // Else if this is an operator, mark this operator illegal and ignore. 
+            // e.g., OR =physics will be converted to =physics.
+            //Anything else if next item starts with "=", mark next item illegal and ignore.
+
             }else if(i < lqStrArray.length - 1 && lqStrArray[i+1].substr(0,1) == "="){
                 if(lqStrArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i].trim()) < 0){
                     returnObject.keyValuePairString += lqStrArray[i].trim()+lqStrArray[i+1].trim();
@@ -482,12 +490,13 @@ export class SearchQueryService {
                         i++
                     }
                 }
+            // If an operator appears at the very begining of the search string, mark it illegal and ignore.
             }else if(i == 0 && this.operators.indexOf(lqStrArray[i].trim()) >= 0){
                 lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                 errorCount++;
             }else if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
-                //If the item right before the freetext is an operator, or if an operator OR is between 
-                // freetext and key-value pair, mark it and display warning
+                // If the item right before the freetext is an operator, or if an operator OR is between 
+                // freetext and key-value pair, or the last item is an operator, mark it as illegal and ignore it
                 if(i == lqStrArray.length-1){
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                     errorCount++;
@@ -506,11 +515,14 @@ export class SearchQueryService {
                     lQueryString += lqStrArray[i] + " ";
                     returnObject.keyValuePairString += lqStrArray[i] + " ";
                 }
-            }else{   //This is not am operator
+            }else{   
+                // If this is not an operator and not a key/value pair, add it to free text string.
+                // If this is a key-value pair and no operator right before this item, add AND operator.
+                // For all other cases add this item to key-value pair string for further processing.
+
                 if(lqStrArray[i].indexOf("=") < 0){
                     returnObject.freeTextString += lqStrArray[i].trim() + " ";
                 }else{
-                    //If this is not the first item and no operator right before this key-value pair, add a AND operator
                     if(i>0 && lqStrArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStrArray[i-1].trim()) < 0){                        
                         returnObject.keyValuePairString += "AND " + lqStrArray[i].trim() + " ";
                     }else{
@@ -521,15 +533,6 @@ export class SearchQueryService {
                 lQueryString += lqStrArray[i] + " ";
             }
         }
-
-        //Restore everything in quotes
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""'){
-                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                }
-            }
-        }      
         
         if(errorCount == 1)
             returnObject.parseErrorMessage = 'Operator/phrase has been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details.';
