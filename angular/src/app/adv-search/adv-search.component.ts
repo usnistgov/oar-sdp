@@ -416,7 +416,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 true,   //Show second button
                 false,  // Hide third button
                 'Yes',  // Button one caption
-                'Cance'    // Button two caption
+                'Cancel'    // Button two caption
                 )
                 .then((returnValue) => {
                     if (returnValue.trim().toLowerCase() == 'yes')
