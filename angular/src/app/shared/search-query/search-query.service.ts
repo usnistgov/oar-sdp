@@ -6,7 +6,7 @@ import {Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
 import 'rxjs/add/operator/toPromise';
-import { SDPQuery, QueryRow } from './query';
+import { SDPQuery, QueryRow, CurrentQueryInfo } from './query';
 import { SearchfieldsListService } from '../../shared/searchfields-list/index';
 import { NotificationService } from '../../shared/notification-service/notification.service';
 
@@ -42,6 +42,7 @@ export class SearchQueryService {
     displayCart : boolean = false;
     private _storage = localStorage;
     operators: string[] = ["AND", "OR", "NOT"];
+    CURRENT_QUERY_INFO: string = "current_query_info";
 
     constructor(
         public searchFieldsListService: SearchfieldsListService,
@@ -64,43 +65,38 @@ export class SearchQueryService {
             lSearchValue = inputQuery.freeText.trim() + " ";
         }
 
-        // First of all, we need to handle duplicated field (row) name, if any
-        // If there are dup keys and operator is OR, we need to combine them together, separate values by comma.
-        var dupNames = this.findDuplicates(query.queryRows)
-
-        for(let i=0; i<dupNames.length; i++){
-            let firstRow = query.queryRows.find(q => q.fieldValue == dupNames[i]);
-            for(let ii=0; ii<query.queryRows.length; ii++){
-                if(query.queryRows[ii].fieldValue == firstRow.fieldValue && query.queryRows[ii].id != firstRow.id){
-                    if(query.queryRows[ii].operator == "OR"){
-                        firstRow.fieldText += "," + query.queryRows[ii].fieldText;
-                        query.queryRows.splice(ii, 1);
-                    }                   
-                }
-            }
-        }
-
         // Processing rows
         for (let i = 0; i < query.queryRows.length; i++) {
             if (typeof query.queryRows[i].operator === 'undefined') {
                 query.queryRows[i].operator = 'AND';
             }
 
-            let fieldValue: string;
-            fieldValue = query.queryRows[i].fieldValue;
-
             //Skip operator for the first row
             if(i > 0)
                 lSearchValue += ' ' + query.queryRows[i].operator + ' ';
 
-            //If user didn't provide search value, ignore the row
-            if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldType)){
-                if(query.queryRows[i].fieldText.trim().indexOf(" ") > 0) 
-                    query.queryRows[i].fieldText = '"' + query.queryRows[i].fieldText.trim() + '"';
+            // Only add the row that has key and value
+            if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldValue)){
+                // If user forgot to put quotes around phrases, add quotes
+                let items = query.queryRows[i].fieldText.split(',');
+                let lFieldText: string = "";
+                let count = 0;
+                for(let item of items){
+                    if(count > 0)
+                        lFieldText += ',';
+                    if(item.trim().indexOf(' ') > 0 && item.trim().indexOf('"') < 0){
+                        lFieldText += '"' + item.trim() + '"';
+                    }else{
+                        lFieldText += item.trim();
+                    }
 
-                lSearchValue += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText; 
+                    count++;
+                }
+
+                lSearchValue += query.queryRows[i].fieldValue + '=' + lFieldText; 
             }
         }
+
         return lSearchValue;
     }
 
@@ -137,10 +133,53 @@ export class SearchQueryService {
      * Save queries to local storage and broadcast so header bar can update.
      * @param qureies - queries to save to local storage
      */
-    saveQueries(qureies: SDPQuery[]){
-        this._storage.setItem('queries',JSON.stringify(qureies));
-        this.notificationService.showSuccessWithTimeout("Queries updated.", "", 3000);
-        this.queriesSub.next(qureies);
+    saveQueries(queries: SDPQuery[]){
+        let lQueries: SDPQuery[] = [];
+
+        //Remove any null query
+        for(let query of queries){
+            if(query != null && query != undefined){
+                lQueries.push(query);
+            }
+        }
+
+        if(lQueries != null && lQueries != undefined){
+            this._storage.setItem('queries',JSON.stringify(queries));
+            this.notificationService.showSuccessWithTimeout("Queries updated.", "", 3000);
+            this.queriesSub.next(queries);
+        }
+    }
+
+    saveCurrentQueryInfo(queryInfo: CurrentQueryInfo){
+        this._storage.setItem(this.CURRENT_QUERY_INFO,JSON.stringify(queryInfo));
+    }
+
+
+    getCurrentQueryInfo(): CurrentQueryInfo {
+        let queryAsObject: CurrentQueryInfo = JSON.parse(this._storage.getItem(this.CURRENT_QUERY_INFO));
+
+        if(_.isEmpty(queryAsObject)){
+            queryAsObject = new CurrentQueryInfo();
+        }
+
+        return queryAsObject;
+    }
+
+    /**
+     * Save current query to local storage
+     * @param query current query
+     */
+    saveCurrentQuery(query: SDPQuery){
+        let queryAsObject: CurrentQueryInfo = new CurrentQueryInfo(query, -1, false);
+        this._storage.setItem(this.CURRENT_QUERY_INFO,JSON.stringify(queryAsObject));
+    }
+
+    /**
+     * Get current query from local storage. If nothing in local storage, return an empty query object. 
+     */
+    getCurrentQuery(): SDPQuery {
+        let queryAsObject: CurrentQueryInfo = this.getCurrentQueryInfo();
+        return queryAsObject.query;
     }
 
     /**
@@ -148,26 +187,29 @@ export class SearchQueryService {
      */
     getQueries(): SDPQuery[]{
         let queriesAsObject = JSON.parse(this._storage.getItem('queries'));
-        return queriesAsObject == null? [] : queriesAsObject as SDPQuery[];
-    }
 
-    /**
-     * Save current query index to local storage
-     * @param index 
-     */
-    saveCurrentQueryIndex(index: number){
-        this._storage.setItem('currentQueryIndex',index.toString());
+        let lQueries: SDPQuery[] = [];
+
+        //Remove any null query
+        if(queriesAsObject == null || queriesAsObject == undefined){
+            return [];
+        }else{
+            for(let query of queriesAsObject){
+                if(query != null && query != undefined){
+                    lQueries.push(query);
+                }
+            }
+
+            return lQueries == null? [] : lQueries;
+        }
     }
 
     /**
      * Get current query index from local storage
      */
     getCurrentQueryIndex(): number{
-        let index = this._storage.getItem('currentQueryIndex');
-        if(index == null || index == undefined)
-            return 0;
-        else
-            return Number(index);
+        let queryAsObject: CurrentQueryInfo = this.getCurrentQueryInfo();
+        return queryAsObject.queryIndex;
     }
 
     /**
@@ -200,18 +242,17 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
 
         let queryStringObject = this.parseQueryString(queryString);
 
-        //Restore everything in quotes
+        //Restore everything in quotes to free text string
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }
@@ -234,14 +275,9 @@ export class SearchQueryService {
             let keyValue: string[];
             let row: QueryRow;
             let items = lKeyValuePair.split('&');
-
-            // If first item is an operator, and it's an "OR", we need to display a warning
-            // if(this.operators.indexOf(items[0]) > -1){
-            //     //set warning message here. Or this validation should be done before call this function...
-
-            //     //Remove this operator
-            //     items.shift();
-            // }
+            if(query.queryRows[0].fieldValue == ""){
+                query.queryRows.shift();
+            }
 
             if(items && items.length > 0 && items[0].trim()!=""){
                 for (var i = 0; i < items.length; i++) {
@@ -250,8 +286,6 @@ export class SearchQueryService {
 
                     // If first one is an operator, add it to the row and load next item
                     // Otherwise populate the row
-                    if(this.operators.indexOf(items[i]) > -1)
-
                     if(keyValue.length == 1){
                         if(this.operators.indexOf(items[i])>=0){
                             row.operator = items[i];
@@ -264,9 +298,21 @@ export class SearchQueryService {
                     }
 
                     if(keyValue.length == 2){
-                        row.fieldValue = keyValue[0];
-                        row.fieldType = this.getFieldType(row.fieldValue, fields);
-                        row.fieldText = keyValue[1].replace(/['"]+/g, '').trim(); //Strip off quotes
+                        let fieldValue = keyValue[0];
+                        row.fieldValue = fieldValue;
+                        let fieldType = this.getFieldType(fieldValue, fields);
+                        row.fieldType = fieldType
+                        // For key-value pair, we keep it as it is.
+                        row.fieldText = keyValue[1].trim();
+                        //Restore everything in quotes
+                        if(quotes){
+                            for(let i = 0; i < quotes.length; i++){
+                                if(quotes[i] != '""'){
+                                    row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                                }
+                            }
+                        }  
+
                         query.queryRows.push(JSON.parse(JSON.stringify(row)));
                     }
                 }
@@ -285,8 +331,12 @@ export class SearchQueryService {
         let currentQueries = this.getQueries();
         let query = this.buildQueryFromString(queryString, queryName, fields);
 
-        currentQueries.push(JSON.parse(JSON.stringify(query)));
-        this.saveQueries(currentQueries);
+        if(query != null){
+            currentQueries.push(JSON.parse(JSON.stringify(query)));
+            this.saveQueries(currentQueries);
+        }
+
+        this.saveCurrentQueryInfo(new CurrentQueryInfo(query, -1, false));
     }
 
     /**
@@ -338,9 +388,14 @@ export class SearchQueryService {
      * @param query - given query
      */
     nextRowId(query: SDPQuery) {
-        let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
-        if(id == null) return 1;
-        else return id;
+        let nextId = 1;
+        for(let row of query.queryRows)   {
+            if(row.id >= nextId) nextId = row.id + 1;
+        }     
+        // let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
+        // if(id == null) return 1;
+        // else return id;
+        return nextId;
     }
 
     /**
@@ -363,14 +418,19 @@ export class SearchQueryService {
         if(fields == null || fields == undefined){
             return "";
         }else{
-            let field = fields.filter(field => field.value == fieldValue);
-            if(field && field.length>0) return field[0].label;
-            else return "";
+            for(let field of fields){
+                if(field.value == fieldValue)
+                    return field.label;
+            }
+            return "";
         }
 
     }
 
     parseQueryString(queryString: string): queryStrings {
+        // All phrases in quotes should have been converted to special strings in the input queryString 
+        // so we can treat all items as words or operators. Phrases will be restored later.
+
         let returnObject: queryStrings = new queryStrings();
         let lQueryString: string = "";
         let errorCount: number = 0;
@@ -382,25 +442,19 @@ export class SearchQueryService {
             return returnObject;
         }
 
-        //Reserve everything in quotes
-        let quotes = queryString.match(/\"(.*?)\"/g);
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
-            }
-        }
-
-        // First of all we need to put all free text search phrases together
+        // We need to put all free text search phrases together
         let lqStrArray:string[] = queryString.trim().split(" ");
         for(let i = 0; i < lqStrArray.length; i++){
-            //If the phrase starts with "=" and the phrase before this phrase is not an operator or 
-            //key value pair, 
+            //If an item starts with "=" and the phrase before this phrase is not an operator or 
+            //key value pair, mark the item as illegal and ignore it in the search string.
             if(i == 0 && lqStrArray[i].substr(0,1) == "="){
                 lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                 errorCount++;
             }else if(lqStrArray[i].substr(lqStrArray[i].length - 1) == "="){
-                //If this is not the last phrase, check next phrase. 
+                //If an item ends with "=" and this is not the last phrase, check next item.
+                //If next word is not "=" or an operator, use next item as the value of the "=" sign.
+                //If this is the last item in the search string, mark it as illegal item and 
+                //ignore it in the search string.
                 if(i < lqStrArray.length - 1){
                     if(lqStrArray[i+1].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i+1].trim()) < 0){
                         returnObject.keyValuePairString += lqStrArray[i].trim() + lqStrArray[i+1].trim();
@@ -414,6 +468,13 @@ export class SearchQueryService {
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                     errorCount++;
                 }
+            // If this is not the last item and not a key/value pair or an operator 
+            // and next item starts with "=", combine this and next item a key/value pair.
+            // e.g., keyword =physics will be converted to keyword=physics.
+            // Else if this is an operator, mark this operator illegal and ignore. 
+            // e.g., OR =physics will be converted to =physics.
+            //Anything else if next item starts with "=", mark next item illegal and ignore.
+
             }else if(i < lqStrArray.length - 1 && lqStrArray[i+1].substr(0,1) == "="){
                 if(lqStrArray[i].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i].trim()) < 0){
                     returnObject.keyValuePairString += lqStrArray[i].trim()+lqStrArray[i+1].trim();
@@ -429,12 +490,13 @@ export class SearchQueryService {
                         i++
                     }
                 }
+            // If an operator appears at the very begining of the search string, mark it illegal and ignore.
             }else if(i == 0 && this.operators.indexOf(lqStrArray[i].trim()) >= 0){
                 lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                 errorCount++;
             }else if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
-                //If the item right before the freetext is an operator, or if an operator OR is between 
-                // freetext and key-value pair, mark it and display warning
+                // If the item right before the freetext is an operator, or if an operator OR is between 
+                // freetext and key-value pair, or the last item is an operator, mark it as illegal and ignore it
                 if(i == lqStrArray.length-1){
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                     errorCount++;
@@ -453,11 +515,14 @@ export class SearchQueryService {
                     lQueryString += lqStrArray[i] + " ";
                     returnObject.keyValuePairString += lqStrArray[i] + " ";
                 }
-            }else{   //This is not am operator
+            }else{   
+                // If this is not an operator and not a key/value pair, add it to free text string.
+                // If this is a key-value pair and no operator right before this item, add AND operator.
+                // For all other cases add this item to key-value pair string for further processing.
+
                 if(lqStrArray[i].indexOf("=") < 0){
                     returnObject.freeTextString += lqStrArray[i].trim() + " ";
                 }else{
-                    //If this is not the first item and no operator right before this key-value pair, add a AND operator
                     if(i>0 && lqStrArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStrArray[i-1].trim()) < 0){                        
                         returnObject.keyValuePairString += "AND " + lqStrArray[i].trim() + " ";
                     }else{
@@ -468,15 +533,6 @@ export class SearchQueryService {
                 lQueryString += lqStrArray[i] + " ";
             }
         }
-
-        //Restore everything in quotes
-        if(quotes){
-            for(let i = 0; i < quotes.length; i++){
-                if(quotes[i] != '""'){
-                    lQueryString = lQueryString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                }
-            }
-        }      
         
         if(errorCount == 1)
             returnObject.parseErrorMessage = 'Operator/phrase has been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details.';
@@ -508,7 +564,7 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+i);
+                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
 
@@ -518,13 +574,81 @@ export class SearchQueryService {
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
-                    queryStringObject.parseErrorMessage = queryStringObject.parseErrorMessage.replace(new RegExp('Quooooote'+i, 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.keyValuePairString = queryStringObject.keyValuePairString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.parseErrorMessage = queryStringObject.parseErrorMessage.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
         }      
 
         return queryStringObject.parseErrorMessage;
+    }
+
+    /**
+     * Return unique query name that's not been used yet. Will return query001 or querry002... query099.
+     * If all 99 query names are taken (which is unlikely), it will just return "Unknown". 
+     */
+    getUniqueQueryName(){
+        let uniqueQueryNamefound: boolean = false;
+        let counter: number = 1;
+        let baseQueryName: string = "query";
+        let returnQueryName: string;
+        let queries = this.getQueries();
+
+        while(!uniqueQueryNamefound && counter < 100){
+            returnQueryName = baseQueryName + ("00" + counter).slice(-2);
+            let nameExist: boolean = false;
+
+            for(let i = 0; i < queries.length; i++){
+                if(queries[i].queryName == returnQueryName)
+                {
+                    nameExist = true;
+                    break;
+                }
+            }
+
+            uniqueQueryNamefound = !nameExist;
+
+            counter++;
+        }
+
+        if(!uniqueQueryNamefound)
+            return "Unknown";
+        else    
+            return returnQueryName;
+    }
+
+    /**
+     * Merge two query list and return merged list. If both lists contain same query, the most recent one wins.
+     * @param queries01 query list #1 to be merged.
+     * @param queries02 query list #2 to be merged.
+     */
+    mergeQueries(queries01: SDPQuery[], queries02: SDPQuery[]){
+        let returnqueries: SDPQuery[] = [];
+
+        for(let q1 of queries01){
+            let found: boolean = false;
+            queries02.forEach( (query, index) => {
+                if(q1.queryName == query.queryName){
+                    if(q1.modifiedDate < query.modifiedDate){
+                        returnqueries.push(query);
+                    }else{
+                        returnqueries.push(q1);
+                    }
+                    queries02.splice(index, 1);
+                    found = true;
+                }
+            });
+
+            if(!found){
+                returnqueries.push(q1);
+            }
+        }
+
+        for(let q of queries02){
+            returnqueries.push(q);
+        }
+
+        return returnqueries;
     }
 }

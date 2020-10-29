@@ -201,7 +201,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     //searchValue is for UI display which should not be changed
     //queryValue is for backend search
-        this.searchService.setQueryValue(this.searchValue, '', '');
+        // this.searchService.setQueryValue(this.searchValue, '', '');
 
         this.getFields();
     });
@@ -562,7 +562,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searching = true;
         this.keyword = '';
         let that = this;
-
         return this.searchService.searchPhrase(query, searchTaxonomyKey)
         .subscribe(
             searchResults => {

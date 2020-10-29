@@ -58,9 +58,6 @@ export class RealSearchService implements SearchService{
             query.queryRows[i].operator = 'AND';
         }
 
-        let fieldValue: string; //This is field name
-        fieldValue = query.queryRows[i].fieldValue;
-
         //Skip operator for the first row
         if(i > 0){
             if(query.queryRows[i].operator.trim() == "AND")
@@ -70,11 +67,11 @@ export class RealSearchService implements SearchService{
         }
 
         //If user didn't provide search value, ignore the row
-        if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldType)){
+        if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldValue)){
             if(finalKeyValueStr[finalKeyValueStr.length-1] != "&")
                 finalKeyValueStr = finalKeyValueStr.trim() + " ";
 
-            finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace('/"/g', ''); 
+            finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace(/"/g, ''); 
         }
     }
 
@@ -89,7 +86,7 @@ export class RealSearchService implements SearchService{
         url += '&'
         
     url += finalKeyValueStr.trim() + keyString.trim();
-    
+    // console.log('url', url);
     return this.http.get(url);
   }
 

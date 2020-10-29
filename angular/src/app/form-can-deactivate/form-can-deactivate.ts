@@ -6,6 +6,7 @@ export abstract class FormCanDeactivate extends ComponentCanDeactivate{
  abstract get dataChanged():boolean;
  
  canDeactivate():boolean{
-     return !this.dataChanged;
+    //  return !this.dataChanged;
+     return true;
   }
 }

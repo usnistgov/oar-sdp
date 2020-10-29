@@ -1,0 +1,20 @@
+<div class="modal-header dialogHeader header">
+    <h4>{{ title }}</h4>
+</div>
+<div class="modal-body">
+    <div style="text-align: center;">
+        <i *ngIf="showWarningIcon" class="faa faa-warning faa-2x"
+            style="color: rgb(252, 122, 0);padding-left: .2em;padding-right: .5em;"></i>
+        <span [innerHTML]="message"></span>
+    </div>
+</div>
+<div class="modal-footer">
+    <div style="margin: auto;">
+        <button type="button" pButton id="cd-button-one" type="submit"
+            (click)="accept()">{{ btnOneText }}</button>
+        <button *ngIf="showButtonTwo" type="button" pButton type="submit"
+        id="cd-button-two" (click)="decline()">{{ btnTwoText }}</button>
+        <button *ngIf="showButtonThree" type="button" pButton type="submit"
+        id="cd-button-two" (click)="cancel()">{{ btnThreeText }}</button>
+    </div>
+</div>

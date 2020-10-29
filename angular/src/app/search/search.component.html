@@ -403,7 +403,8 @@
                       </div>
                       <div class="ui-grid-row" *ngIf="selectedFields.indexOf('Research Topic') !==-1">
                         <div class="ui-grid-col-12"><b>Research Topic: </b> <i style="color: gray;">
-                            {{resultItem.topic[0]?.tag}}
+                            <span *ngFor="let topic of resultItem.topic; let i = index">{{topic.tag}}<span *ngIf="i<resultItem.topic.length-1">, </span>
+                            </span>
                           </i>
                         </div>
                       </div>

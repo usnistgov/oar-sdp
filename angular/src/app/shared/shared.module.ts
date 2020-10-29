@@ -12,11 +12,13 @@ import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, Menub
  PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
  PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
 
- import { CommonService } from './common/common.service';
+import { CommonService } from './common/common.service';
+import { ConfirmService } from './confirm/confirm.service';
 
 import { ComboBoxComponent } from './combobox/combo-box.component';
 import { ComboBoxPipe } from './combobox/combo-box.pipe';
 import { BrowserModule } from '@angular/platform-browser';
+import { ConfirmationComponent } from './confirm/confirmation/confirmation.component';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -40,19 +42,20 @@ import { BrowserModule } from '@angular/platform-browser';
     CalendarModule,
     BrowserModule,
     FormsModule],
-  declarations: [FootbarComponent, ComboBoxComponent, ComboBoxPipe],
-  providers:[CommonService],
+  declarations: [FootbarComponent, ComboBoxComponent, ComboBoxPipe,ConfirmationComponent],
+  providers:[CommonService, ConfirmService],
   exports: [FootbarComponent,ComboBoxComponent, ComboBoxPipe,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
     SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
-    MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule]
+    MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule,ConfirmationComponent],
+    entryComponents: [ ConfirmationComponent ]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
       // providers: [NameListService,TaxonomyListService,SearchService,SearchfieldsListService,ConfirmationDialogService]
-      providers: [NameListService,TaxonomyListService,SearchfieldsListService]
+      providers: [NameListService,TaxonomyListService,SearchfieldsListService, ConfirmService]
     };
   }
 }

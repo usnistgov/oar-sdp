@@ -22,6 +22,7 @@
                                 (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
                                 inputId="searchinput" name="searchinput"
                                  (keyup.enter)="search(searchValue,searchTaxonomyKey)"
+                                (ngModelChange)="onSearchValueChange()"
                                 [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)"
                                 [minLength]="1" [maxlength]="2048" [size]="100">
 
@@ -46,9 +47,9 @@
 
                 <div style="width: 100%;">
                     <div class="sample-line link-text-white">
-                        <span id="example" *ngIf="!showExampleStatus" (click)="changeState(true)">Show Examples</span>
-                        <span *ngIf="showExampleStatus" (click)="changeState(false)">Hide Examples</span>
-                        <span *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em;">Advanced
+                        <span id="example" *ngIf="!showExampleStatus" (click)="searchQueryService.setShowExamples(true)">Show Examples</span>
+                        <span *ngIf="showExampleStatus" (click)="searchQueryService.setShowExamples(false)">Hide Examples</span>
+                        <span *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em;" (click)="searchQueryService.setShowExamples(false)">Advanced
                             Search</span>
                     </div>
                 </div>
@@ -56,7 +57,7 @@
         </div>
 
         <div class="help-wrapper" [@changeDivSize]=currentState>
-            <span class="faa-stack fa-lg" style="float: right; cursor: pointer; margin: 5px;" (click)="changeState(false)">
+            <span class="faa-stack fa-lg" style="float: right; cursor: pointer; margin: 5px;" (click)="searchQueryService.setShowExamples(false)">
                 <i class="faa faa-remove faa-stack-1x icon-white" id="btn-close" aria-hidden="true"
                     data-toggle="tooltip" title="Hide Examples"></i>
             </span>
@@ -85,7 +86,7 @@
                                 Individual terms
                             </td>
                             <td width="30%">
-                                <a class="examples" (click)="$event.preventDefault();searchExample('analytical chemistry');"
+                                <a class="examples" (click)="$event.preventDefault();setSearchValue('analytical chemistry');"
                                     href="#!">analytical
                                     chemistry
                                 </a>
@@ -101,7 +102,7 @@
                             </td>
                             <td width="30%">
                                 <a class="examples"
-                                    (click)="$event.preventDefault();searchExample('&quot;analytical chemistry&quot;');"
+                                    (click)="$event.preventDefault();setSearchValue('&quot;analytical chemistry&quot;');"
                                     href="#!">"analytical chemistry"
                                 </a>
                             </td>
@@ -117,7 +118,7 @@
                             </td>
                             <td width="30%">
                                 <a class="examples"
-                                    (click)="$event.preventDefault();searchExample('contactPoint.fn=Levine');"
+                                    (click)="$event.preventDefault();setSearchValue('contactPoint.fn=Levine');"
                                     href="#!">contactPoint.fn=Levine
                                 </a>
                             </td>
@@ -134,7 +135,7 @@
                             </td>
                             <td width="30%">
                                 <a class="examples"
-                                    (click)="$event.preventDefault();searchExample('keyword=chemistry AND topic.tag=physics');"
+                                    (click)="$event.preventDefault();setSearchValue('keyword=chemistry AND topic.tag=physics');"
                                     href="#!">keyword=chemistry AND topic.tag=physics
                                 </a>
                             </td>
@@ -152,21 +153,21 @@
             </div>
             <div style="padding-bottom: 1em;">
                 <!-- <div class="btn-slim" style="margin-top: 0;" (click)="showQueryNameDialog($event, op5);">Save Query</div> -->
-                <button class="btn-save02" style="float: left; margin-left: 1.5em;" type="button" [disabled]="_editmode" (click)="showQueryNameDialog($event, op5)" pButton type="submit">
+                <button class="btn-save02" style="float: left; margin-left: 1.5em;" type="button" [disabled]="_editmode || searchValue.trim()==''" (click)="showQueryNameDialog($event, op5)" pButton type="submit">
                     Save Query
                 </button>
 
                 <b>More Examples: </b>
                 <a class="examples" (click)="$event.preventDefault();appendToSearchBox('&quot;Kinetics database&quot;');"
                     href="#!">"Kinetics database" </a> &nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('Gallium');" href="#!">Gallium
+                <a class="examples" (click)="$event.preventDefault();setSearchValue('Gallium');" href="#!">Gallium
                 </a>&nbsp;
-                <a class="examples" id="srd101" (click)="$event.preventDefault();searchExample('&quot;SRD 101&quot;');"
+                <a class="examples" id="srd101" (click)="$event.preventDefault();setSearchValue('&quot;SRD 101&quot;');"
                     href="#!">"SRD 101"
                 </a>&nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('XPDB');" href="#!">XPDB
+                <a class="examples" (click)="$event.preventDefault();setSearchValue('XPDB');" href="#!">XPDB
                 </a>&nbsp;
-                <a class="examples" (click)="$event.preventDefault();searchExample('Interatomic Potentials');"
+                <a class="examples" (click)="$event.preventDefault();setSearchValue('Interatomic Potentials');"
                     href="#!">Interatomic Potentials </a>&nbsp;
             </div>
         </div>

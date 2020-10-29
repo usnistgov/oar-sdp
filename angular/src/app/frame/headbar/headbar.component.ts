@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
 import { SDPQuery, QueryRow } from '../../shared/search-query/query';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-headbar',
@@ -21,7 +22,8 @@ export class HeadbarComponent implements OnInit {
     @Inject(SEARCH_SERVICE) private searchService: SearchService,
     public app: AppComponent, 
     public searchQueryService: SearchQueryService,
-    private appConfig: AppConfig) {
+    private appConfig: AppConfig,
+    public router: Router) {
 
     this.searchQueryService.watchQueries().subscribe(value => {
       this.queries = value as SDPQuery[];
@@ -39,5 +41,12 @@ export class HeadbarComponent implements OnInit {
 
   hideExamples(){
       this.searchQueryService.setShowExamples(false);
+  }
+
+  /**
+   * Go to home page
+   */
+  goHome(){
+    this.router.navigate(['']);
   }
 }

@@ -39,8 +39,8 @@ a:visited {
   background-color: green;
   color: white;
   position:relative;
-  top: -15px;
-  left: -8px;
+  top: -35px;
+  left: 40px;
   font-size: 12px;
   font-weight: bold;
   height:25px;
@@ -141,4 +141,8 @@ textarea {
 
 .inner-addon {
     position: relative;
+}
+
+.myCustomModalClass .modal-dialog {
+    max-width: 565px;
 }

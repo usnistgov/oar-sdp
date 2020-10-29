@@ -1,10 +1,10 @@
 export class SDPQuery {
     constructor(
         public id: number = 0,
-        public queryName: string = '',
+        public queryName: string = 'Unknown',
         public freeText = '',   // Free text search value
-        public queryRows: QueryRow[] = [],
-        public date: Date = null
+        public queryRows: QueryRow[] = [new QueryRow()],
+        public modifiedDate: Date = new Date()
     ){}
 }
 
@@ -20,3 +20,11 @@ export class QueryRow {
     }
 }
   
+export class CurrentQueryInfo {
+    constructor(
+        public query: SDPQuery = new SDPQuery(),
+        public queryIndex: number = -1,
+        public dataChanged: boolean = false
+    ){
+    }
+}
