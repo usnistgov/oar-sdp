@@ -219,7 +219,6 @@ export class SearchQueryService {
     buildQueryFromString(queryString: string, queryName?: string, fields?: SelectItem[]): SDPQuery{
         //Trim spaces
         queryString = queryString.replace(/\s+/g, ' ');
-
         let lQueryName: string;
         //We are not going to save empty string
         if(!queryString){
@@ -239,15 +238,15 @@ export class SearchQueryService {
 
         //Reserve everything in quotes
         let quotes = queryString.match(/\"(.*?)\"/g);
+        
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
-                queryString = queryString.replace(new RegExp(quotes[i].match(/\"(.*?)\"/)[1], 'g'), 'Quooooote'+("000" + i).slice(-3));
+                    queryString = queryString.replace(new RegExp('"' + quotes[i].match(/\"(.*?)\"/)[1] + '"', 'g'), 'Quooooote'+("000" + i).slice(-3));
             }
         }
 
         let queryStringObject = this.parseQueryString(queryString);
-
         //Restore everything in quotes to free text string
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
@@ -261,7 +260,6 @@ export class SearchQueryService {
         let lKeyValuePair: string = queryStringObject.keyValuePairString; 
         let query: SDPQuery = new SDPQuery(this.nextQueryId(), lQueryName);
         query.freeText = lFreeTextSearch.trim();
-
         if(!this.isEmpty(lKeyValuePair)){
 
             lKeyValuePair = lKeyValuePair.replace(new RegExp(' AND ', 'g'), '&AND&');
@@ -308,7 +306,7 @@ export class SearchQueryService {
                         if(quotes){
                             for(let i = 0; i < quotes.length; i++){
                                 if(quotes[i] != '""'){
-                                    row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                                    row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), '"'+quotes[i].match(/\"(.*?)\"/)[1]+'"');
                                 }
                             }
                         }  
