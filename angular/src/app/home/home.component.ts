@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
             break; 
         } 
         case 'MS': { 
-            queryValue = 'topic.tag=Mathematics AND topic.tag=Statistics';
+            queryValue = 'topic.tag="Mathematics AND Statistics"';
             break; 
         } 
         case 'Manufacturing': { 
@@ -47,11 +47,11 @@ export class HomeComponent implements OnInit {
             break; 
         } 
         case 'PN': { 
-            queryValue = 'topic.tag=Physics AND topic.tag=Neutron'; 
+            queryValue = 'topic.tag=Physics,Neutron'; 
             break; 
         } 
         case 'AC': { 
-            queryValue = '"Advanced Communications"';
+            queryValue = 'topic.tag="Advanced Communications"';
             break; 
         } 
         case 'Chemistry': { 
