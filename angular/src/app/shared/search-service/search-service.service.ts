@@ -7,8 +7,9 @@ export interface SearchService {
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch?: string): Observable<any>;
-  
+  searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string): Observable<any>;
+//   simpleSearch(page: number, pageSize: number, sortOrder:string): Observable<any>;
+
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
@@ -20,5 +21,8 @@ export interface SearchService {
   search(searchValue: string, url?: string) : void;
 
   setQueryValue(queryString: string, searchTaxonomyKey: string, queryAdvSearch?: string): void;
+
+  watchFilterString(subscriber);
+  setFilterString(filterString: string);
 }
 

@@ -14,6 +14,9 @@ import {
   MessagesModule,MessageModule, DialogModule, InputTextareaModule, ProgressSpinnerModule, InputTextModule, MultiSelectModule, DataTableModule, DataListModule,  OverlayPanelModule, CheckboxModule, TooltipModule
 } from 'primeng/primeng';
 import { SearchPanelModule } from '../search-panel/search-panel.module';
+import { FiltersComponent } from './filters/filters.component';
+import { ResultsComponent } from './results/results.component';
+import { PaginationComponent } from './pagination/pagination.component';
 
 @NgModule({
     imports: [
@@ -39,7 +42,7 @@ import { SearchPanelModule } from '../search-panel/search-panel.module';
       NgxPaginationModule,
       InputTextareaModule,
       SearchPanelModule],
-    declarations: [SearchComponent,ReadMoreComponent],
+    declarations: [SearchComponent,ReadMoreComponent, FiltersComponent, ResultsComponent, PaginationComponent],
     exports: [SearchComponent,ReadMoreComponent],
     providers: [TaxonomyListService, SearchfieldsListService, SearchQueryService ]
 })

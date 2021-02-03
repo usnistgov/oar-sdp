@@ -1,0 +1,59 @@
+#filterHeader {
+    background-color: #606165;
+    border-bottom:.5px solid #e6e6e6;
+    width: 100%;
+    padding: .625em;
+    box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);
+}
+
+#filtersLabel {
+    color: #FFFFFF;
+    font-weight: 900;
+    text-decoration:none; 
+    padding-left: .5em;
+}
+
+#clear-all {
+    float: right;
+    font-weight:900;
+    vertical-align: middle;
+    color: #FFFFFF
+}
+
+#activeFilter {
+    background-color: #F8F9F9;
+    padding: 0px 0px 0px 0px;
+}
+
+.rotate {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.rotatedFilter {
+    display: block; 
+    color: #fff; 
+    padding-left: .5em;
+    font-size: larger;
+}
+
+.collapsedFilter {
+    text-align:center;
+    padding: 0px 0px 0px .5em;
+    background-color: #696666;
+    color: #fff; 
+    width: 40px;
+    cursor: pointer;
+}
+
+.normalFilter {
+    /* float: left; */
+    width: 100%;
+}
+
+#research-topic {
+    border-bottom:.5px solid #e6e6e6;
+}
