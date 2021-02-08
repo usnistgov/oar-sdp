@@ -1,13 +1,13 @@
-<div [ngStyle]="{'height': comheight, 'width': filterWidthNum+'px'}">
-    <div class="normalFilter collapsed in width" [hidden]="!isActive" id="activeFilter">
+<div [ngStyle]="{'width': filterWidthNum+'px'}">
+    <div class="normalFilter" [hidden]="!isActive && !mobileMode" id="activeFilter" style="height:auto;padding-bottom: 1em;">
         <div style="padding: 0px;">
 
             <!-- Filter header -->
-            <div id="filterHeader">
+            <div id="filterHeader" *ngIf="isActive || mobileMode">
                 <a id="filtersLabel">Filters </a> <a
                     class="btn-sm collapsed in" (click)="setColumnWidth()" data-toggle="collapse"
                     style="border-color: #025277; color: #FFF;padding: 0em;border: 0em"
-                    data-target="#demo"><i class="faa faa-angle-double-left"
+                    data-target="#demo"><i [ngClass]="getFilterImgClass()"
                         style="zoom: 100%;color: #fff;cursor: pointer;"></i></a>
                 <a href="#" id="clear-all"
                     (click)="$event.preventDefault();clearFilters()">
@@ -18,27 +18,12 @@
             <!-- Filter body -->
             <!-- Display spinner while waiting for search result -->
             <div class="spinner" *ngIf="searching">
-                <i class="faa faa-spinner faa-spin faa-stack-2x" style="color:#1E6BA1; margin: 1em auto;" aria-hidden="true"></i>
+                <i class="faa faa-spinner faa-spin faa-stack-2x" style="color:#1E6BA1;" aria-hidden="true"></i>
             </div>
 
-            <div style="padding-left: .5em;">
-                <div style="border-bottom:.5px solid #e6e6e6;width: 100%;">
-                    <!-- Resource type -->
-                    <p-tree [value]="resourceTypeTree" selectionMode="checkbox" [style]="ResourceTypeStyle"
-                        [(selection)]="selectedResourceTypeNode" 
-                        (onNodeUnselect)="filterResults($event,'')"
-                        (onNodeSelect)="filterResults($event,'')">
-                        <ng-template let-node pTemplate="default">
-                            <span> {{node.label.split("-")[0]}}&nbsp;</span>
-                            <span class="w3-badge badge1" style="background-color: #1471AE;"
-                                *ngIf="node.label.split('-')[1] !=''">
-                                {{node.label.split("-")[1]}}</span>
-                        </ng-template>
-                    </p-tree>
-                </div>
-
+            <div style="padding-left: .5em;" *ngIf="isActive">
                 <!-- Research topics -->
-                <div id="research-topic" >
+                <div class="filter-checkbox" >
                     <p-tree header="test" id="themes" [value]="themesTree" selectionMode="checkbox" [style]="getResearchTopicStyle()" [(selection)]="selectedThemesNode"
                         (onNodeUnselect)="filterResults($event,'')"
                         (onNodeSelect)="filterResults($event,'')" 
@@ -52,22 +37,36 @@
                         </ng-template>
                     </p-tree>
                     <div style="background-color: #F8F9F9"
-                        *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">
-                        <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = true"
-                            style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;"
-                            *ngIf="showMoreResearchTopics == false && nodeExpanded == true && showMoreLink == true">Show
+                        *ngIf="moreResearchTopicsShowed == false && nodeExpanded == false && showMoreLink == true">
+                        <a href="#" (click)="$event.preventDefault();moreResearchTopicsShowed = true; showMoreLink = false;nodeExpanded=true"
+                            style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show
                             More...</a>
                     </div>
                     <div style="background-color: #F8F9F9"
-                        *ngIf="showMoreResearchTopics == true && nodeExpanded == true && showMoreLink == true">
-                        <a href="#" (click)="$event.preventDefault();showMoreResearchTopics = false;"
+                        *ngIf="moreResearchTopicsShowed == true && nodeExpanded == true && showMoreLink == false">
+                        <a href="#" (click)="$event.preventDefault();moreResearchTopicsShowed = false;showMoreLink = true; nodeExpanded=false"
                             style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show
                             Less</a>
                     </div>
                 </div>
 
+                <!-- Resource type -->
+                <div class="filter-checkbox">
+                    <p-tree [value]="resourceTypeTree" selectionMode="checkbox" [style]="ResourceTypeStyle"
+                        [(selection)]="selectedResourceTypeNode" 
+                        (onNodeUnselect)="filterResults($event,'')"
+                        (onNodeSelect)="filterResults($event,'')">
+                        <ng-template let-node pTemplate="default">
+                            <span> {{node.label.split("-")[0]}}&nbsp;</span>
+                            <span class="w3-badge badge1" style="background-color: #1471AE;"
+                                *ngIf="node.label.split('-')[1] !=''">
+                                {{node.label.split("-")[1]}}</span>
+                        </ng-template>
+                    </p-tree>
+                </div>
+                
                 <!-- Components -->
-                <div style="border-bottom:.5px solid #e6e6e6;width: 100%;">
+                <div class="filter-checkbox">
                     <p-tree [value]="componentsTree" selectionMode="checkbox" [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em',
             'padding-bottom': '.5em','background-color': '#F8F9F9'}"
                         [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event,'')"
@@ -82,11 +81,11 @@
                 </div>
 
                 <!-- Authors and Contributors -->
-                <div style="padding: 0px;">
-                    <div style="background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+                <div>
+                    <div class="lbl-filter">
                         <label><b>Authors and Contributors</b></label>
                     </div>
-                    <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
+                    <div class="filter-input">
                         <label for="suggestedauthor" class="hideLabel">Search Input</label>
                         <p-autoComplete [immutable]="true" [(ngModel)]="selectedAuthor"
                             inputId="suggestedauthor" [suggestions]="suggestedAuthors"
@@ -99,12 +98,11 @@
                 </div>
 
                 <!-- Keyword -->
-                <div style="padding: 0px;">
-                    <div
-                        style="border-top:.5px solid #e6e6e6;margin-top:1em;background-color:#F8F9F9;width: 100%;padding-left: 1em;padding-top:1em;">
+                <div>
+                    <div class="lbl-filter">
                         <label><b>Keyword</b></label>
                     </div>
-                    <div style="background-color: #F8F9F9;padding-left:15px;padding-right:1.0em;">
+                    <div class="filter-input">
                         <label for="keyword" class="hideLabel">Keyword</label>
                         <p-autoComplete inputId="keyword" [(ngModel)]="selectedKeywords"
                             [suggestions]="suggestedKeywords" (completeMethod)="filterKeywords($event)"
@@ -118,8 +116,8 @@
         </div>
     </div>
 
-    <div *ngIf="!searching" [hidden]="isActive" class="collapsedFilter"
-         [ngStyle]="{'height': comheight}"> <br>
+    <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilter" 
+         [ngStyle]="{'height': comheight}">
         
         <!-- Collapsed filters -->
         <div (click)="setColumnWidth()">

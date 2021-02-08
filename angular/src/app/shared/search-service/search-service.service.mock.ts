@@ -21,7 +21,9 @@ export class MockSearchService implements SearchService{
     confValues: Config;
     private RMMAPIURL: string;
     filterString = new BehaviorSubject<string>('');
-
+    currentPage = new BehaviorSubject<number>(1);
+    totalItems = new BehaviorSubject<number>(1);
+    
     /**
      * Creates a new SearchService with the injected Http.
      * @param {HttpClient} http - The injected Http.
@@ -50,6 +52,34 @@ export class MockSearchService implements SearchService{
 
         var mockSearchResult = require('../../../assets/sample01.json');
         return of(mockSearchResult);
+    }
+
+    /**
+     * Watch total items
+     */
+    watchTotalItems(subscriber){
+        return this.totalItems.subscribe(subscriber);
+    }
+
+    /**
+     * Set curent page
+     **/
+    setTotalItems(totalItems: number) {
+        this.totalItems.next(totalItems);
+    }
+
+    /**
+     * Watch current page
+     */
+    watchCurrentPage(subscriber){
+        return this.currentPage.subscribe(subscriber);
+    }
+
+    /**
+     * Set curent page
+     **/
+    setCurrentPage(page: number) {
+        this.currentPage.next(page);
     }
 
     /**

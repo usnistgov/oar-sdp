@@ -24,5 +24,9 @@ export interface SearchService {
 
   watchFilterString(subscriber);
   setFilterString(filterString: string);
+  watchCurrentPage(subscriber);
+  setCurrentPage(page: number);
+  watchTotalItems(subscriber);
+  setTotalItems(page: number);
 }
 

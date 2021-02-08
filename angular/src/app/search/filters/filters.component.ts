@@ -48,7 +48,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     themesTree: TreeNode[] = [];
     componentsTree: TreeNode[] = [];
     resourceTypeTree: TreeNode[] = [];
-    ALL: string = 'All';
     resultStatus: string;
     RESULT_STATUS = {
         'success': 'SUCCESS',
@@ -78,8 +77,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     isActive: boolean = true;
     filterClass: string;
     resultsClass: string;
-    showMoreResearchTopics: boolean = false;
-    nodeExpanded: boolean = true;
+    moreResearchTopicsShowed: boolean = false;
+    nodeExpanded: boolean = false;
     comheight: string; // parent div height
     comwidth: string;  // parent div width
     filterStyle = {'width':'100%',
@@ -106,6 +105,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
     @Input() parent: HTMLElement; // parent div
     @Input() filterWidthNum: number;
+    @Input() mobileMode: boolean = false;
     @Output() filterMode = new EventEmitter<string>();  // normal or collapsed
 
     constructor(
@@ -119,9 +119,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
     }
 
-
     ngOnChanges(changes: SimpleChanges) {
-        // console.log('changes', changes);
     }
 
     ngOnInit() {
@@ -145,30 +143,25 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.comheight = this.parent.clientHeight + 'px';
         this.comwidth = this.parent.clientWidth + 'px';
     }
 
-    getResearchTopicHeight(): string{
-        if(this.showMoreResearchTopics)
-            return "auto";
-        else
-            return "150px";
-    }
-
+    /**
+     * Return research topic style
+     * If user clicks on "Show more", set div height to fit content.
+     * If user clicks on "Show less", set div height up to 160px. When overflow, display scroll bar.
+     */
     getResearchTopicStyle(){
-        if(this.showMoreResearchTopics){
-            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'height':'auto'};
+        if(this.moreResearchTopicsShowed){
+            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9'};
         }else{
-            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'height':'170px'};
-        }
-        
+            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'max-height':'160px','overflow':'auto'};
+        }       
     }
 
-    // toggleFilters(){
-    //     this.FiltersIsHidden = !this.FiltersIsHidden;
-    // }
-
+    /**
+     * Get the filterable fields and then do the search
+     */
     getFields() {
         this.searchFieldsListService.get().subscribe(
             fields => {
@@ -190,6 +183,11 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         );
     }
 
+    /**
+     * Do the search
+     * @param query - search query
+     * @param searchTaxonomyKey - Taxonomy keys if any
+     */
     doSearch(query: SDPQuery, searchTaxonomyKey?: string) {
         this.msgs = [];
         this.searchResultsError = [];
@@ -203,51 +201,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             this.searching = false;
         }, 10000)
 
-    }
-
-    setThemesSelection(node: TreeNode, themes: string) {
-        let themesParam = themes.split(',');
-        for (var i = 0; i < this.themesWithCount.length; i++) {
-        if (themesParam.includes(this.themesTree[0].children[i].data)) {
-            this.selectedThemesNode.push(this.themesTree[0].children[i]);
-        }
-        }
-
-        if (this.themesWithCount.length == this.selectedThemesNode.length) {
-        this.selectedThemesNode.push(this.themesTree[0]);
-        }
-        else {
-        this.themesTree[0].partialSelected = true;
-        }
-    }
-
-    setAuthorsSelection(authors: string) {
-        let authorsParam = authors.toString().split(',');
-        for (var i = 0; i < authorsParam.length; i++) {
-        this.selectedAuthor.push(authorsParam[i]);
-        }
-    }
-
-    setKeywordsSelection(keywords: string) {
-        let keywordsParam = keywords.toString().split(',');
-        for (var i = 0; i < keywordsParam.length; i++) {
-        this.selectedKeywords.push(keywordsParam[i]);
-        }
-    }
-
-    setComponentsSelection(node: TreeNode, components: string) {
-        let compsParam = components.split(',');
-        for (var i = 0; i < this.componentsWithCount.length; i++) {
-        if (compsParam.includes(this.componentsTree[0].children[i].data)) {
-            this.selectedComponentsNode.push(this.componentsTree[0].children[i]);
-        }
-        }
-        if (this.componentsWithCount.length == this.selectedComponentsNode.length) {
-        this.selectedComponentsNode.push(this.componentsTree[0]);
-        }
-        else {
-        this.componentsTree[0].partialSelected = true;
-        }
     }
 
     /**
@@ -387,6 +340,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         this.filterResults('', '');
         this.searching = false;
+
+        // console.log("this.searchResult", this.searchResults);
     }
 
     /**
@@ -425,7 +380,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Resource type
         if (this.selectedResourceTypeNode.length > 0) {
-            lFilterString += "&@type=";
+            lFilterString += "@type=";
 
             for (let res of this.selectedResourceTypeNode) {
                 if (res && typeof res.data !== 'undefined' && res.data !== 'undefined') {
@@ -442,7 +397,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Research topics
         if (this.selectedThemesNode.length > 0) {
-            lFilterString += "&topic.tag=";
+            lFilterString += "topic.tag=";
 
             for (let theme of this.selectedThemesNode) {
                 if (theme != 'undefined' && typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
@@ -459,7 +414,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Record has
         if (this.selectedComponentsNode.length > 0) {
-            lFilterString += "&components.@type=";
+            lFilterString += "components.@type=";
 
             for (let comp of this.selectedComponentsNode) {
                 if (comp != 'undefined' && typeof comp.data !== 'undefined' && comp.data !== 'undefined') {
@@ -476,7 +431,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Authors and contributors
         if (this.selectedAuthor.length > 0) {
-            lFilterString += "&contactPoint.fn=";
+            lFilterString += "contactPoint.fn=";
 
             for (let author of this.selectedAuthor) {
                 lFilterString += author + ",";
@@ -487,7 +442,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Keywords
         if (this.selectedKeywords.length > 0) {
-            lFilterString += "&keyword=";
+            lFilterString += "keyword=";
 
             for (let keyword of this.selectedKeywords) {
                 lFilterString += keyword + ",";
@@ -567,13 +522,21 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     /**
      * Return filter icon image class based on filter status
      */
-    // getFilterImgClass(){
-    //     if(this.FiltersIsHidden){
-    //         return "faa faa-angle-double-down";
-    //     }else{
-    //         return "faa faa-angle-double-up";
-    //     }
-    // }
+    getFilterImgClass(){
+        if(this.isActive){
+            if(this.mobileMode){
+               return "faa faa-angle-double-up"; 
+            }else{
+                return "faa faa-angle-double-left";
+            }
+        }else{
+            if(this.mobileMode){
+                return "faa faa-angle-double-down";
+            }else{
+                return "faa faa-angle-double-right";
+            }
+        }
+    }
 
     /**
      * clear filters
@@ -824,14 +787,14 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         for (let theme in (_.countBy(this.themesAllArray))) {
             sortable.push([theme, _.countBy(this.themesAllArray)[theme]]);
         }
+        
+        sortable.sort(function (a, b) {
+            return a[1] - b[1];
+        });
 
         if (this.unspecifiedCount > 0) {
             sortable.push(['Unspecified', this.unspecifiedCount]);
         }
-        
-        sortable.sort(function (a, b) {
-            return b[1] - a[1];
-        });
 
         for (var key in sortable) {
             this.themesWithCount.push({
@@ -856,6 +819,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         if (!this.isActive) {
             this.filterMode.emit("collapsed");
             this.filterClass = "collapsedFilter";
+            this.comheight = this.parent.clientHeight + 'px';
         } else {
             this.filterMode.emit('normal');
             this.filterClass = "normalFilter";

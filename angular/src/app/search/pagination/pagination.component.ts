@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter, Inject } from '@angular/core';
 import * as _ from 'lodash';
+import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 
 @Component({
   selector: 'app-pagination',
@@ -9,36 +10,81 @@ import * as _ from 'lodash';
 export class PaginationComponent implements OnInit {
     // pager object
     pager: any = {};
+    prevPage: number = 1;
+    startPage: number = 0;
+    endPage: number = 0;
+    currentPage: number = 1;
 
     @Input() totalItems: number = 0;
-    @Input() currentPage: number = 1;
-    @Input() pageSize: number = 10;
-    @Input() startPage: number = 0;
-    @Input() endPage: number = 0;
-    @Output() currentPageOutput = new EventEmitter<number>();  // normal or collapsed
+    @Input() pageSize: number = 10; // Default page size is 10
+    // @Output() currentPageOutput = new EventEmitter<number>();  // Tell parent page the current page number
 
-    constructor() { }
+    constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService) { 
+
+    }
 
     ngOnInit() {
+        this.updatePager(this.currentPage);
+
+        this.searchService.watchCurrentPage((page) => {
+            if(!page) page=1;
+
+            if(this.currentPage == page){
+                return;
+            }else{
+                this.currentPage = page;
+                this.updatePager(this.currentPage);
+            }           
+        });
+
+        this.searchService.watchTotalItems((totalItems) => {
+            if(!totalItems) totalItems=0;
+
+            if(this.totalItems == totalItems){
+                return;
+            }else{
+                this.totalItems = totalItems;
+                this.updatePager(this.currentPage);
+            }           
+        });
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        this.pager.totalPages = this.totalItems;
-        this.setPage(this.currentPage);
-    }
-
-    setPage(page: number) {
+    /**
+     * Update the pager control based on the given page number
+     * @param page - page number to set to
+     */
+    updatePager(page: number) {
         if (page < 1 || page > this.pager.totalPages) {
             return;
         }
 
+        this.prevPage = page;
         // get pager object from service
         this.pager = this.getPager(page);
-        this.currentPageOutput.emit(page);
     }
 
-    getPager(currentPage: number){
+    /**
+     * Tell parent page which page to query
+     * @param page - page number to set to
+     */
+    setPage(page: number){
+        this.currentPage = page;
+        this.pager = this.getPager();
+        // this.currentPageOutput.emit(page);
+        this.searchService.setCurrentPage(page);
+    }
+
+    /**
+     * Return the pager object based on given page
+     * @param currentPage - current page number
+     */    
+    getPager(currentPage: number = this.currentPage){
         let totalPages = Math.ceil(this.totalItems / this.pageSize);
+
+        if(currentPage > totalPages) {
+            currentPage = 1;
+            this.currentPage = 1;
+        }
 
         let startPage: number, endPage: number;
 

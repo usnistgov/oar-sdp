@@ -18,7 +18,8 @@
     color:#337ab7;
     text-decoration:none;
     background-color:#fff;
-    border:1px solid #ddd
+    /* border:1px solid #ddd */
+    border:1px solid #fff
 }
 
 .pagination>li:first-child>a,.pagination>li:first-child>span{
@@ -36,7 +37,8 @@
     z-index:2;
     color:#23527c;
     background-color:#eee;
-    border-color:#ddd
+    border-color:#fff
+    /* border-color:#ddd */
 }
 
 .pagination>.active>a,.pagination>.active>a:focus,.pagination>.active>a:hover,.pagination>.active>span,.pagination>.active>span:focus,.pagination>.active>span:hover{
@@ -51,12 +53,13 @@
     color:#777;
     cursor:not-allowed;
     background-color:#fff;
-    border-color:#ddd
+    border-color:#fff
+    /* border-color:#ddd */
 }
 
 .pagination-lg>li>a,.pagination-lg>li>span{
     padding:10px 16px;
-    font-size:18px;
+    font-size:12px;
     line-height:1.3333333
 }
 

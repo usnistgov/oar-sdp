@@ -19,3 +19,35 @@
     width: 100%;
     text-align: center;
 }
+
+.lbl-display-fields {
+    width: 110%;
+    margin:0em -10px 10px -10px;
+    padding-left: 13px;
+    padding-right: 13px;
+    line-height: 30px;
+    text-align: left;
+    background-color: rgb(255, 226, 171);
+}
+
+.label {
+    display: inline-block;
+    max-width: 100%; 
+    margin-bottom: 5px;
+    font-weight: normal;
+    color: gray;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.title{
+  color:#1471AE;
+  font-size: 15px;
+}
+
+.controlBtn {
+    background-color: #606165;
+    font-weight: 700;
+    height: 2em;
+    max-width: 300px;
+}

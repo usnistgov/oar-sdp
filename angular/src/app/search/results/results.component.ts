@@ -1,10 +1,13 @@
-import { Component, OnInit, Inject, NgZone, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Inject, NgZone, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import * as _ from 'lodash';
 import { TaxonomyListService, SearchfieldsListService } from '../../shared/index';
 import { SelectItem } from 'primeng/primeng';
 import { SDPQuery } from '../../shared/search-query/query';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
+import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
+import { AppConfig, Config } from '../../shared/config-service/config-service.service';
+import { Message } from 'primeng/components/common/api';
 
 @Component({
   selector: 'app-results',
@@ -13,13 +16,11 @@ import { SearchQueryService } from '../../shared/search-query/search-query.servi
 })
 export class ResultsComponent implements OnInit {
     mobHeight: number;
-    mobWidth: number;
     ngZone: NgZone;
 
     totalCount: number = 0;
     itemsPerPage: number = 10;
     searchResults: any[];
-    filteredResult: any[];
     selectedFields: string[] = ['Resource Description', 'Subject keywords'];
     allChecked: boolean = false;
     fieldsArray: any[];
@@ -30,56 +31,87 @@ export class ResultsComponent implements OnInit {
     sortItemKey: string;
     currentFilter: string = "";
     currentSortOrder: string = "";
+    confValues: Config;
+    PDRAPIURL: string;
+    resultStatus: string;
+    RESULT_STATUS = {
+        'success': 'SUCCESS',
+        'noResult': 'NO RESULT',
+        'userError': 'USER ERROR',
+        'sysError': 'SYS ERROR'
+    }
+    exception: string;
+    errorMsg: string;
+    status: string;
+    msgs: Message[] = [];
+    queryStringErrorMessage: string;
+    queryStringError: boolean;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
     @Input() currentPage: number = 1;
+    @Input() mobWidth: number = 1920;
 
     constructor(
         @Inject(SEARCH_SERVICE) private searchService: SearchService,
         public searchFieldsListService: SearchfieldsListService,
-        public searchQueryService: SearchQueryService
+        public searchQueryService: SearchQueryService,
+        public gaService: GoogleAnalyticsService,
+        private appConfig: AppConfig,
+        public myElement: ElementRef
     ) { 
-        this.mobHeight = (window.innerHeight);
-        this.mobWidth = (window.innerWidth);
-
-        this.searchService.watchFilterString((filter) => {
-            if(!filter) filter="";
-
-            let lSearchValue = "";
-
-            if(this.searchValue)
-                lSearchValue = this.searchValue.replace(/  +/g, ' ');
-            
-            this.search(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields), null, 1, this.itemsPerPage, null,filter);
-        });
+        this.confValues = this.appConfig.getConfig();
+        this.PDRAPIURL = this.confValues.PDRAPI;
     }
 
     ngOnInit() {
+        this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+        if(this.queryStringErrorMessage != "")
+            this.queryStringError = true;
+
         this.searchFieldsListService.get().subscribe(
             fields => {
                 this.filterableFields = this.toSortItems(fields);
-                this.searchService.setQueryValue(this.searchValue, '', '');
-
-                let lSearchValue = this.searchValue.replace(/  +/g, ' ');
 
                 //Convert to a query then search
-                this.search(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields), null, 1, this.itemsPerPage);
+                this.search(null, 1, this.itemsPerPage);
             },
             error => {
                 this.errorMessage = <any>error
             }
         );
+
+        this.searchService.watchCurrentPage((page) => {
+            if(!page) page=1;
+
+            if(this.currentPage == page){
+                return;
+            }else{
+                this.currentPage = page;
+                this.getCurrentPage(page);
+            }           
+        });
+
+        this.searchService.watchFilterString((filter) => {
+            if(!filter) filter="";
+
+            this.currentFilter = filter;       
+            this.search(null, null, this.itemsPerPage);
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.searchValue && changes.searchValue.currentValue!=undefined) {
-            this.searchService.setQueryValue(this.searchValue, '', '');
-            let lSearchValue = this.searchValue.replace(/  +/g, ' ');
-            this.search(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields), null, 1, this.itemsPerPage);
+            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+            this.queryStringError = this.queryStringErrorMessage != "";
+            this.search(null, 1, this.itemsPerPage);
         }
     }
 
+    /**
+     * Request the given page of the search result
+     * @param currentPage - page requested. If missing, this.currentPage will be used.
+     */
     getCurrentPage(currentPage?: number){
         if(!currentPage)
             currentPage = this.currentPage;
@@ -92,15 +124,14 @@ export class ResultsComponent implements OnInit {
 
             this.currentPage = currentPage;
         }
+        this.search(null, currentPage, this.itemsPerPage);
 
-
-        this.searchService.setQueryValue(this.searchValue, '', '');
-        let lSearchValue = this.searchValue.replace(/  +/g, ' ');
-        this.search(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields), null, currentPage, this.itemsPerPage);
+        // Scroll to the top of the page (in case user clicked on the pagination control at the bottom)
+        window.scrollTo(0, 0);
     }
 
     /**
-     * Advanced Search fields dropdown
+     * Generate the dropdown list for the sortBy option in Customize View
      */
     toSortItems(fields: any[]) {
         this.fieldsArray = fields;
@@ -154,93 +185,94 @@ export class ResultsComponent implements OnInit {
     }
 
     /**
-     * call the Search service with parameters
+     * Call the Search service to return only given page of the results. 
+     * This function uses this.searchValue and append the given filter and searchTaxonomyKey for search.
+     * @param searchTaxonomyKey - Taxonomy key for search
+     * @param page - which page to return
+     * @param pageSize - number of result per page
+     * @param sortOrder - sort order
+     * @param filter - additional filter that applys to regular search
      */
-    search(query: SDPQuery, searchTaxonomyKey?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string) {
+    search(searchTaxonomyKey?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string) {
+        // Reset current page every time a new search starts
+        this.currentPage = page? page : 1;
+
+        this.searchService.setQueryValue(this.searchValue, '', '');
+        let lSearchValue = this.searchValue? this.searchValue.replace(/  +/g, ' ') : "";
+
+        let query = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
+
         let that = this;
-        let lFilter = filter;
-        let lSortOrder = sortOrder;
+        this.currentFilter = (filter == "NoFilter")? "" : filter? filter : this.currentFilter;
+        this.currentSortOrder = sortOrder? sortOrder : this.currentSortOrder;
 
-        if(filter == "NoFilter"){
-            lFilter = "";
-            this.currentFilter = "";
-        }else{
-            if(!filter)
-                lFilter = this.currentFilter;
-            else    
-                this.currentFilter = filter;
-        }
-
-        if(!sortOrder) lSortOrder = this.currentSortOrder;
-
-        return this.searchService.searchPhrase(query, searchTaxonomyKey, null, page, pageSize, lSortOrder, lFilter)
+        return this.searchService.searchPhrase(query, searchTaxonomyKey, null, this.currentPage, pageSize, this.currentSortOrder, this.currentFilter)
         .subscribe(
             searchResults => {
                 that.searchResults = searchResults.ResultData;
-                // this.filterResult();
-                this.totalCount = searchResults.ResultCount;
-            }
+                that.totalCount = searchResults.ResultCount;
+                that.resultStatus = this.RESULT_STATUS.success;
+                that.searchService.setTotalItems(that.totalCount);
+            },
+            error => that.onError(error)
         );
     }
 
-    filterResult(){
-        let filterArray = this.currentFilter.split("&");
-        let topicArray: string[];
-        let topics: string;
-        let topicFilter: boolean = false;
+        /**
+     * If search is unsuccessful push the error message
+     */
+    onError(error: any[]) {
+        this.searchResults = [];
+        this.msgs = [];
 
-        for(let i = 0; i < filterArray.length; i++){
-            if(filterArray[i].indexOf("topic.tag") > 0){
-                topicArray = filterArray[i].split("=")[1].split(",");
-                topicFilter = true;
-                break;
-            }
-        }
-
-        if(topicFilter){
-            for (let resultItem of this.searchResults) {
-                let tempTopicArray: string[] = [];
-
-                if (typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
-                    for (let topic of resultItem.topic) {
-                        topics = _.split(topic.tag, ':')[0];
-
-                        if(tempTopicArray.indexOf(topics) < 0){
-                            this.filteredResult.push(resultItem);
-                        }
-                    }
-                }
-            }
+        if((<any>error).status == 400){
+            this.resultStatus = this.RESULT_STATUS.userError;
         }else{
-            this.filteredResult = this.searchResults;
+            this.resultStatus = this.RESULT_STATUS.sysError;
         }
 
-        // this.totalCount = this.filteredResult.ResultCount;
+        this.exception = (<any>error).ex;
+        this.errorMsg = (<any>error).message;
+        this.status = (<any>error).httpStatus;
+        this.msgs.push({ severity: 'error', summary: this.errorMsg + ':', detail: this.status + ' - ' + this.exception });
     }
 
+    /**
+     * Return class name based on given column number and window size
+     * @param column 
+     */
     flexgrow(column: number){
-        let lclass: string;
+        let lclass: string = "full-width";
+
         if(this.mobWidth > 1024 ) lclass = "flex-grow" + column;
         else lclass = "full-width";
 
         return lclass;
     }
 
+    /**
+     * Return the class for the top bar (total result, pagination and Customize View button)
+     */
     resultTopBarClass(){
         if(this.mobWidth > 1024 ) return "flex-container";
         else return "";
     }
 
     /**
-     * Reset the checkbox status to default
+     * Reset the checkbox status of the Customize View to default
+     * Also reset sort order to default ("")
      */
     ResetSelectedFields() {
         this.selectedFields = ['Resource Description', 'Subject keywords'];
         this.allChecked = false;
+        this.sortItemKey = null;
+        this.currentSortOrder = "";
+
+        this.search(null, this.currentPage, this.itemsPerPage);
     }
 
     /**
-     * Check all checkboxes
+     * Select all checkboxes
      */
     SelectAllFields() {
         this.selectedFields = [];
@@ -259,8 +291,10 @@ export class ResultsComponent implements OnInit {
         }
     }
 
+    /**
+     * Refresh (reload) the search result based on current sort order (when user set the sort order)
+     */
     SortByFields() {
-        console.log("this.sortItemKey", this.sortItemKey);
         this.currentSortOrder = this.sortItemKey;
         this.getCurrentPage();
     }
@@ -287,4 +321,18 @@ export class ResultsComponent implements OnInit {
         }
     }
 
+    customizeViewPosition(): string{
+        if(this.mobWidth > 1025){
+            return 'right';
+        }else{
+            return '';
+        }
+    }
+
+    /**
+     * Display the examples of adv search
+     */
+    showExamples(){
+        this.searchQueryService.setShowExamples(true);
+    }
 }

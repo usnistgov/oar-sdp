@@ -30,6 +30,8 @@ export class RealSearchService implements SearchService{
     }
 
     filterString = new BehaviorSubject<string>('');
+    currentPage = new BehaviorSubject<number>(1);
+    totalItems = new BehaviorSubject<number>(1);
 
     /**
      * Creates a new SearchService with the injected Http.
@@ -41,6 +43,34 @@ export class RealSearchService implements SearchService{
         private appConfig: AppConfig) {
         this.confValues = this.appConfig.getConfig();
         this.RMMAPIURL = this.confValues.RMMAPI;
+    }
+
+    /**
+     * Watch total items
+     */
+    watchTotalItems(subscriber){
+        return this.totalItems.subscribe(subscriber);
+    }
+
+    /**
+     * Set curent page
+     **/
+    setTotalItems(totalItems: number) {
+        this.totalItems.next(totalItems);
+    }
+
+    /**
+     * Watch current page
+     */
+    watchCurrentPage(subscriber){
+        return this.currentPage.subscribe(subscriber);
+    }
+
+    /**
+     * Set curent page
+     **/
+    setCurrentPage(page: number) {
+        this.currentPage.next(page);
     }
 
     /**
@@ -97,8 +127,10 @@ export class RealSearchService implements SearchService{
             keyString = '&topic.tag=' + searchTaxonomyKey;
         }
 
-        let url = this.RMMAPIURL + 'records?include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
+        // let url = this.RMMAPIURL + 'records?include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
         
+        let url = this.RMMAPIURL + 'records?';
+
         if(searchPhraseValue)
             url += "&" + searchPhraseValue.trim();
 
@@ -125,21 +157,9 @@ export class RealSearchService implements SearchService{
             url += "&" + filter.trim();
         }
 
-        // console.log('url', url);
+        console.log('url', url);
         return this.http.get(url);
     }
-
-    /**
-     * Returns an Observable for the HTTP GET request for the JSON resource.
-     * @return {string[]} The Observable for the HTTP request.
-     */
-    // simpleSearch(page: number, pageSize: number, sortOrder:string): Observable<any> {
-    //         let url = this.RMMAPIURL + 'records?include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&page=' + page + '&size=' + pageSize + '&sort.asc=' + sortOrder + '&exclude=_id';
-
-    //         console.log("simple http request...", url);
-    //         // console.log('url', url);
-    //         return this.http.get(url);
-    // }
 
     /**
      * Check if a string object is empty
