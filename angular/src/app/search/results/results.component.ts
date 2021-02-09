@@ -8,6 +8,8 @@ import { SearchQueryService } from '../../shared/search-query/search-query.servi
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
 import { Message } from 'primeng/components/common/api';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-results',
@@ -46,6 +48,7 @@ export class ResultsComponent implements OnInit {
     msgs: Message[] = [];
     queryStringErrorMessage: string;
     queryStringError: boolean;
+    private _routeParamsSubscription: Subscription;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -58,6 +61,7 @@ export class ResultsComponent implements OnInit {
         public searchQueryService: SearchQueryService,
         public gaService: GoogleAnalyticsService,
         private appConfig: AppConfig,
+        private router: ActivatedRoute,
         public myElement: ElementRef
     ) { 
         this.confValues = this.appConfig.getConfig();
@@ -65,6 +69,15 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
+            this.searchValue = params['q'];
+            this.searchTaxonomyKey = params['key'];
+
+            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+            this.queryStringError = this.queryStringErrorMessage != "";
+            this.search(null, 1, this.itemsPerPage);
+        });
+
         if(this.searchValue){
             this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
             if(this.queryStringErrorMessage != "")
@@ -95,15 +108,16 @@ export class ResultsComponent implements OnInit {
         });
 
         this.searchService.watchFilterString((filter) => {
-            if(!filter) filter="";
-
+            if(!filter) return;
+            
             this.currentFilter = filter;       
             this.search(null, null, this.itemsPerPage);
         });
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.searchValue && changes.searchValue.currentValue!=undefined) {
+        console.log("chnages", changes);
+        if (changes.searchValue.currentValue != this.searchValue) {
             this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
             this.queryStringError = this.queryStringErrorMessage != "";
             this.search(null, 1, this.itemsPerPage);
@@ -205,7 +219,7 @@ export class ResultsComponent implements OnInit {
         let query = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
 
         let that = this;
-        this.currentFilter = (filter == "NoFilter")? "" : filter? filter : this.currentFilter;
+        this.currentFilter = filter? filter : this.currentFilter;
         this.currentSortOrder = sortOrder? sortOrder : this.currentSortOrder;
 
         return this.searchService.searchPhrase(query, searchTaxonomyKey, null, this.currentPage, pageSize, this.currentSortOrder, this.currentFilter)

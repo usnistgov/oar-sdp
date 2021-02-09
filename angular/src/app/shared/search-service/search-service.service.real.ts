@@ -92,7 +92,6 @@ export class RealSearchService implements SearchService{
      * @return {string[]} The Observable for the HTTP request.
      */
     searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string): Observable<any> {
-
         let searchPhraseValue = '';
         let finalKeyValueStr = '';
 
@@ -127,8 +126,8 @@ export class RealSearchService implements SearchService{
             keyString = '&topic.tag=' + searchTaxonomyKey;
         }
 
+        // Temprorarily comment out the following line because "include" and "exclude" does not work with searchphase at this moment:
         // let url = this.RMMAPIURL + 'records?include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
-        
         let url = this.RMMAPIURL + 'records?';
 
         if(searchPhraseValue)
@@ -153,11 +152,11 @@ export class RealSearchService implements SearchService{
         if(keyString)
             url += "&" + keyString.trim();
             
-        if(filter){
+        if(filter && filter != "NoFilter"){
             url += "&" + filter.trim();
         }
 
-        console.log('url', url);
+        // console.log('url', url);
         return this.http.get(url);
     }
 

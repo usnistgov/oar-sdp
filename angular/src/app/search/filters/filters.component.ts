@@ -340,11 +340,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             }];
         }
         this.authors = this.collectAuthors(searchResults);
-
-        this.filterResults('', '');
         this.searching = false;
-
-        // console.log("this.searchResult", this.searchResults);
     }
 
     /**

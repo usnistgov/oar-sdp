@@ -36,7 +36,7 @@
         <!-- Top bar -->
         <div [ngClass]="resultTopBarClass()" style="width: 100%;">
             <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
-                &nbsp;&nbsp;{{totalCount}} records found</div>
+                &nbsp;&nbsp;{{totalItems}} records found</div>
 
             <!-- Pagination -->
             <div [ngClass]="flexgrow(8)" style="padding:0px 10px 0px 10px;margin: -1em 0em;">
@@ -189,12 +189,12 @@
         <!-- Bottom bar -->
         <div [ngClass]="resultTopBarClass()" style="width: 100%;margin-bottom: 1em;">
             <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
-                &nbsp;&nbsp;{{totalCount}} records found</div>
+                &nbsp;&nbsp;{{totalItems}} records found</div>
 
             <!-- Pagination -->
             <div [ngClass]="flexgrow(8)" style="padding:0px 10px 0px 10px;margin: -1em 0em;">
                 <!-- <app-pagination [totalItems]="totalCount" (currentPageOutput)="getCurrentPage($event)"></app-pagination> -->
-                <app-pagination [totalItems]="totalCount"></app-pagination>
+                <app-pagination [totalItems]="totalItems"></app-pagination>
             </div>
 
             <div [ngClass]="flexgrow(1)" style="padding:10px 10px 5px 0px;">
