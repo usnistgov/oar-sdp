@@ -4,7 +4,7 @@
 
         <div #parentDiv style="background-color: white; color: black;align-content: center;" [ngStyle]="{'display': getDisplayStyle()}">
             <div class="filter" [ngStyle]="{'width': filterWidth + 'px'}" (window:resize)="onResize($event)">
-                <app-filters [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" (filterMode)="updateWidth($event)"></app-filters>
+                <app-filters [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" (filterMode)="updateWidth($event)"></app-filters>
             </div>
             <div #results class="search-result" [ngStyle]="{'width': resultWidth() + 'px'}">
                 <app-results [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [currentPage]="page" [mobWidth]="mobWidth"></app-results>

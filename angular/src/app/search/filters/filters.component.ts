@@ -1,12 +1,10 @@
 import { Component, OnInit, Inject, Input, AfterViewInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { SelectItem, TreeNode } from 'primeng/primeng';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from 'primeng/components/common/api';
 import { SDPQuery } from '../../shared/search-query/query';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
 import { TaxonomyListService, SearchfieldsListService } from '../../shared/index';
-import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 @Component({
@@ -62,16 +60,13 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     status: string;
     filterableFields: SelectItem[];
     fieldsArray: any[];
-    searchValue: string;
     fields: SelectItem[] = [];
     searchResType: string;
     searchResTopics: string;
     searchRecord: string;
     searchAuthors: string;
     searchKeywords: string;
-    searchTaxonomyKey: string;
     displayFields: string[] = [];
-    private _routeParamsSubscription: Subscription;
     queryAdvSearch: string;
     page: number = 1;
     isActive: boolean = true;
@@ -103,14 +98,14 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     exception: string;
     errorMsg: string;
 
+    @Input() searchValue: string;
+    @Input() searchTaxonomyKey: string;
     @Input() parent: HTMLElement; // parent div
     @Input() filterWidthNum: number;
     @Input() mobileMode: boolean = false;
     @Output() filterMode = new EventEmitter<string>();  // normal or collapsed
 
     constructor(
-        private actualRouter: Router,
-        private router: ActivatedRoute,
         @Inject(SEARCH_SERVICE) private searchService: SearchService,
         public searchQueryService: SearchQueryService,
         public taxonomyListService: TaxonomyListService,
@@ -120,26 +115,17 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        if (changes.searchValue.currentValue != changes.searchValue.previousValue || 
+            changes.searchTaxonomyKey.currentValue != changes.searchTaxonomyKey.previousValue) {
+            this.getFields();
+        }
     }
 
     ngOnInit() {
         this.msgs = [];
         this.searchResultsError = [];
     
-        // this.getTaxonomySuggestions();
-        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-            this.searchValue = params['q'];
-            this.searchTaxonomyKey = params['key'];
-            this.queryAdvSearch = params['queryAdvSearch'];
-            this.page = params['page'];
-            this.searchResType = params['resType'];
-            this.searchResTopics = params['themes'];
-            this.searchRecord = params['compType'];
-            this.searchAuthors = params['authors'];
-            this.searchKeywords = params['keywords'];
-    
-            this.getFields();
-        });
+        this.getFields();
     }
 
     ngAfterViewInit() {
@@ -202,8 +188,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         setTimeout(() => {
             this.searching = false;
-        }, 10000)
-
+        }, 20000)
     }
 
     /**

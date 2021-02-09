@@ -1,15 +1,12 @@
-import { Component, OnInit, Inject, NgZone, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, NgZone, Input, SimpleChanges, ElementRef } from '@angular/core';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import * as _ from 'lodash';
-import { TaxonomyListService, SearchfieldsListService } from '../../shared/index';
+import { SearchfieldsListService } from '../../shared/index';
 import { SelectItem } from 'primeng/primeng';
-import { SDPQuery } from '../../shared/search-query/query';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
 import { Message } from 'primeng/components/common/api';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-results',
@@ -20,7 +17,7 @@ export class ResultsComponent implements OnInit {
     mobHeight: number;
     ngZone: NgZone;
 
-    totalItems: number = 0;
+    totalItems: number;
     itemsPerPage: number = 10;
     searchResults: any[];
     selectedFields: string[] = ['Resource Description', 'Subject keywords'];
@@ -48,7 +45,6 @@ export class ResultsComponent implements OnInit {
     msgs: Message[] = [];
     queryStringErrorMessage: string;
     queryStringError: boolean;
-    private _routeParamsSubscription: Subscription;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -61,7 +57,6 @@ export class ResultsComponent implements OnInit {
         public searchQueryService: SearchQueryService,
         public gaService: GoogleAnalyticsService,
         private appConfig: AppConfig,
-        private router: ActivatedRoute,
         public myElement: ElementRef
     ) { 
         this.confValues = this.appConfig.getConfig();
@@ -69,15 +64,6 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
-            this.searchValue = params['q'];
-            this.searchTaxonomyKey = params['key'];
-
-            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
-            this.queryStringError = this.queryStringErrorMessage != "";
-            this.search(null, 1, this.itemsPerPage);
-        });
-
         if(this.searchValue){
             this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
             if(this.queryStringErrorMessage != "")
@@ -116,8 +102,7 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log("chnages", changes);
-        if (changes.searchValue.currentValue != this.searchValue) {
+        if (changes.searchValue.currentValue != changes.searchValue.previousValue) {
             this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
             this.queryStringError = this.queryStringErrorMessage != "";
             this.search(null, 1, this.itemsPerPage);
@@ -234,8 +219,8 @@ export class ResultsComponent implements OnInit {
         );
     }
 
-        /**
-     * If search is unsuccessful push the error message
+    /**
+     * If search is unsuccessful get the error message
      */
     onError(error: any[]) {
         this.searchResults = [];
@@ -337,6 +322,11 @@ export class ResultsComponent implements OnInit {
         }
     }
 
+    /**
+     * Return the position of the Customize View button based on the window size
+     * If window width > 1025, float to right (in the same line as pagination)
+     * If window width <= 1025, display nutton in a new line and centered.
+     */
     customizeViewPosition(): string{
         if(this.mobWidth > 1025){
             return 'right';

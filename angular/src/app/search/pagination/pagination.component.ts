@@ -53,7 +53,7 @@ export class PaginationComponent implements OnInit {
      * @param page - page number to set to
      */
     updatePager(page: number) {
-        if (page < 1 || page > this.pager.totalPages) {
+        if (page < 1) {
             return;
         }
 

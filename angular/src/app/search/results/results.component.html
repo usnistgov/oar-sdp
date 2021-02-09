@@ -1,7 +1,7 @@
 <div style="padding-left: .5em;">
 
     <!-- Handle no search result -->
-    <div *ngIf="resultStatus == RESULT_STATUS.noResult">
+    <div *ngIf="resultStatus == RESULT_STATUS.noResult || totalItems == 0">
         <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
 
             There are no records that match your search query. 
@@ -32,7 +32,7 @@
         <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
     </div>
 
-    <div *ngIf="resultStatus == RESULT_STATUS.success">
+    <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0">
         <!-- Top bar -->
         <div [ngClass]="resultTopBarClass()" style="width: 100%;">
             <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
