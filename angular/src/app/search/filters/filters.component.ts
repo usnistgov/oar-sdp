@@ -143,7 +143,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.comwidth = this.parent.clientWidth + 'px';
+        if(this.parent)
+            this.comwidth = this.parent.clientWidth + 'px';
+        else
+            this.comwidth = '400px';
     }
 
     /**

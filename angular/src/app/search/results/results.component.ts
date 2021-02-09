@@ -18,7 +18,7 @@ export class ResultsComponent implements OnInit {
     mobHeight: number;
     ngZone: NgZone;
 
-    totalCount: number = 0;
+    totalItems: number = 0;
     itemsPerPage: number = 10;
     searchResults: any[];
     selectedFields: string[] = ['Resource Description', 'Subject keywords'];
@@ -65,9 +65,11 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
-        if(this.queryStringErrorMessage != "")
-            this.queryStringError = true;
+        if(this.searchValue){
+            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+            if(this.queryStringErrorMessage != "")
+                this.queryStringError = true;
+        }
 
         this.searchFieldsListService.get().subscribe(
             fields => {
@@ -116,7 +118,7 @@ export class ResultsComponent implements OnInit {
         if(!currentPage)
             currentPage = this.currentPage;
         else{
-            let totalPages = Math.ceil(this.totalCount/this.itemsPerPage);
+            let totalPages = Math.ceil(this.totalItems/this.itemsPerPage);
 
             if(currentPage > totalPages){
                 currentPage = totalPages;
@@ -210,9 +212,9 @@ export class ResultsComponent implements OnInit {
         .subscribe(
             searchResults => {
                 that.searchResults = searchResults.ResultData;
-                that.totalCount = searchResults.ResultCount;
+                that.totalItems = searchResults.ResultCount;
                 that.resultStatus = this.RESULT_STATUS.success;
-                that.searchService.setTotalItems(that.totalCount);
+                that.searchService.setTotalItems(that.totalItems);
             },
             error => that.onError(error)
         );

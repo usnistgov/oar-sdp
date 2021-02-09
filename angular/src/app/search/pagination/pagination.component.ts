@@ -17,7 +17,6 @@ export class PaginationComponent implements OnInit {
 
     @Input() totalItems: number = 0;
     @Input() pageSize: number = 10; // Default page size is 10
-    // @Output() currentPageOutput = new EventEmitter<number>();  // Tell parent page the current page number
 
     constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService) { 
 
