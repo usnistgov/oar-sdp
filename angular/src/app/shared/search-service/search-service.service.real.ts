@@ -126,8 +126,6 @@ export class RealSearchService implements SearchService{
             keyString = '&topic.tag=' + searchTaxonomyKey;
         }
 
-        // Temprorarily comment out the following line because "include" and "exclude" does not work with searchphase at this moment:
-        // let url = this.RMMAPIURL + 'records?include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
         let url = this.RMMAPIURL + 'records?';
 
         if(searchPhraseValue)
@@ -156,7 +154,10 @@ export class RealSearchService implements SearchService{
             url += "&" + filter.trim();
         }
 
-        // console.log('url', url);
+        // only include the fields we need
+        url += '&include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
+
+        console.log('url', url);
         return this.http.get(url);
     }
 
