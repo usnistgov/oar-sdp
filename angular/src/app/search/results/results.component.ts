@@ -7,6 +7,7 @@ import { SearchQueryService } from '../../shared/search-query/search-query.servi
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
 import { Message } from 'primeng/components/common/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-results',
@@ -45,6 +46,7 @@ export class ResultsComponent implements OnInit {
     msgs: Message[] = [];
     queryStringErrorMessage: string;
     queryStringError: boolean;
+    subscription: Subscription = new Subscription();
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -70,7 +72,7 @@ export class ResultsComponent implements OnInit {
                 this.queryStringError = true;
         }
 
-        this.searchFieldsListService.get().subscribe(
+        this.subscription.add(this.searchFieldsListService.get().subscribe(
             fields => {
                 this.filterableFields = this.toSortItems(fields);
 
@@ -80,9 +82,9 @@ export class ResultsComponent implements OnInit {
             error => {
                 this.errorMessage = <any>error
             }
-        );
+        ));
 
-        this.searchService.watchCurrentPage((page) => {
+        this.subscription.add(this.searchService.watchCurrentPage((page) => {
             if(!page) page=1;
 
             if(this.currentPage == page){
@@ -91,14 +93,21 @@ export class ResultsComponent implements OnInit {
                 this.currentPage = page;
                 this.getCurrentPage(page);
             }           
-        });
+        }));
 
-        this.searchService.watchFilterString((filter) => {
+        this.subscription.add(this.searchService.watchFilterString((filter) => {
             if(!filter) return;
             
             this.currentFilter = filter;       
             this.search(null, null, this.itemsPerPage);
-        });
+        }));
+    }
+
+    /**
+     * On destroy, unsubscribe all subscriptions
+     */
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     ngOnChanges(changes: SimpleChanges) {

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter, Inject } from '@angular/core';
 import * as _ from 'lodash';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pagination',
@@ -14,6 +15,7 @@ export class PaginationComponent implements OnInit {
     startPage: number = 0;
     endPage: number = 0;
     currentPage: number = 1;
+    subscription: Subscription = new Subscription();
 
     @Input() totalItems: number = 0;
     @Input() pageSize: number = 10; // Default page size is 10
@@ -25,7 +27,7 @@ export class PaginationComponent implements OnInit {
     ngOnInit() {
         this.updatePager(this.currentPage);
 
-        this.searchService.watchCurrentPage((page) => {
+        this.subscription.add(this.searchService.watchCurrentPage((page) => {
             if(!page) page=1;
 
             if(this.currentPage == page){
@@ -34,9 +36,9 @@ export class PaginationComponent implements OnInit {
                 this.currentPage = page;
                 this.updatePager(this.currentPage);
             }           
-        });
+        }));
 
-        this.searchService.watchTotalItems((totalItems) => {
+        this.subscription.add(this.searchService.watchTotalItems((totalItems) => {
             if(!totalItems) totalItems=0;
 
             if(this.totalItems == totalItems){
@@ -45,7 +47,14 @@ export class PaginationComponent implements OnInit {
                 this.totalItems = totalItems;
                 this.updatePager(this.currentPage);
             }           
-        });
+        }));
+    }
+
+    /**
+     * On destroy, unsubscribe all subscriptions
+     */
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     /**
