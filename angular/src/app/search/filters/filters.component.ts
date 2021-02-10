@@ -254,7 +254,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         return this.searchService.searchPhrase(query, searchTaxonomyKey)
         .subscribe(
             searchResults => {
-            that.onSuccess(searchResults.ResultData);
+                that.onSuccess(searchResults.ResultData);
             },
             error => that.onError(error)
         );
@@ -282,6 +282,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         // collect Research topics with count
         this.collectThemesWithCount();
         this.components = this.collectComponents(searchResults);
+
         // collect Resource features with count
         this.collectComponentsWithCount();
         this.collectResourceTypesWithCount();
@@ -325,6 +326,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             }];
         }
         this.authors = this.collectAuthors(searchResults);
+        console.log("this.authors", this.authors)
         this.searching = false;
     }
 
