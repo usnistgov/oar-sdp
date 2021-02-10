@@ -326,7 +326,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             }];
         }
         this.authors = this.collectAuthors(searchResults);
-        console.log("this.authors", this.authors)
         this.searching = false;
     }
 

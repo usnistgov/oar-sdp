@@ -157,7 +157,7 @@ export class RealSearchService implements SearchService{
         // only include the fields we need
         url += '&include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
 
-        console.log('url', url);
+        // console.log('url', url);
         return this.http.get(url);
     }
 
