@@ -111,10 +111,12 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.searchValue.currentValue != changes.searchValue.previousValue) {
-            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
-            this.queryStringError = this.queryStringErrorMessage != "";
-            this.search(null, 1, this.itemsPerPage);
+        if(changes.searchValue != undefined && changes.searchValue != null){
+            if (changes.searchValue.currentValue != changes.searchValue.previousValue) {
+                this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+                this.queryStringError = this.queryStringErrorMessage != "";
+                this.search(null, 1, this.itemsPerPage);
+            }
         }
     }
 

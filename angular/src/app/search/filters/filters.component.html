@@ -36,13 +36,13 @@
                                 {{node.label.split("-")[1]}}</span>
                         </ng-template>
                     </p-tree>
-                    <div style="background-color: #F8F9F9"
+                    <div class="show-more-less"
                         *ngIf="moreResearchTopicsShowed == false && nodeExpanded == false && showMoreLink == true">
                         <a href="#" (click)="$event.preventDefault();moreResearchTopicsShowed = true; showMoreLink = false;nodeExpanded=true"
                             style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show
                             More...</a>
                     </div>
-                    <div style="background-color: #F8F9F9"
+                    <div class="show-more-less"
                         *ngIf="moreResearchTopicsShowed == true && nodeExpanded == true && showMoreLink == false">
                         <a href="#" (click)="$event.preventDefault();moreResearchTopicsShowed = false;showMoreLink = true; nodeExpanded=false"
                             style="background-color: #F8F9F9;color: #1f496e;padding-left: 50px;">Show

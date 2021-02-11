@@ -115,9 +115,11 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.searchValue.currentValue != changes.searchValue.previousValue || 
-            changes.searchTaxonomyKey.currentValue != changes.searchTaxonomyKey.previousValue) {
-            this.getFields();
+        if(changes.searchValue != undefined && changes.searchValue != null){
+            if (changes.searchValue.currentValue != changes.searchValue.previousValue || 
+                changes.searchTaxonomyKey.currentValue != changes.searchTaxonomyKey.previousValue) {
+                this.getFields();
+            }
         }
     }
 
@@ -144,7 +146,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         if(this.moreResearchTopicsShowed){
             return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9'};
         }else{
-            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'max-height':'160px','overflow':'auto'};
+            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'max-height':'173px','overflow':'auto'};
         }       
     }
 
@@ -774,7 +776,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         }
         
         sortable.sort(function (a, b) {
-            return a[1] - b[1];
+            return b[1] - a[1];
         });
 
         if (this.unspecifiedCount > 0) {
