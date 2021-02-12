@@ -7,7 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
 
-fdescribe('FiltersComponent', () => {
+describe('FiltersComponent', () => {
     let component: FiltersComponent;
     let fixture: ComponentFixture<FiltersComponent>;
     let searchResult = require('../../../assets/sample02.json').ResultData;
@@ -58,8 +58,8 @@ fdescribe('FiltersComponent', () => {
         expect(component.componentsWithCount[1].label).toEqual("Access Page-1");
 
         expect(component.themesWithCount.length).toEqual(8);
-        expect(component.themesWithCount[0].label).toEqual("Mathematics and Statistics-1");
-        expect(component.themesWithCount[7].label).toEqual("Nanotechnology-6");
+        expect(component.themesWithCount[0].label).toEqual("Nanotechnology-6");
+        expect(component.themesWithCount[7].label).toEqual("Electronics-1");
 
         expect(component.resourceTypesWithCount.length).toEqual(2);
         expect(component.resourceTypesWithCount[0].label).toEqual("Public Data Resource-6");

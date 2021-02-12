@@ -72,8 +72,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     isActive: boolean = true;
     filterClass: string;
     resultsClass: string;
-    moreResearchTopicsShowed: boolean = false;
-    nodeExpanded: boolean = false;
+    nodeExpanded: boolean = true;
     comheight: string; // parent div height
     comwidth: string;  // parent div width
     filterStyle = {'width':'100%',
@@ -143,7 +142,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      * If user clicks on "Show less", set div height up to 160px. When overflow, display scroll bar.
      */
     getResearchTopicStyle(){
-        if(this.moreResearchTopicsShowed){
+        if(!this.showMoreLink){
             return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9'};
         }else{
             return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'max-height':'173px','overflow':'auto'};
