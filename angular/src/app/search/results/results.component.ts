@@ -47,6 +47,7 @@ export class ResultsComponent implements OnInit {
     queryStringErrorMessage: string;
     queryStringError: boolean;
     subscription: Subscription = new Subscription();
+    inited: boolean = false;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -97,10 +98,11 @@ export class ResultsComponent implements OnInit {
 
         this.subscription.add(this.searchService.watchFilterString((filter) => {
             if(!filter) return;
-            
             this.currentFilter = filter;       
             this.search(null, null, this.itemsPerPage);
         }));
+
+        this.inited = true;
     }
 
     /**
@@ -111,10 +113,14 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if(changes.searchValue != undefined && changes.searchValue != null){
+        if(this.inited && changes.searchValue != undefined && changes.searchValue != null){
             if (changes.searchValue.currentValue != changes.searchValue.previousValue) {
+                //When conduct a new search, clean up filters and error message
                 this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
                 this.queryStringError = this.queryStringErrorMessage != "";
+
+                this.currentFilter = "";
+                this.currentSortOrder = "";
                 this.search(null, 1, this.itemsPerPage);
             }
         }

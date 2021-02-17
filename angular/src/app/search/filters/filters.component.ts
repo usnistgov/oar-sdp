@@ -96,6 +96,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     errorMessage: string;
     exception: string;
     errorMsg: string;
+    inited: boolean = false;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -114,9 +115,12 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if(changes.searchValue != undefined && changes.searchValue != null){
+        if(this.inited && changes.searchValue != undefined && changes.searchValue != null){
             if (changes.searchValue.currentValue != changes.searchValue.previousValue || 
                 changes.searchTaxonomyKey.currentValue != changes.searchTaxonomyKey.previousValue) {
+
+                //Clear filters when we conduct a new search
+                this.clearFilters();
                 this.getFields();
             }
         }
@@ -125,8 +129,9 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.msgs = [];
         this.searchResultsError = [];
-    
+
         this.getFields();
+        this.inited = true;
     }
 
     ngAfterViewInit() {
@@ -187,9 +192,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.selectedThemesNode = [];
         this.selectedComponentsNode = [];
 
+        // Turn spinner off after 60 seconds (if still waiting for the result)
         setTimeout(() => {
             this.searching = false;
-        }, 20000)
+        }, 60000)
     }
 
     /**
@@ -282,6 +288,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         }
         // collect Research topics with count
         this.collectThemesWithCount();
+
         this.components = this.collectComponents(searchResults);
 
         // collect Resource features with count
@@ -327,6 +334,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             }];
         }
         this.authors = this.collectAuthors(searchResults);
+
         this.searching = false;
     }
 
@@ -383,6 +391,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Research topics
         if (this.selectedThemesNode.length > 0) {
+            if(lFilterString != '') lFilterString += "&";
+
             lFilterString += "topic.tag=";
 
             for (let theme of this.selectedThemesNode) {
@@ -400,6 +410,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Record has
         if (this.selectedComponentsNode.length > 0) {
+            if(lFilterString != '') lFilterString += "&";
+
             lFilterString += "components.@type=";
 
             for (let comp of this.selectedComponentsNode) {
@@ -417,6 +429,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Authors and contributors
         if (this.selectedAuthor.length > 0) {
+            if(lFilterString != '') lFilterString += "&";
+
             lFilterString += "contactPoint.fn=";
 
             for (let author of this.selectedAuthor) {
@@ -428,6 +442,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         // Keywords
         if (this.selectedKeywords.length > 0) {
+            if(lFilterString != '') lFilterString += "&";
+
             lFilterString += "keyword=";
 
             for (let keyword of this.selectedKeywords) {

@@ -130,15 +130,7 @@ export class RealSearchService implements SearchService{
 
         if(searchPhraseValue)
             url += "&" + searchPhraseValue.trim();
-
-        if(page){
-            url += '&page=' + page;
-            if(pageSize)
-                url += '&size=' + pageSize;
-            else //default
-                url += '&size=10';
-        }
-        
+       
         if(sortOrder){
             url += '&sort.asc=' + sortOrder;
         }
@@ -152,6 +144,14 @@ export class RealSearchService implements SearchService{
             
         if(filter && filter != "NoFilter"){
             url += "&" + filter.trim();
+        }
+
+        if(page){
+            url += '&page=' + page;
+            if(pageSize)
+                url += '&size=' + pageSize;
+            else //default
+                url += '&size=10';
         }
 
         // only include the fields we need
