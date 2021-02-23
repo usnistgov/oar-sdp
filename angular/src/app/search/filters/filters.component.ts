@@ -58,7 +58,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     searching: boolean = false;
     msgs: Message[] = [];
     status: string;
-    filterableFields: SelectItem[];
     fieldsArray: any[];
     fields: SelectItem[] = [];
     searchResType: string;
@@ -114,6 +113,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
     }
 
+    /**
+     * If search value changed, clear the filters and refresh the search result.
+     * @param changes - changed detected
+     */
     ngOnChanges(changes: SimpleChanges) {
         if(this.inited && changes.searchValue != undefined && changes.searchValue != null){
             if (changes.searchValue.currentValue != changes.searchValue.previousValue || 
@@ -134,6 +137,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.inited = true;
     }
 
+    /**
+     * After view init, make the filter width the same as parent div in the parent component
+     * Default width is 400px.
+     */
     ngAfterViewInit() {
         if(this.parent)
             this.comwidth = this.parent.clientWidth + 'px';
@@ -160,7 +167,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     getFields() {
         this.searchFieldsListService.get().subscribe(
             fields => {
-                this.filterableFields = this.toSortItems(fields);
+                this.toSortItems(fields);
                 this.searchService.setQueryValue(this.searchValue, '', '');
                 this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
                 if(! this.queryStringErrorMessage){ 
@@ -199,36 +206,29 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     }
 
     /**
-     * Advanced Search fields dropdown
+     * Sort the given fields and populate this.fields
+     * @param fields 
      */
     toSortItems(fields: any[]) {
         this.fieldsArray = fields;
-        let items: SelectItem[] = [];
         let sortItems: SelectItem[] = [];
-        this.displayFields = [];
         this.fields = [];
         let dupFound: boolean = false;
 
         for (let field of fields) {
             if (_.includes(field.tags, 'filterable')) {
                 if (field.type !== 'object') {
-                if (field.name !== 'component.topic.tag') {
-                    dupFound = false;
-                    for(let item of sortItems){
-                        if(item.label==field.label && item.value==field.name){
-                            dupFound = true;
-                            break;
-                        }
-                    }
-                    if(!dupFound)
-                        sortItems.push({ label: field.label, value: field.name });
-                }
-                if (field.label !== 'Resource Title') {
                     if (field.name !== 'component.topic.tag') {
-                        if(this.displayFields.indexOf(field.label) < 0)
-                            this.displayFields.push(field.label);
+                        dupFound = false;
+                        for(let item of sortItems){
+                            if(item.label==field.label && item.value==field.name){
+                                dupFound = true;
+                                break;
+                            }
+                        }
+                        if(!dupFound)
+                            sortItems.push({ label: field.label, value: field.name });
                     }
-                }
                 }
             }
 
@@ -248,8 +248,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         }
 
         this.fields = _.sortBy(this.fields, ['label','value']);
-
-        return sortItems;
     }
 
     /**
@@ -360,7 +358,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.searching = false;
     }
 
-    filterResults(event: any, type: string) {
+    /**
+     * Form the filter string and refresh the result page
+     */
+    filterResults() {
         let lFilterString: string = "";
         this.selectedThemes = [];
         this.selectedComponents = [];
@@ -581,7 +582,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         children: this.resourceTypesWithCount
         }];
 
-        this.filterResults('','')
+        this.filterResults()
     }
 
     /**

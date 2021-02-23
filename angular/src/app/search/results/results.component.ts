@@ -29,7 +29,7 @@ export class ResultsComponent implements OnInit {
     fields: SelectItem[] = [];
     errorMessage: string;
     sortItemKey: string;
-    currentFilter: string = "";
+    currentFilter: string = "NoFilter";
     currentSortOrder: string = "";
     confValues: Config;
     PDRAPIURL: string;
@@ -45,8 +45,10 @@ export class ResultsComponent implements OnInit {
     status: string;
     msgs: Message[] = [];
     queryStringErrorMessage: string;
-    queryStringError: boolean;
-    subscription: Subscription = new Subscription();
+    queryStringWarning: boolean;
+    filterSubscription: Subscription = new Subscription();
+    pageSubscription: Subscription = new Subscription();
+    searchSubscription: Subscription = new Subscription();
     inited: boolean = false;
 
     @Input() searchValue: string;
@@ -67,25 +69,27 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.currentPage = 1;
+
         if(this.searchValue){
             this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
             if(this.queryStringErrorMessage != "")
-                this.queryStringError = true;
+                this.queryStringWarning = true;
         }
 
-        this.subscription.add(this.searchFieldsListService.get().subscribe(
+        this.searchFieldsListService.get().subscribe(
             fields => {
                 this.filterableFields = this.toSortItems(fields);
 
                 //Convert to a query then search
-                this.search(null, 1, this.itemsPerPage);
+                this.searchSubscription = this.search(null, 1, this.itemsPerPage);
             },
             error => {
                 this.errorMessage = <any>error
             }
-        ));
+        );
 
-        this.subscription.add(this.searchService.watchCurrentPage((page) => {
+        this.pageSubscription = (this.searchService.watchCurrentPage().subscribe(page => {
             if(!page) page=1;
 
             if(this.currentPage == page){
@@ -96,10 +100,12 @@ export class ResultsComponent implements OnInit {
             }           
         }));
 
-        this.subscription.add(this.searchService.watchFilterString((filter) => {
-            if(!filter) return;
-            this.currentFilter = filter;       
-            this.search(null, null, this.itemsPerPage);
+        this.filterSubscription = (this.searchService.watchFilterString().subscribe(filter => {
+            if(!filter || this.currentFilter == filter) return;
+ 
+            this.currentFilter = filter; 
+
+            this.searchSubscription = this.search(null, null, this.itemsPerPage);
         }));
 
         this.inited = true;
@@ -109,19 +115,26 @@ export class ResultsComponent implements OnInit {
      * On destroy, unsubscribe all subscriptions
      */
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        if(this.filterSubscription) this.filterSubscription.unsubscribe();
+        if(this.pageSubscription) this.pageSubscription.unsubscribe();
+        if(this.searchSubscription) this.searchSubscription.unsubscribe();
     }
 
+    /**
+     * When search value changed, reset current filter and refresh search result
+     * @param changes 
+     */
     ngOnChanges(changes: SimpleChanges) {
         if(this.inited && changes.searchValue != undefined && changes.searchValue != null){
             if (changes.searchValue.currentValue != changes.searchValue.previousValue) {
                 //When conduct a new search, clean up filters and error message
                 this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
-                this.queryStringError = this.queryStringErrorMessage != "";
+                this.queryStringWarning = this.queryStringErrorMessage != "";
 
-                this.currentFilter = "";
+                this.currentFilter = "NoFilter";
                 this.currentSortOrder = "";
-                this.search(null, 1, this.itemsPerPage);
+
+                this.searchSubscription = this.search(null, 1, this.itemsPerPage);
             }
         }
     }
@@ -142,7 +155,8 @@ export class ResultsComponent implements OnInit {
 
             this.currentPage = currentPage;
         }
-        this.search(null, currentPage, this.itemsPerPage);
+
+        this.searchSubscription = this.search(null, currentPage, this.itemsPerPage);
 
         // Scroll to the top of the page (in case user clicked on the pagination control at the bottom)
         window.scrollTo(0, 0);
@@ -213,7 +227,7 @@ export class ResultsComponent implements OnInit {
      */
     search(searchTaxonomyKey?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string) {
         // Always unsubscribe before conduct a new search
-        this.subscription.unsubscribe();
+        if(this.searchSubscription) this.searchSubscription.unsubscribe();
         // Reset current page every time a new search starts
         this.currentPage = page? page : 1;
 
@@ -288,7 +302,7 @@ export class ResultsComponent implements OnInit {
         this.sortItemKey = null;
         this.currentSortOrder = "";
 
-        this.search(null, this.currentPage, this.itemsPerPage);
+        this.searchSubscription = this.search(null, this.currentPage, this.itemsPerPage);
     }
 
     /**

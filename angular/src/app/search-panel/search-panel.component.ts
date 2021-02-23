@@ -222,15 +222,15 @@ export class SearchPanelComponent implements OnInit {
      */
     onWindowResize(){
         if(this.mobWidth > 461){
-        this.searchBottonWith = "10%";
+            this.searchBottonWith = "10%";
         }else{
-        this.searchBottonWith = "100%";
+            this.searchBottonWith = "100%";
         }
 
         if(this.mobWidth > 750){
-        this.breadcrumb_top = '6em';
+            this.breadcrumb_top = '6em';
         }else{
-        this.breadcrumb_top = '3.5em';
+            this.breadcrumb_top = '3.5em';
         }
     }
 
@@ -239,18 +239,26 @@ export class SearchPanelComponent implements OnInit {
      */
     clearText() {
         var field = (<HTMLInputElement>document.getElementById('searchinput'));
+
         if (!Boolean(this._searchValue.trim())) {
-        field.value = ' ';
+            field.value = ' ';
         }
     }
 
+    /**
+     * Add place holder
+     */
     addPlaceholder() {
         var field = (<HTMLInputElement>document.getElementById('searchinput'));
+
         if (!Boolean(this._searchValue)) {
-        field.value = '';
+            field.value = '';
         }
     }
 
+    /**
+     * Get Taxonomy Suggestions
+     */
     getTaxonomySuggestions() {
         this.taxonomyListService.get()
         .subscribe(
@@ -285,9 +293,9 @@ export class SearchPanelComponent implements OnInit {
         return items;
     }
 
-
     /**
      * Filter keywords for suggestive search
+     * @param event 
      */
     filterTaxonomies(event: any) {
         let suggTaxonomy = event.query;
@@ -302,19 +310,18 @@ export class SearchPanelComponent implements OnInit {
 
     /**
      * Set the search parameters and redirect to search page
+     * @param searchValue 
+     * @param searchTaxonomyKey 
      */
     search(searchValue: string, searchTaxonomyKey: string) {
         this.searchTaxonomyKey = searchTaxonomyKey;
-        // this.validateQueryString(searchValue);
-        // if(!this.queryStringError){
 
         this.searchService.search(searchValue, this.router.url);
-
-        // }
     }
 
     /**
-     *  Pass Search example popup value to home screen
+     * Pass Search example popup value to home screen
+     * @param popupValue 
      */
     setSearchValue(popupValue: string) {
         this._searchValue = popupValue;
@@ -333,6 +340,11 @@ export class SearchPanelComponent implements OnInit {
         overlay2.show(event);
     }
 
+    /**
+     * Process input value (popup input dialog)
+     * @param inputValue 
+     * @param overlaypanel 
+     */
     processInputValue(inputValue: string, overlaypanel: OverlayPanel){
         let lQueryConstrain: string;
         let lInputValue = inputValue;
@@ -406,8 +418,10 @@ export class SearchPanelComponent implements OnInit {
         field = "";
     }
 
-    /*
+    /**
      * Popup dialog
+     * @param event 
+     * @param overlaypanel - which overlay to popup
      */
     showPopupDialog( event, overlaypanel: OverlayPanel ) {
         overlaypanel.toggle(event);
@@ -443,6 +457,8 @@ export class SearchPanelComponent implements OnInit {
 
     /**
      * Popup dialog to show query name entry
+     * @param event 
+     * @param overlaypanel 
      */
     showQueryNameDialog( event, overlaypanel: OverlayPanel ) {
         overlaypanel.toggle(event);
@@ -455,6 +471,8 @@ export class SearchPanelComponent implements OnInit {
     /**
      * Save the query string in the search box into query array
      * This will remote execute the save query function in adv-search component
+     * @param queryName 
+     * @param overlaypanel 
      */
     saveAdvQuery(queryName: string, overlaypanel: OverlayPanel){
         if(queryName){

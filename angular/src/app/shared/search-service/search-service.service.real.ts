@@ -46,15 +46,16 @@ export class RealSearchService implements SearchService{
     }
 
     /**
-     * Watch total items
+     * Watch total items (search result)
      */
-    watchTotalItems(subscriber){
-        return this.totalItems.subscribe(subscriber);
+    watchTotalItems(): Observable<any>{
+        return this.totalItems.asObservable();
     }
 
     /**
-     * Set curent page
-     **/
+     * Set total items (search result)
+     * @param page 
+     */
     setTotalItems(totalItems: number) {
         this.totalItems.next(totalItems);
     }
@@ -62,13 +63,14 @@ export class RealSearchService implements SearchService{
     /**
      * Watch current page
      */
-    watchCurrentPage(subscriber){
-        return this.currentPage.subscribe(subscriber);
+    watchCurrentPage(): Observable<any> {
+        return this.currentPage.asObservable();
     }
 
     /**
      * Set curent page
-     **/
+     * @param page 
+     */
     setCurrentPage(page: number) {
         this.currentPage.next(page);
     }
@@ -76,13 +78,14 @@ export class RealSearchService implements SearchService{
     /**
      * Watch the filter string
      */
-    watchFilterString(subscriber){
-        return this.filterString.subscribe(subscriber);
+    watchFilterString(): Observable<any>{
+        return this.filterString.asObservable();
     }
 
     /**
      * Set the filter string
-     **/
+     * @param filterString 
+     */
     setFilterString(filterString: string) {
         this.filterString.next(filterString);
     }
@@ -248,7 +251,9 @@ export class RealSearchService implements SearchService{
         }
 
         /**
-         * Start search
+         * Navigate to the search page with given search value
+         * @param searchValue 
+         * @param url 
          */
         public search(searchValue: string, url?: string) : void {
             let params: NavigationExtras = {

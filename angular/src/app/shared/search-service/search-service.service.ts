@@ -22,11 +22,11 @@ export interface SearchService {
 
   setQueryValue(queryString: string, searchTaxonomyKey: string, queryAdvSearch?: string): void;
 
-  watchFilterString(subscriber);
+  watchFilterString():Observable<any>;
   setFilterString(filterString: string);
-  watchCurrentPage(subscriber);
+  watchCurrentPage():Observable<any>;
   setCurrentPage(page: number);
-  watchTotalItems(subscriber);
+  watchTotalItems():Observable<any>;
   setTotalItems(page: number);
 }
 

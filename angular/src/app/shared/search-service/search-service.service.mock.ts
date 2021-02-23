@@ -57,8 +57,8 @@ export class MockSearchService implements SearchService{
     /**
      * Watch total items
      */
-    watchTotalItems(subscriber){
-        return this.totalItems.subscribe(subscriber);
+    watchTotalItems(): Observable<any>{
+        return this.totalItems.asObservable();
     }
 
     /**
@@ -71,8 +71,8 @@ export class MockSearchService implements SearchService{
     /**
      * Watch current page
      */
-    watchCurrentPage(subscriber){
-        return this.currentPage.subscribe(subscriber);
+    watchCurrentPage(): Observable<any> {
+        return this.currentPage.asObservable();
     }
 
     /**
@@ -85,8 +85,8 @@ export class MockSearchService implements SearchService{
     /**
      * Watch the filter string
      */
-    watchFilterString(subscriber){
-        return this.filterString.subscribe(subscriber);
+    watchFilterString(): Observable<any>{
+        return this.filterString.asObservable();
     }
 
     /**

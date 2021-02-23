@@ -14,10 +14,11 @@ export class PaginationComponent implements OnInit {
     prevPage: number = 1;
     startPage: number = 0;
     endPage: number = 0;
-    currentPage: number = 1;
+    // currentPage: number = 1;
     subscription: Subscription = new Subscription();
 
     @Input() totalItems: number = 0;
+    @Input() currentPage: number = 1;
     @Input() pageSize: number = 10; // Default page size is 10
 
     constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService) { 
@@ -27,7 +28,7 @@ export class PaginationComponent implements OnInit {
     ngOnInit() {
         this.updatePager(this.currentPage);
 
-        this.subscription.add(this.searchService.watchCurrentPage((page) => {
+        this.subscription.add(this.searchService.watchCurrentPage().subscribe(page => {
             if(!page) page=1;
 
             if(this.currentPage == page){
@@ -38,7 +39,7 @@ export class PaginationComponent implements OnInit {
             }           
         }));
 
-        this.subscription.add(this.searchService.watchTotalItems((totalItems) => {
+        this.subscription.add(this.searchService.watchTotalItems().subscribe(totalItems => {
             if(!totalItems) totalItems=0;
 
             if(this.totalItems == totalItems){
@@ -54,6 +55,8 @@ export class PaginationComponent implements OnInit {
      * On destroy, unsubscribe all subscriptions
      */
     ngOnDestroy(): void {
+        this.currentPage = 1;
+        this.setPage(1);
         this.subscription.unsubscribe();
     }
 
@@ -65,7 +68,6 @@ export class PaginationComponent implements OnInit {
         if (page < 1) {
             return;
         }
-
         this.prevPage = page;
         // get pager object from service
         this.pager = this.getPager(page);
@@ -79,6 +81,7 @@ export class PaginationComponent implements OnInit {
         this.currentPage = page;
         this.pager = this.getPager();
         // this.currentPageOutput.emit(page);
+
         this.searchService.setCurrentPage(page);
     }
 

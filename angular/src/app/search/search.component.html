@@ -2,13 +2,13 @@
     <app-search-panel title='' [subtitle]='false' [helpicon]='false' [advanceLink]='true'
         jumbotronPadding='1em 1em 0em 1em'></app-search-panel>
 
-        <div #parentDiv style="background-color: white; color: black;align-content: center;" [ngStyle]="{'display': getDisplayStyle()}">
-            <div class="filter" [ngStyle]="{'width': filterWidth + 'px'}" (window:resize)="onResize($event)">
-                <app-filters [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" (filterMode)="updateWidth($event)"></app-filters>
-            </div>
-            <div #results class="search-result" [ngStyle]="{'width': resultWidth() + 'px'}">
-                <app-results [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [currentPage]="page" [mobWidth]="mobWidth"></app-results>
-            </div>
+    <div #parentDiv style="background-color: white; color: black;align-content: center;" [ngStyle]="{'display': getDisplayStyle()}">
+        <div class="filter" [ngStyle]="{'width': filterWidth + 'px'}" (window:resize)="onResize($event)">
+            <app-filters [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" (filterMode)="updateWidth($event)"></app-filters>
         </div>
+        <div #results class="search-result" [ngStyle]="{'width': resultWidth() + 'px'}">
+            <app-results [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [currentPage]="page" [mobWidth]="mobWidth"></app-results>
+        </div>
+    </div>
 </div>
 

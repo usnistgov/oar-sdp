@@ -40,8 +40,7 @@
 
             <!-- Pagination -->
             <div [ngClass]="flexgrow(8)" style="padding:0px 10px 0px 10px;margin: -1em 0em;">
-                <!-- <app-pagination [totalItems]="totalCount" [currentPage]="currentPage" (currentPageOutput)="getCurrentPage($event)"></app-pagination> -->
-                <app-pagination [totalItems]="totalItems"></app-pagination>
+                <app-pagination [totalItems]="totalItems" [currentPage]="currentPage"></app-pagination>
             </div>
 
             <!-- Display Fields config -->
@@ -80,7 +79,7 @@
             </div>
         </div>
 
-        <div *ngIf="queryStringError" style="width: 100%;text-align: left;color: rgb(255, 162, 162);margin-left: 10px;" [innerHTML]="queryStringErrorMessage"> 
+        <div *ngIf="queryStringWarning" style="width: 100%;text-align: left;color: rgb(255, 162, 162);margin-left: 10px;" [innerHTML]="queryStringErrorMessage"> 
         </div>
 
         <!-- Search result -->
@@ -193,8 +192,7 @@
 
             <!-- Pagination -->
             <div [ngClass]="flexgrow(8)" style="padding:0px 10px 0px 10px;margin: -1em 0em;">
-                <!-- <app-pagination [totalItems]="totalCount" (currentPageOutput)="getCurrentPage($event)"></app-pagination> -->
-                <app-pagination [totalItems]="totalItems"></app-pagination>
+                <app-pagination [totalItems]="totalItems" [currentPage]="currentPage"></app-pagination>
             </div>
 
             <div [ngClass]="flexgrow(1)" style="padding:10px 10px 5px 0px;">

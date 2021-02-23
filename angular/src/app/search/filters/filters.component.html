@@ -25,8 +25,8 @@
                 <!-- Research topics -->
                 <div class="filter-checkbox" >
                     <p-tree header="test" id="themes" [value]="themesTree" selectionMode="checkbox" [style]="getResearchTopicStyle()" [(selection)]="selectedThemesNode"
-                        (onNodeUnselect)="filterResults($event,'')"
-                        (onNodeSelect)="filterResults($event,'')" 
+                        (onNodeUnselect)="filterResults()"
+                        (onNodeSelect)="filterResults()" 
                         (onNodeExpand)="nodeExpanded = true"
                         (onNodeCollapse)="nodeExpanded = false">
                         <ng-template let-node pTemplate="default">
@@ -48,8 +48,8 @@
                 <div class="filter-checkbox">
                     <p-tree [value]="resourceTypeTree" selectionMode="checkbox" [style]="ResourceTypeStyle"
                         [(selection)]="selectedResourceTypeNode" 
-                        (onNodeUnselect)="filterResults($event,'')"
-                        (onNodeSelect)="filterResults($event,'')">
+                        (onNodeUnselect)="filterResults()"
+                        (onNodeSelect)="filterResults()">
                         <ng-template let-node pTemplate="default">
                             <span> {{node.label.split("-")[0]}}&nbsp;</span>
                             <span class="w3-badge badge1" style="background-color: #1471AE;"
@@ -63,8 +63,8 @@
                 <div class="filter-checkbox">
                     <p-tree [value]="componentsTree" selectionMode="checkbox" [style]="{'width':'auto','padding-top': '.5em','padding-right': '.5em',
             'padding-bottom': '.5em','background-color': '#F8F9F9'}"
-                        [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults($event,'')"
-                        (onNodeSelect)="filterResults($event,'')">
+                        [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults()"
+                        (onNodeSelect)="filterResults()">
                         <ng-template let-node pTemplate="default">
                             <span> {{node.label.split("-")[0]}}&nbsp;</span>
                             <span class="w3-badge badge1" style="background-color: #1471AE"
@@ -84,8 +84,8 @@
                         <p-autoComplete [immutable]="true" [(ngModel)]="selectedAuthor"
                             inputId="suggestedauthor" [suggestions]="suggestedAuthors"
                             (completeMethod)="filterAuthors($event)" [multiple]="true"
-                            (onSelect)="filterResults($event,'')"
-                            (onUnselect)="filterResults($event,'')" [minLength]="1"
+                            (onSelect)="filterResults()"
+                            (onUnselect)="filterResults()" [minLength]="1"
                             [maxlength]="30" [style]="filterStyle">
                         </p-autoComplete>
                     </div>
@@ -100,8 +100,8 @@
                         <label for="keyword" class="hideLabel">Keyword</label>
                         <p-autoComplete inputId="keyword" [(ngModel)]="selectedKeywords"
                             [suggestions]="suggestedKeywords" (completeMethod)="filterKeywords($event)"
-                            [multiple]="true" (onSelect)="filterResults($event,'')"
-                            (onUnselect)="filterResults($event,'')" [minLength]="1"
+                            [multiple]="true" (onSelect)="filterResults()"
+                            (onUnselect)="filterResults()" [minLength]="1"
                             [maxlength]="30" [style]="filterStyle">
                         </p-autoComplete>
                     </div>
