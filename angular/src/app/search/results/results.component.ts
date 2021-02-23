@@ -212,6 +212,8 @@ export class ResultsComponent implements OnInit {
      * @param filter - additional filter that applys to regular search
      */
     search(searchTaxonomyKey?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string) {
+        // Always unsubscribe before conduct a new search
+        this.subscription.unsubscribe();
         // Reset current page every time a new search starts
         this.currentPage = page? page : 1;
 
