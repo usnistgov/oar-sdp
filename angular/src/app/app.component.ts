@@ -12,8 +12,6 @@ enum MenuOrientation {
   HORIZONTAL
 };
 
-declare var jQuery: any;
-
 @Component({
   selector: 'sdp-app',
   templateUrl: './app.component.html',

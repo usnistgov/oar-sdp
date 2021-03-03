@@ -109,6 +109,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.currentQuery = this.currentQueryInfo.query;
                 this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
                 this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+                if(!this.currentQuery) this.currentQuery = new SDPQuery();
+                if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
 
                 this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
                 // Update search box in the top search panel

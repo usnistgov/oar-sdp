@@ -1,0 +1,93 @@
+#filterHeader {
+    background-color: #606165;
+    border-bottom:.5px solid #e6e6e6;
+    width: 100%;
+    padding: .625em;
+    box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);
+}
+
+#filtersLabel {
+    color: #FFFFFF;
+    font-weight: 900;
+    text-decoration:none; 
+    padding-left: .5em;
+}
+
+.spinner {
+    position: relative;
+    width: 100%;
+    margin-top: 2em;
+}
+
+#clear-all {
+    float: right;
+    font-weight:900;
+    vertical-align: middle;
+    color: #FFFFFF
+}
+
+#activeFilter {
+    background-color: #F8F9F9;
+    padding: 0px 0px 0px 0px;
+}
+
+.rotate {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.rotatedFilter {
+    display: block; 
+    color: #fff; 
+    padding-left: .5em;
+    font-size: larger;
+}
+
+.collapsedFilter {
+    text-align:center;
+    padding: 0px 0px 0px .5em;
+    background-color: #696666;
+    color: #fff; 
+    width: 40px;
+    cursor: pointer;
+    padding-top: 2em;
+    border: 1px solid blue;
+}
+
+.normalFilter {
+    /* float: left; */
+    width: 100%;
+}
+
+.lbl-filter {
+    border-top:.5px solid #e6e6e6;
+    margin-top:1em;
+    background-color:#F8F9F9;
+    width: 100%;
+    padding-left: 1em;
+    padding-top:1em;
+}
+
+.filter-input {
+    background-color: #F8F9F9;
+    padding-left:15px;
+    padding-right:1.0em;
+}
+
+.filter-checkbox {
+    border-bottom:.5px solid #e6e6e6;
+    width: 100%;
+}
+
+.show-more-less {
+    color: #1E6BA1;
+    background-color: #F8F9F9; 
+    text-align: right;
+    padding-right: 20px;
+    width: 100%;
+    font-weight: 600;
+    cursor: pointer;
+}
