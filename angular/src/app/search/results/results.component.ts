@@ -69,7 +69,10 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("Search page init...")
         this.currentPage = 1;
+        this.currentFilter = "NoFilter";
+        this.currentSortOrder = "";
 
         if(this.searchValue){
             this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
@@ -101,10 +104,9 @@ export class ResultsComponent implements OnInit {
         }));
 
         this.filterSubscription = (this.searchService.watchFilterString().subscribe(filter => {
-            if(!filter || this.currentFilter == filter) return;
+            if(!filter || this.currentFilter == filter || !this.inited) return;
  
             this.currentFilter = filter; 
-
             this.searchSubscription = this.search(null, null, this.itemsPerPage);
         }));
 
@@ -235,10 +237,12 @@ export class ResultsComponent implements OnInit {
         let lSearchValue = this.searchValue? this.searchValue.replace(/  +/g, ' ') : "";
 
         let query = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
-
+        console.log('this.currentFilter', this.currentFilter);
         let that = this;
         this.currentFilter = filter? filter : this.currentFilter;
         this.currentSortOrder = sortOrder? sortOrder : this.currentSortOrder;
+        console.log('this.currentFilter', this.currentFilter);
+        console.log('this.currentSortOrder', this.currentSortOrder);
 
         return this.searchService.searchPhrase(query, searchTaxonomyKey, null, this.currentPage, pageSize, this.currentSortOrder, this.currentFilter)
         .subscribe(
