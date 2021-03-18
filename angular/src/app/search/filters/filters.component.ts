@@ -95,7 +95,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     errorMessage: string;
     exception: string;
     errorMsg: string;
-    inited: boolean = false;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -118,7 +117,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      * @param changes - changed detected
      */
     ngOnChanges(changes: SimpleChanges) {
-        if(this.inited && changes.searchValue != undefined && changes.searchValue != null){
+        if(changes.searchValue != undefined && changes.searchValue != null){
             if (changes.searchValue.currentValue != changes.searchValue.previousValue || 
                 changes.searchTaxonomyKey.currentValue != changes.searchTaxonomyKey.previousValue) {
 
@@ -134,7 +133,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.searchResultsError = [];
 
         this.getFields();
-        this.inited = true;
     }
 
     /**
