@@ -131,8 +131,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.msgs = [];
         this.searchResultsError = [];
-
-        this.getFields();
     }
 
     /**
