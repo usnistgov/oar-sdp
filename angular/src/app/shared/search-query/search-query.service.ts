@@ -238,7 +238,6 @@ export class SearchQueryService {
 
         //Reserve everything in quotes
         let quotes = queryString.match(/\"(.*?)\"/g);
-        
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""')
@@ -246,12 +245,14 @@ export class SearchQueryService {
             }
         }
 
+        // Translate the query string into a standard query string object
         let queryStringObject = this.parseQueryString(queryString);
-        //Restore everything in quotes to free text string
+
+        //Restore everything in quotes to free text string. Handle key-value pair later
         if(quotes){
             for(let i = 0; i < quotes.length; i++){
                 if(quotes[i] != '""'){
-                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
+                    queryStringObject.freeTextString = queryStringObject.freeTextString.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[0]);
                 }
             }
         }

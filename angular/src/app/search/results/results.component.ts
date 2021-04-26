@@ -69,6 +69,8 @@ export class ResultsComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("Search value", this.searchValue);
+
         this.currentPage = 1;
 
         if(this.searchValue){
@@ -134,6 +136,7 @@ export class ResultsComponent implements OnInit {
                 this.currentFilter = "NoFilter";
                 this.currentSortOrder = "";
 
+                console.log("Search value", this.searchValue);
                 this.searchSubscription = this.search(null, 1, this.itemsPerPage);
             }
         }
