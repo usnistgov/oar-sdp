@@ -1,65 +1,67 @@
 <nav class="navbar py-0 navbar-expand-md navbar-dark bg-dark py-md-0 navbar-custom">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleCollapsed()">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavDropdown" [ngClass]="{'collapse': collapsed}">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="/"><i class="faa faa-home" style="font-size: 23px;"></i></a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" (click)="toggleAbout()"> About </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': aboutCollapsed}">
-          <li><a class="dropdown-item" href="#" routerLink="/about" target='_self'>About NIST Data</a></li>
-          <li><a class="dropdown-item" href="#" routerLink="/policy" target='_self'>Policy</a></li>
-          <li><a class="dropdown-item" href="#" routerLink="/contactus" target='_self'>Help</a></li>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleCollapsed()">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown" [ngClass]="{'collapse': collapsed}">
+        <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/"><i class="faa faa-home" style="font-size: 23px;"></i></a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" (click)="toggleAbout()"> About </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': aboutCollapsed}">
+                <li><a class="dropdown-item" href="https://github.com/usnistgov/oar-developer/blob/master/RELEASE_NOTES.md" target='_blank'>Release Notes</a></li>
+                <li><a class="dropdown-item" href="#" routerLink="/about" target='_self'>About NIST Data</a></li>
+                <li><a class="dropdown-item" href="#" routerLink="/policy" target='_self'>Policy</a></li>
+                <li><a class="dropdown-item" href="#" routerLink="/contactus" target='_self'>Help</a></li>
+            </ul>
+        </li>
+        <li class="nav-item dropdown blurry">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" (click)="toggleKeyDatasets()"> Key Datasets </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': keyDatasetsCollapsed}">
+            <li><a class="dropdown-item" href="https://www.nist.gov/pml/atomic-spectra-database" target='_blank'>Atomic Spectroscopy
+                Database</a></li>
+            <li><a class="dropdown-item" href="https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database"
+                target='_blank'>Ballistics Toolmark</a></li>
+            <li><a class="dropdown-item" href="https://webbook.nist.gov/chemistry/" target='_blank'>Chemistry WebBook</a>
+            </li>
+            <li><a class="dropdown-item" href="https://dlmf.nist.gov/" target='_blank'>Digital Library of Mathematical
+                Functions</a></li>
+            <li><a class="dropdown-item" href="https://www.nist.gov/el/fire-research-division-73300/product-services/fire-web" target='_blank'>Fire Research</a></li>
+            <li><a class="dropdown-item" href="https://mgi.nist.gov/" target='_blank'>Materials Genome Initiative</a></li>
+            <li><a class="dropdown-item" href="https://nvd.nist.gov/" target='_blank'>National
+                Vulnerability Database</a></li>
+            <li><a class="dropdown-item" href="https://www.nist.gov/pml/productsservices/physical-reference-data"
+                target='_blank'>Physical Reference Data</a></li>
+            <li><a class="dropdown-item" href="https://nist.time.gov/" target='_blank'>Time</a></li>
+            <li><a class="dropdown-item" href="https://www.nist.gov/topics/disaster-failure-studies/world-trade-center-disaster-study/disaster-and-failure-studies" target='_blank'>World Trade Center Disaster
+                Investigation Material</a></li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="https://www.nist.gov/srd" target='_blank'>Standard Reference Data (SRDs) </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" (click)="toggleDeveloper()"> Tools </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': developerCollapsed}">
+                <li><a class="dropdown-item" href="https://github.com/usnistgov/oar-developer" target='_blank'>This Site code</a></li>
+                <li><a class="dropdown-item" href="#" routerLink="/api">APIs</a></li>
+                <li><a class="dropdown-item" href="https://code.nist.gov" target='_blank'>Open Source Code Portal</a></li>
+            </ul>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" (click)="toggleFindPapers()"> Find Papers </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': aboutFindPapers}">
+            <li><a class="dropdown-item" href="https://www.nist.gov/publications" target='_blank'>Search All Papers</a></li>
+            <li><a class="dropdown-item" href="https://www.nist.gov/nist-research-library/journal-research-nist" target='_blank'>JRes NIST</a></li>
+            <li><a class="dropdown-item" href="https://www.ncbi.nlm.nih.gov/pmc/funder/nist/" target='_blank'>NIST PubMed Central</a></li>
+            </ul>
+        </li>
         </ul>
-      </li>
-      <li class="nav-item dropdown blurry">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" (click)="toggleKeyDatasets()"> Key Datasets </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': keyDatasetsCollapsed}">
-          <li><a class="dropdown-item" href="https://www.nist.gov/pml/atomic-spectra-database" target='_blank'>Atomic Spectroscopy
-              Database</a></li>
-          <li><a class="dropdown-item" href="https://www.nist.gov/programs-projects/nist-ballistics-toolmark-database"
-              target='_blank'>Ballistics Toolmark</a></li>
-          <li><a class="dropdown-item" href="https://webbook.nist.gov/chemistry/" target='_blank'>Chemistry WebBook</a>
-          </li>
-          <li><a class="dropdown-item" href="https://dlmf.nist.gov/" target='_blank'>Digital Library of Mathematical
-              Functions</a></li>
-          <li><a class="dropdown-item" href="https://www.nist.gov/el/fire-research-division-73300/product-services/fire-web" target='_blank'>Fire Research</a></li>
-          <li><a class="dropdown-item" href="https://mgi.nist.gov/" target='_blank'>Materials Genome Initiative</a></li>
-          <li><a class="dropdown-item" href="https://nvd.nist.gov/" target='_blank'>National
-              Vulnerability Database</a></li>
-          <li><a class="dropdown-item" href="https://www.nist.gov/pml/productsservices/physical-reference-data"
-              target='_blank'>Physical Reference Data</a></li>
-          <li><a class="dropdown-item" href="https://nist.time.gov/" target='_blank'>Time</a></li>
-          <li><a class="dropdown-item" href="https://www.nist.gov/topics/disaster-failure-studies/world-trade-center-disaster-study/disaster-and-failure-studies" target='_blank'>World Trade Center Disaster
-              Investigation Material</a></li>
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="https://www.nist.gov/srd" target='_blank'>Standard Reference Data (SRDs) </a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" (click)="toggleDeveloper()"> Developer </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': developerCollapsed}">
-          <li><a class="dropdown-item" href="#" routerLink="/api">APIs</a></li>
-          <li><a class="dropdown-item" href="https://github.com/usnistgov/oar-developer" target='_blank'>GitHub (usnistgov)</a></li>
-        </ul>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" (click)="toggleFindPapers()"> Find Papers </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" [ngClass]="{'display': aboutFindPapers}">
-          <li><a class="dropdown-item" href="https://www.nist.gov/publications" target='_blank'>Search All Papers</a></li>
-          <li><a class="dropdown-item" href="https://www.nist.gov/nist-research-library/journal-research-nist" target='_blank'>JRes NIST</a></li>
-          <li><a class="dropdown-item" href="https://www.ncbi.nlm.nih.gov/pmc/funder/nist/" target='_blank'>NIST PubMed Central</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+    </div>
 </nav>
