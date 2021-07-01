@@ -34,7 +34,7 @@
     "core-js": "^2.5.4",
     "font-awesome": "^4.7.0",
     "jasmine": "^2.8.0",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "ngx-pagination": "^3.2.1",
     "popper.js": "^1.14.7",
     "primeicons": "^1.0.0",
