@@ -13,6 +13,8 @@ import { AdvSearchComponent } from '../adv-search/adv-search.component';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 import { Observable } from 'rxjs';
 import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/query';
+import { ReadVarExpr } from '@angular/compiler';
+import { find } from './autocomplete';
 
 @Component({
     selector: 'app-search-panel',
@@ -42,6 +44,8 @@ export class SearchPanelComponent implements OnInit {
     @Input() advanceLink: boolean;
     @Input() jumbotronPadding: string = '1em';
     @Input() homePage: boolean = false;
+    parsed_data_headers: any;
+    parsed_data: string[][];
     @Input() 
     set editmode(val: any) {
         this._editmode = val;
@@ -178,7 +182,6 @@ export class SearchPanelComponent implements OnInit {
         this.SDPAPI = this.confValues.SDPAPI;
         this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
         this.getTaxonomySuggestions();
-        // this.searchOperators();
     }
 
     /**
@@ -260,39 +263,20 @@ export class SearchPanelComponent implements OnInit {
      * Get Taxonomy Suggestions
      */
     getTaxonomySuggestions() {
-        this.taxonomyListService.get()
-        .subscribe(
-            taxonomies => this.suggestedTaxonomies = this.toTaxonomySuggestedItems(taxonomies),
-            error => this.errorMessage = <any>error
-        );
+        fetch("assets/parsed.csv").then(response => response.text()).then(data => {
+            var parsed_data = data.split("\r\n");
+            this.parsed_data = [];
+            parsed_data.forEach(row => {
+                if (row) {
+                    this.parsed_data.push(row.split(","));
+                }
+            })
+            this.parsed_data_headers = this.parsed_data.splice(0, 1)[0];
+            console.log(this.parsed_data)
+            console.log(this.parsed_data_headers)
+        })
     }
-
-    /**
-     * Generate suggested taxonomy items list from a given taxonomy list. It's basically the list 
-     * of the labels of the given taxonomy list.
-     * @param taxonomies taxonomy list
-     */
-    toTaxonomySuggestedItems(taxonomies: any[]) {
-        let items: string[] = [];
-        for (let taxonomy of taxonomies) {
-            items.push(taxonomy.label);
-        }
-        return items;
-    }
-
-    /**
-     * Generate a specific taxonomy items list from a given taxonomy list.
-     * @param taxonomies 
-     */
-    toTaxonomiesItems(taxonomies: any[]) {
-        let items: SelectItem[] = [];
-        items.push({ label: 'ALL RESEARCH', value: '' });
-        for (let taxonomy of taxonomies) {
-        items.push({ label: taxonomy.label, value: taxonomy.label });
-        }
-        return items;
-    }
-
+    
     /**
      * Filter keywords for suggestive search
      * @param event 
@@ -300,12 +284,9 @@ export class SearchPanelComponent implements OnInit {
     filterTaxonomies(event: any) {
         let suggTaxonomy = event.query;
         this.suggestedTaxonomyList = [];
-        for (let i = 0; i < this.suggestedTaxonomies.length; i++) {
-            let keyw = this.suggestedTaxonomies[i];
-            if (keyw.toLowerCase().indexOf(suggTaxonomy.trim().toLowerCase()) >= 0 && this.suggestedTaxonomyList.indexOf(keyw) < 0) {
-                this.suggestedTaxonomyList.push(keyw);
-            }
-        }
+        find(suggTaxonomy, this.parsed_data, this.parsed_data_headers).forEach(element => {
+            this.suggestedTaxonomyList.push(element[0])
+        });
     }
 
     /**
