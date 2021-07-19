@@ -39,10 +39,13 @@ function get_similarity(str1: String, str2: String) {
     var words2 = str2.split(" ");
 
     var total = 0;
+    if (words2.length < words1.length) {
+        return 0;
+    }
     words1.forEach(word1 => {
         var best = 0;
         words2.forEach(word2 => {
-            if (word1.indexOf(word2.substring(0, word2.length / 2)) == 0 || word2.indexOf(word1) == 0) {
+            if (word1.indexOf(word2.substring(0, word2.length / 2)) == 0 || word2.indexOf(word1) >= 0) {
                 var sim = distance(word1, word2);
             } else {
                 var sim = 0;
@@ -91,13 +94,15 @@ export function find(search_phrase: String, parsed_data: String[][], parsed_data
     });
 
     response.sort((elem1, elem2) => (elem2[1]["rank"] - elem1[1]["rank"]));
-    var i = 1;
+    var i = 0;
+    var responses_unique = new Set();
     while (true) {
         if (i >= response.length) break;
 
-        if (response[i - 1][0] == response[i][0]) {
+        if (responses_unique.has(response[i][0])) {
             response.splice(i, 1);
         } else {
+            responses_unique.add(response[i][0])
             i = i + 1;
         }
     }
