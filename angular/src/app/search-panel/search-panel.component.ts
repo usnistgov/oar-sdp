@@ -272,8 +272,6 @@ export class SearchPanelComponent implements OnInit {
                 }
             })
             this.parsed_data_headers = this.parsed_data.splice(0, 1)[0];
-            console.log(this.parsed_data)
-            console.log(this.parsed_data_headers)
         })
     }
     
