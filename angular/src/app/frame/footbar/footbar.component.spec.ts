@@ -6,25 +6,21 @@ import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('FootbarComponent', () => {
-  let component: FootbarComponent;
-  let fixture: ComponentFixture<FootbarComponent>;
+    let component: FootbarComponent;
+    let fixture: ComponentFixture<FootbarComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterModule, RouterTestingModule],
-      declarations: [ FootbarComponent ],
-      providers: [GoogleAnalyticsService]
-    })
-    .compileComponents();
-  }));
+    it('should contain expected content', async(() => {
+        TestBed.configureTestingModule({
+            imports: [RouterModule, RouterTestingModule],
+            declarations: [ FootbarComponent ],
+            providers: [GoogleAnalyticsService]
+        }).compileComponents();
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FootbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(FootbarComponent);
+        component = fixture.componentInstance;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        fixture.whenStable().then(() => {
+            expect(component).toBeDefined();
+        })
+    }));
 });
