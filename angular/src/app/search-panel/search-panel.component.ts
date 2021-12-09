@@ -263,7 +263,7 @@ export class SearchPanelComponent implements OnInit {
      * Get Taxonomy Suggestions
      */
     getTaxonomySuggestions() {
-        fetch("assets/parsed.csv").then(response => response.text()).then(data => {
+        fetch("assets/autocomplete/parmenides_terms.csv").then(response => response.text()).then(data => {
             var parsed_data = data.split("\r\n");
             this.parsed_data = [];
             parsed_data.forEach(row => {
