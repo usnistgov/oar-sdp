@@ -39,7 +39,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     private _routeParamsSubscription: Subscription;
 
     // injected as ViewChilds so that this class can send messages to it with a synchronous method call.
-    @ViewChild('parentDiv') filter : ElementRef;
+    @ViewChild('parentDiv', {static: false}) filter : ElementRef;
 
     /**
      * Creates an instance of the SearchComponent
@@ -118,7 +118,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             this._routeParamsSubscription.unsubscribe();
         }
     }
-    @ViewChild('results')
+    @ViewChild('results', {static: false})
     divResult: ElementRef;
 
     getHeight(){

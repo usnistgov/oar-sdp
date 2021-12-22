@@ -57,9 +57,9 @@ export class AppComponent implements AfterViewInit {
   confValues: Config;
   gaCode: string;
 
-  @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
+  @ViewChild('layoutContainer', {static: false}) layourContainerViewChild: ElementRef;
 
-  @ViewChild('layoutMenuScroller') layoutMenuScrollerViewChild: ElementRef;
+  @ViewChild('layoutMenuScroller', {static: false}) layoutMenuScrollerViewChild: ElementRef;
 
   constructor(
     public renderer: Renderer,

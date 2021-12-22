@@ -1,4 +1,4 @@
-import { SwitchView } from '@angular/common/src/directives/ng_switch';
+// import { SwitchView } from '@angular/common/src/directives/ng_switch';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 

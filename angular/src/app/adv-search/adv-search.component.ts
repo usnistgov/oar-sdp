@@ -55,12 +55,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     tobeRenamedQuery: SDPQuery;
     tempName: string;
 
-    @ViewChild('dataChanged') dataChanged: boolean = false; 
-    @ViewChild('field2') queryName: ElementRef;
-    @ViewChild('op1') op_confirm: OverlayPanel;
-    @ViewChild('op5') op: OverlayPanel;
-    @ViewChild('op6') op_rename: OverlayPanel;
-    @ViewChild('overlayTarget') overlayTarget: ElementRef;
+    @ViewChild('dataChanged', {static: false}) dataChanged: boolean = false; 
+    @ViewChild('field2', {static: false}) queryName: ElementRef;
+    @ViewChild('op1', {static: false}) op_confirm: OverlayPanel;
+    @ViewChild('op5', {static: false}) op: OverlayPanel;
+    @ViewChild('op6', {static: false}) op_rename: OverlayPanel;
+    @ViewChild('overlayTarget', {static: false}) overlayTarget: ElementRef;
 
     toggleOverlay = ({ originalEvent }) => this.op.toggle(originalEvent);
 

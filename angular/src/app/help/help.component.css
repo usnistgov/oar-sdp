@@ -23,7 +23,7 @@ div.sdp-help-page {
 }
 
 
-:host /deep/ .breadcrumb {
+:host ::ng-deep .breadcrumb {
   background-color: #153971;
 }
 

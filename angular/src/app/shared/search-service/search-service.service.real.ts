@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
+// import { URLSearchParams } from '@angular/http';
 import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import 'rxjs/operator/map';

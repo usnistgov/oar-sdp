@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { SearchComponent } from './search.component';
 import { ReadMoreComponent } from './search.readmorecomponent';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
@@ -20,7 +20,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 
 @NgModule({
     imports: [
-      HttpModule,
+      HttpClientModule,
       CommonModule, 
       SharedModule, 
       AccordionModule,

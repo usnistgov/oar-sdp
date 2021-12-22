@@ -96,11 +96,11 @@ export class SearchPanelComponent implements OnInit {
     queryStringError: boolean = false;
     queryStringErrorMessage: string = '';
 
-    @ViewChild('field') fieldElement: ElementRef;
-    @ViewChild('field2') queryName: ElementRef;
+    @ViewChild('field', {static: false}) fieldElement: ElementRef;
+    @ViewChild('field2', {static: false}) queryName: ElementRef;
 
     // injected as ViewChilds so that this class can call its public functions
-    @ViewChild(AdvSearchComponent)
+    @ViewChild(AdvSearchComponent, {static: false})
     private advSearchComp: AdvSearchComponent;
 
     get searchValue() : string { return this._searchValue};
