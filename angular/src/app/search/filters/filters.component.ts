@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject, Input, AfterViewInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { SelectItem, TreeNode } from 'primeng/primeng';
-import { Message } from 'primeng/components/common/api';
+import { SelectItem } from 'primeng';
+import {TreeNode} from 'primeng/api';
+// import { Message } from 'primeng/components/common/api';
+import { Message } from 'primeng';
 import { SDPQuery } from '../../shared/search-query/query';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';

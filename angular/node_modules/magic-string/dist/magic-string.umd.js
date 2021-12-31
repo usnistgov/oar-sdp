@@ -1,8 +1,8 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, global.MagicString = factory());
-}(this, function () { 'use strict';
+	(global.MagicString = factory());
+}(this, (function () { 'use strict';
 
 	var Chunk = function Chunk(start, end, content) {
 		this.start = start;
@@ -159,7 +159,11 @@
 		}
 	};
 
+	var charToInteger = {};
 	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+	for (var i = 0; i < chars.length; i++) {
+	    charToInteger[chars.charCodeAt(i)] = i;
+	}
 	function encode(decoded) {
 	    var sourceFileIndex = 0; // second field
 	    var sourceCodeLine = 0; // third field
@@ -339,23 +343,25 @@
 	};
 
 	Mappings.prototype.addUneditedChunk = function addUneditedChunk (sourceIndex, chunk, original, loc, sourcemapLocations) {
+			var this$1 = this;
+
 		var originalCharIndex = chunk.start;
 		var first = true;
 
 		while (originalCharIndex < chunk.end) {
-			if (this.hires || first || sourcemapLocations[originalCharIndex]) {
-				this.rawSegments.push([this.generatedCodeColumn, sourceIndex, loc.line, loc.column]);
+			if (this$1.hires || first || sourcemapLocations[originalCharIndex]) {
+				this$1.rawSegments.push([this$1.generatedCodeColumn, sourceIndex, loc.line, loc.column]);
 			}
 
 			if (original[originalCharIndex] === '\n') {
 				loc.line += 1;
 				loc.column = 0;
-				this.generatedCodeLine += 1;
-				this.raw[this.generatedCodeLine] = this.rawSegments = [];
-				this.generatedCodeColumn = 0;
+				this$1.generatedCodeLine += 1;
+				this$1.raw[this$1.generatedCodeLine] = this$1.rawSegments = [];
+				this$1.generatedCodeColumn = 0;
 			} else {
 				loc.column += 1;
-				this.generatedCodeColumn += 1;
+				this$1.generatedCodeColumn += 1;
 			}
 
 			originalCharIndex += 1;
@@ -366,14 +372,16 @@
 	};
 
 	Mappings.prototype.advance = function advance (str) {
+			var this$1 = this;
+
 		if (!str) { return; }
 
 		var lines = str.split('\n');
 
 		if (lines.length > 1) {
 			for (var i = 0; i < lines.length - 1; i++) {
-				this.generatedCodeLine++;
-				this.raw[this.generatedCodeLine] = this.rawSegments = [];
+				this$1.generatedCodeLine++;
+				this$1.raw[this$1.generatedCodeLine] = this$1.rawSegments = [];
 			}
 			this.generatedCodeColumn = 0;
 		}
@@ -488,6 +496,9 @@
 			cloned.sourcemapLocations[loc] = true;
 		});
 
+		cloned.intro = this.intro;
+		cloned.outro = this.outro;
+
 		return cloned;
 	};
 
@@ -543,6 +554,8 @@
 	};
 
 	MagicString.prototype.indent = function indent (indentStr, options) {
+			var this$1 = this;
+
 		var pattern = /^[^\r\n]/gm;
 
 		if (isObject(indentStr)) {
@@ -597,7 +610,7 @@
 
 				while (charIndex < end) {
 					if (!isExcluded[charIndex]) {
-						var char = this.original[charIndex];
+						var char = this$1.original[charIndex];
 
 						if (char === '\n') {
 							shouldIndentNextCharacter = true;
@@ -607,7 +620,7 @@
 							if (charIndex === chunk.start) {
 								chunk.prependRight(indentStr);
 							} else {
-								this._splitChunk(chunk, charIndex);
+								this$1._splitChunk(chunk, charIndex);
 								chunk = chunk.next;
 								chunk.prependRight(indentStr);
 							}
@@ -687,10 +700,12 @@
 	};
 
 	MagicString.prototype.overwrite = function overwrite (start, end, content, options) {
+			var this$1 = this;
+
 		if (typeof content !== 'string') { throw new TypeError('replacement content must be a string'); }
 
-		while (start < 0) { start += this.original.length; }
-		while (end < 0) { end += this.original.length; }
+		while (start < 0) { start += this$1.original.length; }
+		while (end < 0) { end += this$1.original.length; }
 
 		if (end > this.original.length) { throw new Error('end is out of bounds'); }
 		if (start === end)
@@ -783,8 +798,10 @@
 	};
 
 	MagicString.prototype.remove = function remove (start, end) {
-		while (start < 0) { start += this.original.length; }
-		while (end < 0) { end += this.original.length; }
+			var this$1 = this;
+
+		while (start < 0) { start += this$1.original.length; }
+		while (end < 0) { end += this$1.original.length; }
 
 		if (start === end) { return this; }
 
@@ -801,7 +818,7 @@
 			chunk.outro = '';
 			chunk.edit('');
 
-			chunk = end > chunk.end ? this.byStart[chunk.end] : null;
+			chunk = end > chunk.end ? this$1.byStart[chunk.end] : null;
 		}
 		return this;
 	};
@@ -858,11 +875,12 @@
 	};
 
 	MagicString.prototype.slice = function slice (start, end) {
+			var this$1 = this;
 			if ( start === void 0 ) start = 0;
 			if ( end === void 0 ) end = this.original.length;
 
-		while (start < 0) { start += this.original.length; }
-		while (end < 0) { end += this.original.length; }
+		while (start < 0) { start += this$1.original.length; }
+		while (end < 0) { end += this$1.original.length; }
 
 		var result = '';
 
@@ -919,15 +937,17 @@
 	};
 
 	MagicString.prototype._split = function _split (index) {
+			var this$1 = this;
+
 		if (this.byStart[index] || this.byEnd[index]) { return; }
 
 		var chunk = this.lastSearchedChunk;
 		var searchForward = index > chunk.end;
 
 		while (chunk) {
-			if (chunk.contains(index)) { return this._splitChunk(chunk, index); }
+			if (chunk.contains(index)) { return this$1._splitChunk(chunk, index); }
 
-			chunk = searchForward ? this.byStart[chunk.end] : this.byEnd[chunk.start];
+			chunk = searchForward ? this$1.byStart[chunk.end] : this$1.byEnd[chunk.start];
 		}
 	};
 
@@ -993,6 +1013,8 @@
 	};
 
 	MagicString.prototype.trimEndAborted = function trimEndAborted (charType) {
+			var this$1 = this;
+
 		var rx = new RegExp((charType || '\\s') + '+$');
 
 		this.outro = this.outro.replace(rx, '');
@@ -1006,13 +1028,13 @@
 
 			// if chunk was trimmed, we have a new lastChunk
 			if (chunk.end !== end) {
-				if (this.lastChunk === chunk) {
-					this.lastChunk = chunk.next;
+				if (this$1.lastChunk === chunk) {
+					this$1.lastChunk = chunk.next;
 				}
 
-				this.byEnd[chunk.end] = chunk;
-				this.byStart[chunk.next.start] = chunk.next;
-				this.byEnd[chunk.next.end] = chunk.next;
+				this$1.byEnd[chunk.end] = chunk;
+				this$1.byStart[chunk.next.start] = chunk.next;
+				this$1.byEnd[chunk.next.end] = chunk.next;
 			}
 
 			if (aborted) { return true; }
@@ -1027,6 +1049,8 @@
 		return this;
 	};
 	MagicString.prototype.trimStartAborted = function trimStartAborted (charType) {
+			var this$1 = this;
+
 		var rx = new RegExp('^' + (charType || '\\s') + '+');
 
 		this.intro = this.intro.replace(rx, '');
@@ -1040,11 +1064,11 @@
 
 			if (chunk.end !== end) {
 				// special case...
-				if (chunk === this.lastChunk) { this.lastChunk = chunk.next; }
+				if (chunk === this$1.lastChunk) { this$1.lastChunk = chunk.next; }
 
-				this.byEnd[chunk.end] = chunk;
-				this.byStart[chunk.next.start] = chunk.next;
-				this.byEnd[chunk.next.end] = chunk.next;
+				this$1.byEnd[chunk.end] = chunk;
+				this$1.byStart[chunk.next.start] = chunk.next;
+				this$1.byEnd[chunk.next.end] = chunk.next;
 			}
 
 			if (aborted) { return true; }
@@ -1310,6 +1334,8 @@
 	};
 
 	Bundle.prototype.trimStart = function trimStart (charType) {
+			var this$1 = this;
+
 		var rx = new RegExp('^' + (charType || '\\s') + '+');
 		this.intro = this.intro.replace(rx, '');
 
@@ -1318,7 +1344,7 @@
 			var i = 0;
 
 			do {
-				source = this.sources[i++];
+				source = this$1.sources[i++];
 				if (!source) {
 					break;
 				}
@@ -1329,15 +1355,17 @@
 	};
 
 	Bundle.prototype.trimEnd = function trimEnd (charType) {
+			var this$1 = this;
+
 		var rx = new RegExp((charType || '\\s') + '+$');
 
 		var source;
 		var i = this.sources.length - 1;
 
 		do {
-			source = this.sources[i--];
+			source = this$1.sources[i--];
 			if (!source) {
-				this.intro = this.intro.replace(rx, '');
+				this$1.intro = this$1.intro.replace(rx, '');
 				break;
 			}
 		} while (!source.content.trimEndAborted(charType));
@@ -1350,5 +1378,5 @@
 
 	return MagicString;
 
-}));
+})));
 //# sourceMappingURL=magic-string.umd.js.map

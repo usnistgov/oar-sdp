@@ -12,13 +12,13 @@
 
 .ui-panelmenu .ui-panelmenu-header {
     margin: -1px 0 0 0;
-    zoom: 1;
 }
 
 .ui-panelmenu .ui-panelmenu-header-link {
     padding: .5em;
     display: block;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .ui-panelmenu .ui-panelmenu-icon {
@@ -60,4 +60,5 @@
     padding: .25em;
     display: block;
     text-decoration: none;
+    cursor: pointer;
 }

@@ -259,8 +259,8 @@ class Workspace {
         return this._host.read(virtual_fs_1.normalize(path)).pipe(operators_1.map(buffer => virtual_fs_1.virtualFs.fileBufferToString(buffer)), operators_1.map(str => json_1.parseJson(str, json_1.JsonParseMode.Loose)));
     }
 }
+exports.Workspace = Workspace;
 Workspace._workspaceFileNames = [
     'angular.json',
     '.angular.json',
 ];
-exports.Workspace = Workspace;

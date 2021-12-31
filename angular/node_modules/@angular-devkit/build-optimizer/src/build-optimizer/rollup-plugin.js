@@ -29,12 +29,16 @@ function optimizer(options) {
             const isAngularCoreFile = options.angularCoreModules &&
                 options.angularCoreModules.some(m => normalizedId.indexOf(m) >= 0);
             const { content: code, sourceMap: map } = build_optimizer_1.buildOptimizer({
-                content, inputFilePath: id, emitSourceMap: true, isSideEffectFree, isAngularCoreFile,
+                content,
+                inputFilePath: id,
+                emitSourceMap: true,
+                isSideEffectFree,
+                isAngularCoreFile,
             });
             if (!code) {
                 if (DEBUG) {
-                    console.error('no transforms produced by buildOptimizer for '
-                        + path.relative(process.cwd(), id));
+                    // tslint:disable-next-line: no-console
+                    console.error('no transforms produced by buildOptimizer for ' + path.relative(process.cwd(), id));
                 }
                 return null;
             }

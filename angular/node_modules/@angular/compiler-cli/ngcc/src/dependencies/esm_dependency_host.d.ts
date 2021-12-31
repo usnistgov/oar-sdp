@@ -25,7 +25,14 @@ export declare class EsmDependencyHost extends DependencyHostBase {
      * @param alreadySeen A set that is used to track internal dependencies to prevent getting stuck
      * in a circular dependency loop.
      */
-    protected recursivelyFindDependencies(file: AbsoluteFsPath, dependencies: Set<AbsoluteFsPath>, missing: Set<string>, deepImports: Set<string>, alreadySeen: Set<AbsoluteFsPath>): void;
+    protected recursivelyCollectDependencies(file: AbsoluteFsPath, dependencies: Set<AbsoluteFsPath>, missing: Set<string>, deepImports: Set<string>, alreadySeen: Set<AbsoluteFsPath>): void;
+    /**
+     * Resolve the given `importPath` from `file` and add it to the appropriate set.
+     *
+     * @returns `true` if the import was resolved (to an entry-point, a local import, or a
+     * deep-import).
+     */
+    protected processImport(importPath: string, file: AbsoluteFsPath, dependencies: Set<AbsoluteFsPath>, missing: Set<string>, deepImports: Set<string>, alreadySeen: Set<AbsoluteFsPath>): boolean;
 }
 /**
  * Check whether a source file needs to be parsed for imports.

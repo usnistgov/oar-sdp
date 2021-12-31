@@ -21,6 +21,8 @@ export declare function identifierOfNode(decl: ts.Node & {
     name?: ts.Node;
 }): ts.Identifier | null;
 export declare function isDeclaration(node: ts.Node): node is ts.Declaration;
+export declare function isValueDeclaration(node: ts.Node): node is ts.ClassDeclaration | ts.FunctionDeclaration | ts.VariableDeclaration;
+export declare function isTypeDeclaration(node: ts.Node): node is ts.EnumDeclaration | ts.TypeAliasDeclaration | ts.InterfaceDeclaration;
 export declare function isExported(node: ts.Declaration): boolean;
 export declare function getRootDirs(host: ts.CompilerHost, options: ts.CompilerOptions): AbsoluteFsPath[];
 export declare function nodeDebugInfo(node: ts.Node): string;
@@ -30,4 +32,8 @@ export declare function nodeDebugInfo(node: ts.Node): string;
  * This helper will attempt to use the `CompilerHost.resolveModuleNames()` method if available.
  * Otherwise it will fallback on the `ts.ResolveModuleName()` function.
  */
-export declare function resolveModuleName(moduleName: string, containingFile: string, compilerOptions: ts.CompilerOptions, compilerHost: ts.CompilerHost): ts.ResolvedModule | undefined;
+export declare function resolveModuleName(moduleName: string, containingFile: string, compilerOptions: ts.CompilerOptions, compilerHost: ts.CompilerHost, moduleResolutionCache: ts.ModuleResolutionCache | null): ts.ResolvedModule | undefined;
+/**
+ * Asserts that the keys `K` form a subset of the keys of `T`.
+ */
+export declare type SubsetOfKeys<T, K extends keyof T> = K;

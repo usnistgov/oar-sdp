@@ -8,9 +8,6 @@
 import { Observable } from 'rxjs';
 import { JsonValue, experimental as core_experimental } from '../../../src';
 export declare class NodeModuleJobRegistry<MinimumArgumentValueT extends JsonValue = JsonValue, MinimumInputValueT extends JsonValue = JsonValue, MinimumOutputValueT extends JsonValue = JsonValue> implements core_experimental.jobs.Registry<MinimumArgumentValueT, MinimumInputValueT, MinimumOutputValueT> {
-    private _resolveLocal;
-    private _resolveGlobal;
-    constructor(_resolveLocal?: boolean, _resolveGlobal?: boolean);
     protected _resolve(name: string): string | null;
     /**
      * Get a job description for a named job.

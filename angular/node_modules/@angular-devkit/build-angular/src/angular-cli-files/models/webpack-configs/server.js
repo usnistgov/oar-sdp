@@ -8,16 +8,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * found in the LICENSE file at https://angular.io/license
  */
 const path_1 = require("path");
+const webpack_1 = require("webpack");
 const utils_1 = require("./utils");
 /**
  * Returns a partial specific to creating a bundle for node
  * @param wco Options which are include the build options and app config
  */
 function getServerConfig(wco) {
+    const { sourceMap, bundleDependencies, externalDependencies = [], } = wco.buildOptions;
     const extraPlugins = [];
-    if (wco.buildOptions.sourceMap) {
-        const { scripts, styles, hidden } = wco.buildOptions.sourceMap;
-        extraPlugins.push(utils_1.getSourceMapDevTool(scripts || false, styles || false, hidden || false));
+    if (sourceMap) {
+        const { scripts, styles, hidden } = sourceMap;
+        if (scripts || styles) {
+            extraPlugins.push(utils_1.getSourceMapDevTool(scripts, styles, hidden));
+        }
     }
     const config = {
         resolve: {
@@ -27,16 +31,25 @@ function getServerConfig(wco) {
         output: {
             libraryTarget: 'commonjs',
         },
-        plugins: extraPlugins,
+        plugins: [
+            // Fixes Critical dependency: the request of a dependency is an expression
+            new webpack_1.ContextReplacementPlugin(/@?hapi(\\|\/)/),
+            new webpack_1.ContextReplacementPlugin(/express(\\|\/)/),
+            ...extraPlugins,
+        ],
         node: false,
     };
-    if (wco.buildOptions.bundleDependencies == 'none') {
+    if (bundleDependencies) {
+        config.externals = [...externalDependencies];
+    }
+    else {
         config.externals = [
-            /^@angular/,
+            ...externalDependencies,
             (context, request, callback) => {
                 // Absolute & Relative paths are not externals
-                if (/^\.{0,2}\//.test(request) || path_1.isAbsolute(request)) {
-                    return callback();
+                if (request.startsWith('./') || path_1.isAbsolute(request)) {
+                    callback();
+                    return;
                 }
                 try {
                     require.resolve(request);

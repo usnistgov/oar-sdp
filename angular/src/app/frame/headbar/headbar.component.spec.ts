@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Renderer } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import { HeadbarComponent } from './headbar.component';
-import { OverlayPanelModule } from "primeng/primeng";
+import { OverlayPanelModule } from "primeng";
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppComponent } from '../../app.component';
@@ -20,7 +20,7 @@ describe('HeadbarComponent', () => {
     TestBed.configureTestingModule({
         imports: [OverlayPanelModule, RouterTestingModule, HttpClientTestingModule, MockModule,ToastrModule.forRoot()],
         declarations: [ HeadbarComponent, AppComponent, TopMenuBarComponent, FootbarComponent ],
-        providers: [ AppComponent, Renderer, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock} ]
+        providers: [ AppComponent, Renderer2, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock} ]
     })
     .compileComponents();
   }));

@@ -6,15 +6,16 @@ import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http'; 
 import { routes } from './app.routes';
 import { Routes, RouterModule } from '@angular/router';
-import { DataTableModule,OverlayPanelModule,DataListModule} from "primeng/primeng";
+import { TreeModule } from 'primeng/tree';
+// import { OverlayPanelModule } from "primeng";
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { APP_BASE_HREF } from '@angular/common';
 import { CanDeactivateGuard} from './can-deactivate/can-deactivate.guard';
 import { SearchModule } from './search/search.module';
 import { TopBarComponent }  from './app.topbar.component';
-import { TooltipModule } from 'primeng/components/tooltip/tooltip';
+import { TooltipModule } from 'primeng/tooltip';
 import { AppConfig } from './shared/config-service/config-service.service';
-import { AutoCompleteModule } from 'primeng/primeng';
+import { AutoCompleteModule } from 'primeng';
 import { AboutComponent } from './about/about.component';
 import { AdvSearchModule } from './adv-search/adv_search.module';
 import { PolicyModule } from './policy/policy.module';
@@ -56,9 +57,10 @@ enableProdMode();
     RouterModule.forRoot(routes ,{ useHash: true }),
     BrowserModule,
     HttpClientModule,
-    OverlayPanelModule, 
-    DataListModule, 
-    DataTableModule, 
+    TreeModule,
+    // OverlayPanelModule, 
+    // DataListModule, 
+    // DataTableModule, 
     SearchModule, 
     BrowserAnimationsModule, 
     TooltipModule,

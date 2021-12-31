@@ -9,8 +9,8 @@ import { FootbarComponent } from '../frame/footbar/index';
 import { NameListService } from './name-list/name-list.service';
 
 import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
- PanelModule, DataTableModule, DialogModule, AutoCompleteModule, MultiSelectModule,
- PaginatorModule, CalendarModule, TabViewModule } from 'primeng/primeng';
+ PanelModule, DialogModule, AutoCompleteModule, MultiSelectModule,
+ PaginatorModule, CalendarModule, TabViewModule } from 'primeng';
 
 import { CommonService } from './common/common.service';
 import { ConfirmService } from './confirm/confirm.service';
@@ -34,7 +34,6 @@ import { ConfirmationComponent } from './confirm/confirmation/confirmation.compo
     SplitButtonModule,
     MenubarModule,
     PanelModule,
-    DataTableModule,
     AutoCompleteModule,
     MultiSelectModule,
     PaginatorModule,
@@ -46,12 +45,12 @@ import { ConfirmationComponent } from './confirm/confirmation/confirmation.compo
   providers:[CommonService, ConfirmService],
   exports: [FootbarComponent,ComboBoxComponent, ComboBoxPipe,
     CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
-    SplitButtonModule,MenubarModule,PanelModule,DataTableModule,AutoCompleteModule,
+    SplitButtonModule,MenubarModule,PanelModule,AutoCompleteModule,
     MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule,ConfirmationComponent],
     entryComponents: [ ConfirmationComponent ]
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       // providers: [NameListService,TaxonomyListService,SearchService,SearchfieldsListService,ConfirmationDialogService]

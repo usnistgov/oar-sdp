@@ -56,5 +56,5 @@ import { ResolverHost } from './resolver';
 export declare class AliasHost<StatsT extends object = {}> extends ResolverHost<StatsT> {
     protected _aliases: Map<Path, Path>;
     protected _resolve(path: Path): Path;
-    readonly aliases: Map<Path, Path>;
+    get aliases(): Map<Path, Path>;
 }

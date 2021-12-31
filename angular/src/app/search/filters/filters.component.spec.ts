@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FiltersComponent } from './filters.component';
-import { DataTableModule, TreeModule, AutoCompleteModule } from 'primeng/primeng';
+import { TreeModule, AutoCompleteModule } from 'primeng';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -17,7 +17,6 @@ describe('FiltersComponent', () => {
         declarations: [ FiltersComponent ],
         imports: [
             TreeModule, 
-            DataTableModule, 
             AutoCompleteModule, 
             MockModule, 
             FormsModule,

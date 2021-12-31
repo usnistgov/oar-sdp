@@ -29,9 +29,10 @@ export interface CompilerFacade {
     compileNgModule(angularCoreEnv: CoreEnvironment, sourceMapUrl: string, meta: R3NgModuleMetadataFacade): any;
     compileDirective(angularCoreEnv: CoreEnvironment, sourceMapUrl: string, meta: R3DirectiveMetadataFacade): any;
     compileComponent(angularCoreEnv: CoreEnvironment, sourceMapUrl: string, meta: R3ComponentMetadataFacade): any;
-    compileBase(angularCoreEnv: CoreEnvironment, sourceMapUrl: string, meta: R3BaseMetadataFacade): any;
+    compileFactory(angularCoreEnv: CoreEnvironment, sourceMapUrl: string, meta: R3FactoryDefMetadataFacade): any;
     createParseSourceSpan(kind: string, typeName: string, sourceUrl: string): ParseSourceSpan;
     R3ResolvedDependencyType: typeof R3ResolvedDependencyType;
+    R3FactoryTarget: typeof R3FactoryTarget;
     ResourceLoader: {
         new (): ResourceLoader;
     };
@@ -52,7 +53,15 @@ export declare type Provider = any;
 export declare enum R3ResolvedDependencyType {
     Token = 0,
     Attribute = 1,
-    ChangeDetectorRef = 2
+    ChangeDetectorRef = 2,
+    Invalid = 3
+}
+export declare enum R3FactoryTarget {
+    Directive = 0,
+    Component = 1,
+    Injectable = 2,
+    Pipe = 3,
+    NgModule = 4
 }
 export interface R3DependencyMetadataFacade {
     token: any;
@@ -74,7 +83,6 @@ export interface R3InjectableMetadataFacade {
     name: string;
     type: any;
     typeArgumentCount: number;
-    ctorDeps: R3DependencyMetadataFacade[] | null;
     providedIn: any;
     useClass?: any;
     useFactory?: any;
@@ -88,7 +96,6 @@ export interface R3NgModuleMetadataFacade {
     declarations: Function[];
     imports: Function[];
     exports: Function[];
-    emitInline: boolean;
     schemas: {
         name: string;
     }[] | null;
@@ -140,22 +147,20 @@ export interface R3ComponentMetadataFacade extends R3DirectiveMetadataFacade {
     interpolation?: [string, string];
     changeDetection?: ChangeDetectionStrategy;
 }
-export interface R3BaseMetadataFacade {
+export interface R3FactoryDefMetadataFacade {
     name: string;
     type: any;
-    propMetadata: {
-        [key: string]: any[];
-    };
-    inputs?: {
-        [key: string]: string | [string, string];
-    };
-    outputs?: {
-        [key: string]: string;
-    };
-    queries?: R3QueryMetadataFacade[];
-    viewQueries?: R3QueryMetadataFacade[];
+    typeArgumentCount: number;
+    deps: R3DependencyMetadataFacade[] | null;
+    injectFn: 'directiveInject' | 'inject';
+    target: R3FactoryTarget;
 }
-export declare type ViewEncapsulation = number;
+export declare enum ViewEncapsulation {
+    Emulated = 0,
+    Native = 1,
+    None = 2,
+    ShadowDom = 3
+}
 export declare type ChangeDetectionStrategy = number;
 export interface R3QueryMetadataFacade {
     propertyName: string;

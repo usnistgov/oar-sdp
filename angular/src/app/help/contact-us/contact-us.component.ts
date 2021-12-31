@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
 import { CommonService } from '../../shared/common/common.service';

@@ -4,7 +4,7 @@ import { Subject} from 'rxjs/Subject';
 import {BehaviorSubject } from 'rxjs/BehaviorSubject';
 import {Observable } from 'rxjs';
 import * as _ from 'lodash';
-import { SelectItem, TreeNode, TreeModule } from 'primeng/primeng';
+import { SelectItem, TreeNode, TreeModule } from 'primeng';
 import 'rxjs/add/operator/toPromise';
 import { SDPQuery, QueryRow, CurrentQueryInfo } from './query';
 import { SearchfieldsListService } from '../../shared/searchfields-list/index';

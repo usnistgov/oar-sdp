@@ -45,10 +45,10 @@ export declare class Workspace {
     loadWorkspaceFromHost(workspacePath: Path): Observable<this>;
     private _loadWorkspaceSchema;
     private _assertLoaded;
-    readonly root: Path;
-    readonly host: virtualFs.Host<{}>;
-    readonly version: number;
-    readonly newProjectRoot: string | undefined;
+    get root(): Path;
+    get host(): virtualFs.Host<{}>;
+    get version(): number;
+    get newProjectRoot(): string | undefined;
     listProjectNames(): string[];
     getProject(projectName: string): WorkspaceProject;
     getDefaultProjectName(): string | null;

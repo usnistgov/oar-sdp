@@ -51,10 +51,9 @@ var PluginFileHandler = /** @class */ (function () {
     };
     PluginFileHandler.prototype.findModuleDir = function (filename) {
         var pathSeparator = this.fileSystem.pathSeparator;
-        var PACKAGE_JSON = 'package.json';
         var dirOfModule = filename.substring(0, filename.lastIndexOf(pathSeparator));
         var oldDirOfModule = null;
-        while (!this.fileSystem.pathExists(this.fileSystem.join(dirOfModule, PACKAGE_JSON))) {
+        while (!this.dirContainsValidPackageJson(dirOfModule)) {
             // check parent directory
             oldDirOfModule = dirOfModule;
             dirOfModule = this.fileSystem.resolvePath("" + dirOfModule + pathSeparator + ".." + pathSeparator);
@@ -66,13 +65,25 @@ var PluginFileHandler = /** @class */ (function () {
         if (this.buildRoot === dirOfModule) {
             return null;
         }
-        var packageJsonText = this.fileSystem.readFileAsUtf8(this.fileSystem.join(dirOfModule, PACKAGE_JSON));
-        var packageJson = JSON.parse(packageJsonText);
+        var packageJson = this.parsePackageJson(dirOfModule);
         return {
             name: packageJson.name,
             directory: dirOfModule
         };
     };
+    PluginFileHandler.prototype.parsePackageJson = function (dirOfModule) {
+        var packageJsonText = this.fileSystem.readFileAsUtf8(this.fileSystem.join(dirOfModule, PluginFileHandler.PACKAGE_JSON));
+        var packageJson = JSON.parse(packageJsonText);
+        return packageJson;
+    };
+    PluginFileHandler.prototype.dirContainsValidPackageJson = function (dirOfModule) {
+        if (!this.fileSystem.pathExists(this.fileSystem.join(dirOfModule, PluginFileHandler.PACKAGE_JSON))) {
+            return false;
+        }
+        var packageJson = this.parsePackageJson(dirOfModule);
+        return !!packageJson.name;
+    };
+    PluginFileHandler.PACKAGE_JSON = 'package.json';
     return PluginFileHandler;
 }());
 exports.PluginFileHandler = PluginFileHandler;

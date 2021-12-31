@@ -6,13 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/typecheck/src/context" />
-import { BoundTarget, ParseSourceFile } from '@angular/compiler';
+import { BoundTarget, ParseSourceFile, SchemaMetadata } from '@angular/compiler';
 import * as ts from 'typescript';
 import { AbsoluteFsPath } from '../../file_system';
 import { Reference, ReferenceEmitter } from '../../imports';
-import { ClassDeclaration } from '../../reflection';
-import { TypeCheckableDirectiveMeta, TypeCheckingConfig, TypeCtorMetadata } from './api';
-import { Diagnostic } from './diagnostics';
+import { ClassDeclaration, ReflectionHost } from '../../reflection';
+import { TemplateSourceMapping, TypeCheckableDirectiveMeta, TypeCheckingConfig, TypeCtorMetadata } from './api';
 /**
  * A template type checking context for a program.
  *
@@ -23,8 +22,9 @@ import { Diagnostic } from './diagnostics';
 export declare class TypeCheckContext {
     private config;
     private refEmitter;
+    private reflector;
     private typeCheckFile;
-    constructor(config: TypeCheckingConfig, refEmitter: ReferenceEmitter, typeCheckFilePath: AbsoluteFsPath);
+    constructor(config: TypeCheckingConfig, refEmitter: ReferenceEmitter, reflector: ReflectionHost, typeCheckFilePath: AbsoluteFsPath);
     /**
      * A `Map` of `ts.SourceFile`s that the context has seen to the operations (additions of methods
      * or type-check blocks) that need to be eventually performed on that file.
@@ -35,12 +35,9 @@ export declare class TypeCheckContext {
      * queued.
      */
     private typeCtorPending;
-    /**
-     * This map keeps track of all template sources that have been type-checked by the reference name
-     * that is attached to a TCB's function declaration as leading trivia. This enables translation
-     * of diagnostics produced for TCB code to their source location in the template.
-     */
-    private templateSources;
+    private sourceManager;
+    private domSchemaChecker;
+    private oobRecorder;
     /**
      * Record a template for the given component `node`, with a `SelectorMatcher` for directive
      * matching.
@@ -49,7 +46,7 @@ export declare class TypeCheckContext {
      * @param template AST nodes of the template being recorded.
      * @param matcher `SelectorMatcher` which tracks directives that are in scope for this template.
      */
-    addTemplate(ref: Reference<ClassDeclaration<ts.ClassDeclaration>>, boundTarget: BoundTarget<TypeCheckableDirectiveMeta>, pipes: Map<string, Reference<ClassDeclaration<ts.ClassDeclaration>>>, file: ParseSourceFile): void;
+    addTemplate(ref: Reference<ClassDeclaration<ts.ClassDeclaration>>, boundTarget: BoundTarget<TypeCheckableDirectiveMeta>, pipes: Map<string, Reference<ClassDeclaration<ts.ClassDeclaration>>>, schemas: SchemaMetadata[], sourceMapping: TemplateSourceMapping, file: ParseSourceFile): void;
     /**
      * Record a type constructor for the given `node` with the given `ctorMetadata`.
      */
@@ -64,7 +61,7 @@ export declare class TypeCheckContext {
      */
     transform(sf: ts.SourceFile): ts.SourceFile;
     calculateTemplateDiagnostics(originalProgram: ts.Program, originalHost: ts.CompilerHost, originalOptions: ts.CompilerOptions): {
-        diagnostics: Diagnostic[];
+        diagnostics: ts.Diagnostic[];
         program: ts.Program;
     };
     private addInlineTypeCheckBlock;

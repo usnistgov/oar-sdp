@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ResultsComponent } from './results.component';
-import { DataTableModule, TreeModule, AutoCompleteModule, CheckboxModule, DropdownModule } from 'primeng/primeng';
+import { TreeModule, AutoCompleteModule, CheckboxModule, DropdownModule } from 'primeng';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -22,7 +22,6 @@ describe('ResultsComponent', () => {
       declarations: [ ResultsComponent, PaginationComponent, OverlayPanel, ReadMoreComponent ],
       imports: [
         TreeModule, 
-        DataTableModule, 
         AutoCompleteModule, 
         MockModule, 
         FormsModule,

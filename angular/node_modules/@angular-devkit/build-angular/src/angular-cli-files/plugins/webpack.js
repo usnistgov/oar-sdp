@@ -8,8 +8,10 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 // Exports the webpack plugins we use internally.
-var cleancss_webpack_plugin_1 = require("./cleancss-webpack-plugin");
-exports.CleanCssWebpackPlugin = cleancss_webpack_plugin_1.CleanCssWebpackPlugin;
+var any_component_style_budget_checker_1 = require("./any-component-style-budget-checker");
+exports.AnyComponentStyleBudgetChecker = any_component_style_budget_checker_1.AnyComponentStyleBudgetChecker;
+var optimize_css_webpack_plugin_1 = require("./optimize-css-webpack-plugin");
+exports.OptimizeCssWebpackPlugin = optimize_css_webpack_plugin_1.OptimizeCssWebpackPlugin;
 var bundle_budget_1 = require("./bundle-budget");
 exports.BundleBudgetPlugin = bundle_budget_1.BundleBudgetPlugin;
 var scripts_webpack_plugin_1 = require("./scripts-webpack-plugin");
@@ -24,3 +26,4 @@ var postcss_cli_resources_1 = require("./postcss-cli-resources");
 exports.PostcssCliResources = postcss_cli_resources_1.default;
 const path_1 = require("path");
 exports.RawCssLoader = require.resolve(path_1.join(__dirname, 'raw-css-loader'));
+exports.WebpackRollupLoader = require.resolve(path_1.join(__dirname, 'webpack-rollup-loader'));

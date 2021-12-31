@@ -9,22 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const rxjs_1 = require("rxjs");
 const src_1 = require("../../../src");
-const resolve_1 = require("../../resolve");
 class NodeModuleJobRegistry {
-    constructor(_resolveLocal = true, _resolveGlobal = false) {
-        this._resolveLocal = _resolveLocal;
-        this._resolveGlobal = _resolveGlobal;
-    }
     _resolve(name) {
         try {
-            return resolve_1.resolve(name, {
-                checkLocal: this._resolveLocal,
-                checkGlobal: this._resolveGlobal,
-                basedir: __dirname,
-            });
+            return require.resolve(name);
         }
         catch (e) {
-            if (e instanceof resolve_1.ModuleNotFoundException) {
+            if (e.code === 'MODULE_NOT_FOUND') {
                 return null;
             }
             throw e;

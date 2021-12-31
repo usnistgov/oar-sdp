@@ -81,6 +81,9 @@ class TestingArchitectHost {
         }
         return maybeTarget.options;
     }
+    async getProjectMetadata(target) {
+        return this._backendHost && this._backendHost.getProjectMetadata(target);
+    }
     async loadBuilder(info) {
         return this._builderImportMap.get(info.builderName)
             || (this._backendHost && this._backendHost.loadBuilder(info));

@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, HostListener, AfterViewInit, ElementRef } from '@angular/core';
-import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
+import { SelectItem, ConfirmationService, Message } from 'primeng/api';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
@@ -55,12 +55,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     tobeRenamedQuery: SDPQuery;
     tempName: string;
 
-    @ViewChild('dataChanged', {static: false}) dataChanged: boolean = false; 
-    @ViewChild('field2', {static: false}) queryName: ElementRef;
-    @ViewChild('op1', {static: false}) op_confirm: OverlayPanel;
-    @ViewChild('op5', {static: false}) op: OverlayPanel;
-    @ViewChild('op6', {static: false}) op_rename: OverlayPanel;
-    @ViewChild('overlayTarget', {static: false}) overlayTarget: ElementRef;
+    @ViewChild('dataChanged') dataChanged: boolean = false; 
+    @ViewChild('field2') queryName: ElementRef;
+    @ViewChild('op1') op_confirm: OverlayPanel;
+    @ViewChild('op5') op: OverlayPanel;
+    @ViewChild('op6') op_rename: OverlayPanel;
+    @ViewChild('overlayTarget') overlayTarget: ElementRef;
 
     toggleOverlay = ({ originalEvent }) => this.op.toggle(originalEvent);
 

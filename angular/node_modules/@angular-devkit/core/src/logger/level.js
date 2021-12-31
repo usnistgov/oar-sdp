@@ -26,6 +26,7 @@ class LevelCapLogger extends LevelTransformLogger {
         this.levelCap = levelCap;
     }
 }
+exports.LevelCapLogger = LevelCapLogger;
 LevelCapLogger.levelMap = {
     debug: { debug: 'debug', info: 'debug', warn: 'debug', error: 'debug', fatal: 'debug' },
     info: { debug: 'debug', info: 'info', warn: 'info', error: 'info', fatal: 'info' },
@@ -33,4 +34,3 @@ LevelCapLogger.levelMap = {
     error: { debug: 'debug', info: 'info', warn: 'warn', error: 'error', fatal: 'error' },
     fatal: { debug: 'debug', info: 'info', warn: 'warn', error: 'error', fatal: 'fatal' },
 };
-exports.LevelCapLogger = LevelCapLogger;

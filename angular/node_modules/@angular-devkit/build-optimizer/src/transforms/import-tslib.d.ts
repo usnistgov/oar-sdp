@@ -7,7 +7,6 @@
  */
 import * as ts from 'typescript';
 /**
- * @deprecated From 0.9.0
+ * @deprecated From 0.900.0
  */
-export declare function testImportTslib(content: string): boolean;
 export declare function getImportTslibTransformer(): ts.TransformerFactory<ts.SourceFile>;

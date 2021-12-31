@@ -9,7 +9,7 @@
 import * as ts from 'typescript';
 import { AbsoluteFsPath } from '../../file_system';
 import { ImportRewriter } from '../../imports';
-import { ShimGenerator } from './host';
+import { ShimGenerator } from './api';
 /**
  * Generates ts.SourceFiles which contain variable declarations for NgFactories for every exported
  * class of an input ts.SourceFile.
@@ -17,7 +17,8 @@ import { ShimGenerator } from './host';
 export declare class FactoryGenerator implements ShimGenerator {
     private map;
     private constructor();
-    readonly factoryFileMap: Map<string, string>;
+    get factoryFileMap(): Map<AbsoluteFsPath, AbsoluteFsPath>;
+    get factoryFileNames(): AbsoluteFsPath[];
     recognize(fileName: AbsoluteFsPath): boolean;
     generate(genFilePath: AbsoluteFsPath, readFile: (fileName: string) => ts.SourceFile | null): ts.SourceFile | null;
     static forRootFiles(files: ReadonlyArray<AbsoluteFsPath>): FactoryGenerator;

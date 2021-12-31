@@ -58,15 +58,12 @@ function addUndefinedDefaults(value, _pointer, schema) {
         if (!interface_1.isJsonObject(schema.properties)) {
             return newValue;
         }
-        for (const propName of Object.getOwnPropertyNames(schema.properties)) {
-            if (propName in newValue) {
-                continue;
-            }
-            else if (propName == '$schema') {
+        for (const [propName, schemaObject] of Object.entries(schema.properties)) {
+            if (newValue[propName] !== undefined || propName === '$schema') {
                 continue;
             }
             // TODO: Does not currently handle more complex schemas (oneOf/anyOf/etc.)
-            const defaultValue = schema.properties[propName].default;
+            const defaultValue = schemaObject.default;
             newValue[propName] = defaultValue;
         }
         return newValue;

@@ -20,7 +20,6 @@ export declare class EmitterVisitorContext {
     private _classes;
     private _preambleLineCount;
     constructor(_indent: number);
-    private readonly _currentLine;
     println(from?: {
         sourceSpan: ParseSourceSpan | null;
     } | null, lastPart?: string): void;
@@ -34,12 +33,11 @@ export declare class EmitterVisitorContext {
     decIndent(): void;
     pushClass(clazz: o.ClassStmt): void;
     popClass(): o.ClassStmt;
-    readonly currentClass: o.ClassStmt | null;
+    get currentClass(): o.ClassStmt | null;
     toSource(): string;
     toSourceMapGenerator(genFilePath: string, startsAtLine?: number): SourceMapGenerator;
     setPreambleLineCount(count: number): number;
     spanOf(line: number, column: number): ParseSourceSpan | null;
-    private readonly sourceLines;
 }
 export declare abstract class AbstractEmitterVisitor implements o.StatementVisitor, o.ExpressionVisitor {
     private _escapeDollarInStrings;
@@ -65,6 +63,7 @@ export declare abstract class AbstractEmitterVisitor implements o.StatementVisit
     visitReadVarExpr(ast: o.ReadVarExpr, ctx: EmitterVisitorContext): any;
     visitInstantiateExpr(ast: o.InstantiateExpr, ctx: EmitterVisitorContext): any;
     visitLiteralExpr(ast: o.LiteralExpr, ctx: EmitterVisitorContext): any;
+    visitLocalizedString(ast: o.LocalizedString, ctx: EmitterVisitorContext): any;
     abstract visitExternalExpr(ast: o.ExternalExpr, ctx: EmitterVisitorContext): any;
     visitConditionalExpr(ast: o.ConditionalExpr, ctx: EmitterVisitorContext): any;
     visitNotExpr(ast: o.NotExpr, ctx: EmitterVisitorContext): any;

@@ -2,11 +2,12 @@ import { Component, OnInit, Inject, NgZone, Input, SimpleChanges, ElementRef } f
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import * as _ from 'lodash';
 import { SearchfieldsListService } from '../../shared/index';
-import { SelectItem } from 'primeng/primeng';
+import { SelectItem } from 'primeng';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
-import { Message } from 'primeng/components/common/api';
+import { Message } from 'primeng';
+// import { Message } from 'primeng/components/common/api';
 import { Subscription } from 'rxjs';
 
 @Component({

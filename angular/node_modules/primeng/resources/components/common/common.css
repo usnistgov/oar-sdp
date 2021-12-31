@@ -36,9 +36,6 @@
 .ui-helper-clearfix::after {
     clear: both;
 }
-.ui-helper-clearfix {
-    zoom: 1;
-}
 .ui-helper-zfix {
     width: 100%;
     height: 100%;
@@ -158,27 +155,6 @@
     overflow: hidden;
 }
 
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color: #898989;
-}
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color: #898989;
-   opacity:  1;
-}
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color: #898989;
-   opacity:  1;
-}
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color: #898989;
-}
-::-ms-input-placeholder { /* Microsoft Edge */
-   color: #898989;
-}
-.ui-placeholder {
-   color: #898989;
-}
-
 input[type="button"], 
 input[type="submit"], 
 input[type="reset"], 
@@ -187,4 +163,27 @@ button {
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     border-radius: 0;
+}
+
+.ui-link {
+	text-align: left;
+	background-color: transparent;
+	margin: 0;
+	padding: 0;
+	border: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.p-sr-only {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal !important;
 }

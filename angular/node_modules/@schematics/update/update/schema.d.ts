@@ -13,6 +13,7 @@ export interface Schema {
      * to migrate.
      */
     from?: string;
+    migrateExternal?: boolean;
     /**
      * Perform a migration, but do not update the installed version.
      */

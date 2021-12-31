@@ -309,5 +309,9 @@ class SimpleMemoryHost {
     watch(path, options) {
         return this._watch(path, options);
     }
+    reset() {
+        this._cache.clear();
+        this._watchers.clear();
+    }
 }
 exports.SimpleMemoryHost = SimpleMemoryHost;

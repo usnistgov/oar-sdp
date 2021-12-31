@@ -12,6 +12,7 @@ import * as webpack from 'webpack';
 import * as WebpackDevServer from 'webpack-dev-server';
 import { BuildResult, WebpackFactory, WebpackLoggingCallback } from '../webpack';
 import { Schema as WebpackDevServerBuilderSchema } from './schema';
+export declare type WebpackDevServerFactory = typeof WebpackDevServer;
 export declare type DevServerBuildOutput = BuildResult & {
     port: number;
     family: string;
@@ -21,6 +22,7 @@ export declare function runWebpackDevServer(config: webpack.Configuration, conte
     devServerConfig?: WebpackDevServer.Configuration;
     logging?: WebpackLoggingCallback;
     webpackFactory?: WebpackFactory;
+    webpackDevServerFactory?: WebpackDevServerFactory;
 }): Observable<DevServerBuildOutput>;
 declare const _default: import("@angular-devkit/architect/src/internal").Builder<json.JsonObject & WebpackDevServerBuilderSchema>;
 export default _default;

@@ -7,7 +7,7 @@
 
 var crypto = require('crypto');
 var path = require('path');
-var ReplaceSource = require('webpack-core/lib/ReplaceSource');
+var ReplaceSource = require('webpack-sources/lib/ReplaceSource');
 var util = require('./util');
 var WebIntegrityJsonpMainTemplatePlugin = require('./jmtp');
 var HtmlWebpackPlugin;
@@ -40,22 +40,30 @@ function SubresourceIntegrityPlugin(options) {
 
   Object.assign(this.options, useOptions);
 
-  this.emittedWarnings = {};
+  this.emittedMessages = {};
 }
 
 SubresourceIntegrityPlugin.prototype.emitMessage = function emitMessage(messages, message) {
   messages.push(new Error('webpack-subresource-integrity: ' + message));
 };
 
-SubresourceIntegrityPlugin.prototype.warnOnce = function warn(compilation, message) {
-  if (!this.emittedWarnings[message]) {
-    this.emittedWarnings[message] = true;
-    this.emitMessage(compilation.warnings, message);
+SubresourceIntegrityPlugin.prototype.emitMessageOnce = function emitMessageOnce(messages, message) {
+  if (!this.emittedMessages[message]) {
+    this.emittedMessages[message] = true;
+    this.emitMessage(messages, message);
   }
+};
+
+SubresourceIntegrityPlugin.prototype.warnOnce = function warn(compilation, message) {
+  this.emitMessageOnce(compilation.warnings, message);
 };
 
 SubresourceIntegrityPlugin.prototype.error = function error(compilation, message) {
   this.emitMessage(compilation.errors, message);
+};
+
+SubresourceIntegrityPlugin.prototype.errorOnce = function error(compilation, message) {
+  this.emitMessageOnce(compilation.errors, message);
 };
 
 SubresourceIntegrityPlugin.prototype.validateOptions = function validateOptions(compilation) {
@@ -164,11 +172,12 @@ SubresourceIntegrityPlugin.prototype.replaceAsset = function replaceAsset(
   var newAsset;
   var magicMarker;
   var magicMarkerPos;
+  var hashFuncNames = this.options.hashFuncNames;
 
   newAsset = new ReplaceSource(assets[chunkFile]);
 
   Array.from(hashByChunkId.entries()).forEach(function replaceMagicMarkers(idAndHash) {
-    magicMarker = util.makePlaceholder(idAndHash[0]);
+    magicMarker = util.makePlaceholder(hashFuncNames, idAndHash[0]);
     magicMarkerPos = oldSource.indexOf(magicMarker);
     if (magicMarkerPos >= 0) {
       newAsset.replace(
@@ -181,7 +190,7 @@ SubresourceIntegrityPlugin.prototype.replaceAsset = function replaceAsset(
   // eslint-disable-next-line no-param-reassign
   assets[chunkFile] = newAsset;
 
-  newAsset.integrity = util.computeIntegrity(this.options.hashFuncNames, newAsset.source());
+  newAsset.integrity = util.computeIntegrity(hashFuncNames, newAsset.source());
   return newAsset;
 };
 
@@ -222,8 +231,21 @@ SubresourceIntegrityPlugin.prototype.processChunk = function processChunk(
 
 SubresourceIntegrityPlugin.prototype.chunkAsset =
   function chunkAsset(compilation, chunk, asset) {
-    // eslint-disable-next-line no-param-reassign
-    compilation.sriChunkAssets[chunk.id] = asset;
+    if (compilation.assets[asset]) {
+      // eslint-disable-next-line no-param-reassign
+      compilation.sriChunkAssets[chunk.id] = asset;
+    }
+  };
+
+SubresourceIntegrityPlugin.prototype.addMissingIntegrityHashes =
+  function addMissingIntegrityHashes(assets) {
+    var self = this;
+    Object.keys(assets).forEach(function loop(assetKey) {
+      var asset = assets[assetKey];
+      if (!asset.integrity) {
+        asset.integrity = util.computeIntegrity(self.options.hashFuncNames, asset.source());
+      }
+    });
   };
 
 /*
@@ -232,37 +254,24 @@ SubresourceIntegrityPlugin.prototype.chunkAsset =
  */
 SubresourceIntegrityPlugin.prototype.afterOptimizeAssets =
   function afterOptimizeAssets(compilation, assets) {
-    var asset;
     var self = this;
 
     compilation.chunks.filter(util.isRuntimeChunk).forEach(function forEachChunk(chunk) {
       self.processChunk(chunk, compilation, assets);
     });
 
-    Object.keys(assets).forEach(function loop(assetKey) {
-      asset = assets[assetKey];
-      if (!asset.integrity) {
-        asset.integrity = util.computeIntegrity(self.options.hashFuncNames, asset.source());
-      }
-    });
+    this.addMissingIntegrityHashes(assets);
   };
 
 SubresourceIntegrityPlugin.prototype.processTag =
   function processTag(compilation, tag) {
     var src = this.hwpAssetPath(util.getTagSrc(tag));
-    var checksum = util.getIntegrityChecksumForAsset(compilation.assets, src);
-    if (!checksum) {
-      this.warnOnce(
-        compilation,
-        'Cannot determine hash for asset \'' +
-          src + '\', the resource will be unprotected.');
-      return;
-    }
-    // Add integrity check sums
-
     /* eslint-disable no-param-reassign */
-    tag.attributes.integrity = checksum;
-    tag.attributes.crossorigin = compilation.compiler.options.output.crossOriginLoading || 'anonymous';
+    var integrity = util.getIntegrityChecksumForAsset(compilation.assets, src);
+    if (!Object.prototype.hasOwnProperty.call(tag.attributes, "integrity")) {
+      tag.attributes.integrity = integrity;
+      tag.attributes.crossorigin = compilation.compiler.options.output.crossOriginLoading || 'anonymous';
+    }
     /* eslint-enable no-param-reassign */
   };
 
@@ -286,6 +295,8 @@ SubresourceIntegrityPlugin.prototype.beforeHtmlGeneration =
   function beforeHtmlGeneration(compilation, pluginArgs, callback) {
     var self = this;
     this.hwpPublicPath = pluginArgs.assets.publicPath;
+    this.addMissingIntegrityHashes(compilation.assets);
+
     ['js', 'css'].forEach(function addIntegrity(fileType) {
       // eslint-disable-next-line no-param-reassign
       pluginArgs.assets[fileType + 'Integrity'] =
@@ -335,7 +346,7 @@ SubresourceIntegrityPlugin.prototype.registerHwpHooks =
 SubresourceIntegrityPlugin.prototype.thisCompilation =
   function thisCompilation(compiler, compilation) {
     var afterOptimizeAssets = this.afterOptimizeAssets.bind(this, compilation);
-    var chunkAsset = this.chunkAsset.bind(this, compilation);
+    var beforeChunkAssets = this.beforeChunkAssets.bind(this, compilation);
     var alterAssetTags = this.alterAssetTags.bind(this, compilation);
     var beforeHtmlGeneration = this.beforeHtmlGeneration.bind(this, compilation);
 
@@ -357,15 +368,24 @@ SubresourceIntegrityPlugin.prototype.thisCompilation =
      */
     if (compiler.hooks) {
       compilation.hooks.afterOptimizeAssets.tap('SriPlugin', afterOptimizeAssets);
-      compilation.hooks.chunkAsset.tap('SriPlugin', chunkAsset);
+      compilation.hooks.beforeChunkAssets.tap('SriPlugin', beforeChunkAssets);
       compiler.hooks.compilation.tap('HtmlWebpackPluginHooks', this.registerHwpHooks.bind(this, alterAssetTags, beforeHtmlGeneration));
     } else {
       compilation.plugin('after-optimize-assets', afterOptimizeAssets);
-      compilation.plugin('chunk-asset', chunkAsset);
+      compilation.plugin('before-chunk-assets', beforeChunkAssets);
       compilation.plugin('html-webpack-plugin-alter-asset-tags', alterAssetTags);
       compilation.plugin('html-webpack-plugin-before-html-generation', beforeHtmlGeneration);
     }
   };
+
+SubresourceIntegrityPlugin.prototype.beforeChunkAssets = function afterPlugins(compilation) {
+  var chunkAsset = this.chunkAsset.bind(this, compilation);
+  if (compilation.hooks) {
+    compilation.hooks.chunkAsset.tap('SriPlugin', chunkAsset);
+  } else {
+    compilation.plugin('chunk-asset', chunkAsset);
+  }
+};
 
 SubresourceIntegrityPlugin.prototype.afterPlugins = function afterPlugins(compiler) {
   if (compiler.hooks) {

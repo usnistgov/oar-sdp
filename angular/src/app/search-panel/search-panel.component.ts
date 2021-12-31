@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, Input, NgZone, ViewChild, ElementRef, Query } from '@angular/core';
-import { SelectItem, DropdownModule } from 'primeng/primeng';
+import { SelectItem, DropdownModule } from 'primeng';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
@@ -96,11 +96,11 @@ export class SearchPanelComponent implements OnInit {
     queryStringError: boolean = false;
     queryStringErrorMessage: string = '';
 
-    @ViewChild('field', {static: false}) fieldElement: ElementRef;
-    @ViewChild('field2', {static: false}) queryName: ElementRef;
+    @ViewChild('field') fieldElement: ElementRef;
+    @ViewChild('field2') queryName: ElementRef;
 
     // injected as ViewChilds so that this class can call its public functions
-    @ViewChild(AdvSearchComponent, {static: false})
+    @ViewChild(AdvSearchComponent)
     private advSearchComp: AdvSearchComponent;
 
     get searchValue() : string { return this._searchValue};

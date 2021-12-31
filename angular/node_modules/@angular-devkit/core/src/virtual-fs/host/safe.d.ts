@@ -15,7 +15,7 @@ import { FileBuffer, HostCapabilities, ReadonlyHost, Stats } from './interface';
 export declare class SafeReadonlyHost<StatsT extends object = {}> implements ReadonlyHost<StatsT> {
     private _delegate;
     constructor(_delegate: ReadonlyHost<StatsT>);
-    readonly capabilities: HostCapabilities;
+    get capabilities(): HostCapabilities;
     read(path: Path): Observable<FileBuffer>;
     list(path: Path): Observable<PathFragment[]>;
     exists(path: Path): Observable<boolean>;

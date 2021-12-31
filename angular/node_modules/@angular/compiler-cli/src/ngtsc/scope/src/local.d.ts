@@ -6,11 +6,13 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/scope/src/local" />
+import { SchemaMetadata } from '@angular/compiler';
 import * as ts from 'typescript';
-import { AliasGenerator, Reexport, Reference, ReferenceEmitter } from '../../imports';
+import { AliasingHost, Reexport, Reference, ReferenceEmitter } from '../../imports';
 import { DirectiveMeta, MetadataReader, MetadataRegistry, NgModuleMeta, PipeMeta } from '../../metadata';
 import { ClassDeclaration } from '../../reflection';
 import { ExportScope, ScopeData } from './api';
+import { ComponentScopeReader } from './component_scope';
 import { DtsModuleScopeResolver } from './dependency';
 export interface LocalNgModuleData {
     declarations: Reference<ClassDeclaration>[];
@@ -20,6 +22,7 @@ export interface LocalNgModuleData {
 export interface LocalModuleScope extends ExportScope {
     compilation: ScopeData;
     reexports: Reexport[] | null;
+    schemas: SchemaMetadata[];
 }
 /**
  * Information about the compilation scope of a registered declaration.
@@ -49,11 +52,11 @@ export interface CompilationScope extends ScopeData {
  * The `LocalModuleScopeRegistry` is also capable of producing `ts.Diagnostic` errors when Angular
  * semantics are violated.
  */
-export declare class LocalModuleScopeRegistry implements MetadataRegistry {
+export declare class LocalModuleScopeRegistry implements MetadataRegistry, ComponentScopeReader {
     private localReader;
     private dependencyScopeReader;
     private refEmitter;
-    private aliasGenerator;
+    private aliasingHost;
     /**
      * Tracks whether the registry has been asked to produce scopes for a module or component. Once
      * this is true, the registry cannot accept registrations of new directives/pipes/modules as it
@@ -68,6 +71,11 @@ export declare class LocalModuleScopeRegistry implements MetadataRegistry {
      * a directive's compilation scope.
      */
     private declarationToModule;
+    /**
+     * This maps from the directive/pipe class to a map of data for each NgModule that declares the
+     * directive/pipe. This data is needed to produce an error for the given class.
+     */
+    private duplicateDeclarations;
     private moduleToRef;
     /**
      * A cache of calculated `LocalModuleScope`s for each NgModule declared in the current program.
@@ -80,7 +88,7 @@ export declare class LocalModuleScopeRegistry implements MetadataRegistry {
      * Tracks whether a given component requires "remote scoping".
      *
      * Remote scoping is when the set of directives which apply to a given component is set in the
-     * NgModule's file instead of directly on the ngComponentDef (which is sometimes needed to get
+     * NgModule's file instead of directly on the component def (which is sometimes needed to get
      * around cyclic import issues). This is not used in calculation of `LocalModuleScope`s, but is
      * tracked here for convenience.
      */
@@ -89,23 +97,39 @@ export declare class LocalModuleScopeRegistry implements MetadataRegistry {
      * Tracks errors accumulated in the processing of scopes for each module declaration.
      */
     private scopeErrors;
-    constructor(localReader: MetadataReader, dependencyScopeReader: DtsModuleScopeResolver, refEmitter: ReferenceEmitter, aliasGenerator: AliasGenerator | null);
+    /**
+     * Tracks which NgModules are unreliable due to errors within their declarations.
+     *
+     * This provides a unified view of which modules have errors, across all of the different
+     * diagnostic categories that can be produced. Theoretically this can be inferred from the other
+     * properties of this class, but is tracked explicitly to simplify the logic.
+     */
+    private taintedModules;
+    constructor(localReader: MetadataReader, dependencyScopeReader: DtsModuleScopeResolver, refEmitter: ReferenceEmitter, aliasingHost: AliasingHost | null);
     /**
      * Add an NgModule's data to the registry.
      */
     registerNgModuleMetadata(data: NgModuleMeta): void;
     registerDirectiveMetadata(directive: DirectiveMeta): void;
     registerPipeMetadata(pipe: PipeMeta): void;
-    getScopeForComponent(clazz: ClassDeclaration): LocalModuleScope | null;
+    getScopeForComponent(clazz: ClassDeclaration): LocalModuleScope | null | 'error';
+    /**
+     * If `node` is declared in more than one NgModule (duplicate declaration), then get the
+     * `DeclarationData` for each offending declaration.
+     *
+     * Ordinarily a class is only declared in one NgModule, in which case this function returns
+     * `null`.
+     */
+    getDuplicateDeclarations(node: ClassDeclaration): DeclarationData[] | null;
     /**
      * Collects registered data for a module and its directives/pipes and convert it into a full
      * `LocalModuleScope`.
      *
      * This method implements the logic of NgModule imports and exports. It returns the
-     * `LocalModuleScope` for the given NgModule if one can be produced, and `null` if no scope is
-     * available or the scope contains errors.
+     * `LocalModuleScope` for the given NgModule if one can be produced, `null` if no scope was ever
+     * defined, or the string `'error'` if the scope contained errors.
      */
-    getScopeOfModule(clazz: ClassDeclaration): LocalModuleScope | null;
+    getScopeOfModule(clazz: ClassDeclaration): LocalModuleScope | 'error' | null;
     /**
      * Retrieves any `ts.Diagnostic`s produced during the calculation of the `LocalModuleScope` for
      * the given NgModule, or `null` if no errors were present.
@@ -115,6 +139,7 @@ export declare class LocalModuleScopeRegistry implements MetadataRegistry {
      * Returns a collection of the compilation scope for each registered declaration.
      */
     getCompilationScopes(): CompilationScope[];
+    private registerDeclarationOfModule;
     /**
      * Implementation of `getScopeOfModule` which accepts a reference to a class and differentiates
      * between:
@@ -144,5 +169,11 @@ export declare class LocalModuleScopeRegistry implements MetadataRegistry {
      * array parameter.
      */
     private getExportedScope;
+    private getReexports;
     private assertCollecting;
+}
+export interface DeclarationData {
+    ngModule: ClassDeclaration;
+    ref: Reference;
+    rawDeclarations: ts.Expression | null;
 }

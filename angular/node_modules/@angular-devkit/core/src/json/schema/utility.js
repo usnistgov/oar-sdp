@@ -57,7 +57,7 @@ function getTypesOfSchema(schema) {
     if (Array.isArray(schema.allOf)) {
         for (const sub of schema.allOf) {
             const types = getTypesOfSchema(sub);
-            potentials = new Set([...potentials].filter(p => types.has(p)));
+            potentials = new Set([...types].filter(t => potentials.has(t)));
         }
     }
     if (Array.isArray(schema.oneOf)) {
@@ -66,7 +66,7 @@ function getTypesOfSchema(schema) {
             const types = getTypesOfSchema(sub);
             options = new Set([...options, ...types]);
         }
-        potentials = new Set([...potentials].filter(p => options.has(p)));
+        potentials = new Set([...options].filter(o => potentials.has(o)));
     }
     if (Array.isArray(schema.anyOf)) {
         let options = new Set();
@@ -74,7 +74,7 @@ function getTypesOfSchema(schema) {
             const types = getTypesOfSchema(sub);
             options = new Set([...options, ...types]);
         }
-        potentials = new Set([...potentials].filter(p => options.has(p)));
+        potentials = new Set([...options].filter(o => potentials.has(o)));
     }
     if (schema.properties) {
         potentials.add('object');

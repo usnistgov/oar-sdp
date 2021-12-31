@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const path_1 = require("path");
 const build_optimizer_1 = require("./build-optimizer");
+// tslint:disable: no-console
 if (process.argv.length < 3 || process.argv.length > 4) {
     throw new Error(`
     build-optimizer should be called with either one or two arguments:
@@ -26,7 +27,7 @@ if (!inputFile.match(tsOrJsRegExp)) {
     throw new Error(`Input file must be .js or .ts.`);
 }
 // Use provided output file, or add the .bo suffix before the extension.
-const outputFile = process.argv[3] || inputFile.replace(tsOrJsRegExp, (subStr) => `.bo${subStr}`);
+const outputFile = process.argv[3] || inputFile.replace(tsOrJsRegExp, subStr => `.bo${subStr}`);
 const boOutput = build_optimizer_1.buildOptimizer({
     inputFilePath: path_1.join(currentDir, inputFile),
     outputFilePath: path_1.join(currentDir, outputFile),

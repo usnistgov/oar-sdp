@@ -9,6 +9,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var webpack_loader_1 = require("./build-optimizer/webpack-loader");
 exports.buildOptimizerLoader = webpack_loader_1.default;
+exports.buildOptimizerLoaderPath = webpack_loader_1.buildOptimizerLoaderPath;
+var webpack_plugin_1 = require("./build-optimizer/webpack-plugin");
+exports.BuildOptimizerWebpackPlugin = webpack_plugin_1.BuildOptimizerWebpackPlugin;
 var build_optimizer_1 = require("./build-optimizer/build-optimizer");
 exports.buildOptimizer = build_optimizer_1.buildOptimizer;
 var transform_javascript_1 = require("./helpers/transform-javascript");

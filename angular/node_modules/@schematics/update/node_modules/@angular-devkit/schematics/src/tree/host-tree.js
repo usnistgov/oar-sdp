@@ -93,11 +93,6 @@ class HostTree {
     _willRename(path) {
         return this._record.willRename(path);
     }
-    // This can be used by old Schematics library with new Trees in some corner cases.
-    // TODO: remove this for 7.0
-    optimize() {
-        return this;
-    }
     branch() {
         const branchedTree = new HostTree(this._backend);
         branchedTree._record = this._record.clone();
@@ -258,7 +253,9 @@ class HostTree {
             }
             else {
                 const newContent = record.apply(entry.content);
-                this.overwrite(path, newContent);
+                if (!newContent.equals(entry.content)) {
+                    this.overwrite(path, newContent);
+                }
             }
         }
         else {

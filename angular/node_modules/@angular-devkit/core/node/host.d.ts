@@ -14,7 +14,7 @@ import { Path, PathFragment, virtualFs } from '../src';
  * synchronous and one asynchronous.
  */
 export declare class NodeJsAsyncHost implements virtualFs.Host<fs.Stats> {
-    readonly capabilities: virtualFs.HostCapabilities;
+    get capabilities(): virtualFs.HostCapabilities;
     write(path: Path, content: virtualFs.FileBuffer): Observable<void>;
     read(path: Path): Observable<virtualFs.FileBuffer>;
     delete(path: Path): Observable<void>;
@@ -30,7 +30,7 @@ export declare class NodeJsAsyncHost implements virtualFs.Host<fs.Stats> {
  * An implementation of the Virtual FS using Node as the backend, synchronously.
  */
 export declare class NodeJsSyncHost implements virtualFs.Host<fs.Stats> {
-    readonly capabilities: virtualFs.HostCapabilities;
+    get capabilities(): virtualFs.HostCapabilities;
     write(path: Path, content: virtualFs.FileBuffer): Observable<void>;
     read(path: Path): Observable<virtualFs.FileBuffer>;
     delete(path: Path): Observable<void>;

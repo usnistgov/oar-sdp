@@ -37,5 +37,6 @@ export declare class TestingArchitectHost implements ArchitectHost {
     getCurrentDirectory(): Promise<string>;
     getWorkspaceRoot(): Promise<string>;
     getOptionsForTarget(target: Target): Promise<json.JsonObject | null>;
+    getProjectMetadata(target: Target | string): Promise<json.JsonObject | null>;
     loadBuilder(info: BuilderInfo): Promise<Builder | null>;
 }

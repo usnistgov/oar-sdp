@@ -31,8 +31,8 @@ export declare class JsonWorkspaceMetadata {
     readonly raw: string;
     readonly changes: JsonChange[];
     constructor(filePath: string, ast: JsonAstObject, raw: string);
-    readonly hasChanges: boolean;
-    readonly changeCount: number;
+    get hasChanges(): boolean;
+    get changeCount(): number;
     findChangesForPath(path: string): JsonChange[];
     addChange<T extends keyof ChangeValues = keyof ChangeValues>(op: 'add' | 'remove' | 'replace', path: string, node: JsonAstArray | JsonAstObject | JsonAstKeyValue, value?: ChangeValues[T], type?: T): void;
     reset(): void;

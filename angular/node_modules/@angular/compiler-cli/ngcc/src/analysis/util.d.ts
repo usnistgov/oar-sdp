@@ -8,8 +8,6 @@
  */
 import * as ts from 'typescript';
 import { AbsoluteFsPath } from '../../../src/ngtsc/file_system';
-import { ClassSymbol, Decorator } from '../../../src/ngtsc/reflection';
-import { DecoratorHandler } from '../../../src/ngtsc/transform';
-import { AnalyzedClass } from './types';
+import { DependencyTracker } from '../../../src/ngtsc/incremental/api';
 export declare function isWithinPackage(packagePath: AbsoluteFsPath, sourceFile: ts.SourceFile): boolean;
-export declare function analyzeDecorators(symbol: ClassSymbol, decorators: Decorator[] | null, handlers: DecoratorHandler<any, any>[]): AnalyzedClass | null;
+export declare const NOOP_DEPENDENCY_TRACKER: DependencyTracker;

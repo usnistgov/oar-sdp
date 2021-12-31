@@ -8,14 +8,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * found in the LICENSE file at https://angular.io/license
  */
 const ts = require("typescript");
+const ast_utils_1 = require("../helpers/ast-utils");
 /**
- * @deprecated From 0.9.0
+ * @deprecated From 0.900.0
  */
-function testImportTslib(content) {
-    const regex = /var (__extends|__decorate|__metadata|__param) = \(.*\r?\n\s+(.*\r?\n)*\s*\};/;
-    return regex.test(content);
-}
-exports.testImportTslib = testImportTslib;
 function getImportTslibTransformer() {
     return (context) => {
         const transformer = (sf) => {
@@ -28,9 +24,11 @@ function getImportTslibTransformer() {
                     const declarations = node.declarationList.declarations;
                     if (declarations.length === 1 && ts.isIdentifier(declarations[0].name)) {
                         const name = declarations[0].name.text;
-                        if (isHelperName(name)) {
+                        const helperName = ast_utils_1.getCleanHelperName(name);
+                        if (helperName) {
                             // TODO: maybe add a few more checks, like checking the first part of the assignment.
-                            const tslibImport = createTslibImport(name, useRequire);
+                            const alias = name === helperName ? undefined : name;
+                            const tslibImport = createTslibImport(helperName, alias, useRequire);
                             tslibImports.push(tslibImport);
                             return undefined;
                         }
@@ -51,31 +49,23 @@ function getImportTslibTransformer() {
     };
 }
 exports.getImportTslibTransformer = getImportTslibTransformer;
-function createTslibImport(name, useRequire = false) {
+function createTslibImport(name, aliases, useRequire = false) {
     if (useRequire) {
         // Use `var __helper = /*@__PURE__*/ require("tslib").__helper`.
         const requireCall = ts.createCall(ts.createIdentifier('require'), undefined, [ts.createLiteral('tslib')]);
         const pureRequireCall = ts.addSyntheticLeadingComment(requireCall, ts.SyntaxKind.MultiLineCommentTrivia, '@__PURE__', false);
         const helperAccess = ts.createPropertyAccess(pureRequireCall, name);
-        const variableDeclaration = ts.createVariableDeclaration(name, undefined, helperAccess);
+        const variableDeclaration = ts.createVariableDeclaration(aliases || name, undefined, helperAccess);
         const variableStatement = ts.createVariableStatement(undefined, [variableDeclaration]);
         return variableStatement;
     }
     else {
         // Use `import { __helper } from "tslib"`.
-        const namedImports = ts.createNamedImports([ts.createImportSpecifier(undefined, ts.createIdentifier(name))]);
+        const namedImports = ts.createNamedImports([
+            ts.createImportSpecifier(aliases ? ts.createIdentifier(name) : undefined, ts.createIdentifier(aliases || name)),
+        ]);
         const importClause = ts.createImportClause(undefined, namedImports);
         const newNode = ts.createImportDeclaration(undefined, undefined, importClause, ts.createLiteral('tslib'));
         return newNode;
     }
-}
-function isHelperName(name) {
-    // TODO: there are more helpers than these, should we replace them all?
-    const tsHelpers = [
-        '__extends',
-        '__decorate',
-        '__metadata',
-        '__param',
-    ];
-    return tsHelpers.indexOf(name) !== -1;
 }

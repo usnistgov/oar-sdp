@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -24,11 +25,11 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/primeng/resources/themes/bootstrap/theme.css",
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
               "src/styles/font-awesome/css/font-awesome.min.css",
               "node_modules/primeng/resources/primeng.css",
               "node_modules/primeicons/primeicons.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles/main.css",
               "src/styles/styles.layout.css",
               "src/styles/styles.themes.css",
@@ -43,6 +44,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -60,6 +67,12 @@
               "buildOptimizer": true
             },
             "mock": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

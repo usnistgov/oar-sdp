@@ -9,7 +9,7 @@ class DefinitionCollection {
         const value = this._map.get(key);
         const result = this._map.delete(key);
         if (result && value !== undefined && this._listener) {
-            this._listener(key, 'remove', undefined, value);
+            this._listener(key, 'remove', undefined, value, this);
         }
         return result;
     }
@@ -17,7 +17,7 @@ class DefinitionCollection {
         const existing = this.get(key);
         this._map.set(key, value);
         if (this._listener) {
-            this._listener(key, existing !== undefined ? 'replace' : 'add', value, existing);
+            this._listener(key, existing !== undefined ? 'replace' : 'add', value, existing, this);
         }
         return this;
     }

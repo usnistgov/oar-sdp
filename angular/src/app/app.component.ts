@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, Renderer, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import './operators';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
@@ -57,12 +57,12 @@ export class AppComponent implements AfterViewInit {
   confValues: Config;
   gaCode: string;
 
-  @ViewChild('layoutContainer', {static: false}) layourContainerViewChild: ElementRef;
+  @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
 
-  @ViewChild('layoutMenuScroller', {static: false}) layoutMenuScrollerViewChild: ElementRef;
+  @ViewChild('layoutMenuScroller') layoutMenuScrollerViewChild: ElementRef;
 
   constructor(
-    public renderer: Renderer,
+    public renderer: Renderer2,
     public searchQueryService: SearchQueryService,
     private appConfig: AppConfig,
     private gaService: GoogleAnalyticsService) {

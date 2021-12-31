@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { ParseSourceSpan } from '../parse_util';
+import { I18nMeta } from '../render3/view/i18n/meta';
 export declare enum TypeModifier {
     Const = 0
 }
@@ -220,6 +221,39 @@ export declare class LiteralExpr extends Expression {
     isConstant(): boolean;
     visitExpression(visitor: ExpressionVisitor, context: any): any;
 }
+export declare class LocalizedString extends Expression {
+    readonly metaBlock: I18nMeta;
+    readonly messageParts: string[];
+    readonly placeHolderNames: string[];
+    readonly expressions: Expression[];
+    constructor(metaBlock: I18nMeta, messageParts: string[], placeHolderNames: string[], expressions: Expression[], sourceSpan?: ParseSourceSpan | null);
+    isEquivalent(e: Expression): boolean;
+    isConstant(): boolean;
+    visitExpression(visitor: ExpressionVisitor, context: any): any;
+    /**
+     * Serialize the given `meta` and `messagePart` into "cooked" and "raw" strings that can be used
+     * in a `$localize` tagged string. The format of the metadata is the same as that parsed by
+     * `parseI18nMeta()`.
+     *
+     * @param meta The metadata to serialize
+     * @param messagePart The first part of the tagged string
+     */
+    serializeI18nHead(): {
+        cooked: string;
+        raw: string;
+    };
+    /**
+     * Serialize the given `placeholderName` and `messagePart` into "cooked" and "raw" strings that
+     * can be used in a `$localize` tagged string.
+     *
+     * @param placeholderName The placeholder name to serialize
+     * @param messagePart The following message string after this placeholder
+     */
+    serializeI18nTemplatePart(partIndex: number): {
+        cooked: string;
+        raw: string;
+    };
+}
 export declare class ExternalExpr extends Expression {
     value: ExternalReference;
     typeParams: Type[] | null;
@@ -346,6 +380,7 @@ export interface ExpressionVisitor {
     visitInvokeFunctionExpr(ast: InvokeFunctionExpr, context: any): any;
     visitInstantiateExpr(ast: InstantiateExpr, context: any): any;
     visitLiteralExpr(ast: LiteralExpr, context: any): any;
+    visitLocalizedString(ast: LocalizedString, context: any): any;
     visitExternalExpr(ast: ExternalExpr, context: any): any;
     visitConditionalExpr(ast: ConditionalExpr, context: any): any;
     visitNotExpr(ast: NotExpr, context: any): any;
@@ -510,6 +545,7 @@ export declare class AstTransformer implements StatementVisitor, ExpressionVisit
     visitInvokeFunctionExpr(ast: InvokeFunctionExpr, context: any): any;
     visitInstantiateExpr(ast: InstantiateExpr, context: any): any;
     visitLiteralExpr(ast: LiteralExpr, context: any): any;
+    visitLocalizedString(ast: LocalizedString, context: any): any;
     visitExternalExpr(ast: ExternalExpr, context: any): any;
     visitConditionalExpr(ast: ConditionalExpr, context: any): any;
     visitNotExpr(ast: NotExpr, context: any): any;
@@ -552,6 +588,7 @@ export declare class RecursiveAstVisitor implements StatementVisitor, Expression
     visitInvokeFunctionExpr(ast: InvokeFunctionExpr, context: any): any;
     visitInstantiateExpr(ast: InstantiateExpr, context: any): any;
     visitLiteralExpr(ast: LiteralExpr, context: any): any;
+    visitLocalizedString(ast: LocalizedString, context: any): any;
     visitExternalExpr(ast: ExternalExpr, context: any): any;
     visitConditionalExpr(ast: ConditionalExpr, context: any): any;
     visitNotExpr(ast: NotExpr, context: any): any;
@@ -597,6 +634,7 @@ export declare function assertNotNull(expr: Expression, sourceSpan?: ParseSource
 export declare function fn(params: FnParam[], body: Statement[], type?: Type | null, sourceSpan?: ParseSourceSpan | null, name?: string | null): FunctionExpr;
 export declare function ifStmt(condition: Expression, thenClause: Statement[], elseClause?: Statement[]): IfStmt;
 export declare function literal(value: any, type?: Type | null, sourceSpan?: ParseSourceSpan | null): LiteralExpr;
+export declare function localizedString(metaBlock: I18nMeta, messageParts: string[], placeholderNames: string[], expressions: Expression[], sourceSpan?: ParseSourceSpan | null): LocalizedString;
 export declare function isNull(exp: Expression): boolean;
 export declare const enum JSDocTagName {
     Desc = "desc",

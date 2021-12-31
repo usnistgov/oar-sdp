@@ -14,7 +14,7 @@ export declare class ReflectorHost implements StaticSymbolResolverHost {
     private readonly metadataReaderCache;
     private readonly moduleResolutionCache;
     private readonly fakeContainingPath;
-    constructor(getProgram: () => ts.Program, tsLSHost: ts.LanguageServiceHost, _: {});
+    constructor(getProgram: () => ts.Program, tsLSHost: ts.LanguageServiceHost);
     getMetadataFor(modulePath: string): {
         [key: string]: any;
     }[] | undefined;

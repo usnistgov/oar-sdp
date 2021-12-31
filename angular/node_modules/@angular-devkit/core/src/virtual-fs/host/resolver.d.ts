@@ -16,7 +16,7 @@ export declare abstract class ResolverHost<T extends object> implements Host<T> 
     protected _delegate: Host<T>;
     protected abstract _resolve(path: Path): Path;
     constructor(_delegate: Host<T>);
-    readonly capabilities: HostCapabilities;
+    get capabilities(): HostCapabilities;
     write(path: Path, content: FileBuffer): Observable<void>;
     read(path: Path): Observable<FileBuffer>;
     delete(path: Path): Observable<void>;

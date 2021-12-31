@@ -17,13 +17,29 @@ export interface R3NgModuleDef {
     additionalStatements: o.Statement[];
 }
 /**
- * Metadata required by the module compiler to generate a `ngModuleDef` for a type.
+ * Metadata required by the module compiler to generate a module def (`ɵmod`) for a type.
  */
 export interface R3NgModuleMetadata {
     /**
      * An expression representing the module type being compiled.
      */
-    type: o.Expression;
+    type: R3Reference;
+    /**
+     * An expression representing the module type being compiled, intended for use within a class
+     * definition itself.
+     *
+     * This can differ from the outer `type` if the class is being compiled by ngcc and is inside
+     * an IIFE structure that uses a different name internally.
+     */
+    internalType: o.Expression;
+    /**
+     * An expression intended for use by statements that are adjacent (i.e. tightly coupled) to but
+     * not internal to a class definition.
+     *
+     * This can differ from the outer `type` if the class is being compiled by ngcc and is inside
+     * an IIFE structure that uses a different name internally.
+     */
+    adjacentType: o.Expression;
     /**
      * An array of expressions representing the bootstrap components specified by the module.
      */
@@ -68,7 +84,8 @@ export interface R3InjectorDef {
 }
 export interface R3InjectorMetadata {
     name: string;
-    type: o.Expression;
+    type: R3Reference;
+    internalType: o.Expression;
     deps: R3DependencyMetadata[] | null;
     providers: o.Expression | null;
     imports: o.Expression[];
