@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseJsonPointer = exports.joinJsonPointer = exports.buildJsonPointer = void 0;
 function buildJsonPointer(fragments) {
     return ('/' + fragments.map(f => {
         return f.replace(/~/g, '~0')

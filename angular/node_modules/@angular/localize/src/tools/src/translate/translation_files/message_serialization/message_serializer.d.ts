@@ -1,7 +1,7 @@
 /// <amd-module name="@angular/localize/src/tools/src/translate/translation_files/message_serialization/message_serializer" />
 /**
  * @license
- * Copyright Google Inc. All Rights Reserved.
+ * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
@@ -9,7 +9,7 @@
 import { Element, Expansion, ExpansionCase, Node, Text } from '@angular/compiler';
 import { BaseVisitor } from '../base_visitor';
 import { MessageRenderer } from './message_renderer';
-interface MessageSerializerConfig {
+export interface MessageSerializerConfig {
     inlineElements: string[];
     placeholder?: {
         elementName: string;
@@ -41,4 +41,3 @@ export declare class MessageSerializer<T> extends BaseVisitor {
     visitPlaceholderContainer(startName: string, children: Node[], closeName: string): void;
     private isPlaceholderContainer;
 }
-export {};

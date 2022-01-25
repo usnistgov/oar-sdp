@@ -7,6 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PriorityQueue = void 0;
 /** Naive priority queue; not intended for large datasets */
 class PriorityQueue {
     constructor(_comparator) {

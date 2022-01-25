@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.JsonWorkspaceMetadata = exports.JsonWorkspaceSymbol = void 0;
 exports.JsonWorkspaceSymbol = Symbol.for('@angular/core:workspace-json');
 class JsonWorkspaceMetadata {
     constructor(filePath, ast, raw) {

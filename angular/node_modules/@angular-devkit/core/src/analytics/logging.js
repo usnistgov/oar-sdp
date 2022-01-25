@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LoggingAnalytics = void 0;
 /**
  * Analytics implementation that logs analytics events to a logger. This should be used for
  * debugging mainly.

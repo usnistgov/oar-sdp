@@ -13,7 +13,7 @@ The easiest way is to keep `karma-chrome-launcher` as a devDependency in your `p
 by running
 
 ```bash
-$ npm install karma-chrome-launcher --save-dev
+$ npm i -D karma-chrome-launcher
 ```
 
 ## Configuration
@@ -28,7 +28,7 @@ module.exports = function(config) {
     customLaunchers: {
       Chrome_without_security: {
         base: 'Chrome',
-        flags: ['--disable-web-security']
+        flags: ['--disable-web-security', '--disable-site-isolation-trials']
       }
     }
   })
@@ -54,18 +54,40 @@ You can pass list of browsers as a CLI argument too:
 $ karma start --browsers Chrome,Chrome_without_security
 ```
 
-### Available browsers
+## Headless Chromium with Puppeteer
 
-- Chrome
-- ChromeCanary
-- Chromium
-- ChromeHeadless (only on Chrome >= 59)
-- ChromeCanaryHeadless (only on Chrome >= 59)
-- Dartium
+The Chrome DevTools team created [Puppeteer](https://github.com/GoogleChrome/puppeteer) - it will automatically install Chromium for all
+platforms and contains everything you need to run it from within your CI.
+
+### Available Browsers
+*Note: Headless mode requires a browser version >= 59*
+
+- Chrome (CHROME_BIN)
+- ChromeHeadless (CHROME_BIN)
+- Chromium (CHROMIUM_BIN)
+- ChromiumHeadless (CHROMIUM_BIN)
+- ChromeCanary (CHROME_CANARY_BIN)
+- ChromeCanaryHeadless (CHROME_CANARY_BIN)
+- Dartium (DARTIUM_BIN)
+
+#### Usage
+```bash
+$ npm i -D puppeteer karma-chrome-launcher
+```
+
+```js
+// karma.conf.js
+process.env.CHROME_BIN = require('puppeteer').executablePath()
+
+module.exports = function(config) {
+  config.set({
+    browsers: ['ChromeHeadless']
+  })
+}
+```
 
 ----
 
 For more information on Karma see the [homepage].
-
 
 [homepage]: http://karma-runner.github.com

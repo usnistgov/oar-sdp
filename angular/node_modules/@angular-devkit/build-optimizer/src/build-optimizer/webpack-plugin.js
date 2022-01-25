@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BuildOptimizerWebpackPlugin = void 0;
 class BuildOptimizerWebpackPlugin {
     apply(compiler) {
         compiler.hooks.normalModuleFactory.tap('BuildOptimizerWebpackPlugin', nmf => {

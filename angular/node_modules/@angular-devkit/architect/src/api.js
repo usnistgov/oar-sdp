@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.scheduleTargetAndForget = exports.targetFromTargetString = exports.targetStringFromTarget = exports.isBuilderOutput = exports.BuilderProgressState = void 0;
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const progress_schema_1 = require("./progress-schema");
-exports.BuilderProgressState = progress_schema_1.State;
+Object.defineProperty(exports, "BuilderProgressState", { enumerable: true, get: function () { return progress_schema_1.State; } });
 // tslint:disable-next-line:no-any
 function isBuilderOutput(obj) {
     if (!obj || typeof obj.then === 'function' || typeof obj.subscribe === 'function') {

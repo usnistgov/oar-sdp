@@ -13,6 +13,15 @@
       "description": "Dev server target to run tests against.",
       "pattern": "^([^:\\s]+:[^:\\s]+(:[^\\s]+)?)?$"
     },
+    "grep": {
+      "type": "string",
+      "description": "Execute specs whose names match the pattern, which is internally compiled to a RegExp."
+    },
+    "invertGrep": {
+      "type": "boolean",
+      "description": "Invert the selection specified by the 'grep' option.",
+      "default": false
+    },
     "specs": {
       "type": "array",
       "description": "Override specs in the protractor config.",
@@ -25,11 +34,6 @@
     "suite": {
       "type": "string",
       "description": "Override suite in the protractor config."
-    },
-    "elementExplorer": {
-      "type": "boolean",
-      "description": "Start Protractor's Element Explorer for debugging.",
-      "default": false
     },
     "webdriverUpdate": {
       "type": "boolean",

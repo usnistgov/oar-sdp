@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AnalyticsReporter = exports.ForwardingAnalytics = exports.AnalyticsReportKind = void 0;
 var AnalyticsReportKind;
 (function (AnalyticsReportKind) {
     AnalyticsReportKind["Event"] = "event";

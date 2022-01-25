@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildOptimizerLoaderPath = void 0;
 const webpack_sources_1 = require("webpack-sources");
 const loaderUtils = require('loader-utils');
 const build_optimizer_1 = require("./build-optimizer");

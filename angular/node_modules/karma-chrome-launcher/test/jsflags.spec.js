@@ -46,7 +46,7 @@ describe('canaryGetOptions', function () {
     var parent = sinon.stub().returns(['-incognito'])
     var context = {}
     var url = 'http://localhost:9876'
-    var args = {flags: ['--js-flags="--expose-gc"']}
+    var args = { flags: ['--js-flags="--expose-gc"'] }
     expect(canaryGetOptions.call(context, url, args, parent)).to.be.eql([
       '-incognito',
       '--js-flags=--expose-gc --nocrankshaft --noopt'
@@ -66,7 +66,24 @@ describe('headlessGetOptions', function () {
       '-incognito',
       '--headless',
       '--disable-gpu',
+      '--disable-dev-shm-usage',
       '--remote-debugging-port=9222'
+    ])
+  })
+
+  it('should not overwrite custom remote-debugging-port', function () {
+    var parent = sinon.stub().returns(
+      ['-incognito', '--remote-debugging-port=9333']
+    )
+    var context = {}
+    var url = 'http://localhost:9876'
+    var args = {}
+    expect(headlessGetOptions.call(context, url, args, parent)).to.be.eql([
+      '-incognito',
+      '--remote-debugging-port=9333',
+      '--headless',
+      '--disable-gpu',
+      '--disable-dev-shm-usage'
     ])
   })
 })

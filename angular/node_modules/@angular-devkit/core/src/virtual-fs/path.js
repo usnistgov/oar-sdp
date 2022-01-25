@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getSystemPath = exports.asPosixPath = exports.asWindowsPath = exports.path = exports.noCacheNormalize = exports.normalize = exports.resetNormalizeCache = exports.fragment = exports.resolve = exports.relative = exports.isAbsolute = exports.join = exports.dirname = exports.basename = exports.extname = exports.split = exports.NormalizedRoot = exports.NormalizedSep = exports.PathCannotBeFragmentException = exports.PathMustBeAbsoluteException = exports.InvalidPathException = void 0;
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.

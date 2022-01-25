@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.test = void 0;
 const path_1 = require("../path");
 const buffer_1 = require("./buffer");
 const memory_1 = require("./memory");

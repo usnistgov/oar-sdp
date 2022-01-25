@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BuilderVersionSymbol = exports.BuilderSymbol = void 0;
 // Internal types that should not be exported directly. These are used by the host and architect
 // itself. Host implementations should import the host.ts file.
 /**

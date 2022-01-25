@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TargetDefinitionCollection = exports.ProjectDefinitionCollection = void 0;
 class DefinitionCollection {
     constructor(initial, _listener) {
         this._listener = _listener;

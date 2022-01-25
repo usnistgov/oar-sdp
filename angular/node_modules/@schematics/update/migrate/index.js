@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports._coerceVersionNumber = void 0;
 const schematics_1 = require("@angular-devkit/schematics");
 const semver = require("semver");
 /**

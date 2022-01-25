@@ -7,6 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getEmittedFiles = void 0;
 const path = require("path");
 function getEmittedFiles(compilation) {
     const files = [];

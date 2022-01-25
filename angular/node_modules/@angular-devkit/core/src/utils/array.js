@@ -7,6 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.clean = void 0;
 function clean(array) {
     return array.filter(x => x !== undefined);
 }

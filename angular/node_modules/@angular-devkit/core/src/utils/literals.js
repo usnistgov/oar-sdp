@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.trimNewlines = exports.stripIndents = exports.stripIndent = exports.indentBy = exports.oneLine = void 0;
 // tslint:disable-next-line:no-any
 function oneLine(strings, ...values) {
     const endResult = String.raw(strings, ...values);

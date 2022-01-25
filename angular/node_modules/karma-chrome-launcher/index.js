@@ -1,4 +1,4 @@
-var fsAccess = require('fs-access')
+var fs = require('fs')
 var path = require('path')
 var which = require('which')
 
@@ -34,6 +34,8 @@ var ChromeBrowser = function (baseBrowserDecorator, args) {
 
     return [
       '--user-data-dir=' + userDataDir,
+      // https://github.com/GoogleChrome/chrome-launcher/blob/master/docs/chrome-flags-for-tools.md#--enable-automation
+      '--enable-automation',
       '--no-default-browser-check',
       '--no-first-run',
       '--disable-default-apps',
@@ -63,7 +65,7 @@ function getChromeExe (chromeDirName) {
     prefix = prefixes[i]
     try {
       windowsChromeDirectory = path.join(prefix, suffix)
-      fsAccess.sync(windowsChromeDirectory)
+      fs.accessSync(windowsChromeDirectory)
       return windowsChromeDirectory
     } catch (e) {}
   }
@@ -112,7 +114,7 @@ function getChromiumExe (chromeDirName) {
     prefix = prefixes[i]
     try {
       windowsChromiumDirectory = path.join(prefix, suffix)
-      fsAccess.sync(windowsChromiumDirectory)
+      fs.accessSync(windowsChromiumDirectory)
       return windowsChromiumDirectory
     } catch (e) {}
   }
@@ -144,7 +146,7 @@ function getChromeDarwin (defaultPath) {
 
   try {
     var homePath = path.join(process.env.HOME, defaultPath)
-    fsAccess.sync(homePath)
+    fs.accessSync(homePath)
     return homePath
   } catch (e) {
     return defaultPath
@@ -165,7 +167,19 @@ ChromeBrowser.prototype = {
 ChromeBrowser.$inject = ['baseBrowserDecorator', 'args']
 
 function headlessGetOptions (url, args, parent) {
-  return parent.call(this, url, args).concat(['--headless', '--disable-gpu', '--remote-debugging-port=9222'])
+  var mergedArgs = parent.call(this, url, args).concat([
+    '--headless',
+    '--disable-gpu',
+    '--disable-dev-shm-usage'
+  ])
+
+  var isRemoteDebuggingFlag = function (flag) {
+    return flag.indexOf('--remote-debugging-port=') !== -1
+  }
+
+  return mergedArgs.some(isRemoteDebuggingFlag)
+    ? mergedArgs
+    : mergedArgs.concat(['--remote-debugging-port=9222'])
 }
 
 var ChromeHeadlessBrowser = function (baseBrowserDecorator, args) {

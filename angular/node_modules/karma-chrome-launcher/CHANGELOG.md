@@ -1,3 +1,23 @@
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/karma-runner/karma-chrome-launcher/compare/v3.0.0...v3.1.0) (2019-08-13)
+
+
+### Features
+
+* add --disable-dev-shm-usage flag to headless ([137005d](https://github.com/karma-runner/karma-chrome-launcher/commit/137005d))
+
+
+
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/karma-runner/karma-chrome-launcher/compare/v2.2.0...v3.0.0) (2019-07-12)
+
+
+### Features
+
+* allow overriding of the default debug port ([26ae9f4](https://github.com/karma-runner/karma-chrome-launcher/commit/26ae9f4)), closes [#187](https://github.com/karma-runner/karma-chrome-launcher/issues/187)
+
+
+
 <a name="2.2.0"></a>
 # [2.2.0](https://github.com/karma-runner/karma-chrome-launcher/compare/v2.1.1...v2.2.0) (2017-06-23)
 

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCapabilities = void 0;
 const supportsColor = require('../../third_party/github.com/chalk/supports-color');
 const streamMap = new WeakMap();
 function _getRows() {

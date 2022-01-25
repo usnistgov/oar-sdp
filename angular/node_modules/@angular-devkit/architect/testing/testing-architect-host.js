@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TestingArchitectHost = void 0;
 const src_1 = require("../src");
 class TestingArchitectHost {
     /**

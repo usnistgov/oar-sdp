@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isObservable = exports.isPromise = void 0;
 /**
  * Determine if the argument is shaped like a Promise
  */

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TransformLogger = void 0;
 const logger_1 = require("./logger");
 class TransformLogger extends logger_1.Logger {
     constructor(name, transform, parent = null) {

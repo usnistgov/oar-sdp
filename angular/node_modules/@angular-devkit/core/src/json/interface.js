@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isJsonArray = exports.isJsonObject = void 0;
 function isJsonObject(value) {
     return value != null && typeof value === 'object' && !Array.isArray(value);
 }

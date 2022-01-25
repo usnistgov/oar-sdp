@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fileBufferToString = exports.fileBuffer = exports.stringToFileBuffer = void 0;
 function stringToFileBuffer(str) {
     // If we're in Node...
     if (typeof Buffer !== 'undefined' && typeof Buffer.from === 'function') {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ResolverHost = void 0;
 /**
  * A Host that runs a method before calling its delegate. This is an abstract class and its actual
  * behaviour is entirely dependant of the subclass.

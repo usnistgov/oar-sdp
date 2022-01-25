@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PatternMatchingHost = void 0;
 const resolver_1 = require("./resolver");
 /**
  */

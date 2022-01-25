@@ -1,8 +1,8 @@
-import { MessageId, ParsedMessage, TargetMessage } from './messages';
+import { MessageId, MessageMetadata, ParsedMessage, TargetMessage } from './messages';
 /**
  * A translation message that has been processed to extract the message parts and placeholders.
  */
-export interface ParsedTranslation {
+export interface ParsedTranslation extends MessageMetadata {
     messageParts: TemplateStringsArray;
     placeholderNames: string[];
 }
@@ -41,7 +41,7 @@ export declare function translate(translations: Record<string, ParsedTranslation
  *
  * @param message the message to be parsed.
  */
-export declare function parseTranslation(message: TargetMessage): ParsedTranslation;
+export declare function parseTranslation(messageString: TargetMessage): ParsedTranslation;
 /**
  * Create a `ParsedTranslation` from a set of `messageParts` and `placeholderNames`.
  *

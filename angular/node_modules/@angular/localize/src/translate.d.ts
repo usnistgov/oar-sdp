@@ -28,4 +28,7 @@ export declare function clearTranslations(): void;
  *
  * This function may reorder (or remove) substitutions as indicated in the matching translation.
  */
-export declare function translate(messageParts: TemplateStringsArray, substitutions: readonly any[]): [TemplateStringsArray, readonly any[]];
+export declare function translate(messageParts: TemplateStringsArray, substitutions: readonly any[]): [
+    TemplateStringsArray,
+    readonly any[]
+];
