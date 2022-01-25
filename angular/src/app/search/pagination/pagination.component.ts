@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter, Inject } from '@angular/core';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import { Subscription } from 'rxjs';
 

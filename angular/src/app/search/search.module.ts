@@ -16,9 +16,14 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
-import {
-  DialogModule, InputTextareaModule, ProgressSpinnerModule, InputTextModule, MultiSelectModule, OverlayPanelModule, CheckboxModule, TooltipModule
-} from 'primeng';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TooltipModule } from 'primeng/tooltip';
 import { SearchPanelModule } from '../search-panel/search-panel.module';
 import { FiltersComponent } from './filters/filters.component';
 import { ResultsComponent } from './results/results.component';

@@ -1,7 +1,7 @@
 import { Component, OnInit,Inject,forwardRef } from '@angular/core';
 import { AppComponent } from '../../app.component';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { AppConfig, Config } from '../../shared/config-service/config-service.service';
 import { SDPQuery, QueryRow } from '../../shared/search-query/query';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';

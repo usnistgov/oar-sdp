@@ -2,12 +2,9 @@ import { Injectable } from '@angular/core';
 // import { URLSearchParams } from '@angular/common/http';
 import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import 'rxjs/operator/map';
-import 'rxjs/operator/catch';
-import 'rxjs/observable/throw';
 import { EMPTY } from 'rxjs'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import * as _ from 'lodash';
+import { BehaviorSubject } from 'rxjs';
+import * as _ from 'lodash-es';
 import { AppConfig, Config } from '../config-service/config-service.service';
 import { SearchService } from './search-service.service';
 import { Router, NavigationExtras } from '@angular/router';

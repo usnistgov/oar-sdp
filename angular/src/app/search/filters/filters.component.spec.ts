@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FiltersComponent } from './filters.component';
-import { TreeModule, AutoCompleteModule } from 'primeng';
+import { TreeModule } from 'primeng/tree';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';

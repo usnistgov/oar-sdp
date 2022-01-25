@@ -15,7 +15,7 @@ import { SearchModule } from './search/search.module';
 import { TopBarComponent }  from './app.topbar.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { AppConfig } from './shared/config-service/config-service.service';
-import { AutoCompleteModule } from 'primeng';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AboutComponent } from './about/about.component';
 import { AdvSearchModule } from './adv-search/adv_search.module';
 import { PolicyModule } from './policy/policy.module';

@@ -8,9 +8,18 @@ import { TaxonomyListService } from './taxonomy-list/index';
 import { FootbarComponent } from '../frame/footbar/index';
 import { NameListService } from './name-list/name-list.service';
 
-import { InputTextModule, DropdownModule, ButtonModule, SplitButtonModule, MenubarModule,
- PanelModule, DialogModule, AutoCompleteModule, MultiSelectModule,
- PaginatorModule, CalendarModule, TabViewModule } from 'primeng';
+import { TabViewModule } from 'primeng/tabview';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MenubarModule } from 'primeng/menubar';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { PanelModule } from 'primeng/panel';
+import { PaginatorModule } from 'primeng/paginator';
+import { CalendarModule } from 'primeng/calendar';
 
 import { CommonService } from './common/common.service';
 import { ConfirmService } from './confirm/confirm.service';

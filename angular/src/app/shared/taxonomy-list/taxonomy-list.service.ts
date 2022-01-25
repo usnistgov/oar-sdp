@@ -1,8 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import 'rxjs/operator/map';
-import 'rxjs/operator/catch';
 import { AppConfig, Config } from '../config-service/config-service.service';
 
 /**

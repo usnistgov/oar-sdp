@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/map';
 import { Subscription } from 'rxjs/Subscription';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 
 /**

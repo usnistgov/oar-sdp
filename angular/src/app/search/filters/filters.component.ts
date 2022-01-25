@@ -1,13 +1,13 @@
 import { Component, OnInit, Inject, Input, AfterViewInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { SelectItem } from 'primeng';
+import { SelectItem } from 'primeng/api';
 import {TreeNode} from 'primeng/api';
 // import { Message } from 'primeng/components/common/api';
-import { Message } from 'primeng';
+import { Message } from 'primeng/api';
 import { SDPQuery } from '../../shared/search-query/query';
 import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
 import { TaxonomyListService, SearchfieldsListService } from '../../shared/index';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 
 @Component({
   selector: 'app-filters',
@@ -76,9 +76,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     nodeExpanded: boolean = true;
     comheight: string; // parent div height
     comwidth: string;  // parent div width
-    filterStyle = {'width':'100%',
-    'background-color': '#FFFFFF','font-weight': '400','height':'30px',
-    'font-style': 'italic'};
+
+    filterStyle = {'width':'100%', 'background-color': '#FFFFFF','font-weight': '400','font-style': 'italic'};
 
     ResourceTypeStyle = {'width':'auto','padding-top': '.5em','padding-right': '.5em',
     'padding-bottom': '.5em','background-color': '#F8F9F9'};
@@ -473,16 +472,19 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      * Create a list of suggested authors based on given search query
      * @param event - search query that user typed into the filter box
      */
-    filterAuthors(event: any) {
+    filterAuthors(event) {
+        //in a real application, make a request to a remote url with the query and return filtered results, for demo we filter at client side
         let author = event.query;
-        this.suggestedAuthors = [];
+        let filtered: any[] = [];
+        let query = event.query;
         for (let i = 0; i < this.authors.length; i++) {
-            let auth = this.authors[i];
-            if (auth.toLowerCase().indexOf(author.toLowerCase()) >= 0) {
-                this.suggestedAuthors = [...this.suggestedAuthors, auth];
-            }
+          let auth = this.authors[i];
+          if (auth.toLowerCase().indexOf(author.toLowerCase()) >= 0) {
+            filtered.push(auth);
+          }
         }
-        this.suggestedAuthors = this.sortAlphabetically(this.suggestedAuthors);
+    
+        this.suggestedAuthors = filtered;
     }
 
     /**
@@ -546,7 +548,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.suggestedThemes = [];
         this.suggestedKeywords = [];
         this.suggestedAuthors = [];
-        this.selectedAuthor = [];
+        // this.selectedAuthor = [];
         this.selectedKeywords = [];
         this.selectedThemes = [];
         this.selectedThemesNode = [];

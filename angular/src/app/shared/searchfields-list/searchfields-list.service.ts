@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfig, Config } from '../config-service/config-service.service';
-import { SelectItem } from 'primeng';
-import * as _ from 'lodash';
+import { SelectItem } from 'primeng/api';
+import * as _ from 'lodash-es';
 
 @Injectable({
   providedIn: 'root'

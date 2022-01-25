@@ -81,12 +81,18 @@
                     </div>
                     <div class="filter-input">
                         <label for="suggestedauthor" class="hideLabel">Search Input</label>
-                        <p-autoComplete [immutable]="true" [(ngModel)]="selectedAuthor"
-                            inputId="suggestedauthor" [suggestions]="suggestedAuthors"
-                            (completeMethod)="filterAuthors($event)" [multiple]="true"
+                        <p-autoComplete 
+                            [(ngModel)]="selectedAuthor" 
+                            inputId="suggestedauthor"
+                            [suggestions]="suggestedAuthors" 
+                            (completeMethod)="filterAuthors($event)" 
                             (onSelect)="filterResults()"
-                            (onUnselect)="filterResults()" [minLength]="1"
-                            [maxlength]="30" [style]="filterStyle">
+                            (onUnselect)="filterResults()"
+                            [multiple]="true"
+                            [immutable]="true"
+                            [minLength]="1"
+                            [maxlength]="30" 
+                            [style]="filterStyle">
                         </p-autoComplete>
                     </div>
                 </div>
