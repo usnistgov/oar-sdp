@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.NgBuildAnalyticsPlugin = exports.countOccurrences = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,8 +6,10 @@ exports.NgBuildAnalyticsPlugin = exports.countOccurrences = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NgBuildAnalyticsPlugin = exports.countOccurrences = void 0;
 const core_1 = require("@angular-devkit/core");
-const NormalModule = require('webpack/lib/NormalModule');
+const webpack_1 = require("webpack");
 const webpackAllErrorMessageRe = /^([^(]+)\(\d+,\d\): (.*)$/gm;
 const webpackTsErrorMessageRe = /^[^(]+\(\d+,\d\): error (TS\d+):/;
 /**
@@ -88,7 +88,7 @@ class NgBuildAnalyticsPlugin {
         const startTime = +(stats.startTime || 0);
         const endTime = +(stats.endTime || 0);
         const metrics = [];
-        metrics[core_1.analytics.NgCliAnalyticsMetrics.BuildTime] = (endTime - startTime);
+        metrics[core_1.analytics.NgCliAnalyticsMetrics.BuildTime] = endTime - startTime;
         metrics[core_1.analytics.NgCliAnalyticsMetrics.NgOnInitCount] = this._stats.numberOfNgOnInit;
         metrics[core_1.analytics.NgCliAnalyticsMetrics.NgComponentCount] = this._stats.numberOfComponents;
         metrics[core_1.analytics.NgCliAnalyticsMetrics.InitialChunkSize] = this._stats.initialChunkSize;
@@ -122,38 +122,29 @@ class NgBuildAnalyticsPlugin {
         this._analytics.event(this._category, 'rebuild', { dimensions, metrics });
     }
     _checkTsNormalModule(module) {
-        if (module._source) {
-            // PLEASE REMEMBER:
-            // We're dealing with ES5 _or_ ES2015 JavaScript at this point (we don't know for sure).
-            // Just count the ngOnInit occurences. Comments/Strings/calls occurences should be sparse
-            // so we just consider them within the margin of error. We do break on word break though.
-            this._stats.numberOfNgOnInit += countOccurrences(module._source.source(), 'ngOnInit', true);
-            // Count the number of `Component({` strings (case sensitive), which happens in __decorate().
-            // This does not include View Engine AOT compilation, we use the ngfactory for it.
-            this._stats.numberOfComponents += countOccurrences(module._source.source(), 'Component({');
-            // For Ivy we just count ɵcmp.
-            this._stats.numberOfComponents += countOccurrences(module._source.source(), '.ɵcmp', true);
-            // for ascii_only true
-            this._stats.numberOfComponents += countOccurrences(module._source.source(), '.\u0275cmp', true);
+        const originalSource = module.originalSource();
+        if (!originalSource) {
+            return;
         }
-    }
-    _checkNgFactoryNormalModule(module) {
-        if (module._source) {
-            // PLEASE REMEMBER:
-            // We're dealing with ES5 _or_ ES2015 JavaScript at this point (we don't know for sure).
-            // Count the number of `.ɵccf(` strings (case sensitive). They're calls to components
-            // factories.
-            this._stats.numberOfComponents += countOccurrences(module._source.source(), '.ɵccf(');
-            // for ascii_only true
-            this._stats.numberOfComponents += countOccurrences(module._source.source(), '.\u0275ccf(');
-        }
+        const originalContent = originalSource.source().toString();
+        // PLEASE REMEMBER:
+        // We're dealing with ES5 _or_ ES2015 JavaScript at this point (we don't know for sure).
+        // Just count the ngOnInit occurences. Comments/Strings/calls occurences should be sparse
+        // so we just consider them within the margin of error. We do break on word break though.
+        this._stats.numberOfNgOnInit += countOccurrences(originalContent, 'ngOnInit', true);
+        // Count the number of `Component({` strings (case sensitive), which happens in __decorate().
+        this._stats.numberOfComponents += countOccurrences(originalContent, 'Component({');
+        // For Ivy we just count ɵcmp.
+        this._stats.numberOfComponents += countOccurrences(originalContent, '.ɵcmp', true);
+        // for ascii_only true
+        this._stats.numberOfComponents += countOccurrences(originalContent, '.\u0275cmp', true);
     }
     _collectErrors(stats) {
         if (stats.hasErrors()) {
             for (const errObject of stats.compilation.errors) {
                 if (errObject instanceof Error) {
                     const allErrors = errObject.message.match(webpackAllErrorMessageRe);
-                    for (const err of [...allErrors || []].slice(1)) {
+                    for (const err of [...(allErrors || [])].slice(1)) {
                         const message = (err.match(webpackTsErrorMessageRe) || [])[1];
                         if (message) {
                             // At this point this should be a TS1234.
@@ -165,13 +156,15 @@ class NgBuildAnalyticsPlugin {
         }
     }
     _collectBundleStats(compilation) {
-        // `compilation.chunks` is a Set in Webpack 5
-        const chunks = Array.from(compilation.chunks);
-        chunks
-            .filter((chunk) => chunk.rendered)
-            .forEach((chunk) => {
-            const asset = compilation.assets[chunk.files[0]];
-            const size = asset ? asset.size() : 0;
+        var _a, _b;
+        const chunkAssets = new Set();
+        for (const chunk of compilation.chunks) {
+            if (!chunk.rendered) {
+                continue;
+            }
+            const firstFile = Array.from(chunk.files)[0];
+            const size = (_b = (_a = compilation.getAsset(firstFile)) === null || _a === void 0 ? void 0 : _a.source.size()) !== null && _b !== void 0 ? _b : 0;
+            chunkAssets.add(firstFile);
             if (chunk.canBeInitial()) {
                 this._stats.initialChunkSize += size;
             }
@@ -181,56 +174,45 @@ class NgBuildAnalyticsPlugin {
             }
             this._stats.totalChunkCount++;
             this._stats.totalChunkSize += size;
-        });
-        Object.entries(compilation.assets)
-            // Filter out chunks. We only count assets that are not JS.
-            .filter(([name]) => {
-            return chunks.every((chunk) => chunk.files[0] != name);
-        })
-            .forEach(([, asset]) => {
-            this._stats.assetSize += asset.size();
-            this._stats.assetCount++;
-        });
-        for (const [name, asset] of Object.entries(compilation.assets)) {
-            if (name == 'polyfill') {
-                this._stats.polyfillSize += asset.size();
-            }
-        }
-        for (const chunk of compilation.chunks) {
-            if (chunk.files[0] && chunk.files[0].endsWith('.css')) {
-                const asset = compilation.assets[chunk.files[0]];
-                const size = asset ? asset.size() : 0;
+            if (firstFile.endsWith('.css')) {
                 this._stats.cssSize += size;
             }
         }
+        for (const asset of compilation.getAssets()) {
+            // Only count non-JavaScript related files
+            if (chunkAssets.has(asset.name)) {
+                continue;
+            }
+            this._stats.assetSize += asset.source.size();
+            this._stats.assetCount++;
+            if (asset.name == 'polyfill') {
+                this._stats.polyfillSize += asset.source.size();
+            }
+        }
     }
-    /************************************************************************************************
+    /** **********************************************************************************************
      * The next section is all the different Webpack hooks for this plugin.
      */
     /**
      * Reports a succeed module.
      * @private
      */
-    _succeedModule(mod) {
+    _succeedModule(module) {
         // Only report NormalModule instances.
-        if (mod.constructor !== NormalModule) {
+        if (!(module instanceof webpack_1.NormalModule)) {
             return;
         }
-        const module = mod;
         // Only reports modules that are part of the user's project. We also don't do node_modules.
         // There is a chance that someone name a file path `hello_node_modules` or something and we
         // will ignore that file for the purpose of gathering, but we're willing to take the risk.
-        if (!module.resource
-            || !module.resource.startsWith(this._projectRoot)
-            || module.resource.indexOf('node_modules') >= 0) {
+        if (!module.resource ||
+            !module.resource.startsWith(this._projectRoot) ||
+            module.resource.indexOf('node_modules') >= 0) {
             return;
         }
         // Check that it's a source file from the project.
         if (module.resource.endsWith('.ts')) {
             this._checkTsNormalModule(module);
-        }
-        else if (module.resource.endsWith('.ngfactory.js')) {
-            this._checkNgFactoryNormalModule(module);
         }
     }
     _compilation(compiler, compilation) {

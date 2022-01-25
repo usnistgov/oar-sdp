@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.lazyModuleFnImport = exports.lazyModuleStringImport = exports.lazyModuleFiles = exports.browserBuild = exports.createArchitect = exports.protractorTargetSpec = exports.tslintTargetSpec = exports.karmaTargetSpec = exports.extractI18nTargetSpec = exports.devServerTargetSpec = exports.browserTargetSpec = exports.outputPath = exports.host = exports.workspaceRoot = exports.veEnabled = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,14 +6,14 @@ exports.lazyModuleFnImport = exports.lazyModuleStringImport = exports.lazyModule
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.lazyModuleFnImport = exports.lazyModuleFiles = exports.browserBuild = exports.createArchitect = exports.protractorTargetSpec = exports.tslintTargetSpec = exports.karmaTargetSpec = exports.extractI18nTargetSpec = exports.devServerTargetSpec = exports.browserTargetSpec = exports.outputPath = exports.host = exports.workspaceRoot = void 0;
 const architect_1 = require("@angular-devkit/architect");
 const node_1 = require("@angular-devkit/architect/node");
 const testing_1 = require("@angular-devkit/architect/testing");
 const core_1 = require("@angular-devkit/core");
 // Default timeout for large specs is 2.5 minutes.
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
-// This flag controls whether AOT compilation uses Ivy or View Engine (VE).
-exports.veEnabled = process.argv.some(arg => arg == 'view_engine');
 exports.workspaceRoot = core_1.join(core_1.normalize(__dirname), `../test/hello-world-app/`);
 exports.host = new testing_1.TestProjectHost(exports.workspaceRoot);
 exports.outputPath = core_1.normalize('dist');
@@ -32,10 +30,6 @@ async function createArchitect(workspaceRoot) {
     const { workspace } = await core_1.workspaces.readWorkspace(workspaceSysPath, core_1.workspaces.createWorkspaceHost(exports.host));
     const architectHost = new testing_1.TestingArchitectHost(workspaceSysPath, workspaceSysPath, new node_1.WorkspaceNodeModulesArchitectHost(workspace, workspaceSysPath));
     const architect = new architect_1.Architect(architectHost, registry);
-    // Set AOT compilation to use VE if needed.
-    if (exports.veEnabled) {
-        exports.host.replaceInFile('tsconfig.json', `"enableIvy": true,`, `"enableIvy": false,`);
-    }
     return {
         workspace,
         architectHost,
@@ -71,7 +65,7 @@ async function browserBuild(architect, host, target, overrides, scheduleOptions)
                 cache = host
                     .read(core_1.join(outputPath, path))
                     .toPromise()
-                    .then(content => core_1.virtualFs.fileBufferToString(content));
+                    .then((content) => core_1.virtualFs.fileBufferToString(content));
                 return cache;
             },
         });
@@ -113,7 +107,7 @@ exports.lazyModuleFiles = {
     export class LazyModule { }
   `,
 };
-exports.lazyModuleStringImport = {
+exports.lazyModuleFnImport = {
     'src/app/app.module.ts': `
     import { BrowserModule } from '@angular/platform-browser';
     import { NgModule } from '@angular/core';
@@ -128,15 +122,12 @@ exports.lazyModuleStringImport = {
       imports: [
         BrowserModule,
         RouterModule.forRoot([
-          { path: 'lazy', loadChildren: './lazy/lazy.module#LazyModule' }
+          { path: 'lazy', loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule) }
         ])
       ],
       providers: [],
       bootstrap: [AppComponent]
     })
     export class AppModule { }
-  `,
-};
-exports.lazyModuleFnImport = {
-    'src/app/app.module.ts': exports.lazyModuleStringImport['src/app/app.module.ts'].replace(`loadChildren: './lazy/lazy.module#LazyModule'`, `loadChildren: () => import('./lazy/lazy.module').then(m => m.LazyModule)`),
+`,
 };

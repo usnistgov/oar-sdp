@@ -6,10 +6,29 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IndexHtmlGenerator = void 0;
+const fs = __importStar(require("fs"));
 const path_1 = require("path");
-const fs_1 = require("../fs");
 const strip_bom_1 = require("../strip-bom");
 const augment_index_html_1 = require("./augment-index-html");
 const inline_critical_css_1 = require("./inline-critical-css");
@@ -25,11 +44,7 @@ class IndexHtmlGenerator {
         if ((_b = this.options.optimization) === null || _b === void 0 ? void 0 : _b.styles.inlineCritical) {
             extraPlugins.push(inlineCriticalCssPlugin(this));
         }
-        this.plugins = [
-            augmentIndexHtmlPlugin(this),
-            ...extraPlugins,
-            postTransformPlugin(this),
-        ];
+        this.plugins = [augmentIndexHtmlPlugin(this), ...extraPlugins, postTransformPlugin(this)];
     }
     async process(options) {
         let content = strip_bom_1.stripBom(await this.readIndex(this.options.indexPath));
@@ -57,17 +72,17 @@ class IndexHtmlGenerator {
         };
     }
     async readAsset(path) {
-        return fs_1.readFile(path, 'utf-8');
+        return fs.promises.readFile(path, 'utf-8');
     }
     async readIndex(path) {
-        return fs_1.readFile(path, 'utf-8');
+        return fs.promises.readFile(path, 'utf-8');
     }
 }
 exports.IndexHtmlGenerator = IndexHtmlGenerator;
 function augmentIndexHtmlPlugin(generator) {
-    const { deployUrl, crossOrigin, sri = false, entrypoints, } = generator.options;
+    const { deployUrl, crossOrigin, sri = false, entrypoints } = generator.options;
     return async (html, options) => {
-        const { lang, baseHref, outputPath = '', noModuleFiles, files, moduleFiles, } = options;
+        const { lang, baseHref, outputPath = '', noModuleFiles, files, moduleFiles } = options;
         return augment_index_html_1.augmentIndexHtml({
             html,
             baseHref,
@@ -76,7 +91,7 @@ function augmentIndexHtmlPlugin(generator) {
             sri,
             lang,
             entrypoints,
-            loadOutputFile: filePath => generator.readAsset(path_1.join(outputPath, filePath)),
+            loadOutputFile: (filePath) => generator.readAsset(path_1.join(outputPath, filePath)),
             noModuleFiles,
             moduleFiles,
             files,
@@ -96,10 +111,10 @@ function inlineCriticalCssPlugin(generator) {
     const inlineCriticalCssProcessor = new inline_critical_css_1.InlineCriticalCssProcessor({
         minify: (_a = generator.options.optimization) === null || _a === void 0 ? void 0 : _a.styles.minify,
         deployUrl: generator.options.deployUrl,
-        readAsset: filePath => generator.readAsset(filePath),
+        readAsset: (filePath) => generator.readAsset(filePath),
     });
     return async (html, options) => inlineCriticalCssProcessor.process(html, { outputPath: options.outputPath });
 }
 function postTransformPlugin({ options }) {
-    return async (html) => options.postTransform ? options.postTransform(html) : html;
+    return async (html) => (options.postTransform ? options.postTransform(html) : html);
 }

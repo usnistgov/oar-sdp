@@ -1,6 +1,6 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "BuildAngularWebpackServerSchema",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "BuildAngularWebpackServerSchema",
   "title": "Universal Target",
   "type": "object",
   "properties": {
@@ -13,12 +13,18 @@
       "default": "tsconfig.app.json",
       "description": "The name of the TypeScript configuration file."
     },
+    "inlineStyleLanguage": {
+      "description": "The stylesheet language to use for the application's inline component styles.",
+      "type": "string",
+      "default": "css",
+      "enum": ["css", "less", "sass", "scss"]
+    },
     "stylePreprocessorOptions": {
       "description": "Options to pass to style preprocessors",
       "type": "object",
       "properties": {
         "includePaths": {
-          "description": "Paths to include. Paths will be resolved to project root.",
+          "description": "Paths to include. Paths will be resolved to workspace root.",
           "type": "array",
           "items": {
             "type": "string"
@@ -31,7 +37,7 @@
     "optimization": {
       "description": "Enables optimization of the build output. Including minification of scripts and styles, tree-shaking and dead-code elimination. For more information, see https://angular.io/guide/workspace-config#optimization-configuration.",
       "x-user-analytics": 16,
-      "default": false,
+      "default": true,
       "oneOf": [
         {
           "type": "object",
@@ -73,7 +79,7 @@
     },
     "sourceMap": {
       "description": "Output source maps for scripts and styles. For more information, see https://angular.io/guide/workspace-config#source-map-configuration.",
-      "default": true,
+      "default": false,
       "oneOf": [
         {
           "type": "object",
@@ -120,21 +126,6 @@
       "description": "Log progress to the console while building.",
       "default": true
     },
-    "i18nFile": {
-      "type": "string",
-      "description": "Localization file to use for i18n.",
-      "x-deprecated": "Use 'locales' object in the project metadata instead."
-    },
-    "i18nFormat": {
-      "type": "string",
-      "description": "Format of the localization file specified with --i18n-file.",
-      "x-deprecated": "No longer needed as the format will be determined automatically."
-    },
-    "i18nLocale": {
-      "type": "string",
-      "description": "Locale to use for i18n.",
-      "x-deprecated": "Use 'localize' instead."
-    },
     "i18nMissingTranslation": {
       "type": "string",
       "description": "How to handle missing translations for i18n.",
@@ -163,12 +154,7 @@
       "type": "string",
       "description": "Define the output filename cache-busting hashing mode.",
       "default": "none",
-      "enum": [
-        "none",
-        "all",
-        "media",
-        "bundles"
-      ]
+      "enum": ["none", "all", "media", "bundles"]
     },
     "deleteOutputPath": {
       "type": "boolean",
@@ -187,12 +173,13 @@
     "showCircularDependencies": {
       "type": "boolean",
       "description": "Show circular dependency warnings on builds.",
-      "default": true
+      "default": false,
+      "x-deprecated": "The recommended method to detect circular dependencies in project code is to use either a lint rule or other external tooling."
     },
     "namedChunks": {
       "type": "boolean",
       "description": "Use file name for lazy loaded chunks.",
-      "default": true
+      "default": false
     },
     "bundleDependencies": {
       "description": "Which external dependencies to bundle into the bundle. By default, all of node_modules will be bundled.",
@@ -203,10 +190,7 @@
         },
         {
           "type": "string",
-          "enum": [
-            "none",
-            "all"
-          ]
+          "enum": ["none", "all"]
         }
       ]
     },
@@ -223,20 +207,6 @@
       "description": "Generates a 'stats.json' file which can be analyzed using tools such as 'webpack-bundle-analyzer'.",
       "default": false
     },
-    "forkTypeChecker": {
-      "type": "boolean",
-      "description": "Run the TypeScript type checker in a forked process.",
-      "default": true
-    },
-    "lazyModules": {
-      "description": "List of additional NgModule files that will be lazy loaded. Lazy router modules will be discovered automatically.",
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "x-deprecated": "'SystemJsNgModuleLoader' is deprecated, and this is part of its usage. Use 'import()' syntax instead.",
-      "default": []
-    },
     "watch": {
       "type": "boolean",
       "description": "Run build when files change.",
@@ -248,11 +218,7 @@
     }
   },
   "additionalProperties": false,
-  "required": [
-    "outputPath",
-    "main",
-    "tsConfig"
-  ],
+  "required": ["outputPath", "main", "tsConfig"],
   "definitions": {
     "fileReplacement": {
       "oneOf": [
@@ -269,10 +235,7 @@
             }
           },
           "additionalProperties": false,
-          "required": [
-            "src",
-            "replaceWith"
-          ]
+          "required": ["src", "replaceWith"]
         },
         {
           "type": "object",
@@ -287,10 +250,7 @@
             }
           },
           "additionalProperties": false,
-          "required": [
-            "replace",
-            "with"
-          ]
+          "required": ["replace", "with"]
         }
       ]
     }

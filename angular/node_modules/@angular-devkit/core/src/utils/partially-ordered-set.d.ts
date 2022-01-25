@@ -31,7 +31,7 @@ export declare class PartiallyOrderedSet<T> implements Set<T> {
      * Returns an iterable of values in the set.
      */
     values(): IterableIterator<T>;
-    add(item: T, deps?: (Set<T> | T[])): this;
+    add(item: T, deps?: Set<T> | T[]): this;
     delete(item: T): boolean;
     [Symbol.iterator](): Generator<T, void, unknown>;
     get [Symbol.toStringTag](): 'Set';

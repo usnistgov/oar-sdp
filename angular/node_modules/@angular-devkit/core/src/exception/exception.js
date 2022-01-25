@@ -15,24 +15,34 @@ class BaseException extends Error {
 }
 exports.BaseException = BaseException;
 class UnknownException extends BaseException {
-    constructor(message) { super(message); }
+    constructor(message) {
+        super(message);
+    }
 }
 exports.UnknownException = UnknownException;
 // Exceptions
 class FileDoesNotExistException extends BaseException {
-    constructor(path) { super(`Path "${path}" does not exist.`); }
+    constructor(path) {
+        super(`Path "${path}" does not exist.`);
+    }
 }
 exports.FileDoesNotExistException = FileDoesNotExistException;
 class FileAlreadyExistException extends BaseException {
-    constructor(path) { super(`Path "${path}" already exist.`); }
+    constructor(path) {
+        super(`Path "${path}" already exist.`);
+    }
 }
 exports.FileAlreadyExistException = FileAlreadyExistException;
 class PathIsDirectoryException extends BaseException {
-    constructor(path) { super(`Path "${path}" is a directory.`); }
+    constructor(path) {
+        super(`Path "${path}" is a directory.`);
+    }
 }
 exports.PathIsDirectoryException = PathIsDirectoryException;
 class PathIsFileException extends BaseException {
-    constructor(path) { super(`Path "${path}" is a file.`); }
+    constructor(path) {
+        super(`Path "${path}" is a file.`);
+    }
 }
 exports.PathIsFileException = PathIsFileException;
 class ContentHasMutatedException extends BaseException {
@@ -42,7 +52,9 @@ class ContentHasMutatedException extends BaseException {
 }
 exports.ContentHasMutatedException = ContentHasMutatedException;
 class InvalidUpdateRecordException extends BaseException {
-    constructor() { super(`Invalid record instance.`); }
+    constructor() {
+        super(`Invalid record instance.`);
+    }
 }
 exports.InvalidUpdateRecordException = InvalidUpdateRecordException;
 class MergeConflictException extends BaseException {
@@ -52,10 +64,14 @@ class MergeConflictException extends BaseException {
 }
 exports.MergeConflictException = MergeConflictException;
 class UnimplementedException extends BaseException {
-    constructor() { super('This function is unimplemented.'); }
+    constructor() {
+        super('This function is unimplemented.');
+    }
 }
 exports.UnimplementedException = UnimplementedException;
 class UnsupportedPlatformException extends BaseException {
-    constructor() { super('This platform is not supported by this code path.'); }
+    constructor() {
+        super('This platform is not supported by this code path.');
+    }
 }
 exports.UnsupportedPlatformException = UnsupportedPlatformException;

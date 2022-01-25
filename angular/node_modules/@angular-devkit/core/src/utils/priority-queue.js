@@ -18,7 +18,7 @@ class PriorityQueue {
         this._items = new Array();
     }
     push(item) {
-        const index = this._items.findIndex(existing => this._comparator(item, existing) <= 0);
+        const index = this._items.findIndex((existing) => this._comparator(item, existing) <= 0);
         if (index === -1) {
             this._items.push(item);
         }

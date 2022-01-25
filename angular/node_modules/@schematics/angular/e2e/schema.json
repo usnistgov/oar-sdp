@@ -1,8 +1,9 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsAngularE2eApp",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "SchematicsAngularE2eApp",
   "title": "Angular e2e Application Options Schema",
   "type": "object",
+  "additionalProperties": false,
   "description": "Generates a new, generic end-to-end test definition for the given or default project.",
   "long-description": "e2e-long.md",
   "properties": {
@@ -16,7 +17,5 @@
       "type": "string"
     }
   },
-  "required": [
-    "relatedAppName"
-  ]
+  "required": ["relatedAppName"]
 }

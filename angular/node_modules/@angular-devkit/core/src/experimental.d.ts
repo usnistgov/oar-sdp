@@ -6,4 +6,4 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as jobs from './experimental/jobs/index';
-export { jobs, };
+export { jobs };

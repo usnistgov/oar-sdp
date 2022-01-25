@@ -20,6 +20,7 @@ export interface ProjectDefinition {
 export interface TargetDefinition {
     options?: Record<string, JsonValue | undefined>;
     configurations?: Record<string, Record<string, JsonValue | undefined> | undefined>;
+    defaultConfiguration?: string;
     builder: string;
 }
 export declare type DefinitionCollectionListener<V extends object> = (name: string, action: 'add' | 'remove' | 'replace', newValue: V | undefined, oldValue: V | undefined, collection: DefinitionCollection<V>) => void;

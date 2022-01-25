@@ -13,20 +13,6 @@ export interface Schema {
      */
     format?: Format;
     /**
-     * Output format for the generated file.
-     * @deprecated Use 'format' option instead.
-     */
-    i18nFormat?: Format;
-    /**
-     * Specifies the source language of the application.
-     * @deprecated Use 'i18n' project level sub-option 'sourceLocale' instead.
-     */
-    i18nLocale?: string;
-    /**
-     * Use Ivy compiler to extract translations. The default for Ivy applications.
-     */
-    ivy?: boolean;
-    /**
      * Name of the file to output.
      */
     outFile?: string;
@@ -41,13 +27,11 @@ export interface Schema {
 }
 /**
  * Output format for the generated file.
- *
- * Output format for the generated file.
- * @deprecated Use 'format' option instead.
  */
 export declare enum Format {
     Arb = "arb",
     Json = "json",
+    LegacyMigrate = "legacy-migrate",
     Xlf = "xlf",
     Xlf2 = "xlf2",
     Xlif = "xlif",

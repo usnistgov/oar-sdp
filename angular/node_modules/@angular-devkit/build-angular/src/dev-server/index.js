@@ -6,18 +6,39 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.serveWebpackBrowser = void 0;
 const architect_1 = require("@angular-devkit/architect");
 const build_webpack_1 = require("@angular-devkit/build-webpack");
 const core_1 = require("@angular-devkit/core");
-const path = require("path");
+const path = __importStar(require("path"));
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
-const ts = require("typescript");
-const url = require("url");
-const webpackDevServer = require("webpack-dev-server");
-const browser_1 = require("../browser");
+const ts = __importStar(require("typescript"));
+const url = __importStar(require("url"));
+const webpack_dev_server_1 = __importDefault(require("webpack-dev-server"));
 const schema_1 = require("../browser/schema");
 const utils_1 = require("../utils");
 const cache_path_1 = require("../utils/cache-path");
@@ -44,32 +65,34 @@ const devServerBuildOverriddenKeys = [
     'deployUrl',
 ];
 /**
- * Reusable implementation of the build angular webpack dev server builder.
+ * Reusable implementation of the Angular Webpack development server builder.
  * @param options Dev Server options.
  * @param context The build context.
  * @param transforms A map of transforms that can be used to hook into some logic (such as
  *     transforming webpack configuration before passing it to webpack).
+ *
+ * @experimental Direct usage of this function is considered experimental.
  */
-// tslint:disable-next-line: no-big-function
+// eslint-disable-next-line max-lines-per-function
 function serveWebpackBrowser(options, context, transforms = {}) {
     // Check Angular version.
     const { logger, workspaceRoot } = context;
-    version_1.assertCompatibleAngularVersion(workspaceRoot, logger);
+    version_1.assertCompatibleAngularVersion(workspaceRoot);
     const browserTarget = architect_1.targetFromTargetString(options.browserTarget);
     async function setup() {
-        var _a;
+        var _a, _b;
         // Get the browser configuration from the target name.
         const rawBrowserOptions = (await context.getTargetOptions(browserTarget));
         options.port = await check_port_1.checkPort((_a = options.port) !== null && _a !== void 0 ? _a : 4200, options.host || 'localhost');
         // Override options we need to override, if defined.
         const overrides = Object.keys(options)
-            .filter(key => options[key] !== undefined && devServerBuildOverriddenKeys.includes(key))
+            .filter((key) => options[key] !== undefined && devServerBuildOverriddenKeys.includes(key))
             .reduce((previous, key) => ({
             ...previous,
             [key]: options[key],
         }), {});
         const devServerOptions = Object.keys(options)
-            .filter(key => !devServerBuildOverriddenKeys.includes(key) && key !== 'browserTarget')
+            .filter((key) => !devServerBuildOverriddenKeys.includes(key) && key !== 'browserTarget')
             .reduce((previous, key) => ({
             ...previous,
             [key]: options[key],
@@ -82,59 +105,21 @@ function serveWebpackBrowser(options, context, transforms = {}) {
             overrides.outputHashing = schema_1.OutputHashing.None;
             logger.warn(`Warning: 'outputHashing' option is disabled when using the dev-server.`);
         }
-        const browserName = await context.getBuilderNameForTarget(browserTarget);
-        const browserOptions = await context.validateOptions({ ...rawBrowserOptions, ...overrides }, browserName);
-        const { config, projectRoot, i18n } = await webpack_browser_config_1.generateI18nBrowserWebpackConfigFromContext(browserOptions, context, wco => [
-            configs_1.getDevServerConfig(wco),
-            configs_1.getCommonConfig(wco),
-            configs_1.getBrowserConfig(wco),
-            configs_1.getStylesConfig(wco),
-            configs_1.getStatsConfig(wco),
-            browser_1.getAnalyticsConfig(wco, context),
-            browser_1.getCompilerConfig(wco),
-            browserOptions.webWorkerTsConfig ? configs_1.getWorkerConfig(wco) : {},
-        ], devServerOptions);
-        if (!config.devServer) {
-            throw new Error('Webpack Dev Server configuration was not set.');
-        }
-        if (options.liveReload && !options.hmr) {
-            // This is needed because we cannot use the inline option directly in the config
-            // because of the SuppressExtractedTextChunksWebpackPlugin
-            // Consider not using SuppressExtractedTextChunksWebpackPlugin when liveReload is enable.
-            webpackDevServer.addDevServerEntrypoints(config, {
-                ...config.devServer,
-                inline: true,
-            });
-            // Remove live-reload code from all entrypoints but not main.
-            // Otherwise this will break SuppressExtractedTextChunksWebpackPlugin because
-            // 'addDevServerEntrypoints' adds addional entry-points to all entries.
-            if (config.entry && typeof config.entry === 'object' && !Array.isArray(config.entry) && config.entry.main) {
-                for (const [key, value] of Object.entries(config.entry)) {
-                    if (key === 'main' || typeof value === 'string') {
-                        continue;
-                    }
-                    const webpackClientScriptIndex = value.findIndex(x => x.includes('webpack-dev-server/client/index.js'));
-                    if (webpackClientScriptIndex >= 0) {
-                        // Remove the webpack-dev-server/client script from array.
-                        value.splice(webpackClientScriptIndex, 1);
-                    }
-                }
-            }
-        }
         if (options.hmr) {
             logger.warn(core_1.tags.stripIndents `NOTICE: Hot Module Replacement (HMR) is enabled for the dev server.
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
         }
-        if (options.host
-            && !/^127\.\d+\.\d+\.\d+/g.test(options.host)
-            && options.host !== 'localhost') {
+        if (!options.disableHostCheck &&
+            options.host &&
+            !/^127\.\d+\.\d+\.\d+/g.test(options.host) &&
+            options.host !== 'localhost') {
             logger.warn(core_1.tags.stripIndent `
         Warning: This is a simple server for use in testing or debugging Angular applications
         locally. It hasn't been reviewed for security issues.
 
         Binding this server to an open connection can result in compromising your application or
         computer. Using a different host than the one passed to the "--host" flag might result in
-        websocket connection issues. You might need to use "--disableHostCheck" if that's the
+        websocket connection issues. You might need to use "--disable-host-check" if that's the
         case.
       `);
         }
@@ -145,12 +130,64 @@ function serveWebpackBrowser(options, context, transforms = {}) {
         for more information.
       `);
         }
-        let locale;
-        if (browserOptions.i18nLocale) {
-            // Deprecated VE option
-            locale = browserOptions.i18nLocale;
+        // Webpack's live reload functionality adds the `strip-ansi` package which is commonJS
+        (_b = rawBrowserOptions.allowedCommonJsDependencies) !== null && _b !== void 0 ? _b : (rawBrowserOptions.allowedCommonJsDependencies = []);
+        rawBrowserOptions.allowedCommonJsDependencies.push('strip-ansi');
+        const browserName = await context.getBuilderNameForTarget(browserTarget);
+        const browserOptions = (await context.validateOptions({ ...rawBrowserOptions, ...overrides }, browserName));
+        const { styles, scripts } = utils_1.normalizeOptimization(browserOptions.optimization);
+        if (scripts || styles.minify) {
+            logger.error(core_1.tags.stripIndents `
+        ****************************************************************************************
+        This is a simple server for use in testing or debugging Angular applications locally.
+        It hasn't been reviewed for security issues.
+
+        DON'T USE IT FOR PRODUCTION!
+        ****************************************************************************************
+      `);
         }
-        else if (i18n.shouldInline) {
+        const { config, projectRoot, i18n } = await webpack_browser_config_1.generateI18nBrowserWebpackConfigFromContext(browserOptions, context, (wco) => [
+            configs_1.getDevServerConfig(wco),
+            configs_1.getCommonConfig(wco),
+            configs_1.getBrowserConfig(wco),
+            configs_1.getStylesConfig(wco),
+            configs_1.getStatsConfig(wco),
+            configs_1.getAnalyticsConfig(wco, context),
+            configs_1.getTypeScriptConfig(wco),
+            browserOptions.webWorkerTsConfig ? configs_1.getWorkerConfig(wco) : {},
+        ], devServerOptions);
+        if (!config.devServer) {
+            throw new Error('Webpack Dev Server configuration was not set.');
+        }
+        if (options.liveReload && !options.hmr) {
+            // This is needed because we cannot use the inline option directly in the config
+            // because of the SuppressExtractedTextChunksWebpackPlugin
+            // Consider not using SuppressExtractedTextChunksWebpackPlugin when liveReload is enable.
+            webpack_dev_server_1.default.addDevServerEntrypoints(config, {
+                ...config.devServer,
+                inline: true,
+            });
+            // Remove live-reload code from all entrypoints but not main.
+            // Otherwise this will break SuppressExtractedTextChunksWebpackPlugin because
+            // 'addDevServerEntrypoints' adds addional entry-points to all entries.
+            if (config.entry &&
+                typeof config.entry === 'object' &&
+                !Array.isArray(config.entry) &&
+                config.entry.main) {
+                for (const [key, value] of Object.entries(config.entry)) {
+                    if (key === 'main' || !Array.isArray(value)) {
+                        continue;
+                    }
+                    const webpackClientScriptIndex = value.findIndex((x) => x.includes('webpack-dev-server/client/index.js'));
+                    if (webpackClientScriptIndex >= 0) {
+                        // Remove the webpack-dev-server/client script from array.
+                        value.splice(webpackClientScriptIndex, 1);
+                    }
+                }
+            }
+        }
+        let locale;
+        if (i18n.shouldInline) {
             // Dev-server only supports one locale
             locale = [...i18n.inlineLocales][0];
         }
@@ -181,7 +218,6 @@ function serveWebpackBrowser(options, context, transforms = {}) {
         };
     }
     return rxjs_1.from(setup()).pipe(operators_1.switchMap(({ browserOptions, webpackConfig, projectRoot, locale }) => {
-        const normalizedOptimization = utils_1.normalizeOptimization(browserOptions.optimization);
         if (browserOptions.index) {
             const { scripts = [], styles = [], baseHref, tsConfig } = browserOptions;
             const { options: compilerOptions } = read_tsconfig_1.readTsconfig(tsConfig, workspaceRoot);
@@ -202,24 +238,14 @@ function serveWebpackBrowser(options, context, transforms = {}) {
                 deployUrl: browserOptions.deployUrl,
                 sri: browserOptions.subresourceIntegrity,
                 postTransform: transforms.indexHtml,
-                optimization: normalizedOptimization,
+                optimization: utils_1.normalizeOptimization(browserOptions.optimization),
                 WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
                 crossOrigin: browserOptions.crossOrigin,
                 lang: locale,
             }));
         }
-        if (normalizedOptimization.scripts || normalizedOptimization.styles.minify) {
-            logger.error(core_1.tags.stripIndents `
-          ****************************************************************************************
-          This is a simple server for use in testing or debugging Angular applications locally.
-          It hasn't been reviewed for security issues.
-
-          DON'T USE IT FOR PRODUCTION!
-          ****************************************************************************************
-        `);
-        }
         return build_webpack_1.runWebpackDevServer(webpackConfig, context, {
-            logging: transforms.logging || stats_1.createWebpackLoggingCallback(!!options.verbose, logger),
+            logging: transforms.logging || stats_1.createWebpackLoggingCallback(browserOptions, logger),
             webpackFactory: require('webpack'),
             webpackDevServerFactory: require('webpack-dev-server'),
         }).pipe(operators_1.concatMap(async (buildEvent, index) => {
@@ -232,19 +258,24 @@ function serveWebpackBrowser(options, context, transforms = {}) {
                 port: buildEvent.port,
             });
             if (index === 0) {
-                logger.info('\n' + core_1.tags.oneLine `
+                logger.info('\n' +
+                    core_1.tags.oneLine `
               **
               Angular Live Development Server is listening on ${options.host}:${buildEvent.port},
               open your browser on ${serverAddress}
               **
-            ` + '\n');
+            ` +
+                    '\n');
                 if (options.open) {
-                    const open = await Promise.resolve().then(() => require('open'));
+                    const open = (await Promise.resolve().then(() => __importStar(require('open')))).default;
                     await open(serverAddress);
                 }
             }
             if (buildEvent.success) {
                 logger.info(`\n${color_1.colors.greenBright(color_1.colors.symbols.check)} Compiled successfully.`);
+            }
+            else {
+                logger.info(`\n${color_1.colors.redBright(color_1.colors.symbols.cross)} Failed to compile.`);
             }
             return { ...buildEvent, baseUrl: serverAddress };
         }));
@@ -263,7 +294,10 @@ async function setupLocalize(locale, i18n, browserOptions, webpackConfig) {
             webpackConfig.entry['main'].unshift(localeDescription.dataPath);
         }
         else {
-            webpackConfig.entry['main'] = [localeDescription.dataPath, webpackConfig.entry['main']];
+            webpackConfig.entry['main'] = [
+                localeDescription.dataPath,
+                webpackConfig.entry['main'],
+            ];
         }
     }
     let missingTranslationBehavior = browserOptions.i18nMissingTranslation || 'ignore';

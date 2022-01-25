@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { Path, PathFragment } from '../path';
 import { FileBuffer, FileBufferLike, Host, Stats } from './interface';
 export interface SyncHostHandler<StatsT extends object = {}> {

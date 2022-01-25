@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BundleActionCache = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,9 +6,30 @@ exports.BundleActionCache = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-const cacache = require("cacache");
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BundleActionCache = void 0;
+const cacache = __importStar(require("cacache"));
 const crypto_1 = require("crypto");
-const fs = require("fs");
+const fs = __importStar(require("fs"));
 const copy_file_1 = require("./copy-file");
 const environment_options_1 = require("./environment-options");
 const packageVersion = require('../../package.json').version;
@@ -29,9 +48,7 @@ class BundleActionCache {
     }
     generateIntegrityValue(content) {
         const algorithm = this.integrityAlgorithm || 'sha1';
-        const codeHash = crypto_1.createHash(algorithm)
-            .update(content)
-            .digest('base64');
+        const codeHash = crypto_1.createHash(algorithm).update(content).digest('base64');
         return `${algorithm}-${codeHash}`;
     }
     generateBaseCacheKey(content) {
@@ -85,7 +102,7 @@ class BundleActionCache {
                 }
                 cacheEntries.push({
                     path: entry.path,
-                    // tslint:disable-next-line: no-any
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     size: entry.size,
                     integrity: entry.metadata && entry.metadata.integrity,
                 });
@@ -97,7 +114,7 @@ class BundleActionCache {
         return cacheEntries;
     }
     async getCachedBundleResult(action) {
-        const entries = action.cacheKeys && await this.getCacheEntries(action.cacheKeys);
+        const entries = action.cacheKeys && (await this.getCacheEntries(action.cacheKeys));
         if (!entries) {
             return null;
         }

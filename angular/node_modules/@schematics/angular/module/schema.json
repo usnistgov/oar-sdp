@@ -1,9 +1,10 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsAngularModule",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "SchematicsAngularModule",
   "title": "Angular Module Options Schema",
   "type": "object",
-  "description": "Creates a new generic NgModule definition in the given or default project.",
+  "additionalProperties": false,
+  "description": "Creates a new, generic NgModule definition in the given or default project.",
   "properties": {
     "name": {
       "type": "string",
@@ -54,7 +55,7 @@
       "default": true,
       "visible": false
     },
-    "module":  {
+    "module": {
       "type": "string",
       "description": "The declaring NgModule.",
       "alias": "m"
@@ -66,7 +67,5 @@
       "x-deprecated": "Use \"ng lint --fix\" directly instead."
     }
   },
-  "required": [
-    "name"
-  ]
+  "required": ["name"]
 }

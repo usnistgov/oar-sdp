@@ -26,35 +26,13 @@ export interface Schema {
      */
     fileReplacements?: FileReplacement[];
     /**
-     * Run the TypeScript type checker in a forked process.
-     */
-    forkTypeChecker?: boolean;
-    /**
-     * Localization file to use for i18n.
-     * @deprecated Use 'locales' object in the project metadata instead.
-     */
-    i18nFile?: string;
-    /**
-     * Format of the localization file specified with --i18n-file.
-     * @deprecated No longer needed as the format will be determined automatically.
-     */
-    i18nFormat?: string;
-    /**
-     * Locale to use for i18n.
-     * @deprecated Use 'localize' instead.
-     */
-    i18nLocale?: string;
-    /**
      * How to handle missing translations for i18n.
      */
     i18nMissingTranslation?: I18NMissingTranslation;
     /**
-     * List of additional NgModule files that will be lazy loaded. Lazy router modules will be
-     * discovered automatically.
-     * @deprecated 'SystemJsNgModuleLoader' is deprecated, and this is part of its usage. Use
-     * 'import()' syntax instead.
+     * The stylesheet language to use for the application's inline component styles.
      */
-    lazyModules?: string[];
+    inlineStyleLanguage?: InlineStyleLanguage;
     /**
      * Translate the bundles in one or more locales.
      */
@@ -100,6 +78,8 @@ export interface Schema {
     resourcesOutputPath?: string;
     /**
      * Show circular dependency warnings on builds.
+     * @deprecated The recommended method to detect circular dependencies in project code is to
+     * use either a lint rule or other external tooling.
      */
     showCircularDependencies?: boolean;
     /**
@@ -151,6 +131,15 @@ export declare enum I18NMissingTranslation {
     Error = "error",
     Ignore = "ignore",
     Warning = "warning"
+}
+/**
+ * The stylesheet language to use for the application's inline component styles.
+ */
+export declare enum InlineStyleLanguage {
+    Css = "css",
+    Less = "less",
+    Sass = "sass",
+    Scss = "scss"
 }
 /**
  * Translate the bundles in one or more locales.
@@ -209,7 +198,7 @@ export interface SourceMapClass {
  */
 export interface StylePreprocessorOptions {
     /**
-     * Paths to include. Paths will be resolved to project root.
+     * Paths to include. Paths will be resolved to workspace root.
      */
     includePaths?: string[];
 }

@@ -1,5 +1,11 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import { Plugin } from 'postcss';
-import * as webpack from 'webpack';
 export interface PostcssCliResourcesOptions {
     baseHref?: string;
     deployUrl?: string;
@@ -8,7 +14,7 @@ export interface PostcssCliResourcesOptions {
     /** CSS is extracted to a `.css` or is embedded in a `.js` file. */
     extracted?: boolean;
     filename: (resourcePath: string) => string;
-    loader: webpack.loader.LoaderContext;
+    loader: import('webpack').LoaderContext<unknown>;
     emitFile: boolean;
 }
 export declare const postcss = true;

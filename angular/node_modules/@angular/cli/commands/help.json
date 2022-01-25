@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/schema",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "ng-cli://commands/help.json",
   "description": "Lists available commands and their short descriptions.",
   "$longDescription": "./help-long.md",
@@ -9,7 +9,5 @@
   "$impl": "./help-impl#HelpCommand",
 
   "type": "object",
-  "allOf": [
-    { "$ref": "./definitions.json#/definitions/base" }
-  ]
+  "allOf": [{ "$ref": "./definitions.json#/definitions/base" }]
 }

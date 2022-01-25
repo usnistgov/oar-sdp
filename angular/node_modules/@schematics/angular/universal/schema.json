@@ -1,13 +1,17 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsAngularUniversalApp",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "SchematicsAngularUniversalApp",
   "title": "Angular Universal App Options Schema",
   "type": "object",
+  "additionalProperties": false,
   "description": "Pass this schematic to the \"run\" command to set up server-side rendering for an app.",
   "properties": {
-    "clientProject": {
+    "project": {
       "type": "string",
-      "description": "The name of the related client app. Required in place of \"project\"."
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
     },
     "appId": {
       "type": "string",
@@ -44,7 +48,5 @@
       "default": false
     }
   },
-  "required": [
-    "clientProject"
-  ]
+  "required": ["project"]
 }

@@ -1,4 +1,11 @@
 "use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.markAsyncChunksNonInitial = void 0;
 /**
@@ -13,8 +20,9 @@ function markAsyncChunksNonInitial(webpackStats, extraEntryPoints) {
     // to worry about transitive dependencies because extra entry points cannot be
     // depended upon in Webpack, thus any extra entry point with `inject: false`,
     // **cannot** be loaded in main bundle.
-    const asyncEntryPoints = extraEntryPoints.filter((entryPoint) => !entryPoint.inject);
-    const asyncChunkIds = flatMap(asyncEntryPoints, (entryPoint) => entryPoints[entryPoint.bundleName].chunks);
+    const asyncChunkIds = extraEntryPoints
+        .filter((entryPoint) => !entryPoint.inject && entryPoints[entryPoint.bundleName])
+        .flatMap((entryPoint) => { var _a; return (_a = entryPoints[entryPoint.bundleName].chunks) === null || _a === void 0 ? void 0 : _a.filter((n) => n !== 'runtime'); });
     // Find chunks for each ID.
     const asyncChunks = asyncChunkIds.map((chunkId) => {
         const chunk = chunks.find((chunk) => chunk.id === chunkId);
@@ -22,18 +30,16 @@ function markAsyncChunksNonInitial(webpackStats, extraEntryPoints) {
             throw new Error(`Failed to find chunk (${chunkId}) in set:\n${JSON.stringify(chunks)}`);
         }
         return chunk;
-    })
-        // All Webpack chunks are dependent on `runtime`, which is never an async
-        // entry point, simply ignore this one.
-        .filter((chunk) => chunk.names.indexOf('runtime') === -1);
+    });
     // A chunk is considered `initial` only if Webpack already belives it to be initial
     // and the application developer did not mark it async via an extra entry point.
-    return chunks.map((chunk) => ({
-        ...chunk,
-        initial: chunk.initial && !asyncChunks.find((asyncChunk) => asyncChunk === chunk),
-    }));
+    return chunks.map((chunk) => {
+        return asyncChunks.find((asyncChunk) => asyncChunk === chunk)
+            ? {
+                ...chunk,
+                initial: false,
+            }
+            : chunk;
+    });
 }
 exports.markAsyncChunksNonInitial = markAsyncChunksNonInitial;
-function flatMap(list, mapper) {
-    return [].concat(...list.map(mapper));
-}

@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.webpackStatsLogger = exports.createWebpackLoggingCallback = exports.statsHasWarnings = exports.statsHasErrors = exports.statsErrorsToString = exports.statsWarningsToString = exports.IGNORE_WARNINGS = exports.generateBundleStats = exports.formatSize = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,13 +6,37 @@ exports.webpackStatsLogger = exports.createWebpackLoggingCallback = exports.stat
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-// tslint:disable
-// TODO: cleanup this file, it's copied as is from Angular CLI.
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.webpackStatsLogger = exports.createWebpackLoggingCallback = exports.statsHasWarnings = exports.statsHasErrors = exports.statsErrorsToString = exports.statsWarningsToString = exports.generateBundleStats = exports.formatSize = void 0;
 const core_1 = require("@angular-devkit/core");
-const path = require("path");
-const textTable = require("text-table");
+const path = __importStar(require("path"));
+const text_table_1 = __importDefault(require("text-table"));
 const color_1 = require("../../utils/color");
-const webpack_version_1 = require("../../utils/webpack-version");
+const stats_1 = require("../configs/stats");
+const async_chunks_1 = require("./async-chunks");
+const helpers_1 = require("./helpers");
 function formatSize(size) {
     if (size <= 0) {
         return '0 bytes';
@@ -27,13 +49,12 @@ function formatSize(size) {
     return `${roundedSize.toFixed(fractionDigits)} ${abbreviations[index]}`;
 }
 exports.formatSize = formatSize;
-;
 function generateBundleStats(info) {
-    var _a;
+    var _a, _b, _c;
     const size = typeof info.size === 'number' ? info.size : '-';
-    const files = info.files.filter(f => !f.endsWith('.map')).map(f => path.basename(f)).join(', ');
-    const names = ((_a = info.names) === null || _a === void 0 ? void 0 : _a.length) ? info.names.join(', ') : '-';
-    const initial = !!(info.entry || info.initial);
+    const files = (_b = (_a = info.files) === null || _a === void 0 ? void 0 : _a.filter((f) => !f.endsWith('.map')).map((f) => path.basename(f)).join(', ')) !== null && _b !== void 0 ? _b : '';
+    const names = ((_c = info.names) === null || _c === void 0 ? void 0 : _c.length) ? info.names.join(', ') : '-';
+    const initial = !!info.initial;
     const chunkType = info.chunkType || 'unknown';
     return {
         chunkType,
@@ -43,10 +64,10 @@ function generateBundleStats(info) {
 }
 exports.generateBundleStats = generateBundleStats;
 function generateBuildStatsTable(data, colors, showTotalSize) {
-    const g = (x) => colors ? color_1.colors.greenBright(x) : x;
-    const c = (x) => colors ? color_1.colors.cyanBright(x) : x;
-    const bold = (x) => colors ? color_1.colors.bold(x) : x;
-    const dim = (x) => colors ? color_1.colors.dim(x) : x;
+    const g = (x) => (colors ? color_1.colors.greenBright(x) : x);
+    const c = (x) => (colors ? color_1.colors.cyanBright(x) : x);
+    const bold = (x) => (colors ? color_1.colors.bold(x) : x);
+    const dim = (x) => (colors ? color_1.colors.dim(x) : x);
     const changedEntryChunksStats = [];
     const changedLazyChunksStats = [];
     let initialModernTotalSize = 0;
@@ -106,31 +127,45 @@ function generateBuildStatsTable(data, colors, showTotalSize) {
     if (changedLazyChunksStats.length) {
         bundleInfo.push(['Lazy Chunk Files', 'Names', 'Size'].map(bold), ...changedLazyChunksStats);
     }
-    return textTable(bundleInfo, {
+    return text_table_1.default(bundleInfo, {
         hsep: dim(' | '),
-        stringLength: s => color_1.removeColor(s).length,
+        stringLength: (s) => color_1.removeColor(s).length,
         align: ['l', 'l', 'r'],
     });
 }
 function generateBuildStats(hash, time, colors) {
-    const w = (x) => colors ? color_1.colors.bold.white(x) : x;
+    const w = (x) => (colors ? color_1.colors.bold.white(x) : x);
     return `Build at: ${w(new Date().toISOString())} - Hash: ${w(hash)} - Time: ${w('' + time)}ms`;
 }
-function statsToString(json, statsConfig, bundleState) {
+// We use this cache because we can have multiple builders running in the same process,
+// where each builder has different output path.
+// Ideally, we should create the logging callback as a factory, but that would need a refactoring.
+const runsCache = new Set();
+function statsToString(json, 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+statsConfig, bundleState) {
+    var _a, _b;
+    if (!((_a = json.chunks) === null || _a === void 0 ? void 0 : _a.length)) {
+        return '';
+    }
     const colors = statsConfig.colors;
-    const rs = (x) => colors ? color_1.colors.reset(x) : x;
+    const rs = (x) => (colors ? color_1.colors.reset(x) : x);
     const changedChunksStats = bundleState !== null && bundleState !== void 0 ? bundleState : [];
     let unchangedChunkNumber = 0;
     if (!(bundleState === null || bundleState === void 0 ? void 0 : bundleState.length)) {
+        const isFirstRun = !runsCache.has(json.outputPath || '');
         for (const chunk of json.chunks) {
-            if (!chunk.rendered) {
+            // During first build we want to display unchanged chunks
+            // but unchanged cached chunks are always marked as not rendered.
+            if (!isFirstRun && !chunk.rendered) {
                 continue;
             }
-            const assets = json.assets.filter((asset) => chunk.files.includes(asset.name));
-            const summedSize = assets.filter((asset) => !asset.name.endsWith(".map")).reduce((total, asset) => { return total + asset.size; }, 0);
+            const assets = (_b = json.assets) === null || _b === void 0 ? void 0 : _b.filter((asset) => { var _a; return (_a = chunk.files) === null || _a === void 0 ? void 0 : _a.includes(asset.name); });
+            const summedSize = assets === null || assets === void 0 ? void 0 : assets.filter((asset) => !asset.name.endsWith('.map')).reduce((total, asset) => total + asset.size, 0);
             changedChunksStats.push(generateBundleStats({ ...chunk, size: summedSize }));
         }
         unchangedChunkNumber = json.chunks.length - changedChunksStats.length;
+        runsCache.add(json.outputPath || '');
     }
     // Sort chunks by size in descending order
     changedChunksStats.sort((a, b) => {
@@ -146,59 +181,45 @@ function statsToString(json, statsConfig, bundleState) {
     // In some cases we do things outside of webpack context
     // Such us index generation, service worker augmentation etc...
     // This will correct the time and include these.
-    const time = (Date.now() - json.builtAt) + json.time;
+    let time = 0;
+    if (json.builtAt !== undefined && json.time !== undefined) {
+        time = Date.now() - json.builtAt + json.time;
+    }
     if (unchangedChunkNumber > 0) {
-        return '\n' + rs(core_1.tags.stripIndents `
+        return ('\n' +
+            rs(core_1.tags.stripIndents `
       ${statsTable}
 
       ${unchangedChunkNumber} unchanged chunks
 
-      ${generateBuildStats(json.hash, time, colors)}
-      `);
+      ${generateBuildStats(json.hash || '', time, colors)}
+      `));
     }
     else {
-        return '\n' + rs(core_1.tags.stripIndents `
+        return ('\n' +
+            rs(core_1.tags.stripIndents `
       ${statsTable}
 
-      ${generateBuildStats(json.hash, time, colors)}
-      `);
+      ${generateBuildStats(json.hash || '', time, colors)}
+      `));
     }
 }
-exports.IGNORE_WARNINGS = [
-    // Webpack 5+ has no facility to disable this warning.
-    // System.import is used in @angular/core for deprecated string-form lazy routes
-    /System.import\(\) is deprecated and will be removed soon/i,
-    // https://github.com/webpack-contrib/source-map-loader/blob/b2de4249c7431dd8432da607e08f0f65e9d64219/src/index.js#L83
-    /Failed to parse source map from/,
-];
-// TODO: remove when Webpack 4 is no longer supported.
-// See: https://webpack.js.org/configuration/other-options/#ignorewarnings
-const ERRONEOUS_WARNINGS_FILTER = webpack_version_1.isWebpackFiveOrHigher()
-    ? (warning) => warning
-    : (warning) => !exports.IGNORE_WARNINGS.some(msg => msg.test(warning));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function statsWarningsToString(json, statsConfig) {
     const colors = statsConfig.colors;
-    const c = (x) => colors ? color_1.colors.reset.cyan(x) : x;
-    const y = (x) => colors ? color_1.colors.reset.yellow(x) : x;
-    const yb = (x) => colors ? color_1.colors.reset.yellowBright(x) : x;
-    const warnings = [...json.warnings];
+    const c = (x) => (colors ? color_1.colors.reset.cyan(x) : x);
+    const y = (x) => (colors ? color_1.colors.reset.yellow(x) : x);
+    const yb = (x) => (colors ? color_1.colors.reset.yellowBright(x) : x);
+    const warnings = json.warnings ? [...json.warnings] : [];
     if (json.children) {
-        warnings.push(...json.children
-            .map((c) => c.warnings)
-            .reduce((a, b) => [...a, ...b], []));
+        warnings.push(...json.children.map((c) => { var _a; return (_a = c.warnings) !== null && _a !== void 0 ? _a : []; }).reduce((a, b) => [...a, ...b], []));
     }
     let output = '';
     for (const warning of warnings) {
         if (typeof warning === 'string') {
-            if (!ERRONEOUS_WARNINGS_FILTER(warning)) {
-                continue;
-            }
             output += yb(`Warning: ${warning}\n\n`);
         }
         else {
-            if (!ERRONEOUS_WARNINGS_FILTER(warning.message)) {
-                continue;
-            }
             const file = warning.file || warning.moduleName;
             if (file) {
                 output += c(file);
@@ -213,22 +234,18 @@ function statsWarningsToString(json, statsConfig) {
             output += `${warning.message}\n\n`;
         }
     }
-    if (output) {
-        return '\n' + output;
-    }
-    return '';
+    return output ? '\n' + output : output;
 }
 exports.statsWarningsToString = statsWarningsToString;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function statsErrorsToString(json, statsConfig) {
     const colors = statsConfig.colors;
-    const c = (x) => colors ? color_1.colors.reset.cyan(x) : x;
-    const yb = (x) => colors ? color_1.colors.reset.yellowBright(x) : x;
-    const r = (x) => colors ? color_1.colors.reset.redBright(x) : x;
-    const errors = [...json.errors];
+    const c = (x) => (colors ? color_1.colors.reset.cyan(x) : x);
+    const yb = (x) => (colors ? color_1.colors.reset.yellowBright(x) : x);
+    const r = (x) => (colors ? color_1.colors.reset.redBright(x) : x);
+    const errors = json.errors ? [...json.errors] : [];
     if (json.children) {
-        errors.push(...json.children
-            .map((c) => c.errors)
-            .reduce((a, b) => [...a, ...b], []));
+        errors.push(...json.children.map((c) => (c === null || c === void 0 ? void 0 : c.errors) || []).reduce((a, b) => [...a, ...b], []));
     }
     let output = '';
     for (const error of errors) {
@@ -250,29 +267,35 @@ function statsErrorsToString(json, statsConfig) {
             output += `${error.message}\n\n`;
         }
     }
-    if (output) {
-        return '\n' + output;
-    }
-    return '';
+    return output ? '\n' + output : output;
 }
 exports.statsErrorsToString = statsErrorsToString;
 function statsHasErrors(json) {
-    var _a;
-    return json.errors.length || !!((_a = json.children) === null || _a === void 0 ? void 0 : _a.some((c) => c.errors.length));
+    var _a, _b;
+    return !!(((_a = json.errors) === null || _a === void 0 ? void 0 : _a.length) || ((_b = json.children) === null || _b === void 0 ? void 0 : _b.some((c) => { var _a; return (_a = c.errors) === null || _a === void 0 ? void 0 : _a.length; })));
 }
 exports.statsHasErrors = statsHasErrors;
 function statsHasWarnings(json) {
-    var _a;
-    return json.warnings.filter(ERRONEOUS_WARNINGS_FILTER).length ||
-        !!((_a = json.children) === null || _a === void 0 ? void 0 : _a.some((c) => c.warnings.filter(ERRONEOUS_WARNINGS_FILTER).length));
+    var _a, _b;
+    return !!(((_a = json.warnings) === null || _a === void 0 ? void 0 : _a.length) || ((_b = json.children) === null || _b === void 0 ? void 0 : _b.some((c) => { var _a; return (_a = c.warnings) === null || _a === void 0 ? void 0 : _a.length; })));
 }
 exports.statsHasWarnings = statsHasWarnings;
-function createWebpackLoggingCallback(verbose, logger) {
+function createWebpackLoggingCallback(options, logger) {
+    const { verbose = false, scripts = [], styles = [] } = options;
+    const extraEntryPoints = [
+        ...helpers_1.normalizeExtraEntryPoints(styles, 'styles'),
+        ...helpers_1.normalizeExtraEntryPoints(scripts, 'scripts'),
+    ];
     return (stats, config) => {
         if (verbose) {
             logger.info(stats.toString(config.stats));
         }
-        webpackStatsLogger(logger, stats.toJson(config.stats), config);
+        const rawStats = stats.toJson(stats_1.getWebpackStatsConfig(false));
+        const webpackStats = {
+            ...rawStats,
+            chunks: async_chunks_1.markAsyncChunksNonInitial(rawStats, extraEntryPoints),
+        };
+        webpackStatsLogger(logger, webpackStats, config);
     };
 }
 exports.createWebpackLoggingCallback = createWebpackLoggingCallback;
@@ -286,4 +309,3 @@ function webpackStatsLogger(logger, json, config, bundleStats) {
     }
 }
 exports.webpackStatsLogger = webpackStatsLogger;
-;

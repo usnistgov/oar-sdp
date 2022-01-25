@@ -7,10 +7,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem, PathManipulation } from '@angular/compiler-cli/src/ngtsc/file_system';
+import { FileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
 import { Logger } from '@angular/compiler-cli/src/ngtsc/logging';
 import { DiagnosticHandlingStrategy } from '../diagnostics';
-import { TranslationSerializer } from './translation_files/translation_serializer';
 import { FormatOptions } from './translation_files/format_options';
 export interface ExtractTranslationsOptions {
     /**
@@ -62,4 +61,3 @@ export interface ExtractTranslationsOptions {
     fileSystem: FileSystem;
 }
 export declare function extractTranslations({ rootPath, sourceFilePaths, sourceLocale, format, outputPath: output, logger, useSourceMaps, useLegacyIds, duplicateMessageHandling, formatOptions, fileSystem: fs, }: ExtractTranslationsOptions): void;
-export declare function getSerializer(format: string, sourceLocale: string, rootPath: AbsoluteFsPath, useLegacyIds: boolean, formatOptions: Record<string, string> | undefined, fs: PathManipulation): TranslationSerializer;

@@ -1,22 +1,12 @@
-import { AngularCompilerPlugin, ivy } from '@ngtools/webpack';
-import { RuleSetLoader } from 'webpack';
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { AngularWebpackPlugin } from '@ngtools/webpack';
+import { Configuration } from 'webpack';
 import { WebpackConfigOptions } from '../../utils/build-options';
-export declare function getNonAotConfig(wco: WebpackConfigOptions): {
-    module: {
-        rules: {
-            test: RegExp;
-            loader: string;
-        }[];
-    };
-    plugins: (AngularCompilerPlugin | ivy.AngularWebpackPlugin)[];
-};
-export declare function getAotConfig(wco: WebpackConfigOptions, i18nExtract?: boolean): {
-    module: {
-        rules: {
-            test: RegExp;
-            use: (string | RuleSetLoader)[];
-        }[];
-    };
-    plugins: (AngularCompilerPlugin | ivy.AngularWebpackPlugin)[];
-};
-export declare function getTypescriptWorkerPlugin(wco: WebpackConfigOptions, workerTsConfigPath: string): AngularCompilerPlugin | ivy.AngularWebpackPlugin;
+export declare function getTypeScriptConfig(wco: WebpackConfigOptions): Configuration;
+export declare function getTypescriptWorkerPlugin(wco: WebpackConfigOptions, workerTsConfigPath: string): AngularWebpackPlugin;

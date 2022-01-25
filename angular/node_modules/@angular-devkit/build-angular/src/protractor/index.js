@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.execute = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,10 +6,31 @@ exports.execute = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.execute = void 0;
 const architect_1 = require("@angular-devkit/architect");
 const core_1 = require("@angular-devkit/core");
 const path_1 = require("path");
-const url = require("url");
+const url = __importStar(require("url"));
 const utils_1 = require("../utils");
 function runProtractor(root, options) {
     const additionalProtractorConfig = {
@@ -26,7 +45,10 @@ function runProtractor(root, options) {
     // TODO: Protractor manages process.exit itself, so this target will allways quit the
     // process. To work around this we run it in a subprocess.
     // https://github.com/angular/protractor/issues/4160
-    return utils_1.runModuleAsObservableFork(root, 'protractor/built/launcher', 'init', [path_1.resolve(root, options.protractorConfig), additionalProtractorConfig]).toPromise();
+    return utils_1.runModuleAsObservableFork(root, 'protractor/built/launcher', 'init', [
+        path_1.resolve(root, options.protractorConfig),
+        additionalProtractorConfig,
+    ]).toPromise();
 }
 async function updateWebdriver() {
     // The webdriver-manager update command can only be accessed via a deep import.
@@ -47,8 +69,7 @@ async function updateWebdriver() {
       Update webdriver-manager manually and run 'ng e2e --no-webdriver-update' instead.
     `);
     }
-    // tslint:disable-next-line:max-line-length no-implicit-dependencies
-    const webdriverUpdate = await Promise.resolve().then(() => require(path));
+    const webdriverUpdate = await Promise.resolve().then(() => __importStar(require(path)));
     // const webdriverUpdate = await import(path) as typeof import ('webdriver-manager/built/lib/cmds/update');
     // run `webdriver-manager update --standalone false --gecko false --quiet`
     // if you change this, update the command comment in prev line
@@ -58,7 +79,11 @@ async function updateWebdriver() {
         quiet: true,
     });
 }
+/**
+ * @experimental Direct usage of this function is considered experimental.
+ */
 async function execute(options, context) {
+    context.logger.warn('Protractor has been deprecated including its support in the Angular CLI. For additional information and alternatives, please see https://github.com/angular/protractor/issues/5502.');
     // ensure that only one of these options is used
     if (options.devServerTarget && options.baseUrl) {
         throw new Error(core_1.tags.stripIndents `
@@ -101,9 +126,7 @@ async function execute(options, context) {
         if (typeof serverOptions.publicHost === 'string') {
             let publicHost = serverOptions.publicHost;
             if (!/^\w+:\/\//.test(publicHost)) {
-                publicHost = `${serverOptions.ssl
-                    ? 'https'
-                    : 'http'}://${publicHost}`;
+                publicHost = `${serverOptions.ssl ? 'https' : 'http'}://${publicHost}`;
             }
             const clientUrl = url.parse(publicHost);
             baseUrl = url.format(clientUrl);
@@ -127,7 +150,7 @@ async function execute(options, context) {
     try {
         return await runProtractor(context.workspaceRoot, { ...options, baseUrl });
     }
-    catch (_a) {
+    catch {
         return { success: false };
     }
     finally {

@@ -1,7 +1,13 @@
 "use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BuilderWatchPlugin = void 0;
-const webpack_version_1 = require("../../utils/webpack-version");
 class TimeInfoMap extends Map {
     update(path, timestamp) {
         this.set(path, Object.freeze({ safeTime: timestamp, timestamp }));
@@ -62,12 +68,8 @@ class BuilderWatchFileSystem {
                         }
                     }
                 }
-                if (webpack_version_1.isWebpackFiveOrHigher()) {
-                    callback(undefined, new Map(timeInfo), new Map(timeInfo), new Set([...fileChanges, ...directoryChanges, ...missingChanges]), removals);
-                }
-                else {
-                    callback(undefined, fileChanges, directoryChanges, missingChanges, timeInfo.toTimestamps(), timeInfo.toTimestamps(), removals);
-                }
+                const timeInfoMap = new Map(timeInfo);
+                callback(undefined, timeInfoMap, timeInfoMap, new Set([...fileChanges, ...directoryChanges, ...missingChanges]), removals);
             });
         });
         return {
@@ -75,12 +77,6 @@ class BuilderWatchFileSystem {
                 watcher.close();
             },
             pause() { },
-            getFileTimestamps() {
-                return timeInfo.toTimestamps();
-            },
-            getContextTimestamps() {
-                return timeInfo.toTimestamps();
-            },
             getFileTimeInfoEntries() {
                 return new Map(timeInfo);
             },

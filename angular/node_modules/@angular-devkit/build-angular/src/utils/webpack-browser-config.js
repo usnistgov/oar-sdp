@@ -1,35 +1,49 @@
 "use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getIndexInputFile = exports.getIndexOutputFile = exports.generateBrowserWebpackConfigFromContext = exports.generateI18nBrowserWebpackConfigFromContext = exports.generateWebpackConfig = void 0;
 const core_1 = require("@angular-devkit/core");
-const path = require("path");
+const path = __importStar(require("path"));
+const webpack_1 = require("webpack");
 const webpack_merge_1 = require("webpack-merge");
 const utils_1 = require("../utils");
 const read_tsconfig_1 = require("../utils/read-tsconfig");
 const builder_watch_plugin_1 = require("../webpack/plugins/builder-watch-plugin");
-const helpers_1 = require("../webpack/utils/helpers");
-const environment_options_1 = require("./environment-options");
 const i18n_options_1 = require("./i18n-options");
 async function generateWebpackConfig(workspaceRoot, projectRoot, sourceRoot, options, webpackPartialGenerator, logger, extraBuildOptions) {
     // Ensure Build Optimizer is only used with AOT.
     if (options.buildOptimizer && !options.aot) {
         throw new Error(`The 'buildOptimizer' option cannot be used without 'aot'.`);
     }
-    // Ensure Rollup Concatenation is only used with compatible options.
-    if (options.experimentalRollupPass) {
-        if (!options.aot) {
-            throw new Error(`The 'experimentalRollupPass' option cannot be used without 'aot'.`);
-        }
-        if (options.vendorChunk || options.commonChunk || options.namedChunks) {
-            throw new Error(`The 'experimentalRollupPass' option cannot be used with the`
-                + `'vendorChunk', 'commonChunk', 'namedChunks' options set to true.`);
-        }
-    }
     const tsConfigPath = path.resolve(workspaceRoot, options.tsConfig);
     const tsConfig = read_tsconfig_1.readTsconfig(tsConfigPath);
-    const ts = await Promise.resolve().then(() => require('typescript'));
+    const ts = await Promise.resolve().then(() => __importStar(require('typescript')));
     const scriptTarget = tsConfig.options.target || ts.ScriptTarget.ES5;
-    const supportES2015 = scriptTarget !== ts.ScriptTarget.JSON && scriptTarget > ts.ScriptTarget.ES5;
     const buildOptions = { ...options, ...extraBuildOptions };
     const wco = {
         root: workspaceRoot,
@@ -43,36 +57,11 @@ async function generateWebpackConfig(workspaceRoot, projectRoot, sourceRoot, opt
     };
     wco.buildOptions.progress = utils_1.defaultProgress(wco.buildOptions.progress);
     const webpackConfig = webpack_merge_1.merge(webpackPartialGenerator(wco));
-    if (supportES2015) {
-        if (!webpackConfig.resolve) {
-            webpackConfig.resolve = {};
-        }
-        if (Array.isArray(webpackConfig.resolve.alias)) {
-            webpackConfig.resolve.alias.push({
-                alias: 'zone.js/dist/zone',
-                name: 'zone.js/dist/zone-evergreen',
-            });
-        }
-        else {
-            if (!webpackConfig.resolve.alias) {
-                webpackConfig.resolve.alias = {};
-            }
-            webpackConfig.resolve.alias['zone.js/dist/zone'] = 'zone.js/dist/zone-evergreen';
-        }
-    }
-    if (environment_options_1.profilingEnabled) {
-        const esVersionInFileName = helpers_1.getEsVersionForFileName(tsConfig.options.target, buildOptions.differentialLoadingNeeded);
-        const SpeedMeasurePlugin = await Promise.resolve().then(() => require('speed-measure-webpack-plugin'));
-        const smp = new SpeedMeasurePlugin({
-            outputFormat: 'json',
-            outputTarget: path.resolve(workspaceRoot, `speed-measure-plugin${esVersionInFileName}.json`),
-        });
-        return smp.wrap(webpackConfig);
-    }
     return webpackConfig;
 }
 exports.generateWebpackConfig = generateWebpackConfig;
 async function generateI18nBrowserWebpackConfigFromContext(options, context, webpackPartialGenerator, extraBuildOptions = {}) {
+    var _a;
     const { buildOptions, i18n } = await i18n_options_1.configureI18nBuild(context, options);
     const result = await generateBrowserWebpackConfigFromContext(buildOptions, context, webpackPartialGenerator, extraBuildOptions);
     const config = result.config;
@@ -97,20 +86,11 @@ async function generateI18nBrowserWebpackConfigFromContext(options, context, web
         }
         // Update file hashes to include translation file content
         const i18nHash = Object.values(i18n.locales).reduce((data, locale) => data + locale.files.map((file) => file.integrity || '').join('|'), '');
-        if (!config.plugins) {
-            config.plugins = [];
-        }
+        (_a = config.plugins) !== null && _a !== void 0 ? _a : (config.plugins = []);
         config.plugins.push({
             apply(compiler) {
-                compiler.hooks.compilation.tap('build-angular', compilation => {
-                    // Webpack typings do not contain template hashForChunk hook
-                    // tslint:disable-next-line: no-any
-                    compilation.mainTemplate.hooks.hashForChunk.tap('build-angular', (hash) => {
-                        hash.update('$localize' + i18nHash);
-                    });
-                    // Webpack typings do not contain hooks property
-                    // tslint:disable-next-line: no-any
-                    compilation.chunkTemplate.hooks.hashForChunk.tap('build-angular', (hash) => {
+                compiler.hooks.compilation.tap('build-angular', (compilation) => {
+                    webpack_1.javascript.JavascriptModulesPlugin.getCompilationHooks(compilation).chunkHash.tap('build-angular', (_, hash) => {
                         hash.update('$localize' + i18nHash);
                     });
                 });

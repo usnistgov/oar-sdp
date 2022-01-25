@@ -8,10 +8,13 @@
 import { BuilderContext } from '@angular-devkit/architect';
 import { BuildResult } from '@angular-devkit/build-webpack';
 import { JsonObject } from '@angular-devkit/core';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import { ExecutionTransformer } from '../transforms';
 import { Schema } from './schema';
 export declare type ExtractI18nBuilderOptions = Schema & JsonObject;
+/**
+ * @experimental Direct usage of this function is considered experimental.
+ */
 export declare function execute(options: ExtractI18nBuilderOptions, context: BuilderContext, transforms?: {
     webpackConfiguration?: ExecutionTransformer<webpack.Configuration>;
 }): Promise<BuildResult>;

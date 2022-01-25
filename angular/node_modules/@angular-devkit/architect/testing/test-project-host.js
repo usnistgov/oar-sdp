@@ -37,24 +37,24 @@ class TestProjectHost extends node_1.NodeJsSyncHost {
     initialize() {
         const recursiveList = (path) => this.list(path).pipe(
         // Emit each fragment individually.
-        operators_1.concatMap(fragments => rxjs_1.from(fragments)), 
+        operators_1.concatMap((fragments) => rxjs_1.from(fragments)), 
         // Join the path with fragment.
-        operators_1.map(fragment => core_1.join(path, fragment)), 
+        operators_1.map((fragment) => core_1.join(path, fragment)), 
         // Emit directory content paths instead of the directory path.
-        operators_1.mergeMap(path => this.isDirectory(path).pipe(operators_1.concatMap(isDir => isDir ? recursiveList(path) : rxjs_1.of(path)))));
+        operators_1.mergeMap((path) => this.isDirectory(path).pipe(operators_1.concatMap((isDir) => (isDir ? recursiveList(path) : rxjs_1.of(path))))));
         // Find a unique folder that we can write to to use as current root.
         return this.findUniqueFolderPath().pipe(
         // Save the path and create a scoped host for it.
-        operators_1.tap(newFolderPath => {
+        operators_1.tap((newFolderPath) => {
             this._currentRoot = newFolderPath;
             this._scopedSyncHost = new core_1.virtualFs.SyncDelegateHost(new core_1.virtualFs.ScopedHost(this, this.root()));
         }), 
         // List all files in root.
         operators_1.concatMap(() => recursiveList(this._templateRoot)), 
         // Copy them over to the current root.
-        operators_1.concatMap(from => {
+        operators_1.concatMap((from) => {
             const to = core_1.join(this.root(), core_1.relative(this._templateRoot, from));
-            return this.read(from).pipe(operators_1.concatMap(buffer => this.write(to, buffer)));
+            return this.read(from).pipe(operators_1.concatMap((buffer) => this.write(to, buffer)));
         }), operators_1.map(() => { }));
     }
     restore() {
@@ -63,13 +63,13 @@ class TestProjectHost extends node_1.NodeJsSyncHost {
         }
         // Delete the current root and clear the variables.
         // Wait 50ms and retry up to 10 times, to give time for file locks to clear.
-        return this.exists(this.root()).pipe(operators_1.delay(50), operators_1.concatMap(exists => exists ? this.delete(this.root()) : rxjs_1.EMPTY), operators_1.retry(10), operators_1.finalize(() => {
+        return this.exists(this.root()).pipe(operators_1.delay(50), operators_1.concatMap((exists) => (exists ? this.delete(this.root()) : rxjs_1.EMPTY)), operators_1.retry(10), operators_1.finalize(() => {
             this._currentRoot = null;
             this._scopedSyncHost = null;
         }));
     }
     writeMultipleFiles(files) {
-        Object.keys(files).forEach(fileName => {
+        Object.keys(files).forEach((fileName) => {
             let content = files[fileName];
             if (typeof content == 'string') {
                 content = core_1.virtualFs.stringToFileBuffer(content);
@@ -89,7 +89,9 @@ class TestProjectHost extends node_1.NodeJsSyncHost {
         this.scopedSync().write(core_1.normalize(path), core_1.virtualFs.stringToFileBuffer(content.concat(str)));
     }
     fileMatchExists(dir, regex) {
-        const [fileName] = this.scopedSync().list(core_1.normalize(dir)).filter(name => name.match(regex));
+        const [fileName] = this.scopedSync()
+            .list(core_1.normalize(dir))
+            .filter((name) => name.match(regex));
         return fileName || undefined;
     }
     copyFile(from, to) {
@@ -101,7 +103,7 @@ class TestProjectHost extends node_1.NodeJsSyncHost {
         const randomString = Math.random().toString(36).slice(2);
         const newFolderName = `test-project-host-${core_1.basename(this._templateRoot)}-${randomString}`;
         const newFolderPath = core_1.join(core_1.dirname(this._templateRoot), newFolderName);
-        return this.exists(newFolderPath).pipe(operators_1.concatMap(exists => exists ? this.findUniqueFolderPath() : rxjs_1.of(newFolderPath)));
+        return this.exists(newFolderPath).pipe(operators_1.concatMap((exists) => (exists ? this.findUniqueFolderPath() : rxjs_1.of(newFolderPath))));
     }
 }
 exports.TestProjectHost = TestProjectHost;

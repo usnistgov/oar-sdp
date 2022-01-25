@@ -10,10 +10,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommonJsUsageWarnPlugin = void 0;
 const path_1 = require("path");
 const webpack_diagnostics_1 = require("../../utils/webpack-diagnostics");
-const webpack_version_1 = require("../../utils/webpack-version");
 // Webpack doesn't export these so the deep imports can potentially break.
-const CommonJsRequireDependency = require('webpack/lib/dependencies/CommonJsRequireDependency');
 const AMDDefineDependency = require('webpack/lib/dependencies/AMDDefineDependency');
+const CommonJsRequireDependency = require('webpack/lib/dependencies/CommonJsRequireDependency');
 class CommonJsUsageWarnPlugin {
     constructor(options = {}) {
         this.options = options;
@@ -21,9 +20,14 @@ class CommonJsUsageWarnPlugin {
         this.allowedDependencies = new Set(this.options.allowedDependencies);
     }
     apply(compiler) {
-        compiler.hooks.compilation.tap('CommonJsUsageWarnPlugin', compilation => {
-            compilation.hooks.finishModules.tap('CommonJsUsageWarnPlugin', modules => {
-                var _a;
+        compiler.hooks.compilation.tap('CommonJsUsageWarnPlugin', (compilation) => {
+            compilation.hooks.finishModules.tap('CommonJsUsageWarnPlugin', (modules) => {
+                var _a, _b;
+                const mainEntry = compilation.entries.get('main');
+                if (!mainEntry) {
+                    return;
+                }
+                const mainModules = new Set(mainEntry.dependencies.map((dep) => compilation.moduleGraph.getModule(dep)));
                 for (const module of modules) {
                     const { dependencies, rawRequest } = module;
                     if (!rawRequest ||
@@ -46,7 +50,8 @@ class CommonJsUsageWarnPlugin {
                         // Check if it's parent issuer is also a CommonJS dependency.
                         // In case it is skip as an warning will be show for the parent CommonJS dependency.
                         const parentDependencies = (_a = getIssuer(compilation, issuer)) === null || _a === void 0 ? void 0 : _a.dependencies;
-                        if (parentDependencies && this.hasCommonJsDependencies(compilation, parentDependencies, true)) {
+                        if (parentDependencies &&
+                            this.hasCommonJsDependencies(compilation, parentDependencies, true)) {
                             continue;
                         }
                         // Find the main issuer (entry-point).
@@ -59,8 +64,8 @@ class CommonJsUsageWarnPlugin {
                         // Only show warnings for modules from main entrypoint.
                         // And if the issuer request is not from 'webpack-dev-server', as 'webpack-dev-server'
                         // will require CommonJS libraries for live reloading such as 'sockjs-node'.
-                        if ((mainIssuer === null || mainIssuer === void 0 ? void 0 : mainIssuer.name) === 'main') {
-                            const warning = `${issuer === null || issuer === void 0 ? void 0 : issuer.userRequest} depends on '${rawRequest}'. ` +
+                        if (mainIssuer && mainModules.has(mainIssuer)) {
+                            const warning = `${(_b = issuer) === null || _b === void 0 ? void 0 : _b.userRequest} depends on '${rawRequest}'. ` +
                                 'CommonJS or AMD dependencies can cause optimization bailouts.\n' +
                                 'For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies';
                             // Avoid showing the same warning multiple times when in 'watch' mode.
@@ -90,10 +95,10 @@ class CommonJsUsageWarnPlugin {
     }
     rawRequestToPackageName(rawRequest) {
         return rawRequest.startsWith('@')
-            // Scoped request ex: @angular/common/locale/en -> @angular/common
-            ? rawRequest.split('/', 2).join('/')
-            // Non-scoped request ex: lodash/isEmpty -> lodash
-            : rawRequest.split('/', 1)[0];
+            ? // Scoped request ex: @angular/common/locale/en -> @angular/common
+                rawRequest.split('/', 2).join('/')
+            : // Non-scoped request ex: lodash/isEmpty -> lodash
+                rawRequest.split('/', 1)[0];
     }
 }
 exports.CommonJsUsageWarnPlugin = CommonJsUsageWarnPlugin;
@@ -101,16 +106,11 @@ function getIssuer(compilation, module) {
     if (!module) {
         return null;
     }
-    if (!webpack_version_1.isWebpackFiveOrHigher()) {
-        return module === null || module === void 0 ? void 0 : module.issuer;
-    }
-    return compilation
-        .moduleGraph.getIssuer(module);
+    return compilation.moduleGraph.getIssuer(module);
 }
 function getWebpackModule(compilation, dependency) {
-    if (!webpack_version_1.isWebpackFiveOrHigher()) {
-        return dependency.module;
+    if (!dependency) {
+        return null;
     }
-    return compilation
-        .moduleGraph.getModule(dependency);
+    return compilation.moduleGraph.getModule(dependency);
 }

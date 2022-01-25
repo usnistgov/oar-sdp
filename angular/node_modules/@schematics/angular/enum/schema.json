@@ -1,9 +1,10 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsAngularEnum",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "SchematicsAngularEnum",
   "title": "Angular Enum Options Schema",
   "type": "object",
   "description": "Generates a new, generic enum definition for the given or default project.",
+  "additionalProperties": false,
   "properties": {
     "name": {
       "type": "string",
@@ -27,6 +28,10 @@
         "$source": "projectName"
       }
     },
+    "type": {
+      "type": "string",
+      "description": "Adds a developer-defined type to the filename, in the format \"name.type.ts\"."
+    },
     "lintFix": {
       "type": "boolean",
       "description": "Apply lint fixes after generating the enum.",
@@ -34,7 +39,5 @@
       "x-deprecated": "Use \"ng lint --fix\" directly instead."
     }
   },
-  "required": [
-    "name"
-  ]
+  "required": ["name"]
 }

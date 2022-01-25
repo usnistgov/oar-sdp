@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.legacyIvyPluginEnabled = exports.profilingEnabled = exports.cachingBasePath = exports.cachingDisabled = exports.allowMinify = exports.shouldBeautify = exports.allowMangle = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,7 +6,28 @@ exports.legacyIvyPluginEnabled = exports.profilingEnabled = exports.cachingBaseP
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-const path = require("path");
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.maxWorkers = exports.profilingEnabled = exports.persistentBuildCacheEnabled = exports.cachingBasePath = exports.cachingDisabled = exports.allowMinify = exports.shouldBeautify = exports.allowMangle = void 0;
+const path = __importStar(require("path"));
 function isDisabled(variable) {
     return variable === '0' || variable.toLowerCase() === 'false';
 }
@@ -69,9 +88,22 @@ exports.cachingBasePath = (() => {
     }
     return cacheVariable;
 })();
+// Persistent build cache
+const persistentBuildCacheVariable = process.env['NG_PERSISTENT_BUILD_CACHE'];
+exports.persistentBuildCacheEnabled = !exports.cachingDisabled &&
+    isPresent(persistentBuildCacheVariable) &&
+    isEnabled(persistentBuildCacheVariable);
 // Build profiling
 const profilingVariable = process.env['NG_BUILD_PROFILING'];
 exports.profilingEnabled = isPresent(profilingVariable) && isEnabled(profilingVariable);
-// Legacy Webpack plugin with Ivy
-const legacyIvyVariable = process.env['NG_BUILD_IVY_LEGACY'];
-exports.legacyIvyPluginEnabled = isPresent(legacyIvyVariable) && !isDisabled(legacyIvyVariable);
+/**
+ * Some environments, like CircleCI which use Docker report a number of CPUs by the host and not the count of available.
+ * This cause `Error: Call retries were exceeded` errors when trying to use them.
+ *
+ * @see https://github.com/nodejs/node/issues/28762
+ * @see https://github.com/webpack-contrib/terser-webpack-plugin/issues/143
+ * @see https://ithub.com/angular/angular-cli/issues/16860#issuecomment-588828079
+ *
+ */
+const maxWorkersVariable = process.env['NG_BUILD_MAX_WORKERS'];
+exports.maxWorkers = isPresent(maxWorkersVariable) ? +maxWorkersVariable : 4;

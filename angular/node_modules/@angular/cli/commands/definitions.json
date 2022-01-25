@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/schema",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "ng-cli://commands/definitions.json",
 
   "definitions": {
@@ -16,13 +16,12 @@
         "configuration": {
           "description": "One or more named builder configurations as a comma-separated list as specified in the \"configurations\" section of angular.json.\nThe builder uses the named configurations to run the given target.\nFor more information, see https://angular.io/guide/workspace-config#alternate-build-configurations.\nSetting this explicitly overrides the \"--prod\" flag.",
           "type": "string",
-          "aliases": [
-            "c"
-          ]
+          "aliases": ["c"]
         },
         "prod": {
           "description": "Shorthand for \"--configuration=production\".\nSet the build configuration to the production target.\nBy default, the production target is set up in the workspace configuration such that all builds make use of bundling, limited tree-shaking, and also limited dead code elimination.",
-          "type": "boolean"
+          "type": "boolean",
+          "x-deprecated": "Use `--configuration production` instead."
         }
       }
     },
@@ -37,22 +36,24 @@
       }
     },
     "schematic": {
+      "type": "object",
       "properties": {
         "dryRun": {
           "type": "boolean",
           "default": false,
-          "aliases": [ "d" ],
+          "aliases": ["d"],
           "description": "Run through and reports activity without writing out results."
         },
         "force": {
           "type": "boolean",
           "default": false,
-          "aliases": [ "f" ],
+          "aliases": ["f"],
           "description": "Force overwriting of existing files."
         }
       }
     },
     "interactive": {
+      "type": "object",
       "properties": {
         "interactive": {
           "type": "boolean",

@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.IndexHtmlWebpackPlugin = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,11 +6,12 @@ exports.IndexHtmlWebpackPlugin = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IndexHtmlWebpackPlugin = void 0;
 const path_1 = require("path");
-const webpack_sources_1 = require("webpack-sources");
+const webpack_1 = require("webpack");
 const index_html_generator_1 = require("../../utils/index-file/index-html-generator");
 const webpack_diagnostics_1 = require("../../utils/webpack-diagnostics");
-const webpack_version_1 = require("../../utils/webpack-version");
 const PLUGIN_NAME = 'index-html-webpack-plugin';
 class IndexHtmlWebpackPlugin extends index_html_generator_1.IndexHtmlGenerator {
     constructor(options) {
@@ -26,22 +25,13 @@ class IndexHtmlWebpackPlugin extends index_html_generator_1.IndexHtmlGenerator {
         throw new Error('compilation is undefined.');
     }
     apply(compiler) {
-        if (webpack_version_1.isWebpackFiveOrHigher()) {
-            compiler.hooks.thisCompilation.tap(PLUGIN_NAME, compilation => {
-                this._compilation = compilation;
-                // webpack 5 migration "guide"
-                // https://github.com/webpack/webpack/blob/07fc554bef5930f8577f91c91a8b81791fc29746/lib/Compilation.js#L535-L539
-                // TODO_WEBPACK_5 const stage = Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE + 1;
-                // tslint:disable-next-line: no-any
-                compilation.hooks.processAssets.tapPromise({ name: PLUGIN_NAME, stage: 101 }, callback);
-            });
-        }
-        else {
-            compiler.hooks.emit.tapPromise(PLUGIN_NAME, async (compilation) => {
-                this._compilation = compilation;
-                await callback(compilation.assets);
-            });
-        }
+        compiler.hooks.thisCompilation.tap(PLUGIN_NAME, (compilation) => {
+            this._compilation = compilation;
+            compilation.hooks.processAssets.tapPromise({
+                name: PLUGIN_NAME,
+                stage: webpack_1.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE + 1,
+            }, callback);
+        });
         const callback = async (assets) => {
             var _a;
             // Get all files for selected entrypoints
@@ -50,7 +40,7 @@ class IndexHtmlWebpackPlugin extends index_html_generator_1.IndexHtmlGenerator {
             const moduleFiles = [];
             try {
                 for (const [entryName, entrypoint] of this.compilation.entrypoints) {
-                    const entryFiles = (_a = entrypoint === null || entrypoint === void 0 ? void 0 : entrypoint.getFiles()) === null || _a === void 0 ? void 0 : _a.map((f) => ({
+                    const entryFiles = (_a = entrypoint === null || entrypoint === void 0 ? void 0 : entrypoint.getFiles()) === null || _a === void 0 ? void 0 : _a.filter((f) => !f.endsWith('.hot-update.js')).map((f) => ({
                         name: entryName,
                         file: f,
                         extension: path_1.extname(f),
@@ -76,9 +66,9 @@ class IndexHtmlWebpackPlugin extends index_html_generator_1.IndexHtmlGenerator {
                     baseHref: this.options.baseHref,
                     lang: this.options.lang,
                 });
-                assets[this.options.outputPath] = new webpack_sources_1.RawSource(content);
-                warnings.forEach(msg => webpack_diagnostics_1.addWarning(this.compilation, msg));
-                errors.forEach(msg => webpack_diagnostics_1.addError(this.compilation, msg));
+                assets[this.options.outputPath] = new webpack_1.sources.RawSource(content);
+                warnings.forEach((msg) => webpack_diagnostics_1.addWarning(this.compilation, msg));
+                errors.forEach((msg) => webpack_diagnostics_1.addError(this.compilation, msg));
             }
             catch (error) {
                 webpack_diagnostics_1.addError(this.compilation, error.message);
@@ -92,12 +82,13 @@ class IndexHtmlWebpackPlugin extends index_html_generator_1.IndexHtmlGenerator {
     async readIndex(path) {
         return new Promise((resolve, reject) => {
             this.compilation.inputFileSystem.readFile(path, (err, data) => {
+                var _a;
                 if (err) {
                     reject(err);
                     return;
                 }
                 this.compilation.fileDependencies.add(path);
-                resolve(data.toString());
+                resolve((_a = data === null || data === void 0 ? void 0 : data.toString()) !== null && _a !== void 0 ? _a : '');
             });
         });
     }

@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as webpack from 'webpack';
+import { StatsChunk, StatsCompilation } from 'webpack';
 import { NormalizedEntryPoint } from './helpers';
 /**
  * Webpack stats may incorrectly mark extra entry points `initial` chunks, when
@@ -13,4 +13,4 @@ import { NormalizedEntryPoint } from './helpers';
  * function finds extra entry points in Webpack stats and corrects this value
  * whereever necessary. Does not modify {@param webpackStats}.
  */
-export declare function markAsyncChunksNonInitial(webpackStats: webpack.Stats.ToJsonOutput, extraEntryPoints: NormalizedEntryPoint[]): Exclude<webpack.Stats.ToJsonOutput['chunks'], undefined>;
+export declare function markAsyncChunksNonInitial(webpackStats: StatsCompilation, extraEntryPoints: NormalizedEntryPoint[]): StatsChunk[];

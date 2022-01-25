@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BuilderHarness = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,6 +6,8 @@ exports.BuilderHarness = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BuilderHarness = void 0;
 const architect_1 = require("@angular-devkit/architect");
 const core_1 = require("@angular-devkit/core");
 const rxjs_1 = require("rxjs");
@@ -112,6 +112,9 @@ class BuilderHarness {
                 this.validateProjectName(project);
                 return this.targetName === target || this.builderTargets.has(target);
             },
+            getDefaultConfigurationName: async (_project, _target) => {
+                return undefined;
+            },
             validate: async (options, builderName) => {
                 let schema;
                 if (builderName === this.builderInfo.builderName) {
@@ -142,15 +145,15 @@ class BuilderHarness {
         context.logger.subscribe((e) => logs.push(e));
         return this.schemaRegistry.compile(this.builderInfo.optionSchema).pipe(operators_1.mergeMap((validator) => validator(targetOptions)), operators_1.map((validationResult) => validationResult.data), operators_1.mergeMap((data) => convertBuilderOutputToObservable(this.builderHandler(data, context))), operators_1.map((buildResult) => ({ result: buildResult, error: undefined })), operators_1.catchError((error) => {
             if (outputLogsOnException) {
-                // tslint:disable-next-line: no-console
+                // eslint-disable-next-line no-console
                 console.error(logs.map((entry) => entry.message).join('\n'));
-                // tslint:disable-next-line: no-console
+                // eslint-disable-next-line no-console
                 console.error(error);
             }
             return rxjs_1.of({ result: undefined, error });
         }), operators_1.map(({ result, error }) => {
             if (outputLogsOnFailure && (result === null || result === void 0 ? void 0 : result.success) === false && logs.length > 0) {
-                // tslint:disable-next-line: no-console
+                // eslint-disable-next-line no-console
                 console.error(logs.map((entry) => entry.message).join('\n'));
             }
             // Capture current logs and clear for next
@@ -160,6 +163,7 @@ class BuilderHarness {
         }), operators_1.finalize(() => {
             this.watcherNotifier = undefined;
             for (const teardown of context.teardowns) {
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 teardown();
             }
         }));
@@ -214,9 +218,10 @@ class BuilderHarness {
         return this.host.scopedSync().exists(core_1.normalize(path));
     }
     hasFileMatch(directory, pattern) {
-        return this.host.scopedSync()
+        return this.host
+            .scopedSync()
             .list(core_1.normalize(directory))
-            .some(name => pattern.test(name));
+            .some((name) => pattern.test(name));
     }
     readFile(path) {
         const content = this.host.scopedSync().read(core_1.normalize(path));

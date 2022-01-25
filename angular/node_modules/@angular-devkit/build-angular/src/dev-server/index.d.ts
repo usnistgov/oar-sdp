@@ -9,25 +9,30 @@ import { BuilderContext } from '@angular-devkit/architect';
 import { DevServerBuildOutput, WebpackLoggingCallback } from '@angular-devkit/build-webpack';
 import { json } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import { ExecutionTransformer } from '../transforms';
 import { IndexHtmlTransform } from '../utils/index-file/index-html-generator';
 import { Schema } from './schema';
 export declare type DevServerBuilderOptions = Schema & json.JsonObject;
+/**
+ * @experimental Direct usage of this type is considered experimental.
+ */
 export declare type DevServerBuilderOutput = DevServerBuildOutput & {
     baseUrl: string;
 };
 /**
- * Reusable implementation of the build angular webpack dev server builder.
+ * Reusable implementation of the Angular Webpack development server builder.
  * @param options Dev Server options.
  * @param context The build context.
  * @param transforms A map of transforms that can be used to hook into some logic (such as
  *     transforming webpack configuration before passing it to webpack).
+ *
+ * @experimental Direct usage of this function is considered experimental.
  */
 export declare function serveWebpackBrowser(options: DevServerBuilderOptions, context: BuilderContext, transforms?: {
     webpackConfiguration?: ExecutionTransformer<webpack.Configuration>;
     logging?: WebpackLoggingCallback;
     indexHtml?: IndexHtmlTransform;
 }): Observable<DevServerBuilderOutput>;
-declare const _default: import("@angular-devkit/architect/src/internal").Builder<DevServerBuilderOptions>;
+declare const _default: import("@angular-devkit/architect/src/internal").Builder<Schema & json.JsonObject>;
 export default _default;

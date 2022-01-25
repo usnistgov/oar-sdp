@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/schema",
+  "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "ng-cli://commands/update.json",
   "description": "Updates your application and its dependencies. See https://update.angular.io/",
   "$longDescription": "./update-long.md",
@@ -28,7 +28,7 @@
           }
         },
         "force": {
-          "description": "If false, will error out if installed packages are incompatible with the update.",
+          "description": "Ignore peer dependency version mismatches. Passes the `--force` flag to the package manager when installing packages.",
           "default": false,
           "type": "boolean"
         },

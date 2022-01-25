@@ -1,7 +1,14 @@
 "use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBrowserConfig = void 0;
-const webpack_version_1 = require("../../utils/webpack-version");
+const utils_1 = require("../../utils");
 const plugins_1 = require("../plugins");
 const helpers_1 = require("../utils/helpers");
 function getBrowserConfig(wco) {
@@ -15,18 +22,6 @@ function getBrowserConfig(wco) {
             hashFuncNames: ['sha384'],
         }));
     }
-    if (extractLicenses) {
-        const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
-        extraPlugins.push(new LicenseWebpackPlugin({
-            stats: {
-                warnings: false,
-                errors: false,
-            },
-            perChunkOutput: false,
-            outputFilename: '3rdpartylicenses.txt',
-            skipChildCompilers: true,
-        }));
-    }
     if (scriptsSourceMap || stylesSourceMap) {
         extraPlugins.push(helpers_1.getSourceMapDevTool(scriptsSourceMap, stylesSourceMap, buildOptions.differentialLoadingNeeded && !buildOptions.watch ? true : hiddenSourceMap, false));
     }
@@ -37,14 +32,16 @@ function getBrowserConfig(wco) {
     else if (crossOrigin !== 'none') {
         crossOriginLoading = crossOrigin;
     }
+    const buildBrowserFeatures = new utils_1.BuildBrowserFeatures(wco.projectRoot);
     return {
         devtool: false,
         resolve: {
             mainFields: ['es2015', 'browser', 'module', 'main'],
+            conditionNames: ['es2015', '...'],
         },
-        ...webpack_version_1.withWebpackFourOrFive({}, { target: ['web', 'es5'] }),
         output: {
             crossOriginLoading,
+            trustedTypes: 'angular#bundler',
         },
         optimization: {
             runtimeChunk: 'single',

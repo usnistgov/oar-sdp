@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-
 // ES2015 symbol capabilities
 import 'core-js/es/symbol';
 
@@ -112,3 +111,6 @@ import 'core-js/modules/es.promise';
 import 'core-js/modules/es.json.to-string-tag';
 
 import 'regenerator-runtime/runtime';
+
+// Zone.js
+import 'zone.js/plugins/zone-legacy';

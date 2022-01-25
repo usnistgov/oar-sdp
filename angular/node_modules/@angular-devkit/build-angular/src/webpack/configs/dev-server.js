@@ -6,17 +6,37 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildServePath = exports.getDevServerConfig = void 0;
 const core_1 = require("@angular-devkit/core");
 const fs_1 = require("fs");
 const path_1 = require("path");
-const url = require("url");
+const url = __importStar(require("url"));
 const utils_1 = require("../../utils");
 const webpack_browser_config_1 = require("../../utils/webpack-browser-config");
 const hmr_loader_1 = require("../plugins/hmr/hmr-loader");
 const helpers_1 = require("../utils/helpers");
 function getDevServerConfig(wco) {
+    var _a;
     const { buildOptions: { optimization, host, port, index, headers, poll, ssl, hmr, main, disableHostCheck, liveReload, allowedHosts, watch, proxyConfig, }, logger, root, } = wco;
     const servePath = buildServePath(wco.buildOptions, logger);
     const { styles: stylesOptimization, scripts: scriptsOptimization } = utils_1.normalizeOptimization(optimization);
@@ -28,7 +48,7 @@ function getDevServerConfig(wco) {
             publicHost = `${ssl ? 'https' : 'http'}://${publicHost}`;
         }
         const parsedHost = url.parse(publicHost);
-        publicHost = parsedHost.host;
+        publicHost = (_a = parsedHost.host) !== null && _a !== void 0 ? _a : undefined;
     }
     else {
         publicHost = '0.0.0.0:0';
@@ -37,9 +57,10 @@ function getDevServerConfig(wco) {
         // There's no option to turn off file watching in webpack-dev-server, but
         // we can override the file watcher instead.
         extraPlugins.push({
-            // tslint:disable-next-line:no-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             apply: (compiler) => {
                 compiler.hooks.afterEnvironment.tap('angular-cli', () => {
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
                     compiler.watchFileSystem = { watch: () => { } };
                 });
             },
@@ -49,7 +70,7 @@ function getDevServerConfig(wco) {
     if (hmr) {
         extraRules.push({
             loader: hmr_loader_1.HmrLoader,
-            include: [main].map(p => path_1.resolve(wco.root, p)),
+            include: [main].map((p) => path_1.resolve(wco.root, p)),
         });
     }
     return {
@@ -71,13 +92,13 @@ function getDevServerConfig(wco) {
                 rewrites: [
                     {
                         from: new RegExp(`^(?!${servePath})/.*`),
-                        to: context => url.format(context.parsedUrl),
+                        to: (context) => url.format(context.parsedUrl),
                     },
                 ],
             },
             sockPath: path_1.posix.join(servePath, 'sockjs-node'),
             stats: false,
-            compress: stylesOptimization.minify || scriptsOptimization,
+            compress: false,
             watchOptions: helpers_1.getWatchOptions(poll),
             https: getSslConfig(root, wco.buildOptions),
             overlay: {
@@ -92,6 +113,7 @@ function getDevServerConfig(wco) {
             inline: hmr,
             publicPath: servePath,
             liveReload,
+            injectClient: liveReload,
             hotOnly: hmr && !liveReload,
             hot: hmr,
             proxy: addProxyConfig(root, proxyConfig),
@@ -171,7 +193,7 @@ function findDefaultServePath(baseHref, deployUrl) {
     // normalize baseHref
     // for ng serve the starting base is always `/` so a relative
     // and root relative value are identical
-    const baseHrefParts = (baseHref || '').split('/').filter(part => part !== '');
+    const baseHrefParts = (baseHref || '').split('/').filter((part) => part !== '');
     if (baseHref && !baseHref.endsWith('/')) {
         baseHrefParts.pop();
     }

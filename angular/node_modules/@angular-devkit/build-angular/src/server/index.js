@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.execute = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,10 +6,31 @@ exports.execute = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.execute = void 0;
 const architect_1 = require("@angular-devkit/architect");
 const build_webpack_1 = require("@angular-devkit/build-webpack");
 const core_1 = require("@angular-devkit/core");
-const path = require("path");
+const path = __importStar(require("path"));
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const typescript_1 = require("typescript");
@@ -23,10 +42,13 @@ const version_1 = require("../utils/version");
 const webpack_browser_config_1 = require("../utils/webpack-browser-config");
 const configs_1 = require("../webpack/configs");
 const stats_1 = require("../webpack/utils/stats");
+/**
+ * @experimental Direct usage of this function is considered experimental.
+ */
 function execute(options, context, transforms = {}) {
     const root = context.workspaceRoot;
     // Check Angular version.
-    version_1.assertCompatibleAngularVersion(root, context.logger);
+    version_1.assertCompatibleAngularVersion(root);
     const tsConfig = read_tsconfig_1.readTsconfig(options.tsConfig, root);
     const target = tsConfig.options.target || typescript_1.ScriptTarget.ES5;
     const baseOutputPath = path.resolve(root, options.outputPath);
@@ -36,7 +58,7 @@ function execute(options, context, transforms = {}) {
         context.logger.warn(`Option 'bundleDependencies' string value is deprecated since version 9. Use a boolean value instead.`);
     }
     if (!options.bundleDependencies && tsConfig.options.enableIvy) {
-        // tslint:disable-next-line: no-implicit-dependencies
+        // eslint-disable-next-line import/no-extraneous-dependencies
         const { __processed_by_ivy_ngcc__, main = '' } = require('@angular/core/package.json');
         if (!__processed_by_ivy_ngcc__ ||
             !__processed_by_ivy_ngcc__.main ||
@@ -57,21 +79,19 @@ function execute(options, context, transforms = {}) {
                 }
             },
         }).pipe(operators_1.concatMap(async (output) => {
-            const { emittedFiles = [], webpackStats } = output;
+            const { emittedFiles = [], outputPath, webpackStats } = output;
             if (!webpackStats) {
                 throw new Error('Webpack stats build result is required.');
             }
             let success = output.success;
             if (success && i18n.shouldInline) {
                 outputPaths = output_paths_1.ensureOutputPaths(baseOutputPath, i18n);
-                success = await i18n_inlining_1.i18nInlineEmittedFiles(context, emittedFiles, i18n, baseOutputPath, Array.from(outputPaths.values()), [], 
-                // tslint:disable-next-line: no-non-null-assertion
-                webpackStats.outputPath, target <= typescript_1.ScriptTarget.ES5, options.i18nMissingTranslation);
+                success = await i18n_inlining_1.i18nInlineEmittedFiles(context, emittedFiles, i18n, baseOutputPath, Array.from(outputPaths.values()), [], outputPath, target <= typescript_1.ScriptTarget.ES5, options.i18nMissingTranslation);
             }
             stats_1.webpackStatsLogger(context.logger, webpackStats, config);
             return { ...output, success };
         }));
-    }), operators_1.map(output => {
+    }), operators_1.map((output) => {
         if (!output.success) {
             return output;
         }
@@ -92,12 +112,12 @@ async function initialize(options, context, webpackConfigurationTransform) {
         buildOptimizer: false,
         aot: true,
         platform: 'server',
-    }, context, wco => [
+    }, context, (wco) => [
         configs_1.getCommonConfig(wco),
         configs_1.getServerConfig(wco),
         configs_1.getStylesConfig(wco),
         configs_1.getStatsConfig(wco),
-        configs_1.getAotConfig(wco),
+        configs_1.getTypeScriptConfig(wco),
     ]);
     let transformedConfig;
     if (webpackConfigurationTransform) {

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -7,38 +6,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const extraction_1 = require("@angular/localize/src/tools/src/extract/extraction");
-const loader_utils_1 = require("loader-utils");
-const nodePath = require("path");
-function localizeExtractLoader(content, 
-// Source map types are broken in the webpack type definitions
-// tslint:disable-next-line: no-any
-map) {
+const nodePath = __importStar(require("path"));
+function localizeExtractLoader(content, map) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const loaderContext = this;
-    // Casts are needed to workaround the loader-utils typings limited support for option values
-    const options = loader_utils_1.getOptions(this);
+    const options = this.getOptions();
     // Setup a Webpack-based logger instance
     const logger = {
         // level 2 is warnings
         level: 2,
         debug(...args) {
-            // tslint:disable-next-line: no-console
+            // eslint-disable-next-line no-console
             console.debug(...args);
         },
         info(...args) {
-            loaderContext.emitWarning(args.join(''));
+            loaderContext.emitWarning(new Error(args.join('')));
         },
         warn(...args) {
-            loaderContext.emitWarning(args.join(''));
+            loaderContext.emitWarning(new Error(args.join('')));
         },
         error(...args) {
-            loaderContext.emitError(args.join(''));
+            loaderContext.emitError(new Error(args.join('')));
         },
     };
     let filename = loaderContext.resourcePath;
-    if (map === null || map === void 0 ? void 0 : map.file) {
+    const mapObject = typeof map === 'string' ? JSON.parse(map) : map;
+    if (mapObject === null || mapObject === void 0 ? void 0 : mapObject.file) {
         // The extractor's internal sourcemap handling expects the filenames to match
-        filename = nodePath.join(loaderContext.context, map.file);
+        filename = nodePath.join(loaderContext.context, mapObject.file);
     }
     // Setup a virtual file system instance for the extractor
     // * MessageExtractor itself uses readFile, relative and resolve
@@ -68,9 +84,9 @@ map) {
             return nodePath.dirname(path);
         },
     };
-    // tslint:disable-next-line: no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const extractor = new extraction_1.MessageExtractor(filesystem, logger, {
-        // tslint:disable-next-line: no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         basePath: this.rootContext,
         useSourceMaps: !!map,
     });

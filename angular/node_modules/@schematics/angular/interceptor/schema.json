@@ -1,8 +1,9 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsAngularInterceptor",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "SchematicsAngularInterceptor",
   "title": "Angular Interceptor Options Schema",
   "type": "object",
+  "additionalProperties": false,
   "description": "Creates a new, generic interceptor definition in the given or default project.",
   "properties": {
     "name": {

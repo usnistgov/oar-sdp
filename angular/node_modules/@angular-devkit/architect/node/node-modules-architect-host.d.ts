@@ -17,6 +17,7 @@ export interface WorkspaceHost {
     getMetadata(project: string): Promise<json.JsonObject>;
     getOptions(project: string, target: string, configuration?: string): Promise<json.JsonObject>;
     hasTarget(project: string, target: string): Promise<boolean>;
+    getDefaultConfigurationName(project: string, target: string): Promise<string | undefined>;
 }
 export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<NodeModulesBuilderInfo> {
     protected _root: string;

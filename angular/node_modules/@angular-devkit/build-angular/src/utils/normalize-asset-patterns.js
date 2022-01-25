@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.normalizeAssetPatterns = exports.MissingAssetSourceRootException = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,6 +6,8 @@ exports.normalizeAssetPatterns = exports.MissingAssetSourceRootException = void 
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.normalizeAssetPatterns = exports.MissingAssetSourceRootException = void 0;
 const core_1 = require("@angular-devkit/core");
 const fs_1 = require("fs");
 class MissingAssetSourceRootException extends core_1.BaseException {
@@ -23,8 +23,7 @@ function normalizeAssetPatterns(assetPatterns, root, projectRoot, maybeSourceRoo
     if (assetPatterns.length === 0) {
         return [];
     }
-    return assetPatterns
-        .map(assetPattern => {
+    return assetPatterns.map((assetPattern) => {
         // Normalize string asset patterns to objects.
         if (typeof assetPattern === 'string') {
             const assetPath = core_1.normalize(assetPattern);
@@ -33,12 +32,12 @@ function normalizeAssetPatterns(assetPatterns, root, projectRoot, maybeSourceRoo
             if (!resolvedAssetPath.startsWith(resolvedSourceRoot)) {
                 throw new MissingAssetSourceRootException(assetPattern);
             }
-            let glob, input, output;
+            let glob, input;
             let isDirectory = false;
             try {
                 isDirectory = fs_1.statSync(core_1.getSystemPath(resolvedAssetPath)).isDirectory();
             }
-            catch (_a) {
+            catch {
                 isDirectory = true;
             }
             if (isDirectory) {
@@ -54,7 +53,7 @@ function normalizeAssetPatterns(assetPatterns, root, projectRoot, maybeSourceRoo
                 input = core_1.dirname(assetPath);
             }
             // Output directory for both is the relative path from source root to input.
-            output = core_1.relative(resolvedSourceRoot, core_1.resolve(root, input));
+            const output = core_1.relative(resolvedSourceRoot, core_1.resolve(root, input));
             // Return the asset pattern in object format.
             return { glob, input, output };
         }

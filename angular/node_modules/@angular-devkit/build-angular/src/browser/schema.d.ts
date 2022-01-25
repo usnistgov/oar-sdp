@@ -44,10 +44,6 @@ export interface Schema {
      */
     deployUrl?: string;
     /**
-     * Concatenate modules with Rollup before bundling them with Webpack.
-     */
-    experimentalRollupPass?: boolean;
-    /**
      * Extract CSS from global styles into '.css' files instead of '.js'.
      * @deprecated Deprecated since version 11.0. No longer required to disable CSS extraction
      * for HMR.
@@ -62,25 +58,6 @@ export interface Schema {
      */
     fileReplacements?: FileReplacement[];
     /**
-     * Run the TypeScript type checker in a forked process.
-     */
-    forkTypeChecker?: boolean;
-    /**
-     * Localization file to use for i18n.
-     * @deprecated Use 'locales' object in the project metadata instead.
-     */
-    i18nFile?: string;
-    /**
-     * Format of the localization file specified with --i18n-file.
-     * @deprecated No longer needed as the format will be determined automatically.
-     */
-    i18nFormat?: string;
-    /**
-     * Locale to use for i18n.
-     * @deprecated Use 'localize' instead.
-     */
-    i18nLocale?: string;
-    /**
      * How to handle missing translations for i18n.
      */
     i18nMissingTranslation?: I18NMissingTranslation;
@@ -89,12 +66,9 @@ export interface Schema {
      */
     index: IndexUnion;
     /**
-     * List of additional NgModule files that will be lazy loaded. Lazy router modules will be
-     * discovered automatically.
-     * @deprecated 'SystemJsNgModuleLoader' is deprecated, and this is part of its usage. Use
-     * 'import()' syntax instead.
+     * The stylesheet language to use for the application's inline component styles.
      */
-    lazyModules?: string[];
+    inlineStyleLanguage?: InlineStyleLanguage;
     /**
      * Translate the bundles in one or more locales.
      */
@@ -159,6 +133,8 @@ export interface Schema {
     serviceWorker?: boolean;
     /**
      * Show circular dependency warnings on builds.
+     * @deprecated The recommended method to detect circular dependencies in project code is to
+     * use either a lint rule or other external tooling.
      */
     showCircularDependencies?: boolean;
     /**
@@ -317,6 +293,15 @@ export interface IndexObject {
     output?: string;
 }
 /**
+ * The stylesheet language to use for the application's inline component styles.
+ */
+export declare enum InlineStyleLanguage {
+    Css = "css",
+    Less = "less",
+    Sass = "sass",
+    Scss = "scss"
+}
+/**
  * Translate the bundles in one or more locales.
  */
 export declare type Localize = string[] | boolean;
@@ -349,7 +334,7 @@ export interface OptimizationClass {
 export declare type FontsUnion = boolean | FontsClass;
 export interface FontsClass {
     /**
-     * Reduce render blocking requests by inlining external Google fonts and icons CSS
+     * Reduce render blocking requests by inlining external Google Fonts and Adobe Fonts CSS
      * definitions in the application's HTML index file. This option requires internet access.
      * `HTTPS_PROXY` environment variable can be used to specify a proxy server.
      */
@@ -422,7 +407,7 @@ export interface SourceMapClass {
  */
 export interface StylePreprocessorOptions {
     /**
-     * Paths to include. Paths will be resolved to project root.
+     * Paths to include. Paths will be resolved to workspace root.
      */
     includePaths?: string[];
 }

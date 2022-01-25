@@ -1,9 +1,10 @@
 {
-  "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsAngularPipe",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "SchematicsAngularPipe",
   "title": "Angular Pipe Options Schema",
   "type": "object",
-  "description": "Creates a new generic pipe definition in the given or default project.",
+  "additionalProperties": false,
+  "description": "Creates a new, generic pipe definition in the given or default project.",
   "properties": {
     "name": {
       "type": "string",
@@ -63,7 +64,5 @@
       "x-deprecated": "Use \"ng lint --fix\" directly instead."
     }
   },
-  "required": [
-    "name"
-  ]
+  "required": ["name"]
 }

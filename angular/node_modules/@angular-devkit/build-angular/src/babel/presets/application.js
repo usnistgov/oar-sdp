@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -7,8 +6,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-const fs = require("fs");
-const path = require("path");
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
 function createI18nDiagnostics(reporter) {
     // Babel currently is synchronous so import cannot be used
     const diagnostics = new (require('@angular/localize/src/tools/src/diagnostics').Diagnostics)();
@@ -74,13 +93,17 @@ function createNgtscLogger(reporter) {
     };
 }
 function default_1(api, options) {
+    var _a;
     const presets = [];
     const plugins = [];
     let needRuntimeTransform = false;
-    if (options.angularLinker) {
+    if ((_a = options.angularLinker) === null || _a === void 0 ? void 0 : _a.shouldLink) {
         // Babel currently is synchronous so import cannot be used
-        const { createEs2015LinkerPlugin, } = require('@angular/compiler-cli/linker/babel');
+        const { createEs2015LinkerPlugin } = require('@angular/compiler-cli/linker/babel');
         plugins.push(createEs2015LinkerPlugin({
+            linkerJitMode: options.angularLinker.jitMode,
+            // This is a workaround until https://github.com/angular/angular/issues/42769 is fixed.
+            sourceMapping: false,
             logger: createNgtscLogger(options.diagnosticReporter),
             fileSystem: {
                 resolve: path.resolve,
@@ -88,6 +111,8 @@ function default_1(api, options) {
                 dirname: path.dirname,
                 relative: path.relative,
                 readFile: fs.readFileSync,
+                // Node.JS types don't overlap the Compiler types.
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             },
         }));
     }
@@ -111,7 +136,7 @@ function default_1(api, options) {
     }
     if (options.forceAsyncTransformation) {
         // Always transform async/await to support Zone.js
-        plugins.push(require('@babel/plugin-transform-async-to-generator').default);
+        plugins.push(require('@babel/plugin-transform-async-to-generator').default, require('@babel/plugin-proposal-async-generator-functions').default);
         needRuntimeTransform = true;
     }
     if (needRuntimeTransform) {

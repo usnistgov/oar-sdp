@@ -8,7 +8,6 @@
 import { Architect, BuilderOutput, ScheduleOptions, Target } from '@angular-devkit/architect';
 import { TestProjectHost, TestingArchitectHost } from '@angular-devkit/architect/testing';
 import { Path, json, virtualFs, workspaces } from '@angular-devkit/core';
-export declare let veEnabled: boolean;
 export declare const workspaceRoot: Path;
 export declare const host: TestProjectHost;
 export declare const outputPath: Path;
@@ -49,9 +48,6 @@ export interface BrowserBuildOutput {
 }
 export declare function browserBuild(architect: Architect, host: virtualFs.Host, target: Target, overrides?: json.JsonObject, scheduleOptions?: ScheduleOptions): Promise<BrowserBuildOutput>;
 export declare const lazyModuleFiles: {
-    [path: string]: string;
-};
-export declare const lazyModuleStringImport: {
     [path: string]: string;
 };
 export declare const lazyModuleFnImport: {

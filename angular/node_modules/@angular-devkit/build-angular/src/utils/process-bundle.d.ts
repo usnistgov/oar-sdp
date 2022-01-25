@@ -1,4 +1,3 @@
-/// <reference types="packages/angular_devkit/build_angular/src/babel-bazel" />
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -6,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+/// <reference types="packages/angular_devkit/build_angular/src/babel-bazel" />
 import { PluginObj } from '@babel/core';
-import { I18nOptions } from './i18n-options';
 export interface ProcessBundleOptions {
     filename: string;
     code: string;
@@ -25,6 +24,7 @@ export interface ProcessBundleOptions {
     runtimeData?: ProcessBundleResult[];
     replacements?: [string, string][];
     supportedBrowsers?: string[] | Record<string, string>;
+    memoryMode?: boolean;
 }
 export interface ProcessBundleResult {
     name: string;
@@ -36,9 +36,11 @@ export interface ProcessBundleFile {
     filename: string;
     size: number;
     integrity?: string;
+    content?: string;
     map?: {
         filename: string;
         size: number;
+        content?: string;
     };
 }
 export declare const enum CacheKey {
@@ -47,10 +49,6 @@ export declare const enum CacheKey {
     DownlevelCode = 2,
     DownlevelMap = 3
 }
-export declare function setup(data: number[] | {
-    cachePath: string;
-    i18n: I18nOptions;
-}): void;
 export declare function process(options: ProcessBundleOptions): Promise<ProcessBundleResult>;
 export declare function createI18nPlugins(locale: string, translation: unknown | undefined, missingTranslation: 'error' | 'warning' | 'ignore', shouldInline: boolean, localeDataContent?: string): Promise<{
     diagnostics: import("@angular/localize/src/tools/src/diagnostics").Diagnostics;

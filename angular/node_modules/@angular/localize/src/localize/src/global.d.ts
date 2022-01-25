@@ -6,6 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 declare global {
-    var WorkerGlobalScope: any;
+    interface WorkerGlobalScope extends EventTarget, WindowOrWorkerGlobalScope {
+    }
+    var WorkerGlobalScope: {
+        prototype: WorkerGlobalScope;
+        new (): WorkerGlobalScope;
+    };
 }
 export declare const _global: any;

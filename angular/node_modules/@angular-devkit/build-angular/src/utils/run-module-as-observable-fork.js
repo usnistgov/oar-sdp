@@ -1,4 +1,11 @@
 "use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runModuleAsObservableFork = void 0;
 const child_process_1 = require("child_process");
@@ -6,9 +13,9 @@ const path_1 = require("path");
 const rxjs_1 = require("rxjs");
 const treeKill = require('tree-kill');
 function runModuleAsObservableFork(cwd, modulePath, exportName, 
-// tslint:disable-next-line:no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 args) {
-    return new rxjs_1.Observable(obs => {
+    return new rxjs_1.Observable((obs) => {
         const workerPath = path_1.resolve(__dirname, './run-module-worker.js');
         const debugArgRegex = /--inspect(?:-brk|-port)?|--debug(?:-brk|-port)/;
         const execArgv = process.execArgv.filter((arg) => {

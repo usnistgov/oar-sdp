@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SingleTestTransformLoader = void 0;
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -8,8 +6,9 @@ exports.SingleTestTransformLoader = void 0;
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SingleTestTransformLoader = void 0;
 const core_1 = require("@angular-devkit/core");
-const loader_utils_1 = require("loader-utils");
 const path_1 = require("path");
 exports.SingleTestTransformLoader = __filename;
 /**
@@ -25,8 +24,9 @@ exports.SingleTestTransformLoader = __filename;
  * Then it adds import statements for each file in the files options
  * array to import them directly, and thus run the tests there.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function loader(source) {
-    const { files = [], logger = console } = loader_utils_1.getOptions(this);
+    const { files = [], logger = console } = this.getOptions();
     // signal the user that expected content is not present.
     if (!source.includes('require.context(')) {
         logger.error(core_1.tags.stripIndent `The 'include' option requires that the 'main' file for tests includes the below line:
@@ -35,7 +35,7 @@ function loader(source) {
         return source;
     }
     const targettedImports = files
-        .map(path => `require('./${path.replace('.' + path_1.extname(path), '')}');`)
+        .map((path) => `require('./${path.replace('.' + path_1.extname(path), '')}');`)
         .join('\n');
     const mockedRequireContext = 'Object.assign(() => { }, { keys: () => [], resolve: () => undefined });\n';
     source = source.replace(/require\.context\(.*/, mockedRequireContext + targettedImports);

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -7,12 +6,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const architect_1 = require("@angular-devkit/architect");
 const core_1 = require("@angular-devkit/core");
-const fs = require("fs");
-const path = require("path");
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
 const utils_1 = require("../utils");
-const fs_1 = require("../utils/fs");
 const inline_critical_css_1 = require("../utils/index-file/inline-critical-css");
 const service_worker_1 = require("../utils/service-worker");
 const spinner_1 = require("../utils/spinner");
@@ -25,7 +43,7 @@ async function _renderUniversal(options, context, browserResult, serverResult, s
     // Initialize zone.js
     const root = context.workspaceRoot;
     const zonePackage = require.resolve('zone.js', { paths: [root] });
-    await Promise.resolve().then(() => require(zonePackage));
+    await Promise.resolve().then(() => __importStar(require(zonePackage)));
     const projectName = context.target && context.target.project;
     if (!projectName) {
         throw new Error('The builder requires a target.');
@@ -42,20 +60,11 @@ async function _renderUniversal(options, context, browserResult, serverResult, s
     for (const outputPath of browserResult.outputPaths) {
         const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
         const browserIndexOutputPath = path.join(outputPath, 'index.html');
-        const indexHtml = await fs_1.readFile(browserIndexOutputPath, 'utf8');
+        const indexHtml = await fs.promises.readFile(browserIndexOutputPath, 'utf8');
         const serverBundlePath = await _getServerModuleBundlePath(options, context, serverResult, localeDirectory);
-        const { AppServerModule, AppServerModuleNgFactory, renderModule, renderModuleFactory, } = await Promise.resolve().then(() => require(serverBundlePath));
-        let renderModuleFn;
-        let AppServerModuleDef;
-        if (renderModuleFactory && AppServerModuleNgFactory) {
-            renderModuleFn = renderModuleFactory;
-            AppServerModuleDef = AppServerModuleNgFactory;
-        }
-        else if (renderModule && AppServerModule) {
-            renderModuleFn = renderModule;
-            AppServerModuleDef = AppServerModule;
-        }
-        else {
+        const { AppServerModule, renderModule } = await Promise.resolve().then(() => __importStar(require(serverBundlePath)));
+        const renderModuleFn = renderModule;
+        if (!(renderModuleFn && AppServerModule)) {
             throw new Error(`renderModule method and/or AppServerModule were not exported from: ${serverBundlePath}.`);
         }
         // Load platform server module renderer
@@ -63,22 +72,24 @@ async function _renderUniversal(options, context, browserResult, serverResult, s
             document: indexHtml,
             url: options.route,
         };
-        let html = await renderModuleFn(AppServerModuleDef, renderOpts);
+        let html = await renderModuleFn(AppServerModule, renderOpts);
         // Overwrite the client index file.
         const outputIndexPath = options.outputIndexPath
             ? path.join(root, options.outputIndexPath)
             : browserIndexOutputPath;
         if (inlineCriticalCssProcessor) {
-            const { content, warnings, errors } = await inlineCriticalCssProcessor.process(html, { outputPath });
+            const { content, warnings, errors } = await inlineCriticalCssProcessor.process(html, {
+                outputPath,
+            });
             html = content;
             if (warnings.length || errors.length) {
                 spinner.stop();
-                warnings.forEach(m => context.logger.warn(m));
-                errors.forEach(m => context.logger.error(m));
+                warnings.forEach((m) => context.logger.warn(m));
+                errors.forEach((m) => context.logger.error(m));
                 spinner.start();
             }
         }
-        await fs_1.writeFile(outputIndexPath, html);
+        await fs.promises.writeFile(outputIndexPath, html);
         if (browserOptions.serviceWorker) {
             await service_worker_1.augmentAppWithServiceWorker(core_1.normalize(root), projectRoot, core_1.normalize(outputPath), browserOptions.baseHref || '/', browserOptions.ngswConfigPath);
         }
@@ -95,7 +106,7 @@ async function _getServerModuleBundlePath(options, context, serverResult, browse
         throw new Error(`Could not find server output directory: ${outputPath}.`);
     }
     const re = /^main\.(?:[a-zA-Z0-9]{20}\.)?js$/;
-    const maybeMain = fs.readdirSync(outputPath).find(x => re.test(x));
+    const maybeMain = fs.readdirSync(outputPath).find((x) => re.test(x));
     if (!maybeMain) {
         throw new Error('Could not find the main bundle.');
     }
@@ -140,7 +151,6 @@ async function _appShellBuilder(options, context) {
         return { success: false, error: err.message };
     }
     finally {
-        // Just be good citizens and stop those jobs.
         await Promise.all([browserTargetRun.stop(), serverTargetRun.stop()]);
     }
 }
