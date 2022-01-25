@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem, PathSegment } from '@angular/compiler-cli/src/ngtsc/file_system';
+import { AbsoluteFsPath, PathSegment, ReadonlyFileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
 import { ɵMessageId, ɵParsedTranslation } from '@angular/localize';
 import { Diagnostics } from '../diagnostics';
 import { OutputPathFn } from './output_path';
@@ -58,6 +58,6 @@ export declare class Translator {
     private fs;
     private resourceHandlers;
     private diagnostics;
-    constructor(fs: FileSystem, resourceHandlers: TranslationHandler[], diagnostics: Diagnostics);
+    constructor(fs: ReadonlyFileSystem, resourceHandlers: TranslationHandler[], diagnostics: Diagnostics);
     translateFiles(inputPaths: PathSegment[], rootPath: AbsoluteFsPath, outputPathFn: OutputPathFn, translations: TranslationBundle[], sourceLocale?: string): void;
 }

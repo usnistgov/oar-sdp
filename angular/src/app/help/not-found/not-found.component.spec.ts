@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HelpPageNotFoundComponent } from './not-found.component';
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
@@ -9,7 +9,7 @@ describe('HelpPageNotFoundComponent', () => {
   let component: HelpPageNotFoundComponent;
   let fixture: ComponentFixture<HelpPageNotFoundComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule],
       declarations: [ HelpPageNotFoundComponent ],

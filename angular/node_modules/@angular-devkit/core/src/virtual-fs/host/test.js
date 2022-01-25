@@ -11,6 +11,7 @@ var test;
         constructor(map = {}) {
             super();
             this._records = [];
+            this._sync = null;
             for (const filePath of Object.getOwnPropertyNames(map)) {
                 this._write(path_1.normalize(filePath), buffer_1.stringToFileBuffer(map[filePath]));
             }

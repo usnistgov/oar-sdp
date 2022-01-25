@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { LocalizeFn } from '../src/localize';
-export { LocalizeFn, TranslateFn } from '../src/localize';
+export { $localize, LocalizeFn, TranslateFn } from '../src/localize';
 declare global {
     /**
      * Tag a template literal string for localization.
@@ -31,7 +31,7 @@ declare global {
      * ```
      *
      * This format is the same as that used for `i18n` markers in Angular templates. See the
-     * [Angular 18n guide](guide/i18n#template-translations).
+     * [Angular 18n guide](guide/i18n#mark-text-for-translations).
      *
      * **Naming placeholders**
      *

@@ -60,8 +60,9 @@ var JobState;
     JobState["Errored"] = "errored";
 })(JobState = exports.JobState || (exports.JobState = {}));
 function isJobHandler(value) {
-    return typeof value == 'function'
-        && typeof value.jobDescription == 'object'
-        && value.jobDescription !== null;
+    const job = value;
+    return typeof job == 'function'
+        && typeof job.jobDescription == 'object'
+        && job.jobDescription !== null;
 }
 exports.isJobHandler = isJobHandler;

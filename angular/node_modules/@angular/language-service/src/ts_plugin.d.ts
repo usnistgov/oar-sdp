@@ -7,6 +7,7 @@
  */
 /// <amd-module name="@angular/language-service/src/ts_plugin" />
 import * as tss from 'typescript/lib/tsserverlibrary';
+import { NgLanguageService } from '../api';
 /**
  * This function is called by tsserver to retrieve the external (non-TS) files
  * that should belong to the specified `project`. For Angular, these files are
@@ -15,4 +16,4 @@ import * as tss from 'typescript/lib/tsserverlibrary';
  * @param project Project for which external files should be retrieved.
  */
 export declare function getExternalFiles(project: tss.server.Project): string[];
-export declare function create(info: tss.server.PluginCreateInfo): tss.LanguageService;
+export declare function create(info: tss.server.PluginCreateInfo): NgLanguageService;

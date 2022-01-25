@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
 import { Logger } from '@angular/compiler-cli/src/ngtsc/logging';
 import { ɵParsedMessage } from '@angular/localize';
 export interface ExtractionOptions {
@@ -27,7 +27,7 @@ export declare class MessageExtractor {
     private useSourceMaps;
     private localizeName;
     private loader;
-    constructor(fs: FileSystem, logger: Logger, { basePath, useSourceMaps, localizeName }: ExtractionOptions);
+    constructor(fs: ReadonlyFileSystem, logger: Logger, { basePath, useSourceMaps, localizeName }: ExtractionOptions);
     extractMessages(filename: string): ɵParsedMessage[];
     /**
      * Update the location of each message to point to the source-mapped original source location, if

@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
+import { AbsoluteFsPath, PathManipulation } from '@angular/compiler-cli/src/ngtsc/file_system';
 import { ɵParsedMessage } from '@angular/localize';
 import { DiagnosticHandlingStrategy, Diagnostics } from '../diagnostics';
 /**
@@ -14,4 +14,4 @@ import { DiagnosticHandlingStrategy, Diagnostics } from '../diagnostics';
  * text. Add diagnostics messages for each of these duplicate messages to the given `diagnostics`
  * object (as necessary).
  */
-export declare function checkDuplicateMessages(fs: FileSystem, messages: ɵParsedMessage[], duplicateMessageHandling: DiagnosticHandlingStrategy, basePath: AbsoluteFsPath): Diagnostics;
+export declare function checkDuplicateMessages(fs: PathManipulation, messages: ɵParsedMessage[], duplicateMessageHandling: DiagnosticHandlingStrategy, basePath: AbsoluteFsPath): Diagnostics;

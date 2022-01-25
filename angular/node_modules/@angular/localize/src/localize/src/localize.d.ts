@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+/** @nodoc */
 export interface LocalizeFn {
     (messageParts: TemplateStringsArray, ...expressions: readonly any[]): string;
     /**
@@ -35,6 +36,7 @@ export interface LocalizeFn {
      */
     locale?: string;
 }
+/** @nodoc */
 export interface TranslateFn {
     (messageParts: TemplateStringsArray, expressions: readonly any[]): [TemplateStringsArray, readonly any[]];
 }
@@ -61,7 +63,7 @@ export interface TranslateFn {
  * ```
  *
  * This format is the same as that used for `i18n` markers in Angular templates. See the
- * [Angular 18n guide](guide/i18n#template-translations).
+ * [Angular 18n guide](guide/i18n#mark-text-for-translations).
  *
  * **Naming placeholders**
  *
@@ -125,8 +127,12 @@ export interface TranslateFn {
  * the original template literal string without applying any translations to the parts. This
  * version is used during development or where there is no need to translate the localized
  * template literals.
+ *
  * @param messageParts a collection of the static parts of the template string.
  * @param expressions a collection of the values of each placeholder in the template string.
  * @returns the translated string, with the `messageParts` and `expressions` interleaved together.
+ *
+ * @globalApi
+ * @publicApi
  */
 export declare const $localize: LocalizeFn;

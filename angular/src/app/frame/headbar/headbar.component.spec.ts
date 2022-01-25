@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Renderer2 } from '@angular/core';
 import { HeadbarComponent } from './headbar.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
@@ -16,7 +16,7 @@ describe('HeadbarComponent', () => {
   let component: HeadbarComponent;
   let fixture: ComponentFixture<HeadbarComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
         imports: [OverlayPanelModule, RouterTestingModule, HttpClientTestingModule, MockModule,ToastrModule.forRoot()],
         declarations: [ HeadbarComponent, AppComponent, TopMenuBarComponent, FootbarComponent ],

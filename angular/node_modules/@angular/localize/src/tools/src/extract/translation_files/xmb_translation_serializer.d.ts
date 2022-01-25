@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
+import { AbsoluteFsPath, PathManipulation } from '@angular/compiler-cli/src/ngtsc/file_system';
 import { ɵParsedMessage } from '@angular/localize';
 import { TranslationSerializer } from './translation_serializer';
 /**
@@ -21,7 +21,7 @@ export declare class XmbTranslationSerializer implements TranslationSerializer {
     private basePath;
     private useLegacyIds;
     private fs;
-    constructor(basePath: AbsoluteFsPath, useLegacyIds: boolean, fs?: FileSystem);
+    constructor(basePath: AbsoluteFsPath, useLegacyIds: boolean, fs?: PathManipulation);
     serialize(messages: ɵParsedMessage[]): string;
     private serializeLocation;
     private serializeMessage;

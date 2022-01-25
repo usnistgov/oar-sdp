@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/language-service/src/expression_type" />
-import { AST, AstVisitor, Binary, BindingPipe, Chain, Conditional, FunctionCall, ImplicitReceiver, Interpolation, KeyedRead, KeyedWrite, LiteralArray, LiteralMap, LiteralPrimitive, MethodCall, NonNullAssert, PrefixNot, PropertyRead, PropertyWrite, Quote, SafeMethodCall, SafePropertyRead, Unary } from '@angular/compiler';
+import { AST, AstVisitor, Binary, BindingPipe, Chain, Conditional, FunctionCall, ImplicitReceiver, Interpolation, KeyedRead, KeyedWrite, LiteralArray, LiteralMap, LiteralPrimitive, MethodCall, NonNullAssert, PrefixNot, PropertyRead, PropertyWrite, Quote, SafeMethodCall, SafePropertyRead, ThisReceiver, Unary } from '@angular/compiler';
 import { Symbol, SymbolQuery, SymbolTable } from './symbols';
 import * as ng from './types';
 interface ExpressionDiagnosticsContext {
@@ -27,6 +27,7 @@ export declare class AstType implements AstVisitor {
     visitConditional(ast: Conditional): Symbol;
     visitFunctionCall(ast: FunctionCall): Symbol;
     visitImplicitReceiver(_ast: ImplicitReceiver): Symbol;
+    visitThisReceiver(_ast: ThisReceiver): Symbol;
     visitInterpolation(ast: Interpolation): Symbol;
     visitKeyedRead(ast: KeyedRead): Symbol;
     visitKeyedWrite(ast: KeyedWrite): Symbol;

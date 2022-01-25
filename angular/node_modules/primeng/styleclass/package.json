@@ -1,0 +1,11 @@
+{
+  "main": "../bundles/primeng-styleclass.umd.js",
+  "module": "../fesm2015/primeng-styleclass.js",
+  "es2015": "../fesm2015/primeng-styleclass.js",
+  "esm2015": "../esm2015/styleclass/primeng-styleclass.js",
+  "fesm2015": "../fesm2015/primeng-styleclass.js",
+  "typings": "primeng-styleclass.d.ts",
+  "metadata": "primeng-styleclass.metadata.json",
+  "sideEffects": false,
+  "name": "primeng/styleclass"
+}

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPackageVersionFromPackageJson = exports.addPackageToPackageJson = void 0;
 /**
  * Sorts the keys of the given object.
  * @returns A new object instance with sorted keys

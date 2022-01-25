@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FiltersComponent } from './filters.component';
 import { TreeModule } from 'primeng/tree';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -13,7 +13,7 @@ describe('FiltersComponent', () => {
     let fixture: ComponentFixture<FiltersComponent>;
     let searchResult = require('../../../assets/sample02.json').ResultData;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
         declarations: [ FiltersComponent ],
         imports: [

@@ -44,4 +44,10 @@ export declare function invertMap(obj: {
  * @param path narrowing
  */
 export declare function findOutputBinding(binding: BoundEventAst, path: TemplateAstPath, query: SymbolQuery): Symbol | undefined;
+/**
+ * Returns an absolute path from the text in `node`. If the text is already
+ * an absolute path, return it as is, otherwise join the path with the filename
+ * of the source file.
+ */
+export declare function extractAbsoluteFilePath(node: ts.StringLiteralLike): string;
 export {};

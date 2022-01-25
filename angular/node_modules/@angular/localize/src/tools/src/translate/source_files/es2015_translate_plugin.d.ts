@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { FileSystem } from '@angular/compiler-cli/src/ngtsc/file_system';
+import { PathManipulation } from '@angular/compiler-cli/src/ngtsc/file_system';
 import { ɵParsedTranslation } from '@angular/localize';
 import { PluginObj } from '@babel/core';
 import { Diagnostics } from '../../diagnostics';
@@ -17,4 +17,4 @@ import { TranslatePluginOptions } from '../../source_file_utils';
  *
  * @publicApi used by CLI
  */
-export declare function makeEs2015TranslatePlugin(diagnostics: Diagnostics, translations: Record<string, ɵParsedTranslation>, { missingTranslation, localizeName }?: TranslatePluginOptions, fs?: FileSystem): PluginObj;
+export declare function makeEs2015TranslatePlugin(diagnostics: Diagnostics, translations: Record<string, ɵParsedTranslation>, { missingTranslation, localizeName }?: TranslatePluginOptions, fs?: PathManipulation): PluginObj;

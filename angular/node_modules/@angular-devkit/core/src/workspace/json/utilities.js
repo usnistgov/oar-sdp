@@ -126,6 +126,11 @@ function create(ast, path, reporter, excluded = new Set(), included, base) {
             return value;
         },
         set(target, p, value) {
+            if (value === undefined) {
+                // setting to undefined is equivalent to a delete
+                // tslint:disable-next-line: no-non-null-assertion
+                return this.deleteProperty(target, p);
+            }
             if (typeof p === 'symbol' || Reflect.has(target, p)) {
                 return Reflect.set(target, p, value);
             }
@@ -169,14 +174,26 @@ function create(ast, path, reporter, excluded = new Set(), included, base) {
                 if (cacheEntry.node) {
                     alteredNodes.add(cacheEntry.node);
                 }
-                reporter(propertyPath, cacheEntry.parent, cacheEntry.node, oldValue, undefined);
+                if (cacheEntry.parent.kind === 'keyvalue') {
+                    // Remove the entire key/value pair from this JSON object
+                    reporter(propertyPath, ast, cacheEntry.node, oldValue, undefined);
+                }
+                else {
+                    reporter(propertyPath, cacheEntry.parent, cacheEntry.node, oldValue, undefined);
+                }
             }
             else {
                 const { node, parent } = findNode(ast, p);
                 if (node) {
                     cache.set(propertyPath, { node, parent, value: undefined });
                     alteredNodes.add(node);
-                    reporter(propertyPath, parent, node, node && node.value, undefined);
+                    if (parent.kind === 'keyvalue') {
+                        // Remove the entire key/value pair from this JSON object
+                        reporter(propertyPath, ast, node, node && node.value, undefined);
+                    }
+                    else {
+                        reporter(propertyPath, parent, node, node && node.value, undefined);
+                    }
                 }
             }
             return true;

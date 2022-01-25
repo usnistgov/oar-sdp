@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleTargetAndForget = exports.targetFromTargetString = exports.targetStringFromTarget = exports.isBuilderOutput = exports.BuilderProgressState = void 0;
+exports.scheduleTargetAndForget = exports.targetFromTargetString = exports.targetStringFromTarget = exports.fromAsyncIterable = exports.isBuilderOutput = exports.BuilderProgressState = void 0;
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const progress_schema_1 = require("./progress-schema");
@@ -10,9 +10,34 @@ function isBuilderOutput(obj) {
     if (!obj || typeof obj.then === 'function' || typeof obj.subscribe === 'function') {
         return false;
     }
+    if (typeof obj[Symbol.asyncIterator] === 'function') {
+        return false;
+    }
     return typeof obj.success === 'boolean';
 }
 exports.isBuilderOutput = isBuilderOutput;
+function fromAsyncIterable(iterable) {
+    return new rxjs_1.Observable((subscriber) => {
+        handleAsyncIterator(subscriber, iterable[Symbol.asyncIterator]()).then(() => subscriber.complete(), (error) => subscriber.error(error));
+    });
+}
+exports.fromAsyncIterable = fromAsyncIterable;
+async function handleAsyncIterator(subscriber, iterator) {
+    var _a;
+    const teardown = new Promise((resolve) => subscriber.add(() => resolve()));
+    try {
+        while (!subscriber.closed) {
+            const result = await Promise.race([teardown, iterator.next()]);
+            if (!result || result.done) {
+                break;
+            }
+            subscriber.next(result.value);
+        }
+    }
+    finally {
+        await ((_a = iterator.return) === null || _a === void 0 ? void 0 : _a.call(iterator));
+    }
+}
 /**
  * Returns a string of "project:target[:configuration]" for the target object.
  */

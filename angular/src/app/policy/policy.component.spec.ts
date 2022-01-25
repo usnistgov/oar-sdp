@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PolicyComponent } from './policy.component';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
@@ -12,7 +12,7 @@ describe('PolicyComponent', () => {
   let component: PolicyComponent;
   let fixture: ComponentFixture<PolicyComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterModule, RouterTestingModule],
       declarations: [ PolicyComponent ],
