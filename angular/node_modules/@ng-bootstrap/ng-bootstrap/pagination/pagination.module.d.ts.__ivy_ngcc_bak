@@ -1,4 +1,0 @@
-export { NgbPagination, NgbPaginationEllipsis, NgbPaginationFirst, NgbPaginationLast, NgbPaginationNext, NgbPaginationNumber, NgbPaginationPrevious, NgbPaginationPages } from './pagination';
-export { NgbPaginationConfig } from './pagination-config';
-export declare class NgbPaginationModule {
-}
