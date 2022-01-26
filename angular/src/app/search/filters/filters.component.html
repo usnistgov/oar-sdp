@@ -104,11 +104,17 @@
                     </div>
                     <div class="filter-input">
                         <label for="keyword" class="hideLabel">Keyword</label>
-                        <p-autoComplete inputId="keyword" [(ngModel)]="selectedKeywords"
-                            [suggestions]="suggestedKeywords" (completeMethod)="filterKeywords($event)"
-                            [multiple]="true" (onSelect)="filterResults()"
-                            (onUnselect)="filterResults()" [minLength]="1"
-                            [maxlength]="30" [style]="filterStyle">
+                        <p-autoComplete 
+                            inputId="keyword" 
+                            [(ngModel)]="selectedKeywords"
+                            [suggestions]="suggestedKeywords" 
+                            (completeMethod)="filterKeywords($event)"
+                            [multiple]="true" 
+                            (onSelect)="filterResults()"
+                            (onUnselect)="filterResults()" 
+                            [minLength]="1"
+                            [maxlength]="30" 
+                            [style]="filterStyle">
                         </p-autoComplete>
                     </div>
                 </div>
