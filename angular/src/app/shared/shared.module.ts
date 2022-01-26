@@ -34,29 +34,29 @@ import { ConfirmationComponent } from './confirm/confirmation/confirmation.compo
  */
 
 @NgModule({
-  imports: [
-    CommonModule, 
-    RouterModule,
-    InputTextModule,
-    DropdownModule,
-    ButtonModule,
-    SplitButtonModule,
-    MenubarModule,
-    PanelModule,
-    AutoCompleteModule,
-    MultiSelectModule,
-    PaginatorModule,
-    DialogModule,
-    CalendarModule,
-    BrowserModule,
-    FormsModule],
-  declarations: [FootbarComponent, ComboBoxComponent, ComboBoxPipe,ConfirmationComponent],
-  providers:[CommonService, ConfirmService],
-  exports: [FootbarComponent,ComboBoxComponent, ComboBoxPipe,
-    CommonModule, FormsModule, RouterModule,InputTextModule,DropdownModule,ButtonModule,
-    SplitButtonModule,MenubarModule,PanelModule,AutoCompleteModule,
-    MultiSelectModule,PaginatorModule,DialogModule,CalendarModule,TabViewModule,ConfirmationComponent],
-    entryComponents: [ ConfirmationComponent ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        InputTextModule,
+        DropdownModule,
+        ButtonModule,
+        SplitButtonModule,
+        MenubarModule,
+        PanelModule,
+        AutoCompleteModule,
+        MultiSelectModule,
+        PaginatorModule,
+        DialogModule,
+        CalendarModule,
+        BrowserModule,
+        FormsModule
+    ],
+    declarations: [FootbarComponent, ComboBoxComponent, ComboBoxPipe, ConfirmationComponent],
+    providers: [CommonService, ConfirmService],
+    exports: [FootbarComponent, ComboBoxComponent, ComboBoxPipe,
+        CommonModule, FormsModule, RouterModule, InputTextModule, DropdownModule, ButtonModule,
+        SplitButtonModule, MenubarModule, PanelModule, AutoCompleteModule,
+        MultiSelectModule, PaginatorModule, DialogModule, CalendarModule, TabViewModule, ConfirmationComponent]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders<SharedModule> {
