@@ -69,12 +69,12 @@ textarea {
   line-height: inherit;
 }
 
-/* .ui-state-highlight {
+.p-highlight {
   background: #03A9F4!important;
   color: black !important;
-} */
+}
 
-.ui-overlaypanel-close {
+.p-overlaypanel-close {
   color: white !important;
   background-color: green !important;
 }
