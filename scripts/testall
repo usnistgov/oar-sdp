@@ -49,5 +49,5 @@ cd $PACKAGE_DIR/angular
 }
 echo '+' npm test
 npm test
-echo '+' npm run e2e $e2eargs
-npm run e2e $e2eargs
+# echo '+' npm run e2e $e2eargs
+# npm run e2e $e2eargs
