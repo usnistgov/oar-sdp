@@ -8,12 +8,20 @@ import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
 import { TaxonomyListService, SearchfieldsListService } from '../../shared/index';
 import * as _ from 'lodash-es';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
-  selector: 'app-filters',
-  templateUrl: './filters.component.html',
-  styleUrls: ['./filters.component.css'],
-  providers: [TaxonomyListService, SearchfieldsListService]
+    selector: 'app-filters',
+    templateUrl: './filters.component.html',
+    styleUrls: ['./filters.component.css'],
+    providers: [TaxonomyListService, SearchfieldsListService],
+    animations: [
+        trigger('expand', [
+            state('collapsed', style({height: '170px'})),
+            state('expanded', style({height: '*'})),
+            transition('expanded <=> collapsed', animate('625ms'))
+       ])
+    ]
 })
 export class FiltersComponent implements OnInit, AfterViewInit {
 
@@ -80,15 +88,12 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     filterStyle = {'width':'100%', 'background-color': '#FFFFFF','font-weight': '400','font-style': 'italic'};
 
     ResourceTypeStyle = {'width':'auto','padding-top': '.5em','padding-right': '.5em',
-    'padding-bottom': '.5em','background-color': '#F8F9F9'};
+    'padding-bottom': '.5em','background-color': '#F8F9F9','border-width':'0'};
 
-    researchTopicStyle = {'width':'100%','padding-top': '.5em',
-    'padding-bottom': '.5em',
-    'background-color': '#F8F9F9'}
+    researchTopicStyle = {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'overflow':'hidden','border-width':'0'};
 
-    researchTopicStyle2 = {'width':'100%','padding-top': '.5em',
-    'padding-bottom': '.5em','height':'auto',
-    'background-color': '#F8F9F9'};
+    recordHasStyle = {'width':'auto','padding-top': '.5em','padding-right': '.5em',
+    'padding-bottom': '.5em','background-color': '#F8F9F9','border-width':'0'}
 
     //Error handling
     queryStringErrorMessage: string = "";
@@ -143,19 +148,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             this.comwidth = this.parent.clientWidth + 'px';
         else
             this.comwidth = '400px';
-    }
-
-    /**
-     * Return research topic style
-     * If user clicks on "Show more", set div height to fit content.
-     * If user clicks on "Show less", set div height up to 160px. When overflow, display scroll bar.
-     */
-    getResearchTopicStyle(){
-        if(!this.showMoreLink){
-            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9'};
-        }else{
-            return {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'max-height':'173px','overflow':'auto'};
-        }       
     }
 
     /**

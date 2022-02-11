@@ -77,7 +77,7 @@ export class SearchPanelComponent implements OnInit {
     searchBottonWith: string = '10%';
     breadcrumb_top: string = '6em';
     placeHolderText: string[] = ['Kinetics database', 'Gallium', '"SRD 101"', 'XPDB', 'Interatomic Potentials'];
-    inputStyle: any = {'width':'100%','padding-left':'40px','height': '40px','font-weight': '400',
+    inputStyle: any = {'width':'100%','padding-left':'40px','padding-right':'40px','height': '40px','font-weight': '400',
                         'font-style': 'italic', 'border': '0px'};
     fields: SelectItem[];
     currentState = 'initial';
@@ -96,6 +96,8 @@ export class SearchPanelComponent implements OnInit {
     observableFields: Observable<SelectItem[]>;
     queryStringError: boolean = false;
     queryStringErrorMessage: string = '';
+    DEFAULT_SEARCHBOX_WIDTH: number = 500;
+    searchTextWidth: number = 500;
 
     @ViewChild('field') fieldElement: ElementRef;
     @ViewChild('field2') queryName: ElementRef;
@@ -196,6 +198,8 @@ export class SearchPanelComponent implements OnInit {
         if(!_.isEmpty(query)){
             this.searchQueryService.saveCurrentQueryInfo(new CurrentQueryInfo(query, -1, true));
         }
+
+        this.getTextWidth();
     }
 
     /**
@@ -227,8 +231,10 @@ export class SearchPanelComponent implements OnInit {
     onWindowResize(){
         if(this.mobWidth > 461){
             this.searchBottonWith = "10%";
+            this.searchTextWidth = 500;
         }else{
             this.searchBottonWith = "100%";
+            this.searchTextWidth = 50;
         }
 
         if(this.mobWidth > 750){
@@ -286,6 +292,8 @@ export class SearchPanelComponent implements OnInit {
         find(suggTaxonomy, this.parsed_data, this.parsed_data_headers).forEach(element => {
             this.suggestedTaxonomyList.push(element[0])
         });
+
+        this.getTextWidth();
     }
 
     /**
@@ -475,5 +483,23 @@ export class SearchPanelComponent implements OnInit {
         let example = this.examples.filter(ex=>ex.field == this.currentFieldValue);
         if(example.length > 0) return example[0].example;
         else return "physics";
+    }
+
+    getTextWidth() {
+        if(this.mobWidth > 461){
+            var test = document.getElementById("autocompleteText");
+            test.style.fontSize = '12';
+
+            this.searchTextWidth = (test.clientWidth + 1)<500? 500: (test.clientWidth + 1)>700? 700: test.clientWidth + 1;
+        }
+    }
+
+    /**
+     * Clear the search box text and reset default value
+     */
+    clearSearchBox() {
+        this.searchValue='';
+        this.queryStringError= false;
+        this.searchTextWidth = this.DEFAULT_SEARCHBOX_WIDTH;
     }
 }

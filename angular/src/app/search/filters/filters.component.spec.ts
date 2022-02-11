@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('FiltersComponent', () => {
     let component: FiltersComponent;
@@ -22,6 +23,7 @@ describe('FiltersComponent', () => {
             MockModule, 
             FormsModule,
             HttpClientTestingModule,
+            BrowserAnimationsModule,
             RouterTestingModule,
             ToastrModule.forRoot()
             ]

@@ -71,4 +71,11 @@ export class HomeComponent implements OnInit {
     };
     this.router.navigate(['/search'], params);
   }
+
+//   onFocusEventAction(id: string) {
+//       console.log("I am on focus!")
+
+//         document.getElementById(id).style.background = "green";
+
+//   }
 }
