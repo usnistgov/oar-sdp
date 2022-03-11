@@ -36,7 +36,9 @@
         <!-- Top bar -->
         <div [ngClass]="resultTopBarClass()" style="width: 100%;">
             <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
-                &nbsp;&nbsp;{{totalItems}} records found</div>
+                &nbsp;&nbsp;{{totalItems}} records found
+                <span *ngIf="theme=='forensics'"> in {{theme}}</span>
+            </div>
 
             <!-- Pagination -->
             <div [ngClass]="flexgrow(8)" style="padding:0px 10px 0px 10px;margin: -1em 0em;">
@@ -84,19 +86,20 @@
 
         <!-- Search result -->
         <div *ngFor="let resultItem of searchResults">
-            <div class="ui-g ui-grid-responsive"
-            style="padding:10px;border-bottom:.5px solid #e6e6e6;">
-                <div class="ui-grid-row nowrap" style="width: 100%;">
+            <div class="ui-g ui-grid-responsive" style="padding:10px;border-bottom:.5px solid #e6e6e6;">
+            <!-- style="padding:10px;border-bottom:.5px solid #e6e6e6;"> -->
+                <div class="ui-grid-row nowrap" style="width: 100%;margin-bottom: 0em;">
                     <div class="ui-grid-col-12" style="width: 100%;">
                         <div class="ui-grid ui-grid-responsive"
                             style="text-align: left;width: auto;">
-                            <div class="ui-grid-row">
+                            <div class="ui-grid-row" style="margin-bottom: .5em;">
                                 <div class="ui-grid-col-12">
-                                    <h4 style="font-size: 5px;"><b><a
+                                    <h4><a
                                         href="{{PDRAPIURL}}{{resultItem.ediid}}"
                                         onclick="window.open(this.href, 'search'); return false"
                                         class="title">
-                                        {{resultItem.title}}</a></b></h4>
+                                        {{resultItem.title}}
+                                    </a></h4>
                                 </div>
                             </div>
                             <div class="ui-grid-row"
@@ -104,7 +107,7 @@
                                 <read-more [text]="resultItem.description" [maxLength]="270">
                                 </read-more>
                             </div>
-                            <div class="ui-grid-row"
+                            <div class="ui-grid-row details"
                                 *ngIf="selectedFields.indexOf('Point of Contact') !==-1">
                                 <div class="ui-grid-col-12"><b>Point of Contact: </b> <i
                                         style="color: gray;">
@@ -112,7 +115,7 @@
                                     </i>
                                 </div>
                             </div>
-                            <div class="ui-grid-row"
+                            <div class="ui-grid-row details"
                                 *ngIf="selectedFields.indexOf('Contact\'s full name') !==-1">
                                 <div class="ui-grid-col-12"><b>Contact Full Name: </b> <i
                                         style="color: gray;">
@@ -120,7 +123,7 @@
                                     </i>
                                 </div>
                             </div>
-                            <div class="ui-grid-row"
+                            <div class="ui-grid-row details"
                                 *ngIf="selectedFields.indexOf('Resource Home Page') !==-1">
                                 <div class="ui-grid-col-12"><b>Resource Home Page: </b> <i
                                         style="color: gray;">
@@ -128,7 +131,7 @@
                                     </i>
                                 </div>
                             </div>
-                            <div class="ui-grid-row"
+                            <div class="ui-grid-row details"
                                 *ngIf="selectedFields.indexOf('Research Topic') !==-1">
                                 <div class="ui-grid-col-12"><b>Research Topic: </b> <i
                                         style="color: gray;">
@@ -139,12 +142,12 @@
                                     </i>
                                 </div>
                             </div>
-                            <div class="ui-grid-row"
+                            <div class="ui-grid-row details"
                                 *ngIf="selectedFields.indexOf('research topic') !==-1">
                                 <div class="ui-grid-col-12"><b>Research Topic - Component: </b>
                                 </div>
                             </div>
-                            <div class="ui-grid-row"
+                            <div class="ui-grid-row details"
                                 *ngIf="selectedFields.indexOf('Subject keywords') !==-1">
                                 <div class="ui-grid-col-12"><b>Subject Keywords: </b> <i
                                         style="color:#515151;">
@@ -153,7 +156,7 @@
                                     </i>
                                 </div>
                             </div>
-                            <div class="ui-grid-row" *ngIf="selectedFields.indexOf('DOI') !==-1">
+                            <div class="ui-grid-row details" *ngIf="selectedFields.indexOf('DOI') !==-1">
                                 <div class="ui-grid-col-1"><b>DOI: </b> </div>
                                 <div class="ui-grid-col-11" style="color:#1471AE;"
                                     *ngIf="resultItem.doi != null">
@@ -162,20 +165,20 @@
                                     *ngIf="resultItem.doi == null">None</div>
                             </div>
                             <div class="ui-grid-row">
-                                <div class="ui-grid-col-12" style="margin-top:5px">
+                                <div class="ui-grid-col-12" style="margin-top: -1.5em;padding-bottom:20px;">
                                     <a *ngIf="resultItem.landingPage"
                                         [(href)]="resultItem.landingPage" target="_blank"
                                         (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                                         <button pButton label="Visit Home Page" type="button"
-                                            icon="faa faa-external-link"
-                                            style="font-size: 13px; width:180px; background-color: #277E2F; height: 25px;"></button>
+                                            icon="faa faa-external-link" iconPos="left"
+                                            [ngClass]="{'visit-home-page': theme=='nist', 'visit-home-page-forensics': theme=='forensics'}"></button>
                                     </a>
                                     <a *ngIf="!resultItem.landingPage"
                                         href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank"
                                         (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                                         <button pButton label="Visit Home Page" type="button"
-                                            icon="faa faa-external-link"
-                                            style="font-size: 13px; width:180px; background-color: #277E2F"></button>
+                                            icon="faa faa-external-link" iconPos="left"
+                                            [ngClass]="{'visit-home-page': theme=='nist', 'visit-home-page-forensics': theme=='forensics'}"></button>
                                     </a>
                                 </div>
                             </div>

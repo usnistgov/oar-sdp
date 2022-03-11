@@ -1,7 +1,7 @@
 <app-search-panel title='NIST Data Discovery' [subtitle]='true' [helpicon]='false' [advanceLink]='true' [homePage]='true' jumbotronHeight='40vh' jumbotronPadding='2em 3em 0em 3em'></app-search-panel>
 
 <div class="p-col" style="background-color: #F5F5F5;padding-top: 10px;">
-  <div id="feature" class="p-col-12 p-md-8 p-lg-8 featured-data"> <b>FEATURED DATA DOMAINS</b>
+  <div id="feature" class="p-col-12 p-md-8 p-lg-8 featured-data"> <b>SCIENCE THEME</b>
     <div class="feature-data-domain-divider">
       <hr class="feature-divider">
     </div>
@@ -40,13 +40,15 @@
           </div>
         </div>
         <div class="col-12 col-md-2 col-sm-12">
-          <div (click)="search('Forensics')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-              <div class="overview-content clearfix">
-                <span class="overview-title"><b>FORENSICS</b></span>
-              </div>
-            </div>
-          </div>
+            <a href="http://localhost:4200/od/id/forensics">
+                <div class="cardDecoration" style="cursor: pointer">
+                    <div class="card overview cardDiv cardDivHeight">
+                    <div class="overview-content clearfix">
+                        <span class="overview-title"><b>FORENSICS</b></span>
+                    </div>
+                    </div>
+                </div>
+            </a>
         </div>
         <div class="col-12 col-md-2 col-sm-12">
         </div>

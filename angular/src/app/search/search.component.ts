@@ -35,6 +35,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     queryStringErrorMessage: string;
     queryStringError: boolean = false;
 
+    theme: string = "nist";
+    // theme: string = "forensics";
+
     private _routeParamsSubscription: Subscription;
 
     // injected as ViewChilds so that this class can send messages to it with a synchronous method call.
@@ -85,6 +88,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         // this.getTaxonomySuggestions();
         this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
             this.searchValue = params['q'];
+            this.theme = params['alternateView'];
             this.searchTaxonomyKey = params['key'];
             this.queryAdvSearch = params['queryAdvSearch'];
             this.page = params['page'];
@@ -94,6 +98,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.searchAuthors = params['authors'];
             this.searchKeywords = params['keywords'];
 
+            if(!this.theme) this.theme = 'nist';
             if(!this.page) this.page = 1;
         });
     }

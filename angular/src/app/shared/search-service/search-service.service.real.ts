@@ -91,73 +91,81 @@ export class RealSearchService implements SearchService{
      * Returns an Observable for the HTTP GET request for the JSON resource.
      * @return {string[]} The Observable for the HTTP request.
      */
-    searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string): Observable<any> {
-        let searchPhraseValue = '';
-        let finalKeyValueStr = '';
+    searchPhrase(query: SDPQuery, searchTaxonomyKey: string, theme: string = 'nist', queryAdvSearch?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string): Observable<any> {
+        let url: string;
 
-        if(query.freeText != null && query.freeText != undefined && query.freeText.trim()!= "")
-            searchPhraseValue = 'searchphrase=' + query.freeText.trim();
-
-        // Processing rows
-        for (let i = 0; i < query.queryRows.length; i++) {
-            if (typeof query.queryRows[i].operator === 'undefined') {
-                query.queryRows[i].operator = 'AND';
+        if(query.queryRows[0].fieldValue == 'isPartOf.@id') {
+            url = "/rmm/records?" + query.queryRows[0].fieldValue + "=" + query.queryRows[0].fieldText;
+        }else{
+            let searchPhraseValue = '';
+            let finalKeyValueStr = '';
+    
+            if(query.freeText != null && query.freeText != undefined && query.freeText.trim()!= "")
+                searchPhraseValue = 'searchphrase=' + query.freeText.trim();
+    
+            // Processing rows
+            for (let i = 0; i < query.queryRows.length; i++) {
+                if (typeof query.queryRows[i].operator === 'undefined') {
+                    query.queryRows[i].operator = 'AND';
+                }
+    
+                //Skip operator for the first row
+                if(i > 0){
+                    if(query.queryRows[i].operator.trim() == "AND")
+                        finalKeyValueStr += '&';
+                    else
+                        finalKeyValueStr += '&' + this.operators[query.queryRows[i].operator] + '&';
+                }
+    
+                //If user didn't provide search value, ignore the row
+                if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldValue)){
+                    if(finalKeyValueStr[finalKeyValueStr.length-1] != "&")
+                        finalKeyValueStr = finalKeyValueStr.trim() + " ";
+    
+                    finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace(/"/g, ''); 
+                }
             }
-
-            //Skip operator for the first row
-            if(i > 0){
-                if(query.queryRows[i].operator.trim() == "AND")
-                    finalKeyValueStr += '&';
-                else
-                    finalKeyValueStr += '&' + this.operators[query.queryRows[i].operator] + '&';
+    
+            let keyString: string = '';
+            if(searchTaxonomyKey){
+                keyString = '&topic.tag=' + searchTaxonomyKey;
             }
-
-            //If user didn't provide search value, ignore the row
-            if(!this.isEmpty(query.queryRows[i].fieldText) && !this.isEmpty(query.queryRows[i].fieldValue)){
-                if(finalKeyValueStr[finalKeyValueStr.length-1] != "&")
-                    finalKeyValueStr = finalKeyValueStr.trim() + " ";
-
-                finalKeyValueStr += query.queryRows[i].fieldValue + '=' + query.queryRows[i].fieldText.replace(/"/g, ''); 
+    
+            url = this.RMMAPIURL + 'records?';
+    
+            if(searchPhraseValue)
+                url += "&" + searchPhraseValue.trim();
+           
+            if(sortOrder){
+                url += '&sort.asc=' + sortOrder;
             }
+    
+            if(finalKeyValueStr.trim() != ""){
+                url += '&' + finalKeyValueStr.trim();
+            }
+    
+            if(keyString)
+                url += "&" + keyString.trim();
+                
+            if(filter && filter != "NoFilter"){
+                url += "&" + filter.trim();
+            }
+    
+            if(page){
+                url += '&page=' + page;
+                if(pageSize)
+                    url += '&size=' + pageSize;
+                else //default
+                    url += '&size=10';
+            }
+    
+            // only include the fields we need
+            url += '&include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
         }
 
-        let keyString: string = '';
-        if(searchTaxonomyKey){
-            keyString = '&topic.tag=' + searchTaxonomyKey;
-        }
 
-        let url = this.RMMAPIURL + 'records?';
 
-        if(searchPhraseValue)
-            url += "&" + searchPhraseValue.trim();
-       
-        if(sortOrder){
-            url += '&sort.asc=' + sortOrder;
-        }
-
-        if(finalKeyValueStr.trim() != ""){
-            url += '&' + finalKeyValueStr.trim();
-        }
-
-        if(keyString)
-            url += "&" + keyString.trim();
-            
-        if(filter && filter != "NoFilter"){
-            url += "&" + filter.trim();
-        }
-
-        if(page){
-            url += '&page=' + page;
-            if(pageSize)
-                url += '&size=' + pageSize;
-            else //default
-                url += '&size=10';
-        }
-
-        // only include the fields we need
-        url += '&include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
-
-        // console.log('url', url);
+        // console.log('search url', url);
         return this.http.get(url);
     }
 

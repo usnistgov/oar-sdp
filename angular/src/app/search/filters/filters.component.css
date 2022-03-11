@@ -63,7 +63,6 @@
 }
 
 .lbl-filter {
-    border-top:.5px solid #e6e6e6;
     margin-top:1em;
     background-color:#F8F9F9;
     width: 100%;
@@ -79,8 +78,8 @@
 
 .filter-checkbox {
     width: 100%;
-    min-width: 360px;
-    overflow: hidden;
+    min-width: 400px;
+    overflow: auto;
 }
 
 .bottom-line {
@@ -100,3 +99,4 @@
 .ui-tree {
 	white-space: nowrap !important;
 }
+

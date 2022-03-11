@@ -17,10 +17,15 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     providers: [TaxonomyListService, SearchfieldsListService],
     animations: [
         trigger('expand', [
-            state('collapsed', style({height: '170px'})),
+            state('collapsed', style({height: '183px'})),
             state('expanded', style({height: '*'})),
             transition('expanded <=> collapsed', animate('625ms'))
-       ])
+        ]),
+        trigger('expandOptions', [
+            state('collapsed', style({height: '0px'})),
+            state('expanded', style({height: '*'})),
+            transition('expanded <=> collapsed', animate('625ms'))
+        ])
     ]
 })
 export class FiltersComponent implements OnInit, AfterViewInit {
@@ -32,7 +37,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     selectedAuthor: any[] = [];
     selectedKeywords: any[] = [];
     selectedThemes: any[] = [];
-    selectedThemesNode: any[] = [];
     selectedComponents: any[] = [];
     selectedComponentsNode: any[] = [];
     selectedResourceType: any[] = [];
@@ -46,14 +50,30 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     components: SelectItem[] = [];
     componentsAllArray: string[] = [];
     componentsWithCount: TreeNode[] = [];
+    showComponents: string[] = ["Data File", "Access Page", "Subcollection"];
+    MoreOptionsDisplayed: boolean = false;
+    moreOptionsText: string = "Show More Options...";
+
+//  NIST theme
     themes: SelectItem[] = [];
     themesAllArray: string[] = [];
-    showComponents: string[] = ["Data File", "Access Page", "Subcollection"];
     unspecifiedCount: number = 0;
     uniqueThemes: string[] = [];
     themesWithCount: TreeNode[] = [];
-    showMoreLink: boolean = false;
     themesTree: TreeNode[] = [];
+    showMoreLink: boolean = false;
+    selectedThemesNode: any[] = [];
+
+//  Forensics
+    forensicsThemes: SelectItem[] = [];
+    forensicsThemesAllArray: string[] = [];
+    forensicsUnspecifiedCount: number = 0;
+    forensicsUniqueThemes: string[] = [];
+    forensicsThemesWithCount: TreeNode[] = [];
+    forensicsThemesTree: TreeNode[] = [];
+    forensicsShowMoreLink: boolean = false;
+    forensicsSelectedThemesNode: any[] = [];
+
     componentsTree: TreeNode[] = [];
     resourceTypeTree: TreeNode[] = [];
     resultStatus: string;
@@ -107,6 +127,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     @Input() parent: HTMLElement; // parent div
     @Input() filterWidthNum: number;
     @Input() mobileMode: boolean = false;
+    @Input() theme: string = 'forensics';
     @Output() filterMode = new EventEmitter<string>();  // normal or collapsed
 
     constructor(
@@ -132,13 +153,29 @@ export class FiltersComponent implements OnInit, AfterViewInit {
                 this.getFields();
             }
         }
+
     }
 
     ngOnInit() {
         this.msgs = [];
         this.searchResultsError = [];
+        if(this.theme == 'forensics'){
+            this.MoreOptionsDisplayed = true;
+        }else{
+            this.MoreOptionsDisplayed = false;
+        }
+
+        console.log('this.theme', this.theme)
     }
 
+    toggleMoreOptions() {
+        this.MoreOptionsDisplayed = !this.MoreOptionsDisplayed;
+        if(this.MoreOptionsDisplayed)
+            this.moreOptionsText = "Show More Options...";
+        else
+            this.moreOptionsText = "Hide Options...";
+    }   
+    
     /**
      * After view init, make the filter width the same as parent div in the parent component
      * Default width is 400px.
@@ -186,6 +223,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         this.selectedResourceTypeNode = [];
         this.selectedThemesNode = [];
+        this.forensicsSelectedThemesNode = [];
         this.selectedComponentsNode = [];
 
         // Turn spinner off after 60 seconds (if still waiting for the result)
@@ -245,7 +283,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     search(query: SDPQuery, searchTaxonomyKey?: string) {
         this.searching = true;
         let that = this;
-        return this.searchService.searchPhrase(query, searchTaxonomyKey)
+        return this.searchService.searchPhrase(query, searchTaxonomyKey, this.theme)
         .subscribe(
             searchResults => {
                 that.onSuccess(searchResults.ResultData);
@@ -265,8 +303,9 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.searchResults = searchResults;
 
         this.keywords = this.collectKeywords(searchResults);
-        this.themes = this.collectThemes(searchResults);
+        this.collectThemes(searchResults);
         this.resourceTypes = this.collectResourceTypes(searchResults);
+
         let compNoData: boolean = false;
         this.searchResultsError = [];
 
@@ -274,6 +313,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             this.resultStatus = this.RESULT_STATUS.noResult;
         }
         // collect Research topics with count
+        this.collectForensicsThemesWithCount();
+
         this.collectThemesWithCount();
 
         this.components = this.collectComponents(searchResults);
@@ -302,13 +343,19 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         }
 
         this.themesTree = [{
-            label: 'Research Topics -',
+            label: 'NIST Research Topics -',
             "expanded": true,
             children: this.themesWithCount
         }];
 
+        this.forensicsThemesTree = [{
+            label: 'Forensics Research Topics -',
+            "expanded": true,
+            children: this.forensicsThemesWithCount
+        }];
+
         this.resourceTypeTree = [{
-            label: 'Resource Type -',
+            label: 'Type of Resource  -',
             "expanded": true,
             children: this.resourceTypesWithCount
         }];
@@ -379,7 +426,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             lFilterString = this.removeEndingComma(lFilterString);
         }
 
-        // Research topics
+        // NIST Research topics
         if (this.selectedThemesNode.length > 0) {
             if(lFilterString != '') lFilterString += "&";
 
@@ -389,6 +436,25 @@ export class FiltersComponent implements OnInit, AfterViewInit {
                 if (theme != 'undefined' && typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
                     themeSelected = true;
                     this.selectedThemes.push(theme.data);
+                    themeType += theme.data + ',';
+
+                    lFilterString += theme.data.trim() + ",";
+                }
+            }
+        }
+
+        lFilterString = this.removeEndingComma(lFilterString);
+
+        // Forensics Research topics
+        if (this.forensicsSelectedThemesNode.length > 0) {
+            if(lFilterString != '') lFilterString += "&";
+
+            lFilterString += "topic.tag=";
+
+            for (let theme of this.forensicsSelectedThemesNode) {
+                if (theme != 'undefined' && typeof theme.data !== 'undefined' && theme.data !== 'undefined') {
+                    themeSelected = true;
+                    this.forensicsSelectedThemesNode.push(theme.data);
                     themeType += theme.data + ',';
 
                     lFilterString += theme.data.trim() + ",";
@@ -555,23 +621,29 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.suggestedKeywords = this.collectKeywords(this.searchResults);
         this.components = this.collectComponents(this.searchResults);
         this.collectComponentsWithCount();
-        this.themes = this.collectThemes(this.searchResults);
+        this.collectThemes(this.searchResults);
+        this.collectForensicsThemesWithCount();
         this.collectThemesWithCount();
         this.themesTree = [{
-        label: 'Research Topics -',
-        "expanded": true,
-        children: this.themesWithCount
+            label: 'NIST Research Topics -',
+            "expanded": true,
+            children: this.themesWithCount
+        }];
+        this.forensicsThemesTree = [{
+            label: 'Forensics Research Topics -',
+            "expanded": true,
+            children: this.forensicsThemesWithCount
         }];
         this.componentsTree = [{
-        label: 'Record has -',
-        "expanded": true,
-        children: this.componentsWithCount
+            label: 'Record has -',
+            "expanded": true,
+            children: this.componentsWithCount
         }];
 
         this.resourceTypeTree = [{
-        label: 'Resource Type -',
-        "expanded": true,
-        children: this.resourceTypesWithCount
+            label: 'Resource Type -',
+            "expanded": true,
+            children: this.resourceTypesWithCount
         }];
 
         this.filterResults()
@@ -588,6 +660,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         let resultItemResourceType: string[] = [];
         let res: any[] = [];
         let resType: string;
+        let tempType: any;
         this.resourceTypesAllArray = [];
         for (let resultItem of searchResults) {
             this.uniqueRes = [];
@@ -595,20 +668,27 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             for (var i = 0; i < resTypeArray.length; i++) {
                 resType = resTypeArray[i];
                 this.uniqueRes.push(_.startCase(_.split(resType, ':')[1]));
+                tempType = {
+                    label: _.startCase(_.split(resType, ':')[1]),
+                    value: _.startCase(_.split(resType, ':')[1])
+                };
+
+                if(resourceTypes.map(e => e.label).indexOf(tempType.label) < 0){
+                    resourceTypes.push(tempType);
+                }
+
                 if (resourceTypesArray.indexOf(resType) < 0) {
-                    resourceTypes.push({
-                        label: _.startCase(_.split(resType, ':')[1]),
-                        value: _.startCase(_.split(resType, ':')[1])
-                    });
                     resourceTypesArray.push(resType);
                 }
             }
 
             this.uniqueRes = this.uniqueRes.filter(this.onlyUnique);
             for (let res of this.uniqueRes) {
-                this.resourceTypesAllArray.push(res);
+                if(this.resourceTypesAllArray.indexOf(res) < 0)
+                    this.resourceTypesAllArray.push(res);
             }
         }
+
         return resourceTypes;
     }
 
@@ -731,21 +811,54 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      */
     collectThemes(searchResults: any[]) {
         let themes: SelectItem[] = [];
+        let forensicsThemes: SelectItem[] = [];
+
         let themesArray: string[] = [];
+        let forensicsThemesArray: string[] = [];
+
         let topicLabel: string;
+        let data: string;
         this.themesAllArray = [];
+        this.forensicsThemesAllArray = [];
         this.unspecifiedCount = 0;
 
         for (let resultItem of searchResults) {
             if (typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
                 for (let topic of resultItem.topic) {
-                    topicLabel = _.split(topic.tag, ':')[0];
-                    topic = topic.tag;
-                    
-                    if (themesArray.indexOf(topicLabel) < 0) {
-                        themes.push({ label: topicLabel, value: topic });
-                        themesArray.push(topicLabel);
-                    }
+                    // if(this.theme == 'forensics'){
+                        //Only collect topics whose tags start with "forensics"
+                        if(topic.tag.split(":")[0].trim().toLowerCase() == 'forensics') {
+                            topicLabel = topic.tag.substring(this.findNthOccurence(topic.tag, 1, ":")+1).trim();
+                            data = topic.tag.substring(this.findNthOccurence(topic.tag, 1, ":")+1).trim();
+
+                            let thirdTopic = this.findNthOccurence(topic.tag, 2, ":");
+                            if(thirdTopic > 0){
+                                topicLabel = topicLabel.substring(0, thirdTopic)
+                            }
+
+                            if (forensicsThemesArray.indexOf(topicLabel) < 0) {
+                                forensicsThemes.push({ label: topicLabel, value: data });
+                                forensicsThemesArray.push(topicLabel);
+                            }
+                        }else{
+                            topicLabel = _.split(topic.tag, ':')[0];
+                            topic = topic.tag;
+    
+                            if (themesArray.indexOf(topicLabel) < 0) {
+                                themes.push({ label: topicLabel, value: topic });
+                                themesArray.push(topicLabel);
+                            }
+                        }
+                    // }else{
+                    //     topicLabel = _.split(topic.tag, ':')[0];
+                    //     topic = topic.tag;
+
+                    //     if (themesArray.indexOf(topicLabel) < 0) {
+                    //         themes.push({ label: topicLabel, value: topic });
+                    //         themesArray.push(topicLabel);
+                    //     }
+                    // }
+
                 }
             } else {
                 this.unspecifiedCount += 1;
@@ -754,9 +867,18 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
         for (let resultItem of searchResults) {
             this.uniqueThemes = [];
+            this.forensicsUniqueThemes = [];
+
             if (typeof resultItem.topic !== 'undefined' && resultItem.topic.length > 0) {
                 for (let topic of resultItem.topic) {
                     topic = topic.tag;
+
+                    for(let theme of forensicsThemes){
+                        if(topic.toLowerCase().indexOf(theme.label.toLowerCase()) > -1){
+                            this.forensicsUniqueThemes.push(theme.label);
+                        }
+                    }
+
                     for(let theme of themes){
                         if(topic.toLowerCase().indexOf(theme.label.toLowerCase()) > -1){
                             this.uniqueThemes.push(theme.label);
@@ -764,15 +886,32 @@ export class FiltersComponent implements OnInit, AfterViewInit {
                     }
                     
                 }
+                this.forensicsThemesAllArray = this.forensicsThemesAllArray.concat(this.forensicsUniqueThemes.filter(this.onlyUnique));
                 this.themesAllArray = this.themesAllArray.concat(this.uniqueThemes.filter(this.onlyUnique));
             }
         }
 
-        return themes;
+        this.themes = themes;
+        this.forensicsThemes = forensicsThemes;
     }
 
     /**
-     * Collect themes + count
+     * Find the location of nth character in a string
+     * @param string - string to search from
+     * @param nth - occuence
+     * @param char - character to search for
+     * @returns position of the character
+     */
+    findNthOccurence(string, nth, char) {
+        let index = 0
+        for (let i = 0; i < nth; i += 1) {
+          if (index !== -1) index = string.indexOf(char, index + 1)
+        }
+        return index
+    }
+
+    /**
+     * Collect NIST themes + count
      */
     collectThemesWithCount() {
         let sortable: any[] = [];
@@ -802,6 +941,40 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             this.showMoreLink = true;
         } else {
             this.showMoreLink = false;
+        }
+    }
+
+    /**
+     * Collect forensics themes + count
+     */
+    collectForensicsThemesWithCount() {
+        let sortable: any[] = [];
+
+        sortable = [];
+        this.forensicsThemesWithCount = [];
+        for (let theme in (_.countBy(this.forensicsThemesAllArray))) {
+            sortable.push([theme, _.countBy(this.forensicsThemesAllArray)[theme]]);
+        }
+        
+        sortable.sort(function (a, b) {
+            return b[1] - a[1];
+        });
+
+        if (this.unspecifiedCount > 0) {
+            sortable.push(['Unspecified', this.unspecifiedCount]);
+        }
+
+        for (var key in sortable) {
+            this.forensicsThemesWithCount.push({
+                label: sortable[key][0] + "-" + sortable[key][1],
+                data: sortable[key][0]
+            });
+        }
+
+        if (sortable.length > 5) {
+            this.forensicsShowMoreLink = true;
+        } else {
+            this.forensicsShowMoreLink = false;
         }
     }
 

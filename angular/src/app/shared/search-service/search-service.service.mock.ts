@@ -41,6 +41,7 @@ export class MockSearchService implements SearchService{
     searchPhrase(
                 query: SDPQuery, 
                 searchTaxonomyKey: string, 
+                theme: string = 'nist', 
                 queryAdvSearch: string, 
                 page?: number, 
                 pageSize?: number, 

@@ -32,6 +32,7 @@ import { HeadbarComponent } from './frame/headbar/headbar.component';
 import { SearchPanelModule } from './search-panel/search-panel.module';
 import { NotificationService } from './shared/notification-service/notification.service';
 import { ToastrModule } from 'ngx-toastr';
+import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
 
 /**
  * Initialize the configs for backend services
@@ -95,7 +96,10 @@ enableProdMode();
     {
       provide: APP_BASE_HREF,
       useValue: '/'
-    },CanDeactivateGuard
+    },
+    CanDeactivateGuard,
+    // provider used to create fake backend
+    fakeBackendProvider
   ],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

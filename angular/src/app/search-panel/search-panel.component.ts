@@ -45,6 +45,8 @@ export class SearchPanelComponent implements OnInit {
     @Input() advanceLink: boolean;
     @Input() jumbotronPadding: string = '1em';
     @Input() homePage: boolean = false;
+    @Input() theme: string = 'nist';
+
     parsed_data_headers: any;
     parsed_data: string[][];
     @Input() 
@@ -98,6 +100,7 @@ export class SearchPanelComponent implements OnInit {
     queryStringErrorMessage: string = '';
     DEFAULT_SEARCHBOX_WIDTH: number = 500;
     searchTextWidth: number = 500;
+    backgroundPosition: string = "63%";
 
     @ViewChild('field') fieldElement: ElementRef;
     @ViewChild('field2') queryName: ElementRef;
@@ -146,10 +149,12 @@ export class SearchPanelComponent implements OnInit {
         this.observableFields = this.searchFieldsListService.getSearchFields();
 
         this.searchService._watchQueryValue((queryObj) => {
-            if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
-                this.searchValue = queryObj.queryString;
-            }else{
-                this.searchValue = "";
+            if(this.theme == 'nist'){
+                if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
+                    this.searchValue = queryObj.queryString;
+                }else{
+                    this.searchValue = "";
+                }
             }
         });
         
@@ -182,8 +187,14 @@ export class SearchPanelComponent implements OnInit {
         }
         });
 
-        this.SDPAPI = this.confValues.SDPAPI;
         this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
+
+        if(this.theme == "forensics"){
+            this.imageURL = this.confValues.SDPAPI + 'assets/images/fingerprint.jpg';
+            this.backgroundPosition = "10%";
+        }
+
+        this.SDPAPI = this.confValues.SDPAPI;
         this.getTaxonomySuggestions();
     }
 

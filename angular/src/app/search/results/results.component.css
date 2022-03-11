@@ -1,6 +1,14 @@
 .title {
   color:#1471AE;
-  font-size: 15px;
+  font-size: 20px !important;
+}
+
+.title:hover {
+    text-decoration: underline;
+}
+
+.details {
+    margin-right: 200px;
 }
 
 .flex-container {
@@ -50,4 +58,41 @@
     font-weight: 700;
     height: 2em;
     max-width: 300px;
+}
+
+.visit-home-page {
+    font-size: 13px; 
+    width:160px; 
+    background-color: #257a2d; 
+    height: 25px;
+    color: white;
+    float: right;
+}
+
+.visit-home-page:hover {
+    background-color: #6ac973; 
+}
+
+.visit-home-page-forensics {
+    font-size: 13px; 
+    width:160px; 
+    background-color: rgb(48, 148, 194); 
+    height: 25px;
+    color: white;
+    float: right;
+}
+
+.visit-home-page-forensics:hover {
+    background-color: rgb(97, 198, 245); 
+}
+
+.home {
+    float: right; 
+    margin: 0.5em .5em .0em .0em;
+    font-size: 18px;
+    color: #12659c;
+}
+
+.home:hover {
+    color: #81cdff;
 }

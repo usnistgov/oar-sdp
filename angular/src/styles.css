@@ -146,3 +146,19 @@ textarea {
 .myCustomModalClass .modal-dialog {
     max-width: 565px;
 }
+
+.nist-green-b {
+    background-color: #257a2d;
+}
+
+.nist-green-f {
+    color: #257a2d;
+}
+
+.nist-blue-b {
+    background-color: #12659c;
+}
+
+.nist-blue-f {
+    color: #12659c;
+}
