@@ -33,6 +33,7 @@ import { SearchPanelModule } from './search-panel/search-panel.module';
 import { NotificationService } from './shared/notification-service/notification.service';
 import { ToastrModule } from 'ngx-toastr';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
+import { TopicModule } from './topic/topic.module';
 
 /**
  * Initialize the configs for backend services
@@ -77,7 +78,8 @@ enableProdMode();
     ToastrModule.forRoot({
         toastClass: 'toast toast-bootstrap-compatibility-fix'
     }),
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    TopicModule
   ],
   exports:[
     AutoCompleteModule

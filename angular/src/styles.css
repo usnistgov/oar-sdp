@@ -10,6 +10,15 @@
 
 @import "~ngx-toastr/toastr.css";
 
+:root {
+    /* Colors */
+    --science-theme-background-default: #019fbb;
+    --science-theme-background-light: #f5fbfd;
+    --science-theme-background-light2: #e3f7fd;
+    --science-theme-background-blue: #017abb;
+    --science-theme-background-blue-hover: #2db2fa;
+}
+
 /* You can add global styles to this file, and also import other style files */
 a:link {
   color: #1E6BA1;
@@ -55,7 +64,7 @@ a:visited {
 }
 
 body {
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-size: 14px;
     font-weight: 400;
   }

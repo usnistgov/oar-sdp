@@ -277,3 +277,14 @@ cardDivHeight:focus {
 div:focus {
     background-color: Aqua;
 }
+
+.box {
+    box-shadow: 5px 10px;
+    cursor: pointer;
+}
+
+.effect1{
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+       -moz-box-shadow: 0 10px 6px -6px #777;
+            box-shadow: 0 10px 6px -6px #777;
+}

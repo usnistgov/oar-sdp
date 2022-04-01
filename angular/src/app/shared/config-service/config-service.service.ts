@@ -92,7 +92,7 @@ export class AppConfig {
     this.confValues = {
       "RMMAPI":  "https://data.nist.gov/rmm/",
       "SDPAPI":  "https://localhost:5555/",
-      "PDRAPI":  "https://localhost/od/id/",
+      "PDRAPI":  "https://localhost:4200/od/id/",
       "DISTAPI": "https://data.nist.gov/od/ds/",
       "METAPI":  "https://localhost/metaurl/",
       "LANDING": "https://data.nist.gov/rmm/",

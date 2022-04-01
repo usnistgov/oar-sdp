@@ -127,7 +127,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     @Input() parent: HTMLElement; // parent div
     @Input() filterWidthNum: number;
     @Input() mobileMode: boolean = false;
-    @Input() theme: string = 'forensics';
+    @Input() theme: string = 'nist';
     @Output() filterMode = new EventEmitter<string>();  // normal or collapsed
 
     constructor(
@@ -301,7 +301,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.themesWithCount = [];
         this.componentsWithCount = [];
         this.searchResults = searchResults;
-
         this.keywords = this.collectKeywords(searchResults);
         this.collectThemes(searchResults);
         this.resourceTypes = this.collectResourceTypes(searchResults);
@@ -322,7 +321,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         // collect Resource features with count
         this.collectComponentsWithCount();
         this.collectResourceTypesWithCount();
-
         if (this.componentsWithCount.length == 0) {
             compNoData = true;
             this.componentsWithCount = [];
@@ -341,7 +339,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
                 this.componentsTree[0].children[i].selectable = false;
             }
         }
-
         this.themesTree = [{
             label: 'NIST Research Topics -',
             "expanded": true,
@@ -353,7 +350,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             "expanded": true,
             children: this.forensicsThemesWithCount
         }];
-
+        console.log('this.forensicsThemesTree', this.forensicsThemesTree );
         this.resourceTypeTree = [{
             label: 'Type of Resource  -',
             "expanded": true,
@@ -368,7 +365,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             }];
         }
         this.authors = this.collectAuthors(searchResults);
-
         this.searching = false;
     }
 
@@ -662,30 +658,27 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         let resType: string;
         let tempType: any;
         this.resourceTypesAllArray = [];
+
         for (let resultItem of searchResults) {
             this.uniqueRes = [];
             let resTypeArray = resultItem['@type'];
+
             for (var i = 0; i < resTypeArray.length; i++) {
                 resType = resTypeArray[i];
                 this.uniqueRes.push(_.startCase(_.split(resType, ':')[1]));
-                tempType = {
-                    label: _.startCase(_.split(resType, ':')[1]),
-                    value: _.startCase(_.split(resType, ':')[1])
-                };
-
-                if(resourceTypes.map(e => e.label).indexOf(tempType.label) < 0){
-                    resourceTypes.push(tempType);
-                }
-
                 if (resourceTypesArray.indexOf(resType) < 0) {
+                    resourceTypes.push({
+                        label: _.startCase(_.split(resType, ':')[1]),
+                        value: _.startCase(_.split(resType, ':')[1])
+                    });
                     resourceTypesArray.push(resType);
                 }
             }
-
+            
             this.uniqueRes = this.uniqueRes.filter(this.onlyUnique);
+
             for (let res of this.uniqueRes) {
-                if(this.resourceTypesAllArray.indexOf(res) < 0)
-                    this.resourceTypesAllArray.push(res);
+                this.resourceTypesAllArray.push(res);
             }
         }
 

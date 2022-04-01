@@ -41,7 +41,8 @@ describe('FiltersComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('onSuccess', () => {
+    fit('onSuccess', () => {
+        component.theme = 'nist';
         component.onSuccess(searchResult);
         expect(component.keywords.length).toEqual(38);
         expect(component.keywords[0]).toEqual("Advanced Functional Materials");
