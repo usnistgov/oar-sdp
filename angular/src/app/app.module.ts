@@ -99,9 +99,9 @@ enableProdMode();
       provide: APP_BASE_HREF,
       useValue: '/'
     },
-    CanDeactivateGuard,
+    CanDeactivateGuard
     // provider used to create fake backend
-    fakeBackendProvider
+    // fakeBackendProvider
   ],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
