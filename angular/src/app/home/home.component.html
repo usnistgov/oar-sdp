@@ -17,7 +17,7 @@
                 <app-topic 
                     [title]="themes.it.title" 
                     [description]="themes.it.description"
-                    [image]="themes.it.image"></app-topic>
+                    [image]="getImageFullPath(themes.it.image)"></app-topic>
           </div>
         </div>
 
@@ -26,7 +26,7 @@
                 <app-topic 
                     [title]="themes.ms.title" 
                     [description]="themes.ms.description"
-                    [image]="themes.ms.image"></app-topic>
+                    [image]="getImageFullPath(themes.ms.image)"></app-topic>
             </div>
         </div>
 
@@ -35,7 +35,7 @@
             <app-topic 
             [title]="themes.manufacturing.title" 
             [description]="themes.manufacturing.description"
-            [image]="themes.manufacturing.image"></app-topic>
+            [image]="getImageFullPath(themes.manufacturing.image)"></app-topic>
           </div>
         </div>
 
@@ -45,7 +45,7 @@
                 <app-topic 
                     [title]="themes.forensics.title" 
                     [description]="themes.forensics.description"
-                    [image]="themes.forensics.image"></app-topic>
+                    [image]="getImageFullPath(themes.forensics.image)"></app-topic>
                 </div>
             </a>
         </div>
@@ -61,7 +61,7 @@
               <app-topic 
                 [title]="themes.Materials.title" 
                 [description]="themes.Materials.description"
-                [image]="themes.Materials.image"></app-topic>
+                [image]="getImageFullPath(themes.Materials.image)"></app-topic>
             </div>
         </div>
 
@@ -70,7 +70,7 @@
               <app-topic 
                 [title]="themes.Physics.title" 
                 [description]="themes.Physics.description"
-                [image]="themes.Physics.image"></app-topic>
+                [image]="getImageFullPath(themes.Physics.image)"></app-topic>
             </div>
         </div>
 
@@ -79,7 +79,7 @@
               <app-topic 
                 [title]="themes.Communications.title" 
                 [description]="themes.Communications.description"
-                [image]="themes.Communications.image"></app-topic>
+                [image]="getImageFullPath(themes.Communications.image)"></app-topic>
             </div>
         </div>
 
@@ -88,40 +88,9 @@
               <app-topic 
                 [title]="themes.Chemistry.title" 
                 [description]="themes.Chemistry.description"
-                [image]="themes.Chemistry.image"></app-topic>
+                [image]="getImageFullPath(themes.Chemistry.image)"></app-topic>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Third row -->
-<!-- <div style="background-color: #F5F5F5;padding: 2em 0em;">
-    <div class="grid" style="width: 90%; margin: auto;">
-        <div class="col-12 col-md-4 col-sm-12">
-            <div (click)="search('AC')" class="box effect1">
-              <app-topic 
-                [title]="themes.Communications.title" 
-                [description]="themes.Communications.description"
-                [image]="themes.Communications.image"></app-topic>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4 col-sm-12">
-            <div (click)="search('Chemistry')" class="box effect1">
-              <app-topic 
-                [title]="themes.Chemistry.title" 
-                [description]="themes.Chemistry.description"
-                [image]="themes.Chemistry.image"></app-topic>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4 col-sm-12">
-            <div (click)="search('Manufacturing')" class="box effect1">
-              <app-topic 
-                [title]="themes.Communications.title" 
-                [description]="themes.Communications.description"
-                [image]="themes.Communications.image"></app-topic>
-            </div>
-        </div>
-    </div>
-</div> -->
