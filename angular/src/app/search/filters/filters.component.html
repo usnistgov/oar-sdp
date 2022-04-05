@@ -22,7 +22,7 @@
 
             <div style="padding-left: .5em;overflow: hidden;" *ngIf="isActive && !searching">
                 <!-- Forensics Research topics -->
-                <div class="bottom-line" *ngIf="forensicsThemesTree.length > 0">
+                <div class="bottom-line" *ngIf="false">
                     <div class="filter-checkbox">
                         <div [@expand]="forensicsShowMoreLink ? 'collapsed':'expanded'">
                             <p-tree id="forensicsThemes" [value]="forensicsThemesTree" selectionMode="checkbox" [style]="researchTopicStyle" [(selection)]="forensicsSelectedThemesNode" 
