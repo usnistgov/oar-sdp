@@ -3,10 +3,16 @@
         jumbotronPadding='1em 1em 0em 1em'></app-search-panel>
 
     <div #parentDiv style="background-color: white; color: black;align-content: center;" [ngStyle]="{'display': getDisplayStyle()}">
-        <div class="filter" [ngStyle]="{'width': filterWidth + 'px'}" (window:resize)="onResize($event)">
+        <div class="filter" [@filterStatus]="filterToggler" [style.width.px]="filterWidth" (window:resize)="onResize($event)">
             <app-filters [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" [theme]="theme" (filterMode)="updateWidth($event)"></app-filters>
         </div>
-        <div #results class="search-result" [ngStyle]="{'width': resultWidth() + 'px'}">
+
+        <!-- Drag bar to resize the filter panel -->
+        <div *ngIf="!mobileMode" class="splitter" (mousedown)="onMousedown($event)" (mouseup)="onMouseUp($event)">
+            <div id="separator">||</div>
+        </div>
+
+        <div #results class="search-result" [style.width.px]="resultWidth">
             <app-results [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [currentPage]="page" [mobWidth]="mobWidth" [theme]="theme"></app-results>
         </div>
     </div>

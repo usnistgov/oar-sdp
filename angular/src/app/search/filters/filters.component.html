@@ -175,13 +175,21 @@
         </div>
     </div>
 
-    <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilter" 
+    <!-- <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilter" 
          [ngStyle]="{'height': comheight}">
         
-        <!-- Collapsed filters -->
         <div (click)="setColumnWidth()">
             <i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i>
             <div class="rotate rotatedFilter"> Filters </div>
         </div>
+    </div> -->
+
+    <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilterBox" (click)="setColumnWidth()">
+        
+        <!-- Collapsed filters -->
+        <div >
+            <i class="faa faa-angle-double-right collapsedFilterIcon"></i>
+        </div>
+        <div class="rotate rotatedFilterText"> Filters </div>
     </div>
 </div>

@@ -51,6 +51,7 @@ export class ResultsComponent implements OnInit {
     pageSubscription: Subscription = new Subscription();
     searchSubscription: Subscription = new Subscription();
     inited: boolean = false;
+    dataReady: boolean = false;
 
     @Input() searchValue: string;
     @Input() searchTaxonomyKey: string;
@@ -251,6 +252,7 @@ export class ResultsComponent implements OnInit {
                 that.totalItems = searchResults.ResultCount;
                 that.resultStatus = this.RESULT_STATUS.success;
                 that.searchService.setTotalItems(that.totalItems);
+                that.dataReady = true;
             },
             error => that.onError(error)
         );
@@ -292,7 +294,7 @@ export class ResultsComponent implements OnInit {
      * Return the class for the top bar (total result, pagination and Customize View button)
      */
     resultTopBarClass(){
-        if(this.mobWidth > 1024 ) return "flex-container";
+        if(this.mobWidth > 1024 ) return "top-bar";
         else return "";
     }
 

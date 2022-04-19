@@ -1,3 +1,7 @@
+:host ::ng-deep {
+    font-family: sans-serif;
+}
+
 #filterHeader {
     background-color: #606165;
     border-bottom:.5px solid #e6e6e6;
@@ -46,15 +50,32 @@
     font-size: larger;
 }
 
-.collapsedFilter {
-    text-align:center;
-    padding: 0px 0px 0px .5em;
-    background-color: #696666;
+.collapsedFilterBox {
+    /* text-align:center;
+    padding: 0px 5pxpx 0px 5px; */
+    /* background-color: var(--science-theme-background-default); */
+    background-image: linear-gradient( #696666, white);
     color: #fff; 
     width: 40px;
+    height: 300px;
     cursor: pointer;
-    padding-top: 2em;
-    border: 1px solid blue;
+    padding-top: 10px;
+}
+
+.rotatedFilterText {
+    display: block; 
+    color: #fff; 
+    padding: 55px 5px 0px 45px;
+    font-size: larger;
+    width: 120px;
+    height: 20px;
+}
+
+.collapsedFilterIcon {
+    color: #fff;
+    zoom: 130%;
+    padding-top: -3em !important;
+    padding-left: 15px;
 }
 
 .normalFilter {

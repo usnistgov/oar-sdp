@@ -1,4 +1,4 @@
-<div>
+<div id="pages">
     <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
         <li [ngClass]="{disabled:pager.currentPage === 1}">
             <a (click)="setPage(pager.currentPage - 1)"><< Previous</a>
