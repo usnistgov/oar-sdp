@@ -10,7 +10,7 @@ h2 {
   margin-top: 0.83em;
 }
 
-:host /deep/ .breadcrumb {
+:host ::ng-deep .breadcrumb {
   background-color: #153971;
 }
 

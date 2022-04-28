@@ -13,18 +13,19 @@
 
         <div>
             <label for="searchinput" class="hideLabel">Search Input</label>
-            <div style="margin: auto;" [ngStyle]="{'width': mobWidth < 725? '100%' : mobWidth < 960? '80%' : '60%'}">
+            <div style="margin: auto;" [style.width.px]="searchTextWidth+250">
                 <div [ngStyle]="{'display': mobWidth < 461? 'block' : 'flex'}">
-                    <div class="inner-addon left-addon background-white search-box">
-                        <i class="glyphicon faa faa-search"></i>
-                        <div style="margin-right: 50px;">
-                            <p-autoComplete [inputStyle]="inputStyle" (onFocus)="clearText()"
+                    <div class="inner-addon left-addon background-white search-box" >
+                        <i class="glyphicon faa faa-search" style="cursor: pointer;z-index: 999 !important;float: left;" (click)="hideAllHelp();search(searchValue,searchTaxonomyKey)"></i>
+                        <div>
+                            <p-autoComplete p-fluid #audocomp [inputStyle]="inputStyle" (onFocus)="clearText()"
                                 (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
                                 inputId="searchinput" name="searchinput"
-                                 (keyup.enter)="search(searchValue,searchTaxonomyKey)"
+                                 (keyup.enter)="audocomp.handleDropdownClick();search(searchValue,searchTaxonomyKey)"
                                 (ngModelChange)="onSearchValueChange()"
                                 [suggestions]="suggestedTaxonomyList" (completeMethod)="filterTaxonomies($event)"
-                                [minLength]="1" [maxlength]="2048" [size]="100">
+                                [minLength]="1" [maxlength]="2048" [size]="100"
+                                [style]="{'width': '100%'}">
 
                                 <ng-template let-taxonomy pTemplate="item">
                                     <div class="autoComplete" [ngStyle]="{'color':'black'}">
@@ -32,9 +33,13 @@
                                     </div>
                                 </ng-template>
                             </p-autoComplete>
+
+                            <i class="faa faa-remove clear-box" (click)="clearSearchBox()" data-toggle="tooltip"
+                            title="Clear the search box" style="float: right;"></i>
                         </div>
-                        <i class="faa faa-remove clear-box" (click)="searchValue='';queryStringError= false;" data-toggle="tooltip"
-                            title="Clear the search box"></i>
+                        <div id="autocompleteText">
+                            {{searchValue}}
+                        </div>
                     </div>
                     <div [ngClass]="getSearchBtnClass()" class="bigSearchButton"
                         (click)="hideAllHelp();search(searchValue,searchTaxonomyKey)">

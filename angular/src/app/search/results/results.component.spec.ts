@@ -1,6 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ResultsComponent } from './results.component';
-import { DataTableModule, TreeModule, AutoCompleteModule, CheckboxModule, DropdownModule } from 'primeng/primeng';
+import { TreeModule } from 'primeng/tree';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -17,12 +20,11 @@ describe('ResultsComponent', () => {
   let component: ResultsComponent;
   let fixture: ComponentFixture<ResultsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResultsComponent, PaginationComponent, OverlayPanel, ReadMoreComponent ],
       imports: [
         TreeModule, 
-        DataTableModule, 
         AutoCompleteModule, 
         MockModule, 
         FormsModule,

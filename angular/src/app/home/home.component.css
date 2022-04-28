@@ -269,3 +269,11 @@ hr {
     display: block;
     padding-top: 1em;
 }
+
+cardDivHeight:focus {
+    background-color: Aqua;
+}
+
+div:focus {
+    background-color: Aqua;
+}

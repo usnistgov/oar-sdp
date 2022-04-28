@@ -78,8 +78,13 @@
 }
 
 .filter-checkbox {
-    border-bottom:.5px solid #e6e6e6;
     width: 100%;
+    min-width: 360px;
+    overflow: hidden;
+}
+
+.bottom-line {
+    border-bottom:.5px solid #e6e6e6;
 }
 
 .show-more-less {
@@ -90,4 +95,8 @@
     width: 100%;
     font-weight: 600;
     cursor: pointer;
+}
+
+.ui-tree {
+	white-space: nowrap !important;
 }

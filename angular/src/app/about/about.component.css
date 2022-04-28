@@ -34,7 +34,7 @@ hr {
   color: #fff;
 }
 
-:host /deep/ .breadcrumb {
+:host ::ng-deep .breadcrumb {
   background-color: #153971;
 }
 

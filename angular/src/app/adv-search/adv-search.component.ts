@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, Inject, Renderer2, ViewChild, HostListener, AfterViewInit, ElementRef } from '@angular/core';
-import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
+import { SelectItem, ConfirmationService, Message } from 'primeng/api';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
@@ -11,7 +11,7 @@ import { AppConfig, Config } from '../shared/config-service/config-service.servi
 import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/query';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ConfirmService } from '../shared/confirm/confirm.service';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 /**
@@ -38,7 +38,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     // addQuery: boolean = false;
     mobHeight: number;
     mobWidth: number;
-    resultsClass: string = "ui-g-12 ui-md-9 ui-lg-9";
+    resultsClass: string = "col-9 p-md-9 p-lg-9";
     breadcrumb_top: string = '6em';
     showDropdown: boolean = false;
     queryNameValidateError: boolean = false;
@@ -54,8 +54,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     nextQueryIndex: number;
     tobeRenamedQuery: SDPQuery;
     tempName: string;
+    dataChanged: boolean = false;
 
-    @ViewChild('dataChanged') dataChanged: boolean = false; 
     @ViewChild('field2') queryName: ElementRef;
     @ViewChild('op1') op_confirm: OverlayPanel;
     @ViewChild('op5') op: OverlayPanel;

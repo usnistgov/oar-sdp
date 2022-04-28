@@ -1,27 +1,29 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FiltersComponent } from './filters.component';
-import { DataTableModule, TreeModule, AutoCompleteModule } from 'primeng/primeng';
+import { TreeModule } from 'primeng/tree';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('FiltersComponent', () => {
     let component: FiltersComponent;
     let fixture: ComponentFixture<FiltersComponent>;
     let searchResult = require('../../../assets/sample02.json').ResultData;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
         declarations: [ FiltersComponent ],
         imports: [
             TreeModule, 
-            DataTableModule, 
             AutoCompleteModule, 
             MockModule, 
             FormsModule,
             HttpClientTestingModule,
+            BrowserAnimationsModule,
             RouterTestingModule,
             ToastrModule.forRoot()
             ]

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ApiComponent } from './api.component';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
@@ -10,7 +10,7 @@ describe('ApiComponent', () => {
   let component: ApiComponent;
   let fixture: ComponentFixture<ApiComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [ ApiComponent ],

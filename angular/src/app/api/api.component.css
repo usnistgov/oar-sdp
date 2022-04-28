@@ -50,7 +50,7 @@ h2 {
   transform: translateY(-50%);
 }
 
-:host /deep/ .breadcrumb {
+:host ::ng-deep .breadcrumb {
   background-color: #153971;
 }
 

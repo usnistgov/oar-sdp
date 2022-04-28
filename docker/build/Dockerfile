@@ -11,12 +11,12 @@
 
 # The parent should be an ancestor image of the operational container
 # 
-FROM node:10.9.0
+FROM node:14.19.0
 
 RUN sed -e '/jessie-updates/ s/^deb/#deb/' /etc/apt/sources.list \
     > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends zip wget ca-certificates git gnupg-curl
+    apt-get install -y --no-install-recommends zip wget ca-certificates git curl
 
 ENV GOSU_VERSION 1.10
 RUN set -ex; \

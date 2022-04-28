@@ -2,7 +2,7 @@
 
     <!-- Handle no search result -->
     <div *ngIf="resultStatus == RESULT_STATUS.noResult || totalItems == 0">
-        <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
+        <div class="col-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
 
             There are no records that match your search query. 
 
@@ -12,7 +12,7 @@
 
     <!-- Handle user error -->
     <div *ngIf="resultStatus == RESULT_STATUS.userError">
-        <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
+        <div class="col-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
 
                 There is a syntax error in your search input. Please review your search input and correct the error. Click on <span class="link-text" (click)="showExamples()"> Show Examples</span> for how to construct your search. 
 
@@ -22,7 +22,7 @@
 
     <!-- Handle sys error -->
     <div *ngIf="resultStatus == RESULT_STATUS.sysError">
-        <div class="ui-g-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
+        <div class="col-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
 
                 Oops! It looks like our site had a problem completing your search. If this error persists you
                 may contact <a
@@ -168,7 +168,7 @@
                                         (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                                         <button pButton label="Visit Home Page" type="button"
                                             icon="faa faa-external-link"
-                                            style="font-size: 13px; width:180px; background-color: #277E2F"></button>
+                                            style="font-size: 13px; width:180px; background-color: #277E2F; height: 25px;"></button>
                                     </a>
                                     <a *ngIf="!resultItem.landingPage"
                                         href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank"

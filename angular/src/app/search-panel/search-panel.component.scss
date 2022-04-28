@@ -96,7 +96,7 @@ hr {
 .inner-addon .glyphicon {
     position: absolute;
     padding: 10px;
-    pointer-events: none;
+    // pointer-events: none;
     font-size: 25px;
 }
 
@@ -137,7 +137,7 @@ hr {
   cursor: pointer;
 }
 
-body .ui-state-active, body .ui-state-highlight {
+body .p-highlight {
     background-color: #03f42b !important;
     color: #ffffff !important; 
 }
@@ -149,7 +149,8 @@ body .ui-state-active, body .ui-state-highlight {
     text-align: center !important;
     vertical-align: middle !important;
     color: white;
-    background-color:#2c539e;
+    background-color:#0e7428;
+    // background-color:#2c539e;
     height:44px;
     padding: 0px;
     min-width: 80px;
@@ -387,4 +388,17 @@ table thead, table tbody tr {
     background: green;
     border-radius: 50%; 
     color: white;
+}
+
+::ng-deep .ui-autocomplete-input {
+    border: 0 ;
+    border-radius: 2px;
+}
+
+#autocompleteText {
+    position: absolute;
+    visibility: hidden;
+    height: auto;
+    width: auto;
+    white-space: nowrap; /* Thanks to Herb Caudill comment */
 }
