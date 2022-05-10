@@ -36,7 +36,7 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/jspdf/dist/jspdf.min.js",
+              "node_modules/jspdf/dist/jspdf.es.min.js",
               "node_modules/primeui/primeui-ng-all.min.js"
             ],
             "vendorChunk": true,
