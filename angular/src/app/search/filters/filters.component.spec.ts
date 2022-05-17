@@ -41,7 +41,7 @@ describe('FiltersComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    fit('onSuccess', () => {
+    it('onSuccess', () => {
         component.theme = 'nist';
         component.onSuccess(searchResult);
         expect(component.keywords.length).toEqual(38);

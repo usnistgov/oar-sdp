@@ -36,6 +36,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     mobHeight: number;
     mobWidth: number;
     filterWidth: number;
+    filterWidthStr: string;
     filterMode: string = "normal";
 
     mouse: any = {x:0, y:0};
@@ -135,20 +136,14 @@ export class SearchComponent implements OnInit, OnDestroy {
                 this.filterWidth = 39;
                 this.filterToggler = 'collapsed';
             }
+
+            this.filterWidthStr = this.filterWidth + 'px';
         }else{
-            this.filterWidth = this.mobWidth - 40;
+            this.filterWidth = this.mobWidth;
+            this.filterWidthStr = "100%"
         }
 
         this.setResultWidth();
-        // if(this.mobWidth > 641){
-        //     if(this.filterMode == 'normal'){
-        //         this.filterWidth = this.mobWidth / 4;
-        //     }else{
-        //         this.filterWidth = 40;
-        //     }
-        // }else{
-        //     this.filterWidth = this.mobWidth;
-        // }
     }
 
     ngOnDestroy() {
@@ -175,6 +170,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             let diff = this.mouse.x - this.prevMouseX;
             this.filterWidth = this.prevFilterWidth + diff;
             this.filterWidth = this.filterWidth < 40? 39 : this.filterWidth > 500? 500 : this.filterWidth;
+            this.filterWidthStr = this.filterWidth + 'px';
         }
         
         this.setResultWidth();
