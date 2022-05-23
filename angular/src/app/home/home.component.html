@@ -1,99 +1,104 @@
-<app-search-panel title='NIST Data Discovery' [subtitle]='true' [helpicon]='false' [advanceLink]='true' [homePage]='true' jumbotronHeight='40vh' jumbotronPadding='2em 3em 0em 3em'></app-search-panel>
+<app-search-panel title='NIST Data Discovery' [subtitle]='true' [helpicon]='false' [advanceLink]='true' [homePage]='true' jumbotronHeight='35vh' jumbotronPadding='2em 3em 0em 3em'></app-search-panel>
 
-<div class="p-col" style="background-color: #F5F5F5;padding-top: 10px;">
-  <div id="feature" class="p-col-12 p-md-8 p-lg-8 featured-data"> <b>FEATURED DATA DOMAINS</b>
+<!-- <div class="p-col" style="background-color: #F5F5F5;padding-top: 10px;">
+  <div id="feature" class="p-col-12 p-md-8 p-lg-8 featured-data"> <b>SCIENCE THEME</b>
     <div class="feature-data-domain-divider">
       <hr class="feature-divider">
     </div>
   </div>
-</div>
-<div style="background-color: #F5F5F5;">
-    <div class="grid">
+</div> -->
+
+<!-- First row -->
+<div style="background-color: #F5F5F5;padding-top: 2em;">
+    <div class="grid" style="width: 90%; margin: auto;">
       <!-- <div class="grid form-group" style="margin-bottom: 0em"> -->
-        <div class="col-12 col-md-2 col-sm-12">
-        </div>
-        <div id="it" class="col-12 col-md-2 col-sm-12">
-          <div (click)="search('IT')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-              <div class="overview-content clearfix">
-                <span class="overview-title"><b>INFORMATION TECHNOLOGY</b></span>
-              </div>
-            </div>
+        <div class="col-12 col-md-3 col-sm-6">
+          <div (click)="search('IT')" class="box effect1">
+                <app-topic 
+                    [title]="themes.it.title" 
+                    [description]="themes.it.description"
+                    [image]="getImageFullPath(themes.it.image)"></app-topic>
           </div>
         </div>
-        <div class="col-12 col-md-2 col-sm-12">
-          <div (click)="search('MS')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-              <div class="overview-content clearfix">
-                <span class="overview-title"><b>MATHEMATICS AND STATISTICS</b></span>
-              </div>
+
+        <div class="col-12 col-md-3 col-sm-6">
+            <div (click)="search('MS')" class="box effect1">
+                <app-topic 
+                    [title]="themes.ms.title" 
+                    [description]="themes.ms.description"
+                    [image]="getImageFullPath(themes.ms.image)"></app-topic>
             </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-sm-6">
+          <div (click)="search('Manufacturing')" class="box effect1">
+            <app-topic 
+            [title]="themes.manufacturing.title" 
+            [description]="themes.manufacturing.description"
+            [image]="getImageFullPath(themes.manufacturing.image)"></app-topic>
           </div>
         </div>
-        <div class="col-12 col-md-2 col-sm-12">
-          <div (click)="search('Manufacturing')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-              <div class="overview-content clearfix">
-                <span class="overview-title"><b>MANUFACTURING</b></span>
-              </div>
-            </div>
+
+        <div class="col-12 col-md-3 col-sm-6">
+          <!--
+            <a [href]="forensicsURL" target="_blank">
+                <div class="box effect1">
+                <app-topic 
+                    [title]="themes.forensics.title" 
+                    [description]="themes.forensics.description"
+                    [image]="getImageFullPath(themes.forensics.image)"></app-topic>
+                </div>
+            </a>
+            -->
+          <div (click)="search('Forensics')" class="box effect1">
+            <app-topic 
+            [title]="themes.forensics.title" 
+            [description]="themes.forensics.description"
+            [image]="getImageFullPath(themes.forensics.image)"></app-topic>
           </div>
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
-          <div (click)="search('Forensics')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-              <div class="overview-content clearfix">
-                <span class="overview-title"><b>FORENSICS</b></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
-        </div>
-      <!-- </div> -->
-    </div>
-</div>
-<div style="background-color: #F5F5F5; padding-bottom: 0.1em; padding-top: 1em;">
-    <div class="grid form-group feature-data-spacer">
-        <div class="col-12 col-md-2 col-sm-12">
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
-            <div (click)="search('Materials')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-                <div class="overview-content clearfix">
-                <span class="overview-title"><b>MATERIALS</b></span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
-            <div (click)="search('PN')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-                <div class="overview-content clearfix">
-                <span class="overview-title"><b>PHYSICS AND NEUTRON</b></span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
-            <div (click)="search('AC')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-                <div class="overview-content clearfix">
-                <span class="overview-title"><b>ADVANCED COMMUNICATIONS</b></span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
-            <div (click)="search('Chemistry')" class="cardDecoration" style="cursor: pointer">
-            <div class="card overview cardDiv cardDivHeight">
-                <div class="overview-content clearfix">
-                <span class="overview-title"><b>CHEMISTRY</b></span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-2 col-sm-12">
         </div>
     </div>
 </div>
+
+<!-- Second row -->
+<div style="background-color: #F5F5F5;padding: 2em 0;">
+    <div class="grid" style="width: 90%; margin: auto;">
+
+        <div class="col-12 col-md-3 col-sm-12">
+            <div (click)="search('Materials')" class="box effect1">
+              <app-topic 
+                [title]="themes.Materials.title" 
+                [description]="themes.Materials.description"
+                [image]="getImageFullPath(themes.Materials.image)"></app-topic>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-sm-12">
+            <div (click)="search('PN')" class="box effect1">
+              <app-topic 
+                [title]="themes.Physics.title" 
+                [description]="themes.Physics.description"
+                [image]="getImageFullPath(themes.Physics.image)"></app-topic>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-sm-12">
+            <div (click)="search('AC')" class="box effect1">
+              <app-topic 
+                [title]="themes.Communications.title" 
+                [description]="themes.Communications.description"
+                [image]="getImageFullPath(themes.Communications.image)"></app-topic>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-sm-12">
+            <div (click)="search('Chemistry')" class="box effect1">
+              <app-topic 
+                [title]="themes.Chemistry.title" 
+                [description]="themes.Chemistry.description"
+                [image]="getImageFullPath(themes.Chemistry.image)"></app-topic>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,5 +1,5 @@
 <!-- <div class="jumbotron" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')', 'padding': jumbotronPadding, 'margin-bottom':'-1em'}"> -->
-<div class="search-panel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')','margin-bottom':'-1em'}">
+<div class="search-panel" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')','margin-bottom':'-1em','top':'0', 'background-position':'center '+ backgroundPosition}">
     <div class="content">
         <!-- <div style="width: 100%;display: inline-block; margin: 0em auto 1em;"> -->
         <h3 *ngIf="title" class="title">{{title}}</h3>
@@ -178,7 +178,7 @@
         </div>
 
         <!-- Spacing for home page -->
-        <div *ngIf="homePage" style="height: 3em;">
+        <div *ngIf="homePage" style="height: 1em;">
 
         </div>
     </div>

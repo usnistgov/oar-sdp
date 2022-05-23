@@ -32,6 +32,8 @@ import { HeadbarComponent } from './frame/headbar/headbar.component';
 import { SearchPanelModule } from './search-panel/search-panel.module';
 import { NotificationService } from './shared/notification-service/notification.service';
 import { ToastrModule } from 'ngx-toastr';
+import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
+import { TopicModule } from './topic/topic.module';
 
 /**
  * Initialize the configs for backend services
@@ -76,7 +78,8 @@ enableProdMode();
     ToastrModule.forRoot({
         toastClass: 'toast toast-bootstrap-compatibility-fix'
     }),
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    TopicModule
   ],
   exports:[
     AutoCompleteModule
@@ -95,7 +98,10 @@ enableProdMode();
     {
       provide: APP_BASE_HREF,
       useValue: '/'
-    },CanDeactivateGuard
+    },
+    CanDeactivateGuard
+    // provider used to create fake backend
+    // fakeBackendProvider
   ],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

@@ -8,6 +8,7 @@ import { MockModule } from '../mock.module';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 
 describe('SearchComponent', () => {
   let searchCompService: SearchComponent;
@@ -20,6 +21,7 @@ describe('SearchComponent', () => {
         HttpClientTestingModule,
         NgxPaginationModule,
         MockModule,
+        BrowserAnimationsModule,
         ToastrModule.forRoot()
       ],
       declarations: [SearchComponent],
