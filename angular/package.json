@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 5555",
-    "build": "ng build --configuration production --aot --vendor-chunk --common-chunk --delete-output-path --buildOptimizer",
+    "build": "ng build --configuration production --aot --vendor-chunk --common-chunk --delete-output-path --build-optimizer",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -33,7 +33,6 @@
     "core-js": "^2.5.4",
     "font-awesome": "^4.7.0",
     "jasmine": "^2.8.0",
-    "jspdf": "^2.3.1",
     "lodash-es": "^4.17.21",
     "ngx-pagination": "^3.2.1",
     "ngx-toastr": "^12.0.0",
