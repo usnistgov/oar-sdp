@@ -9,6 +9,7 @@ export class TopicComponent implements OnInit {
     titleFontSize: string = '1.2vw';
     descFontSize: string = '.9vw';
     descOpacity: number = 0;
+    descLineHeight: string = '20px';
     screenMode: string = "large";
 
     @Input() description: string = "NIST advances the state-of-the-art in IT in such applications as cybersecurity and biometrics."
@@ -36,16 +37,19 @@ export class TopicComponent implements OnInit {
         setTimeout(() => {
             if(window.innerWidth > 768) {
                 this.titleFontSize = '1.2vw';
+                this.descLineHeight = '20px';
                 this.descFontSize = '.9vw';
                 this.screenMode = "large";
                 this.descOpacity = 0;
             }else if(window.innerWidth > 576){
                 this.titleFontSize = '16px';
+                this.descLineHeight = '15px';
                 this.descFontSize = '12px';
                 this.screenMode = "medium";
-                this.descOpacity = 0;
+                this.descOpacity = 1;
             }else{
-                this.titleFontSize = '22px';
+                this.titleFontSize = '16px';
+                this.descLineHeight = '15px';
                 this.descFontSize = '15px';
                 this.screenMode = "small";
                 this.descOpacity = 1;
@@ -58,7 +62,7 @@ export class TopicComponent implements OnInit {
     }
 
     onMouseOut() {
-        if(this.screenMode == "small") return;
+        if(this.screenMode != "large") return;
 
         this.descOpacity = 0;
     }

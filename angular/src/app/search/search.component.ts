@@ -23,7 +23,13 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 
 export class SearchComponent implements OnInit, OnDestroy {
 
+    //For display
     page: number = 1;
+    mobHeight: number;
+    mobWidth: number;
+    mobileMode: boolean = false; // set mobile mode to true if window width < 641
+
+    //For search
     queryAdvSearch: string;
     searchValue: string;
     searchTaxonomyKey: string;
@@ -33,12 +39,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     searchAuthors: string;
     searchKeywords: string;
 
-    mobHeight: number;
-    mobWidth: number;
+    // For filters
     filterWidth: number;
     filterWidthStr: string;
     filterMode: string = "normal";
 
+    // For the split bar between filters and search result
     mouse: any = {x:0, y:0};
     mouseDragging: boolean = false;
     prevMouseX: number = 0;
@@ -46,13 +52,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     resultWidth: any;
     filterToggler: string = 'expanded';
 
-    mobileMode: boolean = false; // set mobile mode to true if window width < 641
-
+    // For error handling
     queryStringErrorMessage: string;
     queryStringError: boolean = false;
-
-    theme: string = "nist";
-    // theme: string = "forensics";
 
     private _routeParamsSubscription: Subscription;
 
@@ -72,22 +74,25 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
 
     onResize(event) {
+        let prevMode = this.mobileMode;
         this.mobWidth = window.innerWidth;
         this.mobileMode = this.mobWidth < 641;
 
+        // Once the mobile mode changed, reload the page to get search result display correctly.
+        if(this.mobileMode != prevMode) {
+            window.location.reload();
+        }
+        
         this.updateWidth();
     }
 
-    // resultWidth(){
-    //     if(this.mobWidth == this.filterWidth){
-    //         return this.filterWidth;
-    //     }else{
-    //         return this.mobWidth - this.filterWidth - 20;
-    //     }
-    // }
-
+    /**
+     * Determine how to display the search result. In normal mode, the result list will appear at the right
+     * side of the filters. In mobile mode, the result list will display underneath the filters.
+     * @returns 
+     */
     getDisplayStyle(){
-        if(this.mobWidth == this.filterWidth){
+        if(this.mobileMode){
             return "normal";
         }else{
             return "flex";
@@ -104,7 +109,6 @@ export class SearchComponent implements OnInit, OnDestroy {
         // this.getTaxonomySuggestions();
         this._routeParamsSubscription = this.router.queryParams.subscribe(params => {
             this.searchValue = params['q'];
-            this.theme = params['alternateView'];
             this.searchTaxonomyKey = params['key'];
             this.queryAdvSearch = params['queryAdvSearch'];
             this.page = params['page'];
@@ -114,7 +118,6 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.searchAuthors = params['authors'];
             this.searchKeywords = params['keywords'];
 
-            if(!this.theme) this.theme = 'nist';
             if(!this.page) this.page = 1;
         });
     }

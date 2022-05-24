@@ -57,7 +57,6 @@ export class ResultsComponent implements OnInit {
     @Input() searchTaxonomyKey: string;
     @Input() currentPage: number = 1;
     @Input() mobWidth: number = 1920;
-    @Input() theme: string = 'nist';
 
     constructor(
         @Inject(SEARCH_SERVICE) private searchService: SearchService,
@@ -244,7 +243,7 @@ export class ResultsComponent implements OnInit {
         this.currentFilter = filter? filter : this.currentFilter;
         this.currentSortOrder = sortOrder? sortOrder : this.currentSortOrder;
 
-        return this.searchService.searchPhrase(query, searchTaxonomyKey, this.theme, null, this.currentPage, pageSize, this.currentSortOrder, this.currentFilter)
+        return this.searchService.searchPhrase(query, searchTaxonomyKey, null, this.currentPage, pageSize, this.currentSortOrder, this.currentFilter)
         .subscribe(
             searchResults => {
                 console.log("searchResults", searchResults);

@@ -1,10 +1,10 @@
 <div [ngStyle]="{'width': mobWidth + 'px'}">
-    <app-search-panel title='' [subtitle]='false' [helpicon]='false' [advanceLink]='true' [theme]="theme"
+    <app-search-panel title='' [subtitle]='false' [helpicon]='false' [advanceLink]='true'
         jumbotronPadding='1em 1em 0em 1em'></app-search-panel>
 
     <div #parentDiv style="background-color: white; color: black;align-content: center;" [ngStyle]="{'display': getDisplayStyle()}">
         <div class="filter" [@filterStatus]="filterToggler" [ngStyle]="{'width': filterWidthStr}" (window:resize)="onResize($event)">
-            <app-filters [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" [theme]="theme" (filterMode)="updateWidth($event)"></app-filters>
+            <app-filters [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [parent]="parentDiv" [filterWidthNum]="filterWidth" [mobileMode]="mobileMode" (filterMode)="updateWidth($event)"></app-filters>
         </div>
 
         <!-- Drag bar to resize the filter panel -->
@@ -13,7 +13,7 @@
         </div>
 
         <div #results class="search-result" [ngStyle]="{'width': resultWidth}">
-            <app-results [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [currentPage]="page" [mobWidth]="mobWidth" [theme]="theme"></app-results>
+            <app-results [searchValue]='searchValue' [searchTaxonomyKey]='searchTaxonomyKey' [currentPage]="page" [mobWidth]="mobWidth"></app-results>
         </div>
     </div>
 </div>
