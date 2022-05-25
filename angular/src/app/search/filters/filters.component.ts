@@ -21,6 +21,16 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
             state('expanded', style({height: '*'})),
             transition('expanded <=> collapsed', animate('625ms'))
         ]),
+        trigger('expand', [
+            state('closed', style({height: '40px'})),
+            state('collapsed', style({height: '183px'})),
+            transition('closed <=> collapsed', animate('625ms'))
+        ]),
+        trigger('expand', [
+            state('closed', style({height: '40px'})),
+            state('expanded', style({height: '*'})),
+            transition('expanded <=> closed', animate('625ms'))
+        ]),
         trigger('expandOptions', [
             state('collapsed', style({height: '0px'})),
             state('expanded', style({height: '*'})),
@@ -117,7 +127,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     @Input() parent: HTMLElement; // parent div
     @Input() filterWidthNum: number;
     @Input() mobileMode: boolean = false;
-    @Input() theme: string = 'nist';
     @Output() filterMode = new EventEmitter<string>();  // normal or collapsed
 
     constructor(
@@ -158,13 +167,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.msgs = [];
         this.searchResultsError = [];
-        if(this.theme == 'forensics'){
-            this.MoreOptionsDisplayed = true;
-        }else{
-            this.MoreOptionsDisplayed = false;
-        }
-
-        console.log('this.theme', this.theme)
+        this.MoreOptionsDisplayed = false;
     }
 
     toggleMoreOptions() {
@@ -281,7 +284,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     search(query: SDPQuery, searchTaxonomyKey?: string) {
         this.searching = true;
         let that = this;
-        return this.searchService.searchPhrase(query, searchTaxonomyKey, this.theme)
+        return this.searchService.searchPhrase(query, searchTaxonomyKey)
         .subscribe(
             searchResults => {
                 that.onSuccess(searchResults.ResultData);

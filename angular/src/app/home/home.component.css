@@ -281,6 +281,7 @@ div:focus {
 .box {
     box-shadow: 5px 10px;
     cursor: pointer;
+    min-height: 150px;
 }
 
 .effect1{

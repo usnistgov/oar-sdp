@@ -45,7 +45,6 @@ export class SearchPanelComponent implements OnInit {
     @Input() advanceLink: boolean;
     @Input() jumbotronPadding: string = '1em';
     @Input() homePage: boolean = false;
-    @Input() theme: string = 'nist';
 
     parsed_data_headers: any;
     parsed_data: string[][];
@@ -149,12 +148,10 @@ export class SearchPanelComponent implements OnInit {
         this.observableFields = this.searchFieldsListService.getSearchFields();
 
         this.searchService._watchQueryValue((queryObj) => {
-            if(this.theme == 'nist'){
-                if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
-                    this.searchValue = queryObj.queryString;
-                }else{
-                    this.searchValue = "";
-                }
+            if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
+                this.searchValue = queryObj.queryString;
+            }else{
+                this.searchValue = "";
             }
         });
         
@@ -188,11 +185,6 @@ export class SearchPanelComponent implements OnInit {
         });
 
         this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-
-        if(this.theme == "forensics"){
-            this.imageURL = this.confValues.SDPAPI + 'assets/images/fingerprint.jpg';
-            this.backgroundPosition = "10%";
-        }
 
         this.SDPAPI = this.confValues.SDPAPI;
         this.getTaxonomySuggestions();

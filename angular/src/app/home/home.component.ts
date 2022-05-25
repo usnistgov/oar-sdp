@@ -65,8 +65,7 @@ export class HomeComponent implements OnInit {
         this.confValues = this.appConfig.getConfig();
         this.PDRAPIURL = this.confValues.PDRAPI;
         this.SDPAPIURL = this.confValues.SDPAPI;
-        this.forensicsURL = this.PDRAPIURL + "mds9911";
-        console.log('this.forensicsURL', this.forensicsURL)
+        // this.forensicsURL = this.PDRAPIURL + "mds9911";
     }
 
     ngOnInit() {
