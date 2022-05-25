@@ -1,15 +1,5 @@
 <div style="padding-left: .5em;">
 
-    <!-- Handle no search result -->
-    <!-- <div *ngIf="resultStatus == RESULT_STATUS.noResult || totalItems == 0">
-        <div class="col-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
-
-            There are no records that match your search query. 
-
-        </div>
-        <div class="EmptyBox80" style="background-color: #FFFFFF;"></div>
-    </div> -->
-
     <!-- Handle user error -->
     <div *ngIf="resultStatus == RESULT_STATUS.userError">
         <div class="col-12" style="background-color: #FFFFFF; font-size:2em; line-height: 1.5em;">
@@ -35,9 +25,8 @@
     <div >
         <!-- Top bar -->
         <div [ngClass]="resultTopBarClass()">
-            <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding-top: 10px;">
-                &nbsp;&nbsp;{{totalItems}} records found
-                <span *ngIf="theme=='forensics'"> in {{theme}}</span>
+            <div [ngClass]="flexgrow(1)" style="color: #000;font-weight: 800;padding: 10px 0 0 10px;">
+                {{totalItems}} records found
             </div>
 
             <!-- Pagination -->
@@ -50,34 +39,6 @@
                 <button type="text" class="controlBtn" [ngStyle]="{'float': customizeViewPosition()}"
                     pButton (click)="op1.toggle($event)"><i class="faa faa-cog"></i> Customize
                     View</button>
-                <p-overlayPanel #op1 for="controlBtn" [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}" [appendTo]="'body'">
-                    <div class="lbl-display-fields">
-                        <b>Display Fields</b>
-                        <span class="link-text" style="float: right;"
-                            (click)="$event.preventDefault();ResetSelectedFields()"><i
-                                class="faa faa-refresh"></i> Reset</span>
-                    </div>
-                    <div style="text-align: left">
-                        <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked"
-                            label="Select All" (onChange)="SelectAllFields()"
-                            [(ngModel)]="selectedFields"></p-checkbox>
-                    </div>
-                    <div *ngFor="let field of displayFields" style="text-align: left">
-                        <p-checkbox inputId={{field}} name={{field}} class="label" value={{field}}
-                            label={{field}} [(ngModel)]="selectedFields" (onChange)="updateFields()">
-                        </p-checkbox>
-                    </div>
-                    <div class="lbl-display-fields">
-                        <b>Sort Results</b> <br>
-                    </div>
-                    <div>
-                        <p-dropdown [options]="filterableFields" [(ngModel)]="sortItemKey"
-                            placeholder="Select a field..." (onChange)="SortByFields()"
-                            [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
-                        </p-dropdown>
-                    </div>
-                    <div class="EmptyBox20"></div>
-                </p-overlayPanel>
             </div>
         </div>
 
@@ -171,15 +132,14 @@
                                             [(href)]="resultItem.landingPage" target="_blank"
                                             (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                                             <button pButton label="Visit Home Page" type="button"
-                                                icon="faa faa-external-link" iconPos="left"
-                                                [ngClass]="{'visit-home-page': theme=='nist', 'visit-home-page-forensics': theme=='forensics'}"></button>
+                                                icon="faa faa-external-link" iconPos="left" class="visit-home-page"></button>
                                         </a>
                                         <a *ngIf="!resultItem.landingPage"
                                             href="{{PDRAPIURL}}{{resultItem.ediid}}" target="_blank"
                                             (click)="gaService.gaTrackEvent('outbound', $event, 'Visit to homepage',resultItem.landingPage)">
                                             <button pButton label="Visit Home Page" type="button"
                                                 icon="faa faa-external-link" iconPos="left"
-                                                [ngClass]="{'visit-home-page': theme=='nist', 'visit-home-page-forensics': theme=='forensics'}"></button>
+                                                class="visit-home-page"></button>
                                         </a>
                                     </div>
                                 </div>
@@ -213,4 +173,33 @@
             </div>
         </ng-template>
     </div>
+
+    <p-overlayPanel #op1 for="controlBtn" [showCloseIcon]="true" [style]="{'background-color': '#F8F9F9'}" [appendTo]="'body'">
+        <div class="lbl-display-fields">
+            <b>Display Fields</b>
+            <span class="link-text" style="float: right;"
+                (click)="$event.preventDefault();ResetSelectedFields()"><i
+                    class="faa faa-refresh"></i> Reset</span>
+        </div>
+        <div style="text-align: left">
+            <p-checkbox inputId="group2" binary="true" [(ngModel)]="allChecked"
+                label="Select All" (onChange)="SelectAllFields()"
+                [(ngModel)]="selectedFields"></p-checkbox>
+        </div>
+        <div *ngFor="let field of displayFields" style="text-align: left">
+            <p-checkbox inputId={{field}} name={{field}} class="label" value={{field}}
+                label={{field}} [(ngModel)]="selectedFields" (onChange)="updateFields()">
+            </p-checkbox>
+        </div>
+        <div class="lbl-display-fields">
+            <b>Sort Results</b> <br>
+        </div>
+        <div>
+            <p-dropdown [options]="filterableFields" [(ngModel)]="sortItemKey"
+                placeholder="Select a field..." (onChange)="SortByFields()"
+                [style]="{'width':'200px','display': 'flex','align-items':'center','background-color': '#FFFFFF','height': '40px','font-weight': '400','font-style': 'italic','float':'left'}">
+            </p-dropdown>
+        </div>
+        <div class="EmptyBox20"></div>
+    </p-overlayPanel>
 </div>

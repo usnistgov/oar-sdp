@@ -46,7 +46,7 @@ export class AppConfig {
               baseurl = baseurl.replace(/\/[^\/]+$/, "/");
       }
       this.envVariables = baseurl + this.envVariables;
-      console.log("Retrieving configuration from "+this.envVariables);
+    //   console.log("Retrieving configuration from "+this.envVariables);
         
       this.confCall = this.http.get(this.envVariables)
         .toPromise()
@@ -61,7 +61,7 @@ export class AppConfig {
             this.confValues.PDRAPI = resp['PDRAPI'];
             this.confValues.GACODE = resp['GACODE'];
             this.confValues.APPVERSION = resp['APPVERSION'];
-            console.log("In Browser read environment variables: " + JSON.stringify(this.confValues));
+            // console.log("In Browser read environment variables: " + JSON.stringify(this.confValues));
           },
           err => {
             console.log("ERROR IN CONFIG :" + JSON.stringify(err));

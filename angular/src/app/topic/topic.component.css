@@ -3,7 +3,7 @@
 .container1 {
     position: relative;
     width: 100%;
-    height: auto;
+    height: 100%;
 }
 
 .image {
@@ -15,16 +15,14 @@
 .title {
     width: 100%;
     height: 25vh;
+    min-height: 150px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     color: white;
     padding: 10px;
     text-align: center;
-    /* font-size: 1.2vw; */
-    /* font-weight: bold; */
     z-index: 99;
-    /* margin-left: -15px; */
 }
 
 .gradient-background {
@@ -35,18 +33,16 @@
 .description {
     position: absolute;
     bottom: 0;
-    /* background: rgb(0, 0, 0);
-    background: rgba(0, 0, 0, 0.5);  */
     background-image: linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, .7));
     color: #f1f1f1;
     width: 100%;
     transition: .5s ease;
     opacity:0;
     color: white;
-    /* font-size: 15px; */
-    padding: 20px 20px;
     text-align: center;
     height: 70%;
+    padding: 13px 20px;
+    overflow-y: auto;
 }
 
 .container1:hover .description {
