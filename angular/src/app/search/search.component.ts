@@ -125,13 +125,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     updateWidth(filterMode?: string){
         this.filterMode = filterMode? filterMode : this.filterMode;
 
-        if(this.filterMode == 'normal'){
-            this.filterToggler = 'expanded';
-        }else{
-            this.filterToggler = 'collapsed';
-        }
-
         if(!this.mobileMode){
+            if(this.filterMode == 'normal'){
+                this.filterToggler = 'expanded';
+            }else{
+                this.filterToggler = 'collapsed';
+            }
+
             if(this.filterMode == 'normal'){
                 this.filterWidth = this.mobWidth / 4;
                 this.filterToggler = 'expanded';
@@ -143,7 +143,8 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.filterWidthStr = this.filterWidth + 'px';
         }else{
             this.filterWidth = this.mobWidth;
-            this.filterWidthStr = "100%"
+            this.filterWidthStr = "100%";
+            this.filterToggler = 'expanded';
         }
 
         this.setResultWidth();

@@ -106,7 +106,6 @@ export class ResultsComponent implements OnInit {
             if(!filter || this.currentFilter == filter) return;
  
             this.currentFilter = filter; 
-
             this.searchSubscription = this.search(null, null, this.itemsPerPage);
         }));
 
@@ -136,7 +135,6 @@ export class ResultsComponent implements OnInit {
                 this.currentFilter = "NoFilter";
                 this.currentSortOrder = "";
 
-                console.log("Search value", this.searchValue);
                 this.searchSubscription = this.search(null, 1, this.itemsPerPage);
             }
         }
@@ -246,7 +244,6 @@ export class ResultsComponent implements OnInit {
         return this.searchService.searchPhrase(query, searchTaxonomyKey, null, this.currentPage, pageSize, this.currentSortOrder, this.currentFilter)
         .subscribe(
             searchResults => {
-                console.log("searchResults", searchResults);
                 that.searchResults = searchResults.ResultData;
                 that.totalItems = searchResults.ResultCount;
                 that.resultStatus = this.RESULT_STATUS.success;
