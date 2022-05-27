@@ -31,7 +31,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
         ]),
         trigger('filterExpand', [
             state('collapsed', style({width: '40px'})),
-            state('expanded', style({height: '*'})),
+            state('expanded', style({width: '*'})),
             transition('expanded <=> collapsed', animate('625ms'))
         ])
     ]
