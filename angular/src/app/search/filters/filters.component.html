@@ -1,17 +1,14 @@
-<div [ngStyle]="{'width': filterWidthNum+'px'}">
+<div [@filterExpand]="isActive? 'expanded' : 'collapsed'" [ngStyle]="{'width': mobileMode? '100%': filterWidthNum+'px'}">
     <div class="normalFilter" [hidden]="!isActive && !mobileMode" id="activeFilter" style="height:auto;padding-bottom: 1em;">
         <div style="padding: 0px;">
             <!-- Filter header -->
             <div id="filterHeader" *ngIf="isActive || mobileMode">
-                <a id="filtersLabel">Filters </a> <a
-                    class="btn-sm collapsed in" (click)="setColumnWidth()" data-toggle="collapse"
-                    style="border-color: #025277; color: #FFF;padding: 0em;border: 0em"
-                    data-target="#demo"><i [ngClass]="getFilterImgClass()"
-                        style="zoom: 100%;color: #fff;cursor: pointer;"></i></a>
-                <a href="#" id="clear-all"
+                <a id="filtersLabel" (click)="setFilterWidth()" data-toggle="collapse" title="Collapse filter" data-target="#demo"><span *ngIf="filterWidthNum > 170">Filters </span><i class="faa faa-angle-double-left filterIcon"></i></a>
+
+                <a href="#" id="clear-all" data-toggle="tooltip" title="Clear all filters"
                     (click)="$event.preventDefault();clearFilters()">
                     <i style="vertical-align: middle;zoom: 70%;margin-right: .3em;" class="faa faa-remove">
-                    </i>Clear All</a>
+                    </i><span *ngIf="filterWidthNum > 170">Clear All</span></a>
             </div>
 
             <!-- Filter body -->
@@ -20,7 +17,7 @@
                 <i class="faa faa-spinner faa-spin faa-stack-2x" style="color:#1E6BA1;" aria-hidden="true"></i>
             </div>
 
-            <div style="padding-left: .5em;overflow: hidden;" *ngIf="isActive && !searching">
+            <div style="padding-left: .5em;" *ngIf="isActive && !searching">
                 <!-- NIST Research topics -->
                 <div class="bottom-line">
                     <div class="filter-checkbox">
@@ -31,14 +28,16 @@
                                 (onNodeExpand)="showMoreLink = true; nodeExpanded = true"
                                 (onNodeCollapse)="nodeExpanded = false">
                                 <ng-template let-node pTemplate="default">
-                                    <span *ngIf="node.label.split('-')[1] !=''; else header1" class="invisible-scrollbar"> {{node.label.split("-")[0]}}&nbsp;</span>
-                                    <ng-template #header1>
-                                        <span><b> {{node.label.split("-")[0]}}&nbsp;</b></span>
-                                    </ng-template>
+                                    <div class="text-nowrap" data-toggle="tooltip" [title]="filterTooltip(node)">
+                                        <span *ngIf="node.label.split('-')[1] !=''; else header1" class="invisible-scrollbar"> {{node.label.split("-")[0]}}&nbsp;</span>
+                                        <ng-template #header1>
+                                            <span><b> {{node.label.split("-")[0]}}&nbsp;</b></span>
+                                        </ng-template>
 
-                                    <span class="w3-badge badge1"
-                                        style="background-color: #1471AE" *ngIf="node.label.split('-')[1] !=''">
-                                        {{node.label.split("-")[1]}}</span>
+                                        <span class="w3-badge badge1"
+                                            style="background-color: #1471AE" *ngIf="node.label.split('-')[1] !=''">
+                                            {{node.label.split("-")[1]}}</span>
+                                    </div>
                                 </ng-template>
                             </p-tree>
                         </div>
@@ -55,7 +54,7 @@
                     <span class="show-more-less" style="float: right;" (click)="toggleMoreOptions()">{{moreOptionsText}}</span>
                 </div>
 
-                <div style="overflow:auto; width: 100%;">
+                <div style="width: 100%;">
                     <div [@expandOptions]="MoreOptionsDisplayed ? 'collapsed':'expanded'">
                         <!-- Resource type -->
                         <div class="filter-checkbox bottom-line">
@@ -64,14 +63,16 @@
                                 (onNodeUnselect)="filterResults()"
                                 (onNodeSelect)="filterResults()">
                                 <ng-template let-node pTemplate="default">
-                                    <span *ngIf="node.label.split('-')[1] !=''; else header2"> {{node.label.split("-")[0]}}&nbsp;</span>
-                                    <ng-template #header2>
-                                        <span><b> {{node.label.split("-")[0]}}&nbsp;</b></span>
-                                    </ng-template>
+                                    <div class="text-nowrap" data-toggle="tooltip" [title]="filterTooltip(node)">
+                                        <span *ngIf="node.label.split('-')[1] !=''; else header2"> {{node.label.split("-")[0]}}&nbsp;</span>
+                                        <ng-template #header2>
+                                            <span><b> {{node.label.split("-")[0]}}&nbsp;</b></span>
+                                        </ng-template>
 
-                                    <span class="w3-badge badge1" style="background-color: #1471AE;"
-                                        *ngIf="node.label.split('-')[1] !=''">
-                                        {{node.label.split("-")[1]}}</span>
+                                        <span class="w3-badge badge1" style="background-color: #1471AE;"
+                                            *ngIf="node.label.split('-')[1] !=''">
+                                            {{node.label.split("-")[1]}}</span>
+                                    </div>
                                 </ng-template>
                             </p-tree>
                         </div>
@@ -82,14 +83,16 @@
                                 [(selection)]="selectedComponentsNode" (onNodeUnselect)="filterResults()"
                                 (onNodeSelect)="filterResults()">
                                 <ng-template let-node pTemplate="default">
-                                    <span *ngIf="node.label.split('-')[1] !=''; else header3"> {{node.label.split("-")[0]}}&nbsp;</span>
-                                    <ng-template #header3>
-                                        <span><b> {{node.label.split("-")[0]}}&nbsp;</b></span>
-                                    </ng-template>
+                                    <div class="text-nowrap" data-toggle="tooltip" [title]="filterTooltip(node)">
+                                        <span *ngIf="node.label.split('-')[1] !=''; else header3"> {{node.label.split("-")[0]}}&nbsp;</span>
+                                        <ng-template #header3>
+                                            <span><b> {{node.label.split("-")[0]}}&nbsp;</b></span>
+                                        </ng-template>
 
-                                    <span class="w3-badge badge1" style="background-color: #1471AE"
-                                        *ngIf="node.label.split('-')[1] !=''">
-                                        {{node.label.split("-")[1]}}</span>
+                                        <span class="w3-badge badge1" style="background-color: #1471AE"
+                                            *ngIf="node.label.split('-')[1] !=''">
+                                            {{node.label.split("-")[1]}}</span>
+                                    </div>
                                 </ng-template>
                             </p-tree>
                         </div>
@@ -129,15 +132,17 @@
                             inputId="keyword" 
                             [(ngModel)]="selectedKeywords"
                             [suggestions]="suggestedKeywords" 
-                            (completeMethod)="filterKeywords($event)"
+                            (completeMethod)="updateSuggestedKeywords($event)"
                             [multiple]="true" 
                             (onSelect)="filterResults()"
                             (onUnselect)="filterResults()" 
                             [minLength]="1"
                             [maxlength]="30" 
                             [style]="filterStyle"
-                            [inputStyle]="{'width':'100%'}"
-                            class="p-autocomplete">
+                            [inputStyle]="{'width':'100%'}">
+                            <ng-template let-keyword pTemplate="item">
+                                <div data-toggle="tooltip" [title]="suggestedKeywordsLkup[keyword]">{{keyword}}</div>
+                            </ng-template>
                         </p-autoComplete>
                     </div>
                 </div>
@@ -145,16 +150,7 @@
         </div>
     </div>
 
-    <!-- <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilter" 
-         [ngStyle]="{'height': comheight}">
-        
-        <div (click)="setColumnWidth()">
-            <i class="faa faa-angle-double-right" style="color: #fff;zoom: 130%"></i>
-            <div class="rotate rotatedFilter"> Filters </div>
-        </div>
-    </div> -->
-
-    <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilterBox" (click)="setColumnWidth()">
+    <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilterBox" (click)="setFilterWidth()">
         
         <!-- Collapsed filters -->
         <div >
