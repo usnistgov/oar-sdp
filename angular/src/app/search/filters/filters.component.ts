@@ -17,23 +17,21 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     providers: [TaxonomyListService, SearchfieldsListService],
     animations: [
         trigger('expand', [
-            state('collapsed', style({height: '183px'})),
-            state('expanded', style({height: '*'})),
-            transition('expanded <=> collapsed', animate('625ms'))
-        ]),
-        trigger('expand', [
             state('closed', style({height: '40px'})),
             state('collapsed', style({height: '183px'})),
+            state('expanded', style({height: '*'})),
+            transition('expanded <=> collapsed', animate('625ms')),
+            transition('expanded <=> closed', animate('625ms')),
             transition('closed <=> collapsed', animate('625ms'))
-        ]),
-        trigger('expand', [
-            state('closed', style({height: '40px'})),
-            state('expanded', style({height: '*'})),
-            transition('expanded <=> closed', animate('625ms'))
         ]),
         trigger('expandOptions', [
             state('collapsed', style({height: '0px'})),
             state('expanded', style({height: '*'})),
+            transition('expanded <=> collapsed', animate('625ms'))
+        ]),
+        trigger('filterExpand', [
+            state('collapsed', style({width: '40px'})),
+            state('expanded', style({width: '*'})),
             transition('expanded <=> collapsed', animate('625ms'))
         ])
     ]
@@ -43,6 +41,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     searchResults: any[] = [];
     suggestedThemes: string[] = [];
     suggestedKeywords: string[] = [];
+    suggestedKeywordsLkup: any = {};
     suggestedAuthors: string[] = [];
     selectedAuthor: any[] = [];
     selectedKeywords: any[] = [];
@@ -104,6 +103,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     nodeExpanded: boolean = true;
     comheight: string; // parent div height
     comwidth: string;  // parent div width
+    maxDropdownLabelLength: number = 30;
 
     filterStyle = {'width':'100%', 'background-color': '#FFFFFF','font-weight': '400','font-style': 'italic', 'font-family': 'sans-serif'};
 
@@ -473,7 +473,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             lFilterString += "keyword=";
 
             for (let keyword of this.selectedKeywords) {
-                lFilterString += keyword + ",";
+                lFilterString += this.suggestedKeywordsLkup[keyword] + ",";
             }
         }
 
@@ -517,15 +517,44 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
     /**
      * Create a list of suggested keywords based on given search query
+     * Because some keywords might be very long, for display purpose we only show the first few words in
+     * the dropdown list.
+     * suggestedKeywords - for display
+     * suggestedKeywordsLkup - stores the real ketwords
      * @param event - search query that user typed into the keyword filter box
      */
-    filterKeywords(event: any) {
+     updateSuggestedKeywords(event: any) {
         let keyword = event.query;
+        let keywordAbbr: string;
         this.suggestedKeywords = [];
+        this.suggestedKeywordsLkup = {};
+
         for (let i = 0; i < this.keywords.length; i++) {
-            let keyw = this.keywords[i];
+            let keyw = this.keywords[i].trim();
             if (keyw.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
-                this.suggestedKeywords.push(keyw);
+                //If the keyword length is greater than the maximum length, we want to truncate
+                //it so that the length is close the maximum length.
+                if(keyw.length > this.maxDropdownLabelLength){
+                    let wordCount = 1;
+                    while(keyw.split(' ', wordCount).join(' ').length < this.maxDropdownLabelLength) {
+                        wordCount++;
+                    }
+
+                    keywordAbbr = keyw.substring(0, keyw.split(' ', wordCount).join(' ').length);
+                    if(keywordAbbr.trim().length < keyw.length) keywordAbbr = keywordAbbr + "...";
+                }else    
+                    keywordAbbr = keyw;
+
+                let i = 1;
+                let tmpKeyword = keywordAbbr;
+                while(Object.keys(this.suggestedKeywordsLkup).indexOf(tmpKeyword) >= 0 && i < 100){
+                    tmpKeyword = keywordAbbr + "(" + i + ")";
+                    i++;
+                }
+                keywordAbbr = tmpKeyword;
+
+                this.suggestedKeywords.push(keywordAbbr);
+                this.suggestedKeywordsLkup[keywordAbbr] = keyw;
             }
         }
 
@@ -870,12 +899,24 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      * Set the width of the filter column. If the filter is active, set the width to 25%. 
      * If the filter is collapsed, set the width to 40px.
      */
-    setColumnWidth() {
+     setFilterWidth() {
         this.isActive = !this.isActive;
         if (!this.isActive) {
             this.filterMode.emit("collapsed");
         } else {
             this.filterMode.emit('normal');
         }
+    }
+
+    /**
+     * Return tooltip text for given filter tree node.
+     * @param filternode tree node of a filter
+     * @returns tooltip text
+     */
+    filterTooltip(filternode: any) {
+        if(filternode && filternode.label)
+            return filternode.label.split('-')[0] + "-" + filternode.label.split('-')[1];
+        else
+            return "";
     }
 }

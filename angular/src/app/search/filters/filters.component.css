@@ -99,8 +99,7 @@
 
 .filter-checkbox {
     width: 100%;
-    min-width: 400px;
-    overflow: auto;
+    overflow-x: hidden;
 }
 
 .bottom-line {
@@ -121,3 +120,10 @@
 	white-space: nowrap !important;
 }
 
+.text-nowrap {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    min-width: 1px;
+}
