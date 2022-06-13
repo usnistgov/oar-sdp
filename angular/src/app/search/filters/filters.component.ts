@@ -524,25 +524,30 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      * @param event - search query that user typed into the keyword filter box
      */
      updateSuggestedKeywords(event: any) {
-        let keyword = event.query;
+        let keyword = event.query.toLowerCase();
         this.suggestedKeywords = [];
         this.suggestedKeywordsLkup = {};
 
         // Handle current keyword: update suggested keywords and lookup
         for (let i = 0; i < this.keywords.length; i++) {
-            let keyw = this.keywords[i].trim();
-            if (keyw.toLowerCase().indexOf(keyword.toLowerCase()) >= 0) {
-                this.suggestedKeywords.push(this.shortenKeyword(keyw));
-                this.suggestedKeywordsLkup[this.shortenKeyword(keyw)] = keyw;
+            let keyw = this.keywords[i].trim().toLowerCase();
+            if (keyw.indexOf(keyword) >= 0) {
+                //Avoid duplicate
+                if(this.suggestedKeywordsLkup[this.shortenKeyword(keyw)] == undefined) {
+                    this.suggestedKeywords.push(this.shortenKeyword(keyw));
+                    this.suggestedKeywordsLkup[this.shortenKeyword(keyw)] = keyw;
+                }
             }
         }
 
         // Handle selected keyword: update suggested keywords lookup. Lookup array must cover all selected keywords.
         this.selectedKeywords.forEach(kw => {
             for (let i = 0; i < this.keywords.length; i++) {
-                let keyw = this.keywords[i].trim();
-                if (keyw.toLowerCase().indexOf(kw.toLowerCase()) >= 0) {
-                    this.suggestedKeywordsLkup[this.shortenKeyword(keyw)] = keyw;
+                let keyw = this.keywords[i].trim().toLowerCase();
+                if (keyw.indexOf(kw.toLowerCase()) >= 0) {
+                    if(this.suggestedKeywordsLkup[this.shortenKeyword(keyw)] == undefined) {
+                        this.suggestedKeywordsLkup[this.shortenKeyword(keyw)] = keyw;
+                    }
                 }
             }
         })
@@ -573,16 +578,17 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
             keywordAbbr = keyword.substring(0, keyword.split(' ', wordCount).join(' ').length);
             if(keywordAbbr.trim().length < keyword.length) keywordAbbr = keywordAbbr + "...";
+
+            let i = 1;
+            let tmpKeyword = keywordAbbr;
+            while(Object.keys(this.suggestedKeywordsLkup).indexOf(tmpKeyword) >= 0 
+                    && this.suggestedKeywordsLkup[tmpKeyword] != keyword && i < 100){
+                tmpKeyword = keywordAbbr + "(" + i + ")";
+                i++;
+            }
+            keywordAbbr = tmpKeyword;
         }else    
             keywordAbbr = keyword;
-
-        let i = 1;
-        let tmpKeyword = keywordAbbr;
-        while(Object.keys(this.suggestedKeywordsLkup).indexOf(tmpKeyword) >= 0 && i < 100){
-            tmpKeyword = keywordAbbr + "(" + i + ")";
-            i++;
-        }
-        keywordAbbr = tmpKeyword;
 
         return keywordAbbr;
     }
