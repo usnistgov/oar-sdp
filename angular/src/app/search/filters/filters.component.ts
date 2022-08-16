@@ -758,12 +758,18 @@ export class FiltersComponent implements OnInit, AfterViewInit {
      */
     collectKeywords(searchResults: any[]) {
         let kwords: string[] = [];
+        let tempkeywords: string[] = [];
+
         for (let resultItem of searchResults) {
         if (resultItem.keyword && resultItem.keyword !== null && resultItem.keyword.length > 0) {
             for (let keyword of resultItem.keyword) {
-            if (kwords.indexOf(keyword) < 0) {
-                kwords.push(keyword);
-            }
+                //If keyword value contains semicolons, split them
+                tempkeywords = keyword.split(";");
+                for(let kw of tempkeywords) {
+                    if (kwords.indexOf(kw) < 0) {
+                        kwords.push(kw);
+                    }
+                }
             }
         }
         }
