@@ -45,11 +45,14 @@
     overflow-y: auto;
 }
 
-.container1:hover .description {
-    opacity: 1;
-}
-
 .topbar {
     width: 100%;
     height: 7px;
+}
+
+img {
+    width: 25px;
+    height: auto;
+    float: right;
+    margin: 5px;
 }

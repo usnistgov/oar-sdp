@@ -52,9 +52,12 @@
             -->
           <div (click)="search('Forensics')" class="box effect1">
             <app-topic 
-            [title]="themes.forensics.title" 
-            [description]="themes.forensics.description"
-            [image]="getImageFullPath(themes.forensics.image)"></app-topic>
+                [title]="themes.forensics.title" 
+                [description]="themes.forensics.description"
+                [image]="getImageFullPath(themes.forensics.image)"
+                [icon]="getIconFullPath(themes.forensics.icon)"
+                [showIcon]="true">
+            </app-topic>
           </div>
         </div>
     </div>

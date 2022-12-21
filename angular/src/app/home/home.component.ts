@@ -37,7 +37,8 @@ export class HomeComponent implements OnInit {
         forensics: {
             title: "FORENSICS",
             description: "Bringing together experts from the forensic, research, legal and law enforcement communities to strengthen forensic science and create a safer, more just society.",
-            image:"assets/images/Theme_Forensics.jpg"
+            image:"assets/images/Theme_Forensics.jpg",
+            icon:"assets/images/Forensics_Collection.jpg"
         },
         Materials: {
             title: "MATERIALS",
@@ -131,5 +132,14 @@ export class HomeComponent implements OnInit {
      */
     getImageFullPath(imagePath: string) {
         return this.SDPAPIURL + imagePath;
+    }
+
+    /**
+     * Return full URL of an icon image from given file path
+     * @param iconPath file path
+     * @returns full url
+     */
+    getIconFullPath(iconPath: string) {
+        return this.SDPAPIURL + iconPath;
     }
 }
