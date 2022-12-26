@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit {
             title: "FORENSICS",
             description: "Bringing together experts from the forensic, research, legal and law enforcement communities to strengthen forensic science and create a safer, more just society.",
             image:"assets/images/Theme_Forensics.jpg",
-            icon:"assets/images/Forensics_Collection.jpg"
+            icon:"assets/images/forensics_collection.png"
         },
         Materials: {
             title: "MATERIALS",
