@@ -15,6 +15,8 @@ export class TopicComponent implements OnInit {
     @Input() description: string = "NIST advances the state-of-the-art in IT in such applications as cybersecurity and biometrics."
     @Input() title: string = "Title";
     @Input() image: string = "";
+    @Input() icon: string = "";
+    @Input() showIcon: boolean = false;
 
     constructor() { }
 
