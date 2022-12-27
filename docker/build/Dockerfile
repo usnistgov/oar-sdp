@@ -11,10 +11,10 @@
 
 # The parent should be an ancestor image of the operational container
 # 
-FROM node:14.19.0
+FROM node:14.21.1
 
-RUN sed -e '/jessie-updates/ s/^deb/#deb/' /etc/apt/sources.list \
-    > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
+# RUN sed -e '/stretch-updates/ s/^deb/#deb/' /etc/apt/sources.list \
+#    > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y --no-install-recommends zip wget ca-certificates git curl
 
