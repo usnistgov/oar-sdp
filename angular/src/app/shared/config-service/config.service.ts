@@ -11,10 +11,14 @@ import * as rxjsop from 'rxjs/operators';
 export { Config };
 
 /**
- * the application configuration service.  This class loads default configuration
- * parameters from the Angular environment at construction time; however, when 
+ * the application configuration service.  By default (the mode appropriate for unit
+ * tests that rely on configuration data), this service pulls its configuration data 
+ * from the Angular environment (i.e. environments/environment.ts); however, when
  * loadRemoteConfig() is called (usually by the app initialization--see app.module.ts),
- * the configuration data will be replaced by values retrieved from the server.
+ * the configuration data will be pulled from a static file on the server.  
+ *
+ * The configuration data is retrieved via the genConfig() member function which is 
+ * always returned as an Observable.  
  *
  * Note that unit tests that utilize this service class will get the configuration 
  * provided by the Angular environment unless loadRemoteConfig() is explicitly called.

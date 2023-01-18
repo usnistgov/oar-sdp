@@ -18,9 +18,9 @@ describe('AppConfig', () => {
         expect(service).toBeTruthy();
 
         let conf = service.getDefaultConfig()
-        expect(conf.SERVERBASE).toEqual("http://localhost");
-        expect(conf.RMMAPI).toEqual("http://localhost/rmm/");
-        expect(conf.SDPAPI).toEqual("http://localhost/sdp/");
+        expect(conf.SERVERBASE).toEqual("http://localhost:4000");
+        expect(conf.RMMAPI).toEqual("http://localhost:4000/rmm/");
+        expect(conf.SDPAPI).toEqual("http://localhost:4000/sdp/");
         expect(conf.GACODE).toEqual("not-set");
         expect(conf.APPVERSION).toEqual("debug");
     });

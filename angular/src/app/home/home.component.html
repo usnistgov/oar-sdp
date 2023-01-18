@@ -40,16 +40,18 @@
         </div>
 
         <div class="col-12 col-md-3 col-sm-6">
-          <!--
-            <a [href]="forensicsURL" target="_blank">
-                <div class="box effect1">
+          <a [href]="forensicsURL" target="_blank">
+              <div class="box effect1">
                 <app-topic 
                     [title]="themes.forensics.title" 
                     [description]="themes.forensics.description"
-                    [image]="getImageFullPath(themes.forensics.image)"></app-topic>
-                </div>
-            </a>
-            -->
+                    [image]="getImageFullPath(themes.forensics.image)"
+                    [icon]="getIconFullPath(themes.forensics.icon)"
+                    [showIcon]="true">
+                </app-topic>
+              </div>
+          </a>
+          <!--
           <div (click)="search('Forensics')" class="box effect1">
             <app-topic 
                 [title]="themes.forensics.title" 
@@ -59,6 +61,7 @@
                 [showIcon]="true">
             </app-topic>
           </div>
+            -->
         </div>
     </div>
 </div>

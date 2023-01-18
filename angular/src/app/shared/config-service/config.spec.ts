@@ -47,11 +47,11 @@ describe("config.withDefaults", function() {
 
     it("handles the default configuration loaded from the environment", function() {
         let cfg : config.Config = config.withDefaults(default_config);
-        expect(cfg.SERVERBASE).toBe("http://localhost");
-        expect(cfg.RMMAPI).toBe("http://localhost/rmm/");
-        expect(cfg.DISTAPI).toBe("http://localhost/od/ds/");
-        expect(cfg.LANDING).toBe("http://localhost/od/id/");
-        expect(cfg.SDPAPI).toBe("http://localhost/sdp/");
+        expect(cfg.SERVERBASE).toBe("http://localhost:4000");
+        expect(cfg.RMMAPI).toBe("http://localhost:4000/rmm/");
+        expect(cfg.DISTAPI).toBe("http://localhost:4000/od/ds/");
+        expect(cfg.LANDING).toBe("http://localhost:4000/od/id/");
+        expect(cfg.SDPAPI).toBe("http://localhost:4000/sdp/");
         expect(cfg.GACODE).toBe("not-set");
         expect(cfg.APPVERSION).toBe("debug");
     });

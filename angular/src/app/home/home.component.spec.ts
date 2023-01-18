@@ -6,7 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppConfig } from '..//shared/config-service/config.service';
 import { MockModule } from '../mock.module';
 
-fdescribe('HomeComponent', () => {
+describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   const appInitializerFn = (appConfig: AppConfig) => {
@@ -37,5 +37,10 @@ fdescribe('HomeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  // Note: this is getting its configuration from environments/environmnet.ts
+  it('should set the forensics URL', () => {
+    expect(component.forensicsURL).toEqual("http://localhost:4000/forensics")
   });
 });

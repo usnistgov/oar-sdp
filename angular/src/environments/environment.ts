@@ -12,7 +12,7 @@ export const environment = {
 };
 
 export const default_config: Config = {
-    "SERVERBASE": "http://localhost/",
+    "SERVERBASE": "http://localhost:4000/",
     "GACODE": "not-set",
     "APPVERSION": "debug"
 }
