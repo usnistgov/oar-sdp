@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 // import { URLSearchParams } from '@angular/http';
 import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
+import * as rxjsop from 'rxjs/operators';
 import { EMPTY } from 'rxjs'
-import { BehaviorSubject } from 'rxjs';
 import * as _ from 'lodash-es';
-import { AppConfig, Config } from '../config-service/config-service.service';
+import { AppConfig, Config } from '../config-service/config.service';
 import { SearchService } from './search-service.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { SDPQuery } from '../search-query/query';
@@ -18,8 +18,6 @@ import { SDPQuery } from '../search-query/query';
 })
 
 export class RealSearchService implements SearchService{
-    confValues: Config;
-    private RMMAPIURL: string;
     operators = {
         'AND': 'logicalOp=AND',
         'OR': 'logicalOp=OR',
@@ -36,11 +34,9 @@ export class RealSearchService implements SearchService{
      * @constructor
      */
     constructor(private http: HttpClient,
-        private router: Router,
-        private appConfig: AppConfig) {
-        this.confValues = this.appConfig.getConfig();
-        this.RMMAPIURL = this.confValues.RMMAPI;
-    }
+                private router: Router,
+                private appConfig: AppConfig)
+    { }
 
     /**
      * Watch total items (search result)
@@ -130,8 +126,9 @@ export class RealSearchService implements SearchService{
             if(searchTaxonomyKey){
                 keyString = '&topic.tag=' + searchTaxonomyKey;
             }
-    
-            url = this.RMMAPIURL + 'records?';
+
+            // url is relative until we are ready to make the call
+            url = 'records?';
     
             if(searchPhraseValue)
                 url += "&" + searchPhraseValue.trim();
@@ -163,10 +160,15 @@ export class RealSearchService implements SearchService{
             url += '&include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
         }
 
-
-
-        // console.log('search url', url);
-        return this.http.get(url);
+        return this.appConfig.getConfig().pipe(
+            rxjsop.mergeMap((conf) => {
+                return this.http.get(conf.RMMAPI + url);
+            }),
+            rxjsop.catchError((err) => {
+                console.error("Failed to complete search: " + JSON.stringify(err));
+                return throwError(err);
+            })
+        );
     }
 
     /**
@@ -225,20 +227,30 @@ export class RealSearchService implements SearchService{
      * Returns an Observable for the HTTP GET request for the JSON resource.
      * @return {string[]} The Observable for the HTTP request.
      */
-    searchPhraseTest(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
-        if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase'))))) {
-        return this.http.get(this.RMMAPIURL + 'records?' + searchValue);
-        } else {
+    searchPhraseTest(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string)
+        : Observable<any>
+    {
+        // url is relative until we're ready to submit
+        let url = 'records?';
         let params = new HttpParams();
-        params.set('searchphrase', searchValue);
-        params.set('topic.tag', searchTaxonomyKey);
-
-        return this.http.get(this.RMMAPIURL + 'records?',
-            {
-            params: params
-
-            });
+        
+        if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase'))))) {
+            url += searchValue;
         }
+        else {
+            params.set('searchphrase', searchValue);
+            params.set('topic.tag', searchTaxonomyKey);
+        }
+        
+        return this.appConfig.getConfig().pipe(
+            rxjsop.mergeMap((conf) => {
+                return this.http.get(conf.RMMAPI + url, { params: params });
+            }),
+            rxjsop.catchError((err) => {
+                console.error("Failed to complete search: " + JSON.stringify(err));
+                return throwError(err);
+            })
+        );
     }
 
         /**

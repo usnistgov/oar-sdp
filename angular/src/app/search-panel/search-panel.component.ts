@@ -6,7 +6,7 @@ import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchService, SEARCH_SERVICE } from '../shared/search-service';
 import { Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash-es';
-import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { AppConfig, Config } from '../shared/config-service/config.service';
 import { timer } from 'rxjs';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -58,7 +58,6 @@ export class SearchPanelComponent implements OnInit {
     }
 
       _editmode: boolean = false;
-    confValues: Config;
     errorMessage: string;
     _searchValue: string = '';
     suggestedTaxonomies: string[];
@@ -69,8 +68,8 @@ export class SearchPanelComponent implements OnInit {
         {label: 'AND', value: 'AND'},
         {label: 'OR', value: 'OR'}
     ];
-    SDPAPI: any;
-    imageURL: string;
+    SDPAPI: any = null;
+    imageURL: string = null;
     mobHeight: number;
     mobWidth: number;
     placeholder: string;
@@ -118,16 +117,16 @@ export class SearchPanelComponent implements OnInit {
      * Create an instance of services for Home
      */
     constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
-        public taxonomyListService: TaxonomyListService, 
-        public searchFieldsListService: SearchfieldsListService, 
-        public searchQueryService: SearchQueryService,
-        public ngZone: NgZone,
-        private router: Router,
-        private elementRef:ElementRef,
-        private appConfig: AppConfig) {
+                public taxonomyListService: TaxonomyListService, 
+                public searchFieldsListService: SearchfieldsListService, 
+                public searchQueryService: SearchQueryService,
+                public ngZone: NgZone,
+                private router: Router,
+                private elementRef:ElementRef,
+                private appConfig: AppConfig)
+    {
         var ts = new Date();
         this.suggestedTaxonomies = [];
-        this.confValues = this.appConfig.getConfig();
 
         this.mobHeight = (window.innerHeight);
         this.mobWidth = (window.innerWidth);
@@ -184,9 +183,13 @@ export class SearchPanelComponent implements OnInit {
         }
         });
 
-        this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
+        this.appConfig.getConfig().subscribe(
+            (conf) => {
+                this.SDPAPI = conf.SDPAPI;
+                this.imageURL = this.SDPAPI + 'assets/images/sdp-background.jpg';
+            }
+        );
 
-        this.SDPAPI = this.confValues.SDPAPI;
         this.getTaxonomySuggestions();
     }
 

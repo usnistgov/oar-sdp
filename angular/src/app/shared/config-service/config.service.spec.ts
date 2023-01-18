@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AppConfig, Config } from './config-service.service';
+import { AppConfig, Config } from './config.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import * as rxjs from 'rxjs';
 
-fdescribe('AppConfig', () => {
+describe('AppConfig', () => {
     beforeEach(() => TestBed.configureTestingModule({
         imports: [ HttpClientModule ],
         providers: [ HttpClient ]

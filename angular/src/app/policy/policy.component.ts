@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonService } from '../shared/common/common.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
-import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { AppConfig, Config } from '../shared/config-service/config.service';
 
 /**
  * This class represents the lazy loaded AboutComponent.
@@ -12,18 +12,19 @@ import { AppConfig, Config } from '../shared/config-service/config-service.servi
   styleUrls: ['policy.component.css']
 })
 export class PolicyComponent { 
-  imageURL: string;
+  imageURL: string = null;
   confValues: Config;
 
   constructor(public commonService: CommonService, 
               public gaService: GoogleAnalyticsService,
               private appConfig: AppConfig)
-  {
-      this.confValues = this.appConfig.getConfig();
-  }
+  {  }
 
   ngOnInit() {
-    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-
+      this.appConfig.getConfig().subscribe(
+          (conf) => {
+              this.imageURL = conf.SDPAPI + 'assets/images/sdp-background.jpg';
+          }
+      );
   }
 }
