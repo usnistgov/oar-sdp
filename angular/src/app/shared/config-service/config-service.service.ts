@@ -1,103 +1,93 @@
+/**
+ * Support for accessing configuration data
+ */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import environment from '../../../assets/environment.json';
+import { Config, withDefaults } from './config';
+import { default_config, environment } from '../../../environments/environment';
+import * as rxjs from 'rxjs';
+import * as rxjsop from 'rxjs/operators';
 
-import * as process from 'process';
-import { PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { config } from 'rxjs';
-import { Location } from '@angular/common';
-export interface Config {
-  RMMAPI: string;
-  DISTAPI: string;
-  LANDING: string
-  SDPAPI: string;
-  PDRAPI: string;
-  METAPI: string;
-  GACODE: string;
-  APPVERSION: string;
-}
+export { Config };
 
+/**
+ * the application configuration service.  This class loads default configuration
+ * parameters from the Angular environment at construction time; however, when 
+ * loadRemoteConfig() is called (usually by the app initialization--see app.module.ts),
+ * the configuration data will be replaced by values retrieved from the server.
+ *
+ * Note that unit tests that utilize this service class will get the configuration 
+ * provided by the Angular environment unless loadRemoteConfig() is explicitly called.
+ */
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AppConfig {
-  private appConfig;
-  private confCall;
-  private envVariables = "assets/environment.json";
-  private confValues = {} as Config;
-
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID)
-  private platformId: Object) { 
-  }
-
-  loadAppConfig() {
-    if (isPlatformBrowser(this.platformId)) {
-
-      // set this.envVariables to be the full URL for retrieving
-      // configuration.  Normal rules of relative URLs are applied.    
-      let baseurl = null;
-      if (this.envVariables.startsWith("/")) {
-          baseurl = location.origin;
-      }
-      else {
-          baseurl = location.href.replace(/#.*$/, "");
-          if (! this.envVariables.endsWith("/"))
-              baseurl = baseurl.replace(/\/[^\/]+$/, "/");
-      }
-      this.envVariables = baseurl + this.envVariables;
-    //   console.log("Retrieving configuration from "+this.envVariables);
-        
-      this.confCall = this.http.get(this.envVariables)
-        .toPromise()
-        .then(
-          resp => {
-            resp as Config;
-            this.confValues.RMMAPI = resp['RMMAPI'];
-            this.confValues.DISTAPI = resp['DISTAPI'];
-            this.confValues.LANDING = resp['LANDING'];
-            this.confValues.METAPI = resp['METAPI'];
-            this.confValues.SDPAPI = resp['SDPAPI'];
-            this.confValues.PDRAPI = resp['PDRAPI'];
-            this.confValues.GACODE = resp['GACODE'];
-            this.confValues.APPVERSION = resp['APPVERSION'];
-            // console.log("In Browser read environment variables: " + JSON.stringify(this.confValues));
-          },
-          err => {
-            console.log("ERROR IN CONFIG :" + JSON.stringify(err));
-          }
-        );
-      return this.confCall;
-    } else {
-
-      this.appConfig = <any>environment;
-      this.confValues.RMMAPI = process.env.RMMAPI || this.appConfig.RMMAPI;
-      this.confValues.DISTAPI = process.env.DISTAPI || this.appConfig.DISTAPI;
-      this.confValues.LANDING = process.env.LANDING || this.appConfig.LANDING;
-      this.confValues.METAPI = process.env.METAPI || this.appConfig.METAPI;
-      this.confValues.SDPAPI = process.env.SDPAPI || this.appConfig.SDPAPI;
-      this.confValues.PDRAPI = process.env.PDRAPI || this.appConfig.PDRAPI;
-      this.confValues.GACODE = process.env.GACODE || this.appConfig.GACODE;
-      this.confValues.APPVERSION = process.env.APPVERSION || this.appConfig.APPVERSION;
-      console.log(" ****** In server: " + JSON.stringify(this.confValues));
+    private _subject: rxjs.Subject<Config>;
+    private remoteSourceURL: string = null
+    
+    constructor(private http: HttpClient) {
+        // Load the default values:
+        this._subject = null;
     }
-  }
 
-  getConfig() {
-    // console.log(" ****** In Browser 3: "+ JSON.stringify(this.confValues));
-    return this.confValues;
-  }
+    /**
+     * asynchronously load the configuration from a remote location.  The results 
+     * will be internally cached.
+     */
+    loadRemoteConfig(srcurl: string = null) : rxjs.Observable<Config> {
+        if (! srcurl) srcurl = environment.config_url;
+        this.remoteSourceURL = srcurl;
+            
+        this._subject = new rxjs.AsyncSubject();
+        this.getRemoteConfig(this.remoteSourceURL).subscribe(this._subject);
+        return this._subject;
+    }
 
-  loadConfigForTest(){
-    this.confValues = {
-      "RMMAPI":  "https://data.nist.gov/rmm/",
-      "SDPAPI":  "https://localhost:5555/",
-      "PDRAPI":  "https://localhost:4200/od/id/",
-      "DISTAPI": "https://data.nist.gov/od/ds/",
-      "METAPI":  "https://localhost/metaurl/",
-      "LANDING": "https://data.nist.gov/rmm/",
-      "GACODE":  "not-set",
-      "APPVERSION": "1.3.0"
-    };
-  }
+    /**
+     * retrieve and return configuration data from a remote location.  The results 
+     * not cached internally (see loadRemoteConfig()).
+     * @param srcurl   the URL containing the remote configuration (as a JSON object)
+     */
+    getRemoteConfig(srcurl?: string) : rxjs.Observable<Config> {
+        if (! srcurl) srcurl = environment.config_url
+        return this.http.get(srcurl).pipe(
+            rxjsop.map<Config, Config>(resp => {
+                var cfg: Config = withDefaults(resp as Config);
+                if (! cfg.GACODE || ! cfg.APPVERSION) {
+                    let defcfg: Config = this.getDefaultConfig();
+                    if (! cfg.GACODE) cfg.GACODE = defcfg.GACODE;
+                    if (! cfg.APPVERSION) cfg.APPVERSION = defcfg.APPVERSION;
+                }
+                return cfg;
+            }),
+            rxjsop.catchError(err => {
+                console.error("Failed to download configuration: " + JSON.stringify(err));
+                return rxjs.throwError(err);
+            })
+        );
+    }
+
+    getDefaultConfig() : Config {
+        return withDefaults(default_config);
+    }
+
+    /**
+     * return the configuration data
+     */
+    getConfig() : rxjs.Observable<Config> {
+        if (! this._subject) {
+            if (this.remoteSourceURL)
+                this.loadRemoteConfig(this.remoteSourceURL)
+
+            else 
+                return new rxjs.Observable<Config>((observer) => {
+                    observer.next(this.getDefaultConfig());
+                    observer.complete();
+                    return;
+                });
+        }
+
+        return this._subject;
+    }
 }

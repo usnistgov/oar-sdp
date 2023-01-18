@@ -1,4 +1,5 @@
 {
+    "SERVERBASE": "http://data.nist.gov/",
     "RMMAPI":  "http://data.nist.gov/rmm/",
     "SDPAPI":  "http://localhost:5555/",
     "PDRAPI":  "http://localhost:4200/od/id/",
