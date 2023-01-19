@@ -7,7 +7,6 @@ import { Router, NavigationExtras } from '@angular/router';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 import { FormCanDeactivate } from '../form-can-deactivate/form-can-deactivate';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
-import { AppConfig, Config } from '../shared/config-service/config-service.service';
 import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/query';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ConfirmService } from '../shared/confirm/confirm.service';

@@ -14,7 +14,7 @@ import { CanDeactivateGuard} from './can-deactivate/can-deactivate.guard';
 import { SearchModule } from './search/search.module';
 import { TopBarComponent }  from './app.topbar.component';
 import { TooltipModule } from 'primeng/tooltip';
-import { AppConfig } from './shared/config-service/config-service.service';
+import { AppConfig } from './shared/config-service/config.service';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AboutComponent } from './about/about.component';
 import { AdvSearchModule } from './adv-search/adv_search.module';
@@ -40,8 +40,15 @@ import { TopicModule } from './topic/topic.module';
  */
 const appInitializerFn = (appConfig: AppConfig) => {
   return () => {
-    console.log("**** CAlling APP Initialization ***");
-    return appConfig.loadAppConfig();
+      console.log("**** Calling APP Initialization ***");
+      appConfig.loadRemoteConfig().subscribe(
+          (conf) => {
+              console.log("Loaded configuration for version "+conf.APPVERSION);
+          },
+          (err) => {
+              console.error("Failed to pull configuration from server:\n"+ JSON.stringify(err));
+          }
+      );
   };
 };
 

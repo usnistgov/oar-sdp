@@ -2,7 +2,7 @@ import { Component, AfterViewInit, ElementRef, ViewChild, Renderer2 } from '@ang
 import './operators';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
-import { AppConfig, Config } from './shared/config-service/config-service.service';
+import { AppConfig, Config } from './shared/config-service/config.service';
 import { concat } from 'rxjs';
 
 enum MenuOrientation {
@@ -54,8 +54,7 @@ export class AppComponent implements AfterViewInit {
   resetMenu: boolean;
 
   menuHoverActive: boolean;
-  confValues: Config;
-  gaCode: string;
+  gaCode: string = null;
 
   @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
 
@@ -67,17 +66,6 @@ export class AppComponent implements AfterViewInit {
     private appConfig: AppConfig,
     private gaService: GoogleAnalyticsService) {
 
-    /**
-     * Added Google Analytics service to html
-     * 
-     * Google Analytics service code was removed from index.html because it's not yet calling config service.
-     * While adding Google Analytics service code here, the header menu and footer are all available 
-     * at this time so we don't need to msnuslly track user events in header menu and footer links.
-     * But we still need to track user event of the dynamic content.
-     */
-    this.confValues = this.appConfig.getConfig();
-    this.gaCode = this.confValues.GACODE;
-    this.gaService.appendGaTrackingCode(this.gaCode);
   }
 
   ngAfterViewInit() {
@@ -85,7 +73,23 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngOnInit() {
+      this.appConfig.getConfig().subscribe(
+          (conf) => {
+              this.gaCode = conf.GACODE;
 
+              /**
+               * Added Google Analytics service to html
+               * 
+               * Google Analytics service code was removed from index.html because 
+               * it's not yet calling config service.  While adding Google Analytics 
+               * service code here, the header menu and footer are all available 
+               * at this time so we don't need to msnuslly track user events in header 
+               * menu and footer links.  But we still need to track user event of the 
+               * dynamic content.
+               */
+              this.gaService.appendGaTrackingCode(this.gaCode);
+          }
+      );
   }
 
   closeWindow() {

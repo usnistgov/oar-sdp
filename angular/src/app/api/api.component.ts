@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { AppConfig, Config } from '../shared/config-service/config.service';
 import { CommonService } from '../shared/common/common.service';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 
@@ -12,23 +12,23 @@ import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.se
   styleUrls: ['api.component.css']
 })
 export class ApiComponent {
-  confValues: Config;
   RestAPIURL: any;
   imageURL: string;
 
     /**
    * Create an instance of services for Home
    */
-  constructor(
-    private appConfig: AppConfig,
-    public commonService: CommonService,
-    public gaService: GoogleAnalyticsService) {
-      this.confValues = this.appConfig.getConfig();
-      this.RestAPIURL = this.confValues.RMMAPI;
-  }
+  constructor(private appConfig: AppConfig,
+              public commonService: CommonService,
+              public gaService: GoogleAnalyticsService)
+  {  }
 
   ngOnInit() {
-    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-
+      this.appConfig.getConfig().subscribe(
+          (conf) => {
+              this.RestAPIURL = conf.RMMAPI;
+              this.imageURL = conf.SDPAPI + 'assets/images/sdp-background.jpg';
+          }
+      );
   }
 }

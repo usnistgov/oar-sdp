@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GoogleAnalyticsService } from '../shared/ga-service/google-analytics.service';
 import { CommonService } from '../shared/common/common.service';
-import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { AppConfig, Config } from '../shared/config-service/config.service';
 
 @Component({
   selector: 'sdp-about',
@@ -10,19 +10,18 @@ import { AppConfig, Config } from '../shared/config-service/config-service.servi
 })
 export class AboutComponent implements OnInit {
   imageURL: string;
-  confValues: Config;
 
-  constructor(
-    public gaService: GoogleAnalyticsService, 
-    private appConfig: AppConfig,
-    public commonService: CommonService) 
-  { 
-    this.confValues = this.appConfig.getConfig();
-  }
+  constructor(public gaService: GoogleAnalyticsService, 
+              private appConfig: AppConfig,
+              public commonService: CommonService) 
+  {   }
 
   ngOnInit() {
-    this.imageURL = this.confValues.SDPAPI + 'assets/images/sdp-background.jpg';
-
+      this.appConfig.getConfig().subscribe(
+          (conf) => {
+              this.imageURL = conf.SDPAPI + 'assets/images/sdp-background.jpg';
+          }
+      );
   }
 
 }

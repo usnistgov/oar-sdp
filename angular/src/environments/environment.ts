@@ -3,11 +3,19 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { RealModule } from '../app/real.module';
+import { Config } from '../app/shared/config-service/config';
 
 export const environment = {
-  production: false,
-  possiblyMockModule: RealModule,
+    production: false,
+    possiblyMockModule: RealModule,
+    config_url: "assets/environment.json"
 };
+
+export const default_config: Config = {
+    "SERVERBASE": "http://localhost:4000/",
+    "GACODE": "not-set",
+    "APPVERSION": "debug"
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

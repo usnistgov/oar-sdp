@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 // import { URLSearchParams } from '@angular/common/http';
 import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
+import * as rxjsop from 'rxjs/operators';
 import { EMPTY } from 'rxjs'
-import { BehaviorSubject } from 'rxjs';
 import * as _ from 'lodash-es';
-import { AppConfig, Config } from '../config-service/config-service.service';
+import { AppConfig, Config } from '../config-service/config.service';
 import { SearchService } from './search-service.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { SDPQuery } from '../search-query/query';
@@ -15,8 +15,6 @@ import { SDPQuery } from '../search-query/query';
 })
 
 export class MockSearchService implements SearchService{
-    confValues: Config;
-    private RMMAPIURL: string;
     filterString = new BehaviorSubject<string>('');
     currentPage = new BehaviorSubject<number>(1);
     totalItems = new BehaviorSubject<number>(1);
@@ -28,11 +26,8 @@ export class MockSearchService implements SearchService{
      */
     constructor(private http: HttpClient,
                 private router: Router,
-                private appConfig: AppConfig) {
-
-        this.confValues = this.appConfig.getConfig();
-        this.RMMAPIURL = this.confValues.RMMAPI;
-    }
+                private appConfig: AppConfig)
+    {  }
 
     /**
      * Returns an Observable for the HTTP GET request for the JSON resource.
@@ -102,20 +97,27 @@ export class MockSearchService implements SearchService{
      * @return {string[]} The Observable for the HTTP request.
      */
     searchPhraseTest(searchValue: string, searchTaxonomyKey: string, queryAdvSearch: string): Observable<any> {
+        // url is relative until we're ready to submit
+        let url = 'records?';
+        let params = new HttpParams();
+        
         if ((queryAdvSearch === 'yes' && (!(_.includes(searchValue, 'searchphrase'))))) {
-
-            return this.http.get(this.RMMAPIURL + 'records?' + searchValue);
-
-        } else {
-            let params = new HttpParams();
+            url += searchValue;
+        }
+        else {
             params.set('searchphrase', searchValue);
             params.set('topic.tag', searchTaxonomyKey);
-
-            return this.http.get(this.RMMAPIURL + 'records?',
-            {
-                params: params
-            });
         }
+        
+        return this.appConfig.getConfig().pipe(
+            rxjsop.mergeMap((conf) => {
+                return this.http.get(conf.RMMAPI + url, { params: params });
+            }),
+            rxjsop.catchError((err) => {
+                console.error("Failed to complete search: " + JSON.stringify(err));
+                return throwError(err);
+            })
+        );
     }
 
     /**

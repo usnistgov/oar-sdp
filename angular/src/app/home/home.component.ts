@@ -1,7 +1,7 @@
 // import { SwitchView } from '@angular/common/src/directives/ng_switch';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AppConfig, Config } from '../shared/config-service/config-service.service';
+import { AppConfig, Config } from '../shared/config-service/config.service';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -62,14 +62,16 @@ export class HomeComponent implements OnInit {
         }
     }
 
-    constructor(private router: Router, private appConfig: AppConfig) {
-        this.confValues = this.appConfig.getConfig();
-        this.PDRAPIURL = this.confValues.PDRAPI;
-        this.SDPAPIURL = this.confValues.SDPAPI;
-        // this.forensicsURL = this.PDRAPIURL + "pdr0-0001";
-    }
+    constructor(private router: Router, private appConfig: AppConfig) {  }
 
     ngOnInit() {
+        this.appConfig.getConfig().subscribe(
+            (conf) => {
+                this.PDRAPIURL = conf.SDPAPI;
+                this.SDPAPIURL = conf.SDPAPI;
+                this.forensicsURL = conf.SERVERBASE + "/forensics";
+            }
+        );
     }
 
     /**

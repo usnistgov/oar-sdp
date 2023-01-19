@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { AppConfig, Config } from '../config-service/config-service.service';
+import { Observable, throwError } from 'rxjs';
+import * as rxjsop from 'rxjs/operators';
+import { AppConfig, Config } from '../config-service/config.service';
 import { SelectItem } from 'primeng/api';
 import * as _ from 'lodash-es';
 
@@ -9,8 +10,6 @@ import * as _ from 'lodash-es';
   providedIn: 'root'
 })
 export class SearchfieldsListService {
-  confValues: Config;
-  private RMMAPIURL: string;
   ALL: string = 'ALL FIELDS';
 
   /**
@@ -19,22 +18,29 @@ export class SearchfieldsListService {
    * @constructor
    */
   constructor(private http: HttpClient,
-    private appConfig: AppConfig) {
-      this.confValues = this.appConfig.getConfig();
-      this.RMMAPIURL = this.confValues.RMMAPI;
-    }
+              private appConfig: AppConfig)
+  {  }
 
-    ngOnInit(): void {
+  ngOnInit(): void {
 
-    }
+  }
 
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<any> {
-   return this.http.get(this.RMMAPIURL + 'records/fields');
+      return this.appConfig.getConfig().pipe(
+          rxjsop.mergeMap((conf) => {
+              return this.http.get(conf.RMMAPI + 'taxonomy?level=1');
+          }),
+          rxjsop.catchError((err) => {
+              console.error("Failed to download taxonomy: " + JSON.stringify(err));
+              return throwError(err);
+          })
+      );
   }
+
   /**
     * Handle HTTP error
     */

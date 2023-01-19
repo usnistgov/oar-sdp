@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { HomeComponent } from './home.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppConfig } from '..//shared/config-service/config-service.service';
+import { AppConfig } from '..//shared/config-service/config.service';
 import { MockModule } from '../mock.module';
 
 describe('HomeComponent', () => {
@@ -11,8 +11,7 @@ describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   const appInitializerFn = (appConfig: AppConfig) => {
     return () => {
-      appConfig.loadConfigForTest();
-      return appConfig.loadAppConfig();
+      appConfig.loadRemoteConfig();
     };
   };
 
@@ -24,13 +23,7 @@ describe('HomeComponent', () => {
         MockModule
       ],
       declarations: [ HomeComponent ],
-      providers: [
-         {
-          provide: APP_INITIALIZER,
-          useFactory: appInitializerFn,
-          multi: true,
-          deps: [AppConfig]
-        }],
+      providers: [ AppConfig ],
       schemas: [NO_ERRORS_SCHEMA] 
     })
     .compileComponents();
@@ -44,5 +37,10 @@ describe('HomeComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  // Note: this is getting its configuration from environments/environmnet.ts
+  it('should set the forensics URL', () => {
+    expect(component.forensicsURL).toEqual("http://localhost:4000/forensics")
   });
 });

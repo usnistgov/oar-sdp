@@ -1,7 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { AppConfig, Config } from '../config-service/config-service.service';
+import { Observable, throwError } from 'rxjs';
+import * as rxjsop from 'rxjs/operators';
+import { AppConfig, Config } from '../config-service/config.service';
 
 /**
  * This class provides the TaxonomyList service with methods to read taxonomies and add names.
@@ -10,8 +11,6 @@ import { AppConfig, Config } from '../config-service/config-service.service';
   providedIn: 'root'
 })
 export class TaxonomyListService {
-  confValues: Config;
-  private RMMAPIURL: string;
 
   /**
    * Creates a new TaxonomyListService with the injected Http.
@@ -19,17 +18,23 @@ export class TaxonomyListService {
    * @constructor
    */
   constructor(private http: HttpClient,
-    private appConfig: AppConfig) {
-    this.confValues = this.appConfig.getConfig();
-    this.RMMAPIURL = this.confValues.RMMAPI;
-  }
+              private appConfig: AppConfig)
+  { }
 
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
   get(): Observable<any> {
-    return this.http.get(this.RMMAPIURL + 'taxonomy?level=1');
+      return this.appConfig.getConfig().pipe(
+          rxjsop.mergeMap((conf) => {
+              return this.http.get(conf.RMMAPI + 'taxonomy?level=1');
+          }),
+          rxjsop.catchError((err) => {
+              console.error("Failed to download taxonomy: " + JSON.stringify(err));
+              return throwError(err);
+          })
+      );
   }
 
   /**

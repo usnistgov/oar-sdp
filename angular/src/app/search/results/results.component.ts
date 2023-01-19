@@ -5,7 +5,7 @@ import { SearchfieldsListService } from '../../shared/index';
 import { SelectItem } from 'primeng/api';
 import { SearchQueryService } from '../../shared/search-query/search-query.service';
 import { GoogleAnalyticsService } from '../../shared/ga-service/google-analytics.service';
-import { AppConfig, Config } from '../../shared/config-service/config-service.service';
+import { AppConfig, Config } from '../../shared/config-service/config.service';
 import { Message } from 'primeng/api';
 // import { Message } from 'primeng/components/common/api';
 import { Subscription } from 'rxjs';
@@ -58,18 +58,18 @@ export class ResultsComponent implements OnInit {
     @Input() currentPage: number = 1;
     @Input() mobWidth: number = 1920;
 
-    constructor(
-        @Inject(SEARCH_SERVICE) private searchService: SearchService,
-        public searchFieldsListService: SearchfieldsListService,
-        public searchQueryService: SearchQueryService,
-        public gaService: GoogleAnalyticsService,
-        private appConfig: AppConfig,
-        public myElement: ElementRef
-    ) { 
-        this.confValues = this.appConfig.getConfig();
-        this.PDRAPIURL = this.confValues.PDRAPI;
+    constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService,
+                public searchFieldsListService: SearchfieldsListService,
+                public searchQueryService: SearchQueryService,
+                public gaService: GoogleAnalyticsService,
+                private appConfig: AppConfig,
+                public myElement: ElementRef)
+    {
+        this.appConfig.getConfig().subscribe(
+            (conf) => { this.PDRAPIURL = conf.PDRAPI; },
+        );
     }
-
+    
     ngOnInit() {
         this.currentPage = 1;
         
