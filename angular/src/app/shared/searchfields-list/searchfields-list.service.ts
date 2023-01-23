@@ -32,10 +32,10 @@ export class SearchfieldsListService {
   get(): Observable<any> {
       return this.appConfig.getConfig().pipe(
           rxjsop.mergeMap((conf) => {
-              return this.http.get(conf.RMMAPI + 'taxonomy?level=1');
+              return this.http.get(conf.RMMAPI + 'records/fields');
           }),
           rxjsop.catchError((err) => {
-              console.error("Failed to download taxonomy: " + JSON.stringify(err));
+              console.error("Failed to download fields: " + JSON.stringify(err));
               return throwError(err);
           })
       );
