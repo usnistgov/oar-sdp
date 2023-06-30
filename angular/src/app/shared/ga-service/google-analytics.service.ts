@@ -66,25 +66,59 @@ export class GoogleAnalyticsService {
 *   First we read the tracking code from the config server, then form the script src and added the script
 *   to the top of current page. 
 */
-  public appendGaTrackingCode(gaCode: string) {
+  public appendGaTrackingCode(gaCode: string, ga4Code: string) {
     try {
-      let scriptId = '_fed_an_ua_tag';
+        //GA3
+        let scriptId = '_fed_an_ua_tag';
 
-      if (document.getElementById(scriptId)) {
-        console.log("Found GA id.");
-        document.getElementById(scriptId).remove();
-      }
+        if (document.getElementById(scriptId)) {
+            console.log("Found GA id.");
+            document.getElementById(scriptId).remove();
+        }
 
-      var s = document.createElement('script') as any;
-      s.type = "text/javascript";
-      s.id = scriptId;
-      s.src = "https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NIST&pua=" + gaCode + "&yt=true&exts=ppsx,pps,f90,sch,rtf,wrl,txz,m1v,xlsm,msi,xsd,f,tif,eps,mpg,xml,pl,xlt,c";
+        var s = document.createElement('script') as any;
+        s.type = "text/javascript";
+        s.id = scriptId;
+        s.src = "https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NIST&pua=" + gaCode + "&yt=true&exts=ppsx,pps,f90,sch,rtf,wrl,txz,m1v,xlsm,msi,xsd,f,tif,eps,mpg,xml,pl,xlt,c";
 
-      var h = document.getElementsByTagName("head");
-      document.getElementsByTagName("head")[0].appendChild(s);
+        var h = document.getElementsByTagName("head");
+        document.getElementsByTagName("head")[0].appendChild(s);
+
+        //GA4
+        scriptId = '_gtag_js';
+
+        if (document.getElementById(scriptId)) {
+            console.log("Found GA id.");
+            document.getElementById(scriptId).remove();
+        }
+
+        var s1 = document.createElement('script') as any;
+        s1.type = "text/javascript";
+        s1.id = scriptId;
+        s1.async = true;
+        s1.src = "https://www.googletagmanager.com/gtag/js?id=" + ga4Code;
+
+        var h1 = document.getElementsByTagName("head");
+        document.getElementsByTagName("head")[0].appendChild(s1);
+
+        scriptId = '_dataLayer';
+
+        if (document.getElementById(scriptId)) {
+            console.log("Found GA id.");
+            document.getElementById(scriptId).remove();
+        }
+
+        var s2 = document.createElement('script') as any;
+        s2.type = "text/javascript";
+        s2.id = scriptId;
+        s2.text = "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" + ga4Code+ "');";
+
+        var h2 = document.getElementsByTagName("head");
+        document.getElementsByTagName("head")[0].appendChild(s2);
+        
     } catch (ex) {
-      console.error('Error appending google analytics');
-      console.error(ex);
+        console.error('Error appending google analytics');
+        console.error(ex);
     }
   }
 }

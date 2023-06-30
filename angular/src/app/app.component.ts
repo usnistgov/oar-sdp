@@ -55,6 +55,7 @@ export class AppComponent implements AfterViewInit {
 
   menuHoverActive: boolean;
   gaCode: string = null;
+  ga4Code: string = null;
 
   @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
 
@@ -76,6 +77,7 @@ export class AppComponent implements AfterViewInit {
       this.appConfig.getConfig().subscribe(
           (conf) => {
               this.gaCode = conf.GACODE;
+              this.ga4Code = conf.GA4CODE;
 
               /**
                * Added Google Analytics service to html
@@ -87,7 +89,7 @@ export class AppComponent implements AfterViewInit {
                * menu and footer links.  But we still need to track user event of the 
                * dynamic content.
                */
-              this.gaService.appendGaTrackingCode(this.gaCode);
+              this.gaService.appendGaTrackingCode(this.gaCode, this.ga4Code);
           }
       );
   }
