@@ -1,9 +1,12 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, Renderer2 } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, Renderer2, Inject } from '@angular/core';
 import './operators';
 import { SearchQueryService } from './shared/search-query/search-query.service';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
 import { AppConfig, Config } from './shared/config-service/config.service';
 import { concat } from 'rxjs';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router, RouterState } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 
 enum MenuOrientation {
   STATIC,
@@ -11,6 +14,8 @@ enum MenuOrientation {
   SLIM,
   HORIZONTAL
 };
+
+declare const gtag: Function;
 
 @Component({
   selector: 'sdp-app',
@@ -65,34 +70,76 @@ export class AppComponent implements AfterViewInit {
     public renderer: Renderer2,
     public searchQueryService: SearchQueryService,
     private appConfig: AppConfig,
-    private gaService: GoogleAnalyticsService) {
-
+    private gaService: GoogleAnalyticsService,
+    public router: Router,
+    private titleService: Title,
+    @Inject(DOCUMENT) private document: Document) {
+        
   }
 
-  ngAfterViewInit() {
-    this.layoutContainer = <HTMLDivElement>this.layourContainerViewChild.nativeElement;
-  }
+    ngAfterViewInit() {
+        this.layoutContainer = <HTMLDivElement>this.layourContainerViewChild.nativeElement;
+    }
 
-  ngOnInit() {
-      this.appConfig.getConfig().subscribe(
-          (conf) => {
-              this.gaCode = conf.GACODE;
-              this.ga4Code = conf.GA4CODE;
+    ngOnInit() {
+        this.appConfig.getConfig().subscribe(
+            (conf) => {
+                this.gaCode = conf.GACODE;
+                this.ga4Code = conf.GA4CODE;
 
-              /**
-               * Added Google Analytics service to html
-               * 
-               * Google Analytics service code was removed from index.html because 
-               * it's not yet calling config service.  While adding Google Analytics 
-               * service code here, the header menu and footer are all available 
-               * at this time so we don't need to msnuslly track user events in header 
-               * menu and footer links.  But we still need to track user event of the 
-               * dynamic content.
-               */
-              this.gaService.appendGaTrackingCode(this.gaCode, this.ga4Code);
-          }
-      );
-  }
+                /**
+                 * Added Google Analytics service to html
+                 * 
+                 * Google Analytics service code was removed from index.html because 
+                 * it's not yet calling config service.  While adding Google Analytics 
+                 * service code here, the header menu and footer are all available 
+                 * at this time so we don't need to msnuslly track user events in header 
+                 * menu and footer links.  But we still need to track user event of the 
+                 * dynamic content.
+                 */
+                this.gaService.appendGaTrackingCode(this.gaCode, this.ga4Code);
+
+                //Add GA4 code to track page view
+                this.handleRouteEvents();
+            }
+        );
+    }
+
+    /**
+     * GA4 code to track page view when user navigates to different pages
+     */
+    handleRouteEvents() {
+        this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                console.log('event', event);
+                const title = this.getTitle(this.router.routerState, this.router.routerState.root).join('-');
+                console.log('title', title);
+                this.titleService.setTitle(title);
+                gtag('event', 'page_view', {
+                    page_title: title,
+                    page_path: event.urlAfterRedirects,
+                    page_location: this.document.location.href
+                })
+            }
+        });
+    }
+    
+    /**
+     * Get page title if any
+     * @param state router state
+     * @param parent Activated route
+     * @returns 
+     */
+    getTitle(state: RouterState, parent: ActivatedRoute): string[] {
+        const data = [];
+        if (parent && parent.snapshot.data && parent.snapshot.data['title']) {
+            data.push(parent.snapshot.data['title']);
+        }
+        if (state && parent && parent.firstChild) {
+            data.push(...this.getTitle(state, parent.firstChild));
+        }
+        return data;
+    }
 
   closeWindow() {
     // this.displayQueryList = false;
