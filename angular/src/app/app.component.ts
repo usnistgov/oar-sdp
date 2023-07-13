@@ -61,6 +61,7 @@ export class AppComponent implements AfterViewInit {
   menuHoverActive: boolean;
   gaCode: string = null;
   ga4Code: string = null;
+  hostName: string = "dada.nist.gov";
 
   @ViewChild('layoutContainer') layourContainerViewChild: ElementRef;
 
@@ -86,6 +87,8 @@ export class AppComponent implements AfterViewInit {
             (conf) => {
                 this.gaCode = conf.GACODE;
                 this.ga4Code = conf.GA4CODE;
+                const url = new URL(conf.SERVERBASE);
+                this.hostName = url.hostname;
 
                 /**
                  * Added Google Analytics service to html
@@ -97,7 +100,7 @@ export class AppComponent implements AfterViewInit {
                  * menu and footer links.  But we still need to track user event of the 
                  * dynamic content.
                  */
-                this.gaService.appendGaTrackingCode(this.gaCode, this.ga4Code);
+                this.gaService.appendGaTrackingCode(this.gaCode, this.ga4Code, this.hostName);
 
                 //Add GA4 code to track page view
                 this.handleRouteEvents();
@@ -111,14 +114,15 @@ export class AppComponent implements AfterViewInit {
     handleRouteEvents() {
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
-                console.log('event', event);
                 const title = this.getTitle(this.router.routerState, this.router.routerState.root).join('-');
-                console.log('title', title);
                 this.titleService.setTitle(title);
+                
                 gtag('event', 'page_view', {
                     page_title: title,
                     page_path: event.urlAfterRedirects,
-                    page_location: this.document.location.href
+                    page_location: this.document.location.href,
+                    cookie_domain: this.hostName, 
+                    cookie_flags: 'SameSite=None;Secure'
                 })
             }
         });
