@@ -68,8 +68,8 @@ export class SearchPanelComponent implements OnInit {
         {label: 'AND', value: 'AND'},
         {label: 'OR', value: 'OR'}
     ];
-    SDPAPI: any = null;
-    imageURL: string = null;
+    SDPAPI: string = "";
+    imageURL: string = "";
     mobHeight: number;
     mobWidth: number;
     placeholder: string;
