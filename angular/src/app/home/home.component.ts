@@ -62,9 +62,7 @@ export class HomeComponent implements OnInit {
         }
     }
 
-    constructor(private router: Router, private appConfig: AppConfig) {  }
-
-    ngOnInit() {
+    constructor( private router: Router, private appConfig: AppConfig ) { 
         this.appConfig.getConfig().subscribe(
             (conf) => {
                 this.PDRAPIURL = conf.SDPAPI;
@@ -72,6 +70,10 @@ export class HomeComponent implements OnInit {
                 this.forensicsURL = conf.SERVERBASE + "/forensics";
             }
         );
+    }
+
+    ngOnInit() {
+
     }
 
     /**
@@ -133,6 +135,8 @@ export class HomeComponent implements OnInit {
      * @returns full url
      */
     getImageFullPath(imagePath: string) {
+        if(!this.SDPAPIURL || !imagePath) return "";
+
         return this.SDPAPIURL + imagePath;
     }
 
@@ -142,6 +146,8 @@ export class HomeComponent implements OnInit {
      * @returns full url
      */
     getIconFullPath(iconPath: string) {
+        if(!this.SDPAPIURL || !iconPath) return "";
+
         return this.SDPAPIURL + iconPath;
     }
 }
