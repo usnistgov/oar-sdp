@@ -32,10 +32,6 @@ export class GoogleAnalyticsService {
 
   // Tracking events
   gaTrackEvent(category: string, event?: any, label?: string, action?: string) {
-    console.log('Tracking: category', category);
-    console.log('Tracking: event', event);
-    console.log('Tracking: label', label);
-    console.log('Tracking: action', action);
     if (action == undefined) {
       // menu item
       if (event.item != undefined) {
@@ -57,7 +53,6 @@ export class GoogleAnalyticsService {
     action = (action == undefined) ? "" : action;
     label = (label == undefined) ? "" : label;
 
-    console.log("Calling gas(): Event category", category, "action", action, "label", label);
     gas('send', 'event', category, action, label, 1);
   }
 
@@ -66,13 +61,12 @@ export class GoogleAnalyticsService {
 *   First we read the tracking code from the config server, then form the script src and added the script
 *   to the top of current page. 
 */
-  public appendGaTrackingCode(gaCode: string, ga4Code: string) {
+  public appendGaTrackingCode(gaCode: string, ga4Code: string, hostname: string = "dada.nist.gov") {
     try {
         //GA3
         let scriptId = '_fed_an_ua_tag';
 
         if (document.getElementById(scriptId)) {
-            console.log("Found GA id.");
             document.getElementById(scriptId).remove();
         }
 
@@ -88,7 +82,6 @@ export class GoogleAnalyticsService {
         scriptId = '_gtag_js';
 
         if (document.getElementById(scriptId)) {
-            console.log("Found GA id.");
             document.getElementById(scriptId).remove();
         }
 
@@ -104,14 +97,13 @@ export class GoogleAnalyticsService {
         scriptId = '_dataLayer';
 
         if (document.getElementById(scriptId)) {
-            console.log("Found GA id.");
             document.getElementById(scriptId).remove();
         }
 
         var s2 = document.createElement('script') as any;
         s2.type = "text/javascript";
         s2.id = scriptId;
-        s2.text = "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" + ga4Code+ "');";
+        s2.text = "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" + ga4Code+ "',{'cookie_domain':'"+ hostname + "','cookie_flags': 'SameSite=None;Secure'})";
 
         var h2 = document.getElementsByTagName("head");
         document.getElementsByTagName("head")[0].appendChild(s2);
