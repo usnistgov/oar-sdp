@@ -9,8 +9,6 @@
 #
 ##########################################
 
-# The parent should be an ancestor image of the operational container
-# 
 FROM node:14.21.1
 
 # RUN sed -e '/stretch-updates/ s/^deb/#deb/' /etc/apt/sources.list \
