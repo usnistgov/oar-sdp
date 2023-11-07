@@ -16,7 +16,11 @@ FROM node:14.21.1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends zip wget ca-certificates git curl
 
-ENV GOSU_VERSION 1.10
+COPY cacerts/README.md cacerts/*.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+ENV NODE_EXTRA_CA_CERTS /etc/ssl/certs/ca-certificates.crt
+
+ENV GOSU_VERSION 1.14
 RUN set -ex; \
     arch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
     wget -O /usr/local/bin/gosu \
