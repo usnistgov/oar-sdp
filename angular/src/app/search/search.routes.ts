@@ -8,7 +8,8 @@ export const SearchRoutes: Routes = [
     children: [
       {
         path: '',
-        component: SearchComponent
+        component: SearchComponent,
+        data: { title: 'SDP Search Result' }
       }
     ]
   }

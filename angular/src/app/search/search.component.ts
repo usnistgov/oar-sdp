@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash-es';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { Title } from '@angular/platform-browser';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -12,6 +13,9 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     selector: 'sdp-search',
     templateUrl: 'search.component.html',
     styleUrls: ['search.component.css'],
+    providers: [
+        Title
+    ],
     animations: [
         trigger('filterStatus', [
         state('collapsed', style({width: '39px'})),
@@ -67,6 +71,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     constructor(
         public ngZone: NgZone,
         private router: ActivatedRoute,
+        public titleSv: Title,
         public searchQueryService: SearchQueryService) 
     {
         this.mobHeight = (window.innerHeight);
@@ -119,7 +124,20 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.searchKeywords = params['keywords'];
 
             if(!this.page) this.page = 1;
+
+            this.setDocumentTitle();
         });
+    }
+
+    /**
+     * set the document's title.  
+     */
+    setDocumentTitle(): void {
+        let title = "SDP Search Result" 
+        if(this.searchValue)
+            title += ": " + this.searchValue;
+
+        this.titleSv.setTitle(title);
     }
 
     updateWidth(filterMode?: string){
