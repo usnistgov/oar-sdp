@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, NgZone, ViewChild, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import * as _ from 'lodash-es';
 import { SearchQueryService } from '../shared/search-query/search-query.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';

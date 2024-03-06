@@ -8,7 +8,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { TaxonomyListService } from '../shared/taxonomy-list/index';
 import { SearchfieldsListService } from '../shared/searchfields-list/index';
 import { SearchQueryService } from '../shared/search-query/index';
-import {NgxPaginationModule} from 'ngx-pagination'; // <-- import the module
 import { DropdownModule } from 'primeng/dropdown';
 import { AccordionModule } from 'primeng/accordion';
 import { TreeModule } from 'primeng/tree';
@@ -48,7 +47,6 @@ import { PaginationComponent } from './pagination/pagination.component';
       CheckboxModule, 
       TooltipModule, 
       ProgressSpinnerModule, 
-      NgxPaginationModule,
       InputTextareaModule,
       SearchPanelModule],
     declarations: [SearchComponent,ReadMoreComponent, FiltersComponent, ResultsComponent, PaginationComponent],

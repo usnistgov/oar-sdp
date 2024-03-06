@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 // import 'rxjs/add/operator/do';  // for debugging
 
 /**
@@ -35,6 +36,6 @@ export class NameListService {
     let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
+    return throwError(() => errMsg);
   }
 }

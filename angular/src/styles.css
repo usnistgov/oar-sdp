@@ -7,8 +7,6 @@
   font-family: sans-serif;
 }
 
-@import "~ngx-toastr/toastr.css";
-
 :root {
     /* Colors */
     --science-theme-background-default: #019fbb;

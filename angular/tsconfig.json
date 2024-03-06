@@ -11,8 +11,10 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "target": "es2015",
-    "types": [ "node","jasmine" ],
+    "target": "ES2022",
+    "types": [
+        "jest", "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -20,7 +22,8 @@
       "es2017",
       "dom",
       "es6"
-    ]
+    ],
+    "useDefineForClassFields": false
   }
 }
   
