@@ -32,7 +32,7 @@ export class TaxonomyListService {
           }),
           rxjsop.catchError((err) => {
               console.error("Failed to download taxonomy: " + JSON.stringify(err));
-              return throwError(err);
+              return throwError(() => err);
           })
       );
   }
@@ -46,7 +46,7 @@ export class TaxonomyListService {
     let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
+    return throwError(() => errMsg);
   }
 }
 

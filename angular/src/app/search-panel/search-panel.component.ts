@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 import { SDPQuery, QueryRow, CurrentQueryInfo } from '../shared/search-query/query';
 import { ReadVarExpr } from '@angular/compiler';
 import { find } from './autocomplete';
+import fetch from 'cross-fetch';
 
 @Component({
     selector: 'app-search-panel',

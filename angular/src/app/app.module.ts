@@ -63,7 +63,7 @@ enableProdMode();
     HeadbarComponent
   ],
   imports: [
-    RouterModule.forRoot(routes ,{ useHash: true, relativeLinkResolution: 'corrected' }),
+    RouterModule.forRoot(routes ,{ useHash: true }),
     BrowserModule,
     HttpClientModule,
     TreeModule,

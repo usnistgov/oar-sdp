@@ -3,7 +3,6 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { SearchComponent } from './search.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { MockModule } from '../mock.module';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
@@ -19,7 +18,6 @@ describe('SearchComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        NgxPaginationModule,
         MockModule,
         BrowserAnimationsModule,
         ToastrModule.forRoot()
