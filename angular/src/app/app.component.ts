@@ -7,6 +7,7 @@ import { concat } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterState } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+import { TaxonomyListService, SearchfieldsListService } from './shared/index';
 
 enum MenuOrientation {
   STATIC,
@@ -74,6 +75,7 @@ export class AppComponent implements AfterViewInit {
     private gaService: GoogleAnalyticsService,
     public router: Router,
     private titleService: Title,
+    public searchFieldsListService: SearchfieldsListService,
     @Inject(DOCUMENT) private document: Document) {
         
   }
@@ -106,6 +108,8 @@ export class AppComponent implements AfterViewInit {
                 this.handleRouteEvents();
             }
         );
+
+        this.searchFieldsListService.getSearchFields();
     }
 
     /**

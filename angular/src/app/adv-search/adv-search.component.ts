@@ -92,6 +92,12 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.mobWidth = (window.innerWidth);
         // Init search box size and breadcrumb position
         this.onWindowResize();
+
+        this.searchFieldsListService.watchFields(
+            (fields) =>{
+                this.fields = (fields as SelectItem[]);
+            }
+        );
     }
 
     /**
@@ -99,26 +105,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     ngOnInit() {
         var i = 0;
-
-        this.searchFieldsListService.getSearchFields().subscribe(
-            (fields) => {
-                this.fields = (fields as SelectItem[]);
-                this.queries = this.searchQueryService.getQueries();
-                this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
-                this.currentQuery = this.currentQueryInfo.query;
-                this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
-                this.currentQueryIndex = this.currentQueryInfo.queryIndex;
-                if(!this.currentQuery) this.currentQuery = new SDPQuery();
-                if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
-
-                this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
-                // Update search box in the top search panel
-                this.searchService.setQueryValue(this.searchValue, '', '');
-            },
-            (err) => {
-                this.errorMessage = <any>err;
-            }
-        );
+        this.setSearchQuery();
 
         this.searchQueryService.watchQueries().subscribe(value => {
             if(value)
@@ -126,6 +113,19 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         });
     }
 
+    setSearchQuery() {
+        this.queries = this.searchQueryService.getQueries();
+        this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
+        this.currentQuery = this.currentQueryInfo.query;
+        this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
+        this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+        if(!this.currentQuery) this.currentQuery = new SDPQuery();
+        if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
+
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
+    }
     /**
      *  Following functions detect screen size
      */

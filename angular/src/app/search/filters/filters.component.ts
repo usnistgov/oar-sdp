@@ -14,7 +14,6 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     selector: 'app-filters',
     templateUrl: './filters.component.html',
     styleUrls: ['./filters.component.css'],
-    providers: [TaxonomyListService, SearchfieldsListService],
     animations: [
         trigger('expand', [
             state('closed', style({height: '40px'})),
@@ -135,7 +134,14 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         public taxonomyListService: TaxonomyListService,
         public searchFieldsListService: SearchfieldsListService
     ){ 
-
+        this.searchFieldsListService.watchFields(
+            (fields) => {
+                if(fields.length > 0){
+                    this.toSortItems(fields);
+                    this.queryAndSearch();
+                }
+            }
+        )
     }
 
     /**
@@ -158,7 +164,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
                 //Clear filters when we conduct a new search
                 this.clearFilters();
-                this.getFields();
+                this.queryAndSearch();
             }
         }
 
@@ -192,25 +198,19 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     /**
      * Get the filterable fields and then do the search
      */
-    getFields() {
-        this.searchFieldsListService.get().subscribe(
-            fields => {
-                this.toSortItems(fields);
-                this.searchService.setQueryValue(this.searchValue, '', '');
-                this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
-                if(! this.queryStringErrorMessage){ 
-                    this.queryStringError = true;
-                }
-
-                let lSearchValue = this.searchValue.replace(/  +/g, ' ');
-
-                //Convert to a query then search
-                this.doSearch(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields));
-            },
-            error => {
-                this.errorMessage = <any>error
+    queryAndSearch() {
+        if(this.fields) {
+            this.searchService.setQueryValue(this.searchValue, '', '');
+            this.queryStringErrorMessage = this.searchQueryService.validateQueryString(this.searchValue);
+            if(! this.queryStringErrorMessage){ 
+                this.queryStringError = true;
             }
-        );
+
+            let lSearchValue = this.searchValue? this.searchValue.replace(/  +/g, ' ') : "";
+
+            //Convert to a query then search
+            this.doSearch(this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields));
+        }
     }
 
     /**

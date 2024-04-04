@@ -548,6 +548,8 @@ export class SearchQueryService {
      * @param queryString input query string
      */
     validateQueryString(queryString: string){
+        if(!queryString) return "";
+
         let queryStringErrorMessage = "";
         let lQueryString: string = "";
         let errorCount: number = 0;

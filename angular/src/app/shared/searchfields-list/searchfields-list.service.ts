@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of, BehaviorSubject } from 'rxjs';
 import * as rxjsop from 'rxjs/operators';
 import { AppConfig, Config } from '../config-service/config.service';
 import { SelectItem } from 'primeng/api';
@@ -11,6 +11,7 @@ import * as _ from 'lodash-es';
 })
 export class SearchfieldsListService {
   ALL: string = 'ALL FIELDS';
+  fields: BehaviorSubject<SelectItem[]> = new BehaviorSubject<SelectItem[]>([] as SelectItem[]);
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -25,21 +26,20 @@ export class SearchfieldsListService {
 
   }
 
-  /**
-   * Returns an Observable for the HTTP GET request for the JSON resource.
-   * @return {string[]} The Observable for the HTTP request.
-   */
-  get(): Observable<any> {
-      return this.appConfig.getConfig().pipe(
-          rxjsop.mergeMap((conf) => {
-              return this.http.get(conf.RMMAPI + 'records/fields');
-          }),
-          rxjsop.catchError((err) => {
-              console.error("Failed to download fields: " + JSON.stringify(err));
-              return throwError(err);
-          })
-      );
-  }
+    /**
+     * Watch total items (search result)
+     */
+    public watchFields(subscriber) {
+        this.fields.subscribe(subscriber);
+    }
+
+    /**
+     * Set total items (search result)
+     * @param page 
+     */
+    setFields(fields: SelectItem[]) {
+        this.fields.next(fields);
+    }
 
   /**
     * Handle HTTP error
@@ -53,25 +53,36 @@ export class SearchfieldsListService {
     return Observable.throw(errMsg);
   }
 
-  /**
-   * Get database fields for Advanced Search builder
-   */
-  getSearchFields(): Observable<SelectItem[]> {
-    return new Observable<SelectItem[]>(subscriber => {
-        this.get().subscribe(
-            (res) => {
-                let fields: SelectItem[] = this.toFieldItems(res);
-                subscriber.next(fields);
-                subscriber.complete();
+    /**
+     * Returns an Observable for the HTTP GET request for the JSON resource.
+     * @return {string[]} The Observable for the HTTP request.
+     */
+    get(url): Observable<any> {
+        return this.http.get(url);
+    }
+
+    /**
+     * Get database fields for Advanced Search builder
+     */
+    getSearchFields() {
+        this.appConfig.getConfig().subscribe({
+            next: (conf) => {
+                this.get(conf.RMMAPI + 'records/fields').subscribe({
+                    next: (res) => {
+                        this.setFields(this.toFieldItems(res));
+                    },
+                    error: (err) => {
+                        console.error(err);
+                        //display error message on screen...
+                    }
+                })
             },
-            (error) => {
-                console.log(error);
-                subscriber.next(error);
-                subscriber.complete();
+            error: (err) => {
+                console.error(err);
+                //display error message on screen...
             }
-        );
-    });
-  }
+        })
+    }
 
     /**
      * Advanced Search fields dropdown

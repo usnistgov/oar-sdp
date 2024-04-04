@@ -130,6 +130,12 @@ export class SearchPanelComponent implements OnInit {
 
         this.mobHeight = (window.innerHeight);
         this.mobWidth = (window.innerWidth);
+
+        this.searchFieldsListService.watchFields(
+            (fields) => {
+                this.fields = fields;
+            }
+        )
     }
 
     /**
@@ -144,7 +150,7 @@ export class SearchPanelComponent implements OnInit {
             });
         };
 
-        this.observableFields = this.searchFieldsListService.getSearchFields();
+        // this.observableFields = this.searchFieldsListService.getSearchFields();
 
         this.searchService._watchQueryValue((queryObj) => {
             if (queryObj && queryObj.queryString && queryObj.queryString.trim() != '') {
@@ -157,15 +163,6 @@ export class SearchPanelComponent implements OnInit {
         this.searchQueryService._watchShowExamples((showExample) => {
                 this.showExampleStatus = showExample;
                 this.changeState(showExample); 
-            }
-        );
-
-        this.searchFieldsListService.getSearchFields().subscribe(
-            (fields) => {
-                this.fields = (fields as SelectItem[]);
-            },
-            (err) => {
-                console.log("Error getting fields.", err);
             }
         );
 
