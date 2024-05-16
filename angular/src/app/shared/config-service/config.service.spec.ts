@@ -41,8 +41,8 @@ describe('AppConfig', () => {
 
         service.getRemoteConfig().subscribe(
             (conf) => {
-                expect(conf["SERVERBASE"]).toEqual("http://data.nist.gov");
-                expect(conf["RMMAPI"]).toEqual("http://data.nist.gov/rmm/");
+                expect(conf["SERVERBASE"]).toEqual("https://data.nist.gov");
+                expect(conf["RMMAPI"]).toEqual("https://data.nist.gov/rmm/");
                 expect(conf["SDPAPI"]).toEqual("http://localhost:5555/");
                 expect(conf.GACODE).toEqual("not-set");
                 expect(conf.APPVERSION).toEqual("1.3.0");
@@ -59,8 +59,8 @@ describe('AppConfig', () => {
         service.loadRemoteConfig();
         service.getConfig().subscribe(
             (conf) => {
-                expect(conf["SERVERBASE"]).toEqual("http://data.nist.gov");
-                expect(conf["RMMAPI"]).toEqual("http://data.nist.gov/rmm/");
+                expect(conf["SERVERBASE"]).toEqual("https://data.nist.gov");
+                expect(conf["RMMAPI"]).toEqual("https://data.nist.gov/rmm/");
                 expect(conf["SDPAPI"]).toEqual("http://localhost:5555/");
                 expect(conf.GACODE).toEqual("not-set");
                 expect(conf.APPVERSION).toEqual("1.3.0");

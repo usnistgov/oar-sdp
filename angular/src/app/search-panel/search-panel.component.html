@@ -18,7 +18,7 @@
                     <div class="inner-addon left-addon background-white search-box" >
                         <i class="glyphicon faa faa-search" style="cursor: pointer;z-index: 999 !important;float: left;" (click)="hideAllHelp();search(searchValue,searchTaxonomyKey)"></i>
                         <div>
-                            <p-autoComplete p-fluid #audocomp [inputStyle]="inputStyle" (onFocus)="clearText()"
+                            <p-autoComplete p-fluid #audocomp [inputStyle]="inputStyle" (onFocus)="selectAll()"
                                 (onBlur)="addPlaceholder()" [placeholder]="placeholder" [(ngModel)]="searchValue"
                                 inputId="searchinput" name="searchinput"
                                  (keyup.enter)="audocomp.handleDropdownClick();search(searchValue,searchTaxonomyKey)"

@@ -250,12 +250,10 @@ export class SearchPanelComponent implements OnInit {
     /**
      *  Clear the search text box
      */
-    clearText() {
+    selectAll() {
         var field = (<HTMLInputElement>document.getElementById('searchinput'));
 
-        if (!Boolean(this._searchValue.trim())) {
-            field.value = ' ';
-        }
+        field.select();
     }
 
     /**

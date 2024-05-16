@@ -138,7 +138,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
             (fields) => {
                 if(fields.length > 0){
                     this.toSortItems(fields);
-                    this.queryAndSearch();
                 }
             }
         )

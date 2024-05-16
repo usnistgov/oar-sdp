@@ -71,10 +71,9 @@ export class ResultsComponent implements OnInit {
 
         this.searchFieldsListService.watchFields(
             (fields) => {
-                this.filterableFields = this.toSortItems(fields);
-
-                //Convert to a query then search
-                this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+                if(fields && fields.length > 0) {
+                    this.filterableFields = this.toSortItems(fields);
+                }
             }
         )
     }
@@ -106,7 +105,13 @@ export class ResultsComponent implements OnInit {
             this.searchSubscription = this.search(null, null, this.itemsPerPage);
         }));
 
+        this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+
         this.inited = true;
+    }
+
+    ngAfterViewInit(): void {
+        // this.searchSubscription = this.search(null, 1, this.itemsPerPage);
     }
 
     /**
