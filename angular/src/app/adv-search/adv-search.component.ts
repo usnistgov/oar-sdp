@@ -95,7 +95,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
         this.searchFieldsListService.watchFields(
             (fields) =>{
-                this.fields = (fields as SelectItem[]);
+                this.fields = this.toFieldItems(fields);
             }
         );
     }
@@ -579,4 +579,32 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.searchQueryService.saveQueries(this.queries);
         op.hide();
     }
+
+    /**
+     * Advanced Search fields dropdown
+     */
+    toFieldItems(fields: any[]): SelectItem[] {
+        // let items: SelectItem[] = [];
+        // items.push({ label: this.ALL, value: 'searchphrase' });
+        let fieldItems: SelectItem[] = [];
+        for (let field of fields) {
+            if (_.includes(field.tags, 'searchable')) {
+                let dup = false;
+                //For some reason, the filter function does not work for fields. Have to use this loop...
+                for(let item of fieldItems){
+                    if(item.label == field.label && item.value == field.name.replace('component.', 'components.')){
+                        dup = true;
+                        break;
+                    }
+                }
+
+                if(!dup){
+                    fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+                }
+            }
+        };
+        fieldItems = _.sortBy(fieldItems, ['label', 'value']);
+
+        return fieldItems;
+    }    
 }

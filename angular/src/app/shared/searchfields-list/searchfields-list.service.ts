@@ -69,7 +69,7 @@ export class SearchfieldsListService {
             next: (conf) => {
                 this.get(conf.RMMAPI + 'records/fields').subscribe({
                     next: (res) => {
-                        this.setFields(this.toFieldItems(res));
+                        this.setFields(res);
                     },
                     error: (err) => {
                         console.error(err);
@@ -82,33 +82,5 @@ export class SearchfieldsListService {
                 //display error message on screen...
             }
         })
-    }
-
-    /**
-     * Advanced Search fields dropdown
-     */
-    toFieldItems(fields: any[]): SelectItem[] {
-        // let items: SelectItem[] = [];
-        // items.push({ label: this.ALL, value: 'searchphrase' });
-        let fieldItems: SelectItem[] = [];
-        for (let field of fields) {
-            if (_.includes(field.tags, 'searchable')) {
-                let dup = false;
-                //For some reason, the filter function does not work for fields. Have to use this loop...
-                for(let item of fieldItems){
-                    if(item.label == field.label && item.value == field.name.replace('component.', 'components.')){
-                        dup = true;
-                        break;
-                    }
-                }
-
-                if(!dup){
-                    fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
-                }
-            }
-        };
-        fieldItems = _.sortBy(fieldItems, ['label', 'value']);
-
-        return fieldItems;
     }
 }
