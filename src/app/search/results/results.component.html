@@ -1,0 +1,371 @@
+<div style="padding-left: 0.5em">
+  <!-- Handle user error -->
+  <div *ngIf="resultStatus == RESULT_STATUS.userError">
+    <div
+      class="col-12"
+      style="background-color: #ffffff; font-size: 2em; line-height: 1.5em"
+    >
+      There is a syntax error in your search input. Please review your search
+      input and correct the error. Click on
+      <span class="link-text" (click)="showExamples()"> Show Examples</span> for
+      how to construct your search.
+    </div>
+    <div class="EmptyBox80" style="background-color: #ffffff"></div>
+  </div>
+
+  <!-- Handle sys error -->
+  <div *ngIf="resultStatus == RESULT_STATUS.sysError">
+    <div
+      class="col-12"
+      style="background-color: #ffffff; font-size: 2em; line-height: 1.5em"
+    >
+      Oops! It looks like our site had a problem completing your search. If this
+      error persists you may contact
+      <a
+        href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= "
+        (click)="gaService.gaTrackEvent('Email', $event, 'Contact')"
+        >datasupport@nist.gov</a
+      >.
+    </div>
+    <div class="EmptyBox80" style="background-color: #ffffff"></div>
+  </div>
+
+  <div>
+    <!-- Top bar -->
+    <div [ngClass]="resultTopBarClass()">
+      <div
+        [ngClass]="flexgrow(1)"
+        style="color: #000; font-weight: 800; padding: 10px 0 0 10px"
+      >
+        {{ totalItems }} records found
+      </div>
+
+      <!-- Pagination -->
+      <div
+        [ngClass]="flexgrow(8)"
+        id="pagination"
+        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+      >
+        <app-pagination
+          [totalItems]="totalItems"
+          [currentPage]="currentPage"
+        ></app-pagination>
+      </div>
+
+      <!-- Display Fields config -->
+      <div
+        [ngClass]="flexgrow(1)"
+        style="padding: 5px 10px 5px 0px"
+        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+      >
+        <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
+          <button
+            type="button"
+            id="controlBtn"
+            class="controlBtn"
+            [ngStyle]="{ float: customizeViewPosition() }"
+            pButton
+            label="Customize View"
+            icon="faa faa-cog"
+            iconPos="left"
+            (click)="op1.toggle($event)"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="queryStringWarning"
+      style="
+        width: 100%;
+        text-align: left;
+        color: rgb(255, 162, 162);
+        margin-left: 10px;
+      "
+      [innerHTML]="queryStringErrorMessage"
+    ></div>
+
+    <!-- Search result -->
+
+    <div
+      *ngIf="
+        resultStatus == RESULT_STATUS.success && totalItems > 0;
+        else noresult
+      "
+    >
+      <div class="result-items">
+        <div *ngFor="let resultItem of searchResults" class="result-item">
+          <div class="result-details">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+              "
+            >
+              <h3 class="result-title">
+                <a
+                  href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
+                  (click)="openSearchResult(resultItem.ediid)"
+                >
+                  {{ resultItem.title }}
+                </a>
+              </h3>
+              <a
+                *ngIf="resultItem.landingPage"
+                [(href)]="resultItem.landingPage"
+                target="_blank"
+                rel="noopener"
+                (click)="
+                  gaService.gaTrackEvent(
+                    'outbound',
+                    $event,
+                    'Visit to homepage',
+                    resultItem.landingPage
+                  )
+                "
+              >
+                <button
+                  pButton
+                  label="Visit Home Page"
+                  type="button"
+                  icon="faa faa-external-link"
+                  iconPos="left"
+                  class="visit-home-page"
+                ></button>
+              </a>
+              <a
+                *ngIf="!resultItem.landingPage"
+                href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
+                target="_blank"
+                (click)="
+                  gaService.gaTrackEvent(
+                    'outbound',
+                    $event,
+                    'Visit to homepage',
+                    resultItem.landingPage
+                  )
+                "
+              >
+                <button
+                  pButton
+                  label="Visit Home Page"
+                  type="button"
+                  icon="faa faa-external-link"
+                  iconPos="left"
+                  class="visit-home-page"
+                ></button>
+              </a>
+            </div>
+            <hr />
+            <div class="result-description">
+              <read-more
+                [text]="resultItem.description"
+                [maxLength]="270"
+              ></read-more>
+            </div>
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('Point of Contact') !== -1"
+            >
+              <div class="ui-grid-col-12">
+                <b>Point of Contact: </b>
+                <i style="color: gray">
+                  {{ resultItem.contactPoint }}
+                </i>
+              </div>
+            </div>
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('Contact\'s full name') !== -1"
+            >
+              <div class="ui-grid-col-12">
+                <b>Contact Full Name: </b>
+                <i style="color: gray">
+                  {{ resultItem.contactPoint.fn }}
+                </i>
+              </div>
+            </div>
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('Resource Home Page') !== -1"
+            >
+              <div class="ui-grid-col-12">
+                <b>Resource Home Page: </b>
+                <i style="color: gray">
+                  {{ resultItem.landingPage }}
+                </i>
+              </div>
+            </div>
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('Research Topic') !== -1"
+            >
+              <div class="ui-grid-col-12">
+                <b>Research Topic: </b>
+                <i style="color: gray">
+                  <span *ngFor="let topic of resultItem.topic; let i = index"
+                    >{{ topic.tag
+                    }}<span *ngIf="i < resultItem.topic.length - 1">, </span>
+                  </span>
+                </i>
+              </div>
+            </div>
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('research topic') !== -1"
+            >
+              <div class="ui-grid-col-12">
+                <b>Research Topic - Component: </b>
+              </div>
+            </div>
+            <hr />
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('Subject keywords') !== -1"
+            >
+              <div class="ui-grid-col-12">
+                <b>Subject Keywords: </b>
+                <i style="color: #515151">
+                  <read-more
+                    [text]="resultItem.keyword.join(', ')"
+                    [maxLength]="110"
+                  ></read-more>
+                </i>
+              </div>
+            </div>
+            <div
+              class="ui-grid-row details"
+              *ngIf="selectedFields.indexOf('DOI') !== -1"
+            >
+              <div class="ui-grid-col-1"><b>DOI: </b></div>
+              <div
+                class="ui-grid-col-11"
+                style="color: #1471ae"
+                *ngIf="resultItem.doi != null"
+              >
+                {{ resultItem.doi || "None" }}
+              </div>
+              <div
+                class="ui-grid-col-11"
+                style="color: #000"
+                *ngIf="resultItem.doi == null"
+              >
+                None
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div
+        [ngClass]="resultTopBarClass()"
+        style="width: 100%; margin-bottom: 1em"
+      >
+        <div
+          [ngClass]="flexgrow(1)"
+          style="color: #000; font-weight: 800; padding-top: 10px"
+        >
+          &nbsp;&nbsp;{{ totalItems }} records found
+        </div>
+
+        <!-- Pagination -->
+        <div
+          [ngClass]="flexgrow(8)"
+          style="padding: 0px 10px 0px 10px; margin: -1em 0em"
+        >
+          <app-pagination
+            [totalItems]="totalItems"
+            [currentPage]="currentPage"
+          ></app-pagination>
+        </div>
+
+        <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
+          <button
+            type="button"
+            id="controlBtn"
+            class="controlBtn"
+            [ngStyle]="{ float: customizeViewPosition() }"
+            pButton
+            label="Customize View"
+            icon="faa faa-cog"
+            iconPos="left"
+            (click)="op1.toggle($event)"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <ng-template #noresult>
+      <div
+        style="text-align: center; border-bottom: 1px solid grey"
+        *ngIf="dataReady"
+      >
+        <img id="dog" src="./assets/images/NothingFound2_s.png" />
+        <span class="nothing-found-text">Nothing found...</span>
+      </div>
+    </ng-template>
+  </div>
+
+  <p-overlayPanel
+    #op1
+    for="controlBtn"
+    [showCloseIcon]="true"
+    [style]="{ 'background-color': '#F8F9F9' }"
+    [appendTo]="'body'"
+  >
+    <div class="lbl-display-fields">
+      <b>Display Fields</b>
+      <span
+        class="link-text"
+        style="float: right"
+        (click)="$event.preventDefault(); resetSelectedFields()"
+        ><i class="faa faa-refresh"></i> Reset</span
+      >
+    </div>
+    <div style="text-align: left">
+      <p-checkbox
+        inputId="group2"
+        binary="true"
+        [(ngModel)]="allChecked"
+        label="Select All"
+        (onChange)="selectAllFields()"
+        [(ngModel)]="selectedFields"
+      ></p-checkbox>
+    </div>
+    <div *ngFor="let field of displayFields" style="text-align: left">
+      <p-checkbox
+        inputId="{{ field }}"
+        name="{{ field }}"
+        class="label"
+        value="{{ field }}"
+        label="{{ field }}"
+        [(ngModel)]="selectedFields"
+        (onChange)="updateFields()"
+      >
+      </p-checkbox>
+    </div>
+    <div class="lbl-display-fields"><b>Sort Results</b> <br /></div>
+    <div>
+      <p-dropdown
+        [options]="filterableFields"
+        [(ngModel)]="sortItemKey"
+        placeholder="Select a field..."
+        (onChange)="sortByFields()"
+        [style]="{
+          width: '200px',
+          display: 'flex',
+          'align-items': 'center',
+          'background-color': '#FFFFFF',
+          height: '40px',
+          'font-weight': '400',
+          'font-style': 'italic',
+          float: 'left'
+        }"
+      >
+      </p-dropdown>
+    </div>
+    <div class="EmptyBox20"></div>
+  </p-overlayPanel>
+</div>

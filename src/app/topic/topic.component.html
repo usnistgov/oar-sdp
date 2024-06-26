@@ -1,0 +1,55 @@
+<div
+  class="notification"
+  style="position: relative; width: auto; height: 150px"
+>
+  <div
+    class="has-background-dark has-text-white is-clickable"
+    style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 15px;
+    "
+  >
+    {{ title }}
+    <img
+      src="{{ icon }}"
+      alt="A Curated Collection"
+      *ngIf="showIcon"
+      ngbTooltip="A Curated Collection"
+      style="height: 100%; float: right; width: 20px"
+    />
+  </div>
+  <div
+    class="title"
+    [ngStyle]="{
+      'background-image':
+        'linear-gradient(to bottom, rgba(0, 0, 0, 0.22), rgba(160, 160, 160, 0)), url(' +
+        image +
+        ')',
+      'background-size': 'cover',
+      height: '100%',
+      width: '100%',
+      position: 'absolute',
+      top: '0',
+      left: '0'
+    }"
+  ></div>
+  <div
+    class="description"
+    [ngStyle]="{
+      'font-size': descFontSize,
+      opacity: descOpacity,
+      'line-height': descLineHeight
+    }"
+    (mouseover)="onMouseOver()"
+    (mouseout)="onMouseOut()"
+  >
+    {{ description }}
+  </div>
+</div>

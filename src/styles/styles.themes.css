@@ -1,0 +1,174 @@
+body .ui-button.ui-button-text-icon-left, body .ui-datepicker-buttonpane > button.ui-button-text-icon-left {
+  padding-left: 1.5em;
+}
+
+body .ui-state-active, body .ui-state-highlight {
+  background-color: #cacaca;
+  color: #ffffff; }
+
+body .ui-paginator > a {
+  box-sizing: border-box;
+  color: #000000; }
+
+body .ui-paginator .ui-paginator-pages a {
+  padding-left: .5em;
+  padding-top: 0;
+  padding-right: .5em;
+  padding-bottom: 0;
+  color: #515151;}
+
+body .ui-paginator {
+  background-color: #FFFFFF;
+  padding: 0em; }
+
+body .ui-state-active, body .ui-state-highlight {
+  font-weight: bold;
+}
+
+body .ui-inputtext {
+  border:.1px solid #e0e0e0;
+  height: 1.5em;}
+
+body .ui-inputtext:focus, body .ui-inputtext.ui-state-focus {
+  border-width: 2px 2px 2px 2px;
+  border-color: #03A9F4;}
+
+body .ui-button, body .ui-datepicker-buttonpane > button {
+  background-color: #1471AE;
+  height: 1.5em;
+  padding: .2em;}
+
+body .ui-button .ui-button-text, body .ui-datepicker-buttonpane > button .ui-button-text {
+  line-height: 0.75em; }
+
+body .ui-autocomplete.ui-autocomplete-multiple .ui-autocomplete-multiple-container.ui-inputtext {
+  padding: 2px 2px 0px 2px;
+  border: 1px solid #bdbdbd;
+  height:auto;
+  width:100%;}
+
+body .ui-treenode-label.ui-state-highlight {
+  background-color: #F8F9F9;
+}
+
+body .ui-chkbox .ui-chkbox-box.ui-state-active {
+  border-color: #1471AE;
+  background-color: #1471AE; }
+
+body .ui-chkbox .ui-chkbox-box.ui-state-focus {
+  border-color: #1471AE;
+}
+
+label.ui-chkbox-label {
+  color: #515151;
+  font-weight: normal;
+}
+
+body .ui-dropdown {
+  border: .1px solid #e0e0e0;}
+
+body .ui-dropdown .ui-dropdown-label.ui-inputtext {
+  height: 1.75em;
+  vertical-align: middle;
+  color: #515151;}
+
+body .ui-dropdown.ui-state-focus {
+  border: 2px solid #03A9F4; }
+
+body .ui-dropdown-panel .ui-dropdown-item.ui-state-highlight {
+  background-color: #03A9F4;}
+
+body .ui-tree {
+  font-weight:bold;
+  /*font-size: x-large;*/}
+
+body .ui-tree .ui-treenode-children {
+  font-weight:normal;
+  /*font-size: 12px;*/
+  font-style: italic;
+  font-style: italic;
+  color: #515151;
+  background-color: #F8F9F9;}
+
+body .ui-tree .ui-treenode-content .ui-treenode-label {
+  /*font-size: 14px;*/}
+
+body ui-tree .ui-treenode-label.ui-state-hover, .ui-tree .ui-treenode-label.ui-state-highlight {
+  font-weight:bold;
+  color: #000000;}
+
+body .ui-tree .ui-treenode-content.ui-treenode-selectable .ui-treenode-label:not(.ui-state-highlight):hover {
+  color: #000000;}
+
+body .ui-tree.ui-tree-horizontal .ui-treenode-content.ui-state-highlight {
+  background-color: #03A9F4;}
+
+body .ui-paginator .ui-paginator-pages a.ui-state-active {
+  background-color: #025277;}
+
+body .ui-datalist .ui-datalist-header {
+  padding:0px;}
+
+@media screen and (min-width: 0px) and (max-width: 640px) {
+  body .my-content-small { display: block; hidden: false; }   /* hide it elsewhere */
+  body .my-content-big { display: none; hidden: true }   /* hide it elsewhere */
+}
+
+.form-group {
+  margin-bottom: 0px;
+}
+
+body .ui-overlaypanel .ui-overlaypanel-close {
+  background-color: #696666;
+}
+
+body .ui-overlaypanel .ui-overlaypanel-close:hover {
+  background-color: #283593;
+}
+
+.fa-caret-down:before {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+body .ui-tree-toggler.fa.fa-fw.fa-caret-down:before {
+  vertical-align: top;
+}
+
+.well-sm {
+  padding: 11px;
+}
+
+body .ui-dropdown .ui-dropdown-trigger
+{
+  margin-top: .15em;
+}
+
+body .ui-button.ui-button-icon-only, body .ui-datepicker-buttonpane > button.ui-button-icon-only {
+  width: 2.0em;
+  height: 2.0em;
+}
+
+.ui-datatable .ui-datatable-thead > tr > th, .ui-datatable .ui-datatable-tfoot > tr > td, .ui-datatable .ui-datatable-data > tr > td
+{
+  border:0.5px solid #e6e6e6;
+}
+
+body .ui-datatable .ui-datatable-thead > tr th {
+  /* background-color:#0872B9; */
+  background-color: #606165;
+  color:#ffffff;
+}
+
+body .ui-dialog .ui-dialog-titlebar {
+  background-color:#232F3E;
+  color:#ffffff;
+}
+
+.dropdown .dropdown-menu a:hover
+{
+  color: #fff;
+  background-color: #cacaca;
+  border-color: #fff;
+}

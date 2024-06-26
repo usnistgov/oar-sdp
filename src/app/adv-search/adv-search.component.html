@@ -1,0 +1,261 @@
+<!-- Use absolute position for breadcrumb so it won't affect other elements' layout
+     We have onWindowResize() to dynamically adjust breadcrumb location -->
+     <div style="position: absolute; right: 1em; " [ngStyle]="{'margin-top': breadcrumb_top}">
+        <ol class="breadcrumb mt-2" style="float: right;">
+            <li class="breadcrumb-item"><a href='/' style="color: #fff;"
+                    (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
+            <li id='title' class="active breadcrumb-item has-text-white">Advanced Search Builder</li>
+        </ol>
+    </div>
+    <app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' [(editmode)]='dataChanged'
+        jumbotronHeight='27vh' jumbotronPadding='2em 2em 0em 2em'></app-search-panel>
+    
+    <div class="p-fluid" style="background-color: #EFEFEF">
+        <div class="grid">
+            <p-confirmDialog key="queryDelete"></p-confirmDialog>
+            <div class="col-3 p-md-3 p-lg-3 collapse1 in width" id="left-panel">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 95%;">Queries</th>
+                            <th scope="col" style="width: 5%;">Act</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="queries == null || queries?.length == 0">
+                            <td colspan="2">
+                                No query found
+                            </td>
+                        </tr>
+                        <tr #overlayTarget id="query-list1" *ngFor="let query of queries; index as i"
+                            [class.active]="i == currentQueryIndex">
+                            <th scope="row" (click)="setCurrentQuery(queries[i], $event, i)">
+                                <a href="javascript:void(0);" style="margin-left: .5em;">{{query.queryName}}</a>
+                            </th>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="dropbtn" name="dropdownButton" 
+                                        data-toggle="tooltip" title="Actions" (mouseover)='showDropdown=true;' (click)='showDropdown=true;'>...</button>
+                                    <div class="dropdown-content" *ngIf='showDropdown'
+                                        [ngStyle]="{'margin-left':screenWidth > 640? '2em' : '-10em'}">
+                                        <a href="javascript:void(0);"
+                                            (click)="setCurrentQuery(queries[i], $event, i); dataChanged=true;showDropdown=false;">Edit
+                                            <i class="faa faa-pencil" style="float: right;"></i>
+                                        </a>
+                                        <a href="javascript:void(0);"
+                                            (click)="executeQuery(query, i); showDropdown=false;">Search
+                                            <i class="faa faa-play" style="float: right;"></i>
+                                        </a>
+                                        <a href="javascript:void(0);"
+                                            (click)="dupQuery(i); showDropdown=false;">Copy
+                                            <i class="faa faa-copy" style="float: right;"></i>
+                                        </a>
+                                        <a href="javascript:void(0);"
+                                            (click)="deleteConfirmQuery(query.queryName, i); showDropdown=false;">Delete
+                                            <i class="faa faa-trash" style="float: right;"></i>
+                                        </a>
+                                        <a href="javascript:void(0);"
+                                            (click)="renameQuery(queries[i], $event, i); showDropdown=false;">Rename
+                                            <i class="faa faa-eye" style="float: right;"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <div>
+                    <div class="p-col-12 p-md-12" style="text-align: center;">
+                        <input type="file" id="file" #fileupload (change)="importList($event)" style="visibility: hidden;">
+    
+                        <button type="button" class="file-io btn btn-sm btn-primary" (click)="fileupload.value=''; fileupload.click();"
+                            [disabled]="queries == null || queries?.length == 0">
+                            Import
+                        </button>
+                        
+                        <button type="button" class="file-io btn btn-sm btn-primary" (click)='exportList()'
+                            [disabled]="queries == null || queries?.length == 0">
+                            Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+    
+            <div [className]="resultsClass" style="background-color:white; padding: 20px;">
+                <!-- free text input -->
+                <div style="margin: 1em 0 .5em 0;">
+                    <label for="freeText" class="free-text-lable">Terms/Phrases:</label>
+    
+                    <span class="inner-addon">
+                        <input class="terms" #freetext type="text" id="freeText" [ngClass]="{'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="currentQuery.freeText"
+                            (keyup)="setFreeText($event.target.value)" />
+    
+                            <i class="faa faa-remove clear-box" (click)="setFreeText('')" data-toggle="tooltip"
+                            title="Clear free text"></i>
+                    </span>
+                    <span class="link-text show-example" (click)="showExamples()">Show Examples</span>
+                </div>
+    
+                <!-- query rows -->
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th scope="col" style="width: 15%;">Operator</th>
+                            <th scope="col" style="width: 35%;">Field Name</th>
+                            <th scope="col" style="width: 35%;">Field Value</th>
+                            <th scope="col" style="width: 15%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="currentQuery.queryRows.length == 0">
+                            <td colspan="4">
+                                No detail found
+                            </td>
+                        </tr>
+                        <tr *ngFor="let queryRow of currentQuery.queryRows; index as rowIndex">
+                            <td *ngIf="rowIndex > 0">
+                                <select class="browser-default custom-select" [ngClass]="{'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="queryRow.operator"
+                                    (change)="onOperatorChange()">
+                                    <option *ngFor="let operator of operators;">{{operator.label}}</option>
+                                </select>
+                            </td>
+                            <td *ngIf="rowIndex == 0" style="vertical-align: middle;">
+                                <span style="margin-left:.8em;padding-bottom: -2em;font-size:16px;">AND</span>
+                            </td>
+                            <td>
+                                <select class="browser-default custom-select italic" [ngClass]="{'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="queryRow.fieldType"
+                                    (change)="onFieldTypeChange(queryRow)">
+                                    <option hidden value="" disabled selected>Select Field Name</option>
+                                    <option *ngFor="let field of fields;" data-toggle="tooltip" title="{{field.value}}">{{field.label}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="text-input field-text"[ngClass]="{'field-text-grey': queryRow.validated, 'field-text-red':!queryRow.validated, 'field-text-bk-white':!dataChanged, 'field-text-bk-yellow':dataChanged }" [(ngModel)]="queryRow.fieldText"
+                                    [placeholder]="getFieldTextPlacehoder(queryRow)" 
+                                    (keyup)="setRowText($event.target.value, queryRow)" />
+                            </td>
+    
+                            <td>
+                                <div style="text-align: center;height: 2.5em;">
+                                    <button type="button" class="btn-row-act" pButton (click)="duplicateRow(queryRow, rowIndex)"
+                                        icon="ui-icon-content-copy" [disabled]="queryRow.fieldText=='' || queryRow.fieldType==''" data-toggle="tooltip" title="Duplicate Row">
+                                        <i class="faa faa-copy"></i>
+                                    </button>
+                                    <button type="button" class="btn-row-act" pButton (click)="deleteRow(rowIndex)"
+                                        icon="ui-icon-delete" data-toggle="tooltip" title="Delete Row">
+                                        <i class="faa faa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <div class="p-col-12 search-builder-background">
+                    <div class="p-col-12 p-lg-8 p-md-12 p-sm-12" style="float:right;">
+                        <button id="btn-cancel" label="Clear" type="button" (click)="clearConfirm()" pButton type="submit">
+                            <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i>
+                        </button>
+    
+                        <button id="btn-save" label="Save" type="button" (click)="confirmSaveAdvSearchQuery($event, op5)" pButton type="submit">
+                            <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i>
+                        </button>
+    
+                        <button id="btn-execute" label="Search" type="button" (click)="$event.preventDefault();executeQuery(currentQuery,currentQueryIndex)" pButton type="submit"
+                            [disabled]="rowInputValidateError">
+                            <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div style="height:150px;background-color: #fff"></div>
+        </div>
+    </div>
+    
+    <!-- Confirm dialog -->
+    <p-overlayPanel class="fileDialog" #op1 [dismissable]="true" [showCloseIcon]="false" [style]="overlayStyle()"
+        appendToBody=true>
+        <div>
+            <div class="header">
+                <h4>You have unsaved data</h4>
+            </div>
+            <div style="margin-bottom: 1em;">
+                <i class="faa faa-warning"
+                    style="color: rgb(252, 122, 0);padding-left: .2em;padding-right: .5em;"></i>
+                <span>Would you like to save current query?</span>
+            </div>
+            <div>
+                <button type="button" pButton id="cd-button-one" type="submit"
+                (click)="op1.hide();op2.toggle($event);">
+                    <i class="faa faa-save faa-1x icon-white" style="color: #fff;"></i> Save
+                </button>
+                <button type="button" pButton type="submit"
+                id="cd-button-two" (click)="setCurrentQueryNoAsk(nextQuery, nextQueryIndex);op1.hide();">
+                    <i class="faa faa-play faa-1x icon-white" style="color: #fff;"></i> Continue
+                </button>
+                <button type="button" pButton type="submit"
+                id="cd-button-two" (click)="op1.hide();">
+                    <i class="faa faa-remove faa-1x icon-white" style="color: #fff;"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </p-overlayPanel>
+    
+    <!-- Save dialog -->
+    <p-overlayPanel class="fileDialog" #op2 [dismissable]="false" [showCloseIcon]="false" [style]="overlayStyle()"
+        appendToBody=true>
+        <div>
+            <div style="margin-bottom: 1em;">
+                <span class="inner-addon">Query Name: 
+                    <input type="text" class="text-input overlay-input" #field1 [(ngModel)]="currentQuery.queryName" placeholder="Please enter unique query name"
+                        (keyup.enter)="saveAdvQuery(currentQuery, op2);setCurrentQueryNoAsk(nextQuery, nextQueryIndex);" style="background-color: rgb(252, 246, 237);;" />
+        
+                    <i class="faa faa-remove clear-box2" (click)="field1.value=''" data-toggle="tooltip"
+                        title="Clear the search box"></i>
+                </span>
+            </div>
+            <div>
+                <button type="button" pButton id="cd-button-one" type="submit"
+                (click)="saveAdvQuery(currentQuery, op2);setCurrentQueryNoAsk(nextQuery, nextQueryIndex);">Save</button>
+                <button type="button" pButton type="submit"
+                id="cd-button-two" (click)="op2.hide();">Cancel</button>
+            </div>
+        </div>
+    </p-overlayPanel>
+    
+    <!-- Popup dialog for query name -->
+    <p-overlayPanel class="fileDialog" #op5 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
+        appendToBody=true>
+        <div>
+            <span class="inner-addon">
+                <input type="text" class="text-input overlay-input" #field2 [(ngModel)]="tempName" placeholder="Please enter unique query name" (keyup)="checkQueryName(tempName, currentQuery.queryName)"
+                    (keyup.enter)="saveAdvQuery(currentQuery, op5, tempName)" style="background-color: rgb(252, 246, 237);;" />
+    
+                <i class="faa faa-remove clear-box2" (click)="field2.value=''" data-toggle="tooltip"
+                    title="Clear the search box"></i>
+            </span>
+            <button class="btn-append" type="button" (click)="saveAdvQuery(currentQuery, op5, tempName)" pButton type="submit">
+                Save Query
+            </button>
+            <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;text-align: left !important;">{{queryNameValidateErrorMsg}}</div>
+        </div>
+    </p-overlayPanel>
+    
+    <!-- Popup dialog for query rename -->
+    <p-overlayPanel class="fileDialog" #op6 [dismissable]="false" [showCloseIcon]="true" [style]="overlayStyle()"
+        appendToBody=true>
+        <div>
+            <span class="inner-addon">
+                <input type="text" class="text-input overlay-input" #field6 [(ngModel)]="tempName" placeholder="Please enter unique query name" (keyup)="checkQueryName(field6.value, tobeRenamedQuery.queryName)"
+                    (keyup.enter)="saveRenamedQuery(field6.value, op6)" style="background-color: rgb(252, 246, 237);;" />
+    
+                <i class="faa faa-remove clear-box2" (click)="field6.value=''" data-toggle="tooltip"
+                    title="Clear the search box"></i>
+            </span>
+            <button class="btn-append" type="button" (click)="saveRenamedQuery(field6.value, op6)" pButton type="submit">
+                Rename
+            </button>
+            <div *ngIf="queryNameValidateError" style="color:red;padding-left: 6em;text-align: left !important;">{{queryNameValidateErrorMsg}}</div>
+        </div>
+    </p-overlayPanel>

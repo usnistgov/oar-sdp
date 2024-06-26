@@ -1,0 +1,44 @@
+<div id="footer" class="region region-footer ">
+    <div class="footer__inner">
+        <!-- Social Media list -->
+        <div class="social-links" *ngIf="socialMediaList">
+            <div class="item-list">
+                <ul>
+                    <li *ngFor="let socialMedia of socialMediaList">
+                        <a [href]="socialMedia.url" target="_blank" rel="noopener noreferrer" class="social-btn social-btn--large extlink ext"><i [class]="socialMedia.icon"><span
+                            class="element-invisible">{{socialMedia.name}}</span></i><span class="ext"><span class="element-invisible"> (link
+                            is external)</span></span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer logo -->
+        <div class="footer__logo">
+            <a href="https://www.nist.gov" target="_blank" rel="noopener" title="National Institute of Standards and Technology" class="footer__logo-link" rel="home">
+                <img src="./assets/images/logo_rev.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">
+            </a>
+        </div>
+
+
+        <!-- Footer links line #1 -->
+        <div id="block-menu-menu-footer-menu" *ngIf="footerLinks01"
+        class="block menu--footer-menu first even block--menu block--menu-menu-footer-menu" role="navigation">
+            <ul class="menu">
+                <li *ngFor="let link of footerLinks01; let i = index" [ngClass]="getLinkClass(i, footerLinks01)">
+                    <a [href]="link.url" target="_blank" rel="noopener" class="menu__link">{{link.title}} </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Footer links line #2 -->
+        <div id="block-menu-menu-footer-menu-3" *ngIf="footerLinks02"
+        class="block menu--footer-menu last even block--menu block--menu-menu-footer-menu-3" role="navigation">
+            <ul class="menu">
+                <li *ngFor="let link of footerLinks02; let i = index" [ngClass]="getLinkClass(i, footerLinks02)">
+                    <a [href]="link.url" target="_blank" rel="noopener" class="menu__link">{{link.title}} </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

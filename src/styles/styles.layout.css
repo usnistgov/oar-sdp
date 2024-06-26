@@ -1,0 +1,164 @@
+.login-panel .ui-inputtext:focus {
+  border-width: 2px 2px 2px 2px;
+  border-color: #1471AE;}
+
+.layout-container .topbar {
+  background-color: #1471AE;
+}
+
+.layout-container .topbar .topbar-left {
+  background-color: #1471AE;
+  padding:10px;
+  /*padding-top: 10px;*/
+}
+
+.layout-container .topbar .topbar-right #menu-button {
+  background-color: #03A9F4;}
+
+.layout-container .layout-menu.layout-menu-dark .profile-menu {
+  border-bottom: 1px solid #676767; }
+
+/* .layout-container .layout-menu.layout-menu-dark ul.ultima-menu li a {
+  background-color: #1471AE;}
+
+.layout-container .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+  background-color: #03A9F4; } */
+
+.layout-container .layout-main {
+  padding: 96px 0px 0px 0px;}
+
+/* .layout-container .ultima-menu li a {
+  color: #fff;}
+
+.layout-container .ultima-menu li a i {
+  color: #000; }
+
+.layout-container .ultima-menu li a i:first-child {
+  position: absolute;}
+
+.layout-container .ultima-menu li a:hover {
+  background-color: #03A5EF; }
+
+.layout-container .ultima-menu li a span {
+  font-weight: 400;
+  padding-left: .5em; }
+
+.layout-container .ultima-menu li a.active-menuitem-routerlink {
+  color: #FFFFFF; }
+
+.layout-container .ultima-menu li a.active-menuitem-routerlink > i {
+  color: #FFFFFF; }
+
+.layout-container .ultima-menu li.active-menuitem > a {
+  color: #1471AE;
+  background-color: #03A5EF; } */
+
+.layout-container .topbar-items > li > ul {
+  top: 55px;}
+
+.layout-container .topbar .topbar-right .topbar-items {
+  top: 5px }
+
+.layout-container.menu-layout-horizontal .topbar .topbar-left {
+  background-color: #1471AE;}
+
+.layout-container.menu-layout-horizontal .layout-menu {
+  background-color: #112e51;
+  color: #fff;
+}
+
+/* .layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a {
+  color: #fff;
+  padding-right:1.5em;
+}
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a:hover {
+  background-color: #02bfe7;
+  color: #fff;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul {
+  background-color: #003366;}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li a {
+  padding: 10px 10px; }
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > ul li.active-menuitem > a {
+  color: #1471AE;
+  background-color: #02bfe7; }
+
+.layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+  background-color: #205493; } */
+
+.layout-container .topbar .topbar-right .topbar-items > li > a:hover {
+  background-color: #205493; }
+
+/* .layout-container.menu-layout-horizontal .layout-menu.layout-menu-dark ul.ultima-menu li.active-menuitem > a {
+  background-color: #205493; }
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li.active-menuitem > a {
+  background-color: #03A5EF;
+  color:#fff;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink > i
+{
+  color: #fff;
+} */
+
+.layout-wrapper.layout-compact .layout-container.menu-layout-horizontal .layout-main {
+  padding-top: 90px;
+}
+
+.card {
+  margin-bottom: 0px;
+}
+
+.ui-g.form-group > div {
+  padding: 0.5em;
+}
+
+.ui-lgc-1
+{
+  width: 3%;
+}
+
+.ui-lgc-11
+{
+  width: 97%;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a i {
+  color:#fff;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a i:hover {
+  color:#fff;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink:hover i {
+  color: #fff;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu ul.ultima-menu > li > a.active-menuitem-routerlink {
+  padding-right:1.5em;
+}
+
+.layout-container .topbar {
+  height: 55px;
+}
+
+.layout-container .topbar .topbar-left {
+  height: 55px;
+}
+
+.layout-container.menu-layout-horizontal .layout-menu {
+  top: 55px;
+}
+
+.layout-container .topbar .topbar-right .topbar-items {
+  top: 55px;
+}
+
+.adv-step {
+  margin:25px 0 20px 0;
+}
