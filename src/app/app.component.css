@@ -1,0 +1,35 @@
+.layout-wrapper,
+.layout-container,
+.grid {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.p-menubar {
+  width: 100%;
+}
+
+.p-menubar .p-menubar-end {
+  margin-left: auto;
+}
+
+.p-d-flex {
+  display: flex;
+}
+
+.p-ai-center {
+  align-items: center;
+}
+
+.p-d-inline-block {
+  display: inline-block;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.has-text-white {
+  color: white;
+}

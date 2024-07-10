@@ -1,16 +1,58 @@
 .logo-text {
-    font-family: Roboto,'Helvetica Neue',sans-serif;
-    line-height: 16.5px;
-    color: #FFFFFF;
-    font-size:14px;
-    padding-left: 4%;
-    white-space: nowrap;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 16.5px;
+  color: #ffffff;
+  font-size: 14px;
+  padding-left: 4%;
+  white-space: nowrap;
 }
 
 #logo {
-    display:inline-block; 
-    background-color: #000000; 
-    margin-left: 10px;
-    cursor: pointer;
+  display: inline-block;
+  background-color: #000000;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
+::ng-deep .p-menubar {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+}
+
+
+.layout-wrapper,
+.layout-container,
+.grid {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.p-menubar {
+  width: 100%;
+}
+
+.p-menubar .p-menubar-end {
+  margin-left: auto;
+}
+
+.p-d-flex {
+  display: flex;
+}
+
+.p-ai-center {
+  align-items: center;
+}
+
+.p-d-inline-block {
+  display: inline-block;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.has-text-white {
+  color: white;
+}

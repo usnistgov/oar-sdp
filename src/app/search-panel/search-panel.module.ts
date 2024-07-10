@@ -6,7 +6,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {ToastModule} from 'primeng/toast';
-
+import { TableModule }  from 'primeng/table';
 @NgModule({
   imports: [
     CommonModule,
@@ -14,7 +14,8 @@ import {ToastModule} from 'primeng/toast';
     AutoCompleteModule,
     RouterModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    TableModule
   ],
   declarations: [SearchPanelComponent],
   exports: [SearchPanelComponent]

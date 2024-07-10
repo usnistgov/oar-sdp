@@ -1,18 +1,19 @@
+import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
-import { HttpClientModule } from '@angular/common/http'; 
+import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
 import { Routes, RouterModule } from '@angular/router';
 import { TreeModule } from 'primeng/tree';
 // import { OverlayPanelModule } from "primeng";
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { APP_BASE_HREF } from '@angular/common';
-import { CanDeactivateGuard} from './can-deactivate/can-deactivate.guard';
+import { CanDeactivateGuard } from './can-deactivate/can-deactivate.guard';
 import { SearchModule } from './search/search.module';
-import { TopBarComponent }  from './app.topbar.component';
+import { TopBarComponent } from './app.topbar.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { AppConfig } from './shared/config-service/config.service';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -23,10 +24,10 @@ import { HelpModule } from './help/help.module';
 import { ApiModule } from './api/api.module';
 import { environment } from '../environments/environment';
 import { RealModule } from '../app/real.module';
-import {enableProdMode} from '@angular/core';
-import {GoogleAnalyticsService} from "./shared/ga-service/google-analytics.service";
-import {GoogleAnalyticsServiceMock} from "./shared/ga-service/google-analytics.service.mock";
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { enableProdMode } from '@angular/core';
+import { GoogleAnalyticsService } from "./shared/ga-service/google-analytics.service";
+import { GoogleAnalyticsServiceMock } from "./shared/ga-service/google-analytics.service.mock";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 import { HeadbarComponent } from './frame/headbar/headbar.component';
 import { SearchPanelModule } from './search-panel/search-panel.module';
@@ -34,21 +35,22 @@ import { NotificationService } from './shared/notification-service/notification.
 import { ToastrModule } from 'ngx-toastr';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
 import { TopicModule } from './topic/topic.module';
-
+import { MenubarModule } from "primeng/menubar";
+import { TagModule } from 'primeng/tag'
 /**
  * Initialize the configs for backend services
  */
 const appInitializerFn = (appConfig: AppConfig) => {
   return () => {
-      console.log("**** Calling APP Initialization ***");
-      appConfig.loadRemoteConfig().subscribe(
-          (conf) => {
-              console.log("Loaded configuration for version "+conf.APPVERSION);
-          },
-          (err) => {
-              console.error("Failed to pull configuration from server:\n"+ JSON.stringify(err));
-          }
-      );
+    console.log("**** Calling APP Initialization ***");
+    appConfig.loadRemoteConfig().subscribe(
+      (conf) => {
+        console.log("Loaded configuration for version " + conf.APPVERSION);
+      },
+      (err) => {
+        console.error("Failed to pull configuration from server:\n" + JSON.stringify(err));
+      }
+    );
   };
 };
 
@@ -63,15 +65,15 @@ enableProdMode();
     HeadbarComponent
   ],
   imports: [
-    RouterModule.forRoot(routes ,{ useHash: true }),
+    RouterModule.forRoot(routes, { useHash: true }),
     BrowserModule,
     HttpClientModule,
     TreeModule,
     // OverlayPanelModule, 
     // DataListModule, 
     // DataTableModule, 
-    SearchModule, 
-    BrowserAnimationsModule, 
+    SearchModule,
+    BrowserAnimationsModule,
     TooltipModule,
     AutoCompleteModule,
     HelpModule,
@@ -83,12 +85,14 @@ enableProdMode();
     SearchPanelModule,
     HomeModule,
     ToastrModule.forRoot({
-        toastClass: 'toast toast-bootstrap-compatibility-fix'
+      toastClass: 'toast toast-bootstrap-compatibility-fix'
     }),
     SharedModule.forRoot(),
-    TopicModule
+    TopicModule,
+    MenubarModule,
+    TagModule
   ],
-  exports:[
+  exports: [
     AutoCompleteModule
   ],
   providers: [
@@ -107,12 +111,10 @@ enableProdMode();
       useValue: '/'
     },
     CanDeactivateGuard
-    // provider used to create fake backend
-    // fakeBackendProvider
   ],
   bootstrap: [AppComponent],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { 
+export class AppModule {
   constructor(protected _googleAnalyticsService: GoogleAnalyticsService) { } // We inject the service here to keep it alive whole time
 }

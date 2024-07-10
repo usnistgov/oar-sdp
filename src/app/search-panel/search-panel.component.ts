@@ -78,6 +78,7 @@ export class SearchPanelComponent implements OnInit {
 
   parsed_data_headers: any;
   parsed_data: string[][];
+  syntaxRules: { criteria: string; example: string; description: string; }[];
   @Input()
   set editmode(val: any) {
     this._editmode = val;
@@ -188,6 +189,7 @@ export class SearchPanelComponent implements OnInit {
    *
    */
   ngOnInit() {
+
     window.onresize = (e) => {
       this.ngZone.run(() => {
         this.mobWidth = window.innerWidth;
@@ -197,6 +199,29 @@ export class SearchPanelComponent implements OnInit {
     };
 
     this.observableFields = this.searchFieldsListService.getSearchFields();
+    this.syntaxRules = [
+      {
+        criteria: 'Individual terms',
+        example: 'analytical chemistry',
+        description: 'Records that include either “analytical” or “chemistry” are returned (case insensitive).'
+      },
+      {
+        criteria: 'Phrase',
+        example: '"analytical chemistry"',
+        description: 'Records that contain the phrase “analytical Chemistry” (the two words adjacent to each other in that order) will be returned (case insensitive).'
+      },
+      {
+        criteria: 'Key-Value pair',
+        example: 'contactPoint.fn=Levine',
+        description: 'Records whose field, contactPoint.fn, contains “Levine” are returned.'
+      },
+      {
+        criteria: 'Logical Operation: AND, OR',
+        example: 'keyword=chemistry AND topic.tag=physics',
+        description: 'Search Results will match the keyword “chemistry” AND topic “physics”. Available operators are AND and OR (all caps). To search words "AND" or "OR", put them in quotes. Operators can only appear between key-value pairs.'
+      }
+    ];
+
 
     this.searchService._watchQueryValue((queryObj) => {
       if (
@@ -573,8 +598,8 @@ export class SearchPanelComponent implements OnInit {
         test.clientWidth + 1 < 500
           ? 500
           : test.clientWidth + 1 > 700
-          ? 700
-          : test.clientWidth + 1;
+            ? 700
+            : test.clientWidth + 1;
     }
   }
 
