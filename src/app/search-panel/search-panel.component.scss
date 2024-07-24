@@ -237,6 +237,7 @@ body .p-highlight {
   width: 100%;
 }
 
+
 .autocompleteItem {
   margin-top: 10px !important;
 }
@@ -252,7 +253,6 @@ body .p-highlight {
   margin: auto;
   margin-top: 1em;
   margin-bottom: 0.5em;
-  background-color: white;
   color: black;
   width: 80%;
   border-radius: 5px;
@@ -456,4 +456,20 @@ table tbody tr {
   margin-left: 20px;
   font-size: 30px; /* Increase the font size */
   padding: 0 10px; /* Add padding to the sides */
+}
+
+.p-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.p-card-title {
+  margin-left: 1em;
+}
+
+.align-right {
+  margin-left: auto;
+  margin-right: 1em;
+  margin-top: 1em;
 }

@@ -1,288 +1,31 @@
-.background-white {
-  background-color: #ffffff;
-}
+/* Add this to your global CSS or component-specific CSS file */
 
-.background-blue {
-  background-color: #2c539e;
-}
-
-.custButton {
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2c539e+0,2c539e+100;Blue+3D+%232 */
-  background: #2c539e; /* Old browsers */
-  background: -moz-linear-gradient(
-    top,
-    #2c539e 0%,
-    #2c539e 100%
-  ); /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    top,
-    #2c539e 0%,
-    #2c539e 100%
-  ); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(
-    to bottom,
-    #2c539e 0%,
-    #2c539e 100%
-  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c539e', endColorstr='#2c539e',GradientType=0 ); /* IE6-9 */
-}
-.button {
-  background: none !important;
-  border: none;
-  padding: 0 !important;
-  font: inherit;
-  /*border is optional*/
-  border-bottom: 1px solid #444;
-  cursor: pointer;
-}
-
-.cardDiv:hover {
-  height: 75px;
-  background-color: #0071bc;
-  color: #fff;
-  border: 1px solid #0071bc;
-}
-
-.cardDiv {
-  /* background-color: #1471AE;*/
-  height: 75px;
-  -webkit-box-shadow: 0;
-  -moz-box-shadow: 0;
-  box-shadow: 0;
-  background-color: #fff;
-  color: #112e51;
-  font-weight: 900;
-  text-align: center;
-  vertical-align: middle;
-  border-radius: 0em;
-}
-hr {
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-  border: 0.2px solid #666;
-  padding-bottom: -1px;
-  margin: 1.25rem 0;
-}
-
-.searchButton {
-  color: white;
-  background-color: #0872b9;
+/* Ensure container can expand fully */
+.container, .grid-container {
   width: 100%;
-  height: 42px;
-  font-weight: 500;
-  font-size: 18px;
-  border-radius: 0px;
-  /*
-  border-radius-topright: 5px;
-  border-radius-bottomright: 5px;
-  -moz-border-radius-topright: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  */
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem; /* Adjust padding as necessary */
 }
 
-.searchButton:hover {
-  background-color: #1f5593;
-}
-
-.header {
-  /* background-color: #205493;*/
-  color: #ffffff;
-}
-
-.background-gray {
-  background-color: #efefef;
-}
-
-.background-grey {
-  background-color: #dce4ef;
-}
-
-.toggle {
-  background-color: #ffffff;
-  border: 0.1px solid #e0e0e0;
-  height: 42px;
-  font-weight: 400;
-  font-style: italic;
-  font-size: 16px;
-  border-radius: 0px;
-  vertical-align: middle;
-}
-
-.title {
-  font-size: 30px;
-  font-weight: 400;
-}
-
-.subTitle {
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 20px;
-}
-
-.color-green {
-  color: #257a2d;
-}
-
-.glyphiconText {
-  color: gray;
+/* Optional: Ensure grid columns stretch to fill available space */
+.grid-container {
   display: flex;
-  align-items: center;
-  vertical-align: middle;
-  border-color: #bdbdbd;
-  padding-left: 40px;
-  border-width: 1px 1px 1px 1px;
+  flex-wrap: wrap;
 }
 
-.searchTextPadding {
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
+.grid-container > .col-12 {
+  flex: 1 1 100%;
 }
 
-.examples {
-  color: #fff;
-  text-decoration: underline;
+.grid-container > .md\:col-6 {
+  flex: 1 1 50%;
 }
 
-.examplesLabel {
-  color: #fff;
-}
-
-.cardDivHeight {
-  height: 75px;
-  display: flex;
-  align-items: center; /* horizontal */
-  justify-content: center; /* vertical */
-}
-
-.cardDecoration {
-  text-decoration: none;
-}
-
-/* .frontPanel {
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background-position: center 63%;
-  width: 100%;
-  margin-bottom: 0em !important;
-} */
-
-.jumbotron {
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background-position: center 63%;
-  width: 100%;
-  margin-bottom: 0em !important;
-}
-
-.background-cyanblue {
-  background-color: #0872b9;
-}
-
-.search-input-container {
-  padding-right: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-}
-
-@media screen and (min-width: 901px) {
-  button.searchButton {
-    font-size: 20px;
-  }
-}
-
-@media screen and (max-width: 900px) {
-  button.searchButton {
-    font-size: 15px;
-  }
-}
-
-@media screen and (min-width: 1301px) {
-  p-dropdown {
-    font-size: 16px;
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  p-dropdown {
-    font-size: 13px;
-  }
-}
-
-@media screen and (min-width: 1301px) {
-  p-autoComplete {
-    font-size: 16px;
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  p-autoComplete {
-    font-size: 13px;
-  }
-}
-
-.advancedSearch-link {
-  color: #fff;
-  text-decoration: underline;
-  display: table-cell;
-  vertical-align: middle;
-  font-size: small;
-  white-space: nowrap;
-  padding-top: 18px;
-}
-
-.featured-data {
-  color: #112e51;
-  font-weight: 900;
-  font-size: large;
-  text-align: center;
-  margin: auto;
-  display: block;
-  padding-top: 1em;
+.grid-container > .lg\:col-3 {
+  flex: 1 1 25%;
 }
 
 .effect1 {
-  transition: transform 0.3s;
-}
-
-.effect1:hover {
-  transform: scale(1.05);
-}
-
-@media (max-width: 768px) {
-  .p-col-12 {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
-}
-.no-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.no-link:hover {
-  text-decoration: none;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-.container {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0;
-}
-
-.grid-container {
-  width: 90%;
-  margin: 0 auto;
+  width: 100%; /* Ensure the effect1 divs take the full width of their container */
 }

@@ -37,8 +37,8 @@ import { ReadVarExpr } from "@angular/compiler";
 import { find } from "./autocomplete";
 import fetch from "cross-fetch";
 
-import { ToastModule } from "primeng/toast";
 import { MessageService } from "primeng/api";
+
 
 @Component({
   selector: "app-search-panel",
@@ -66,7 +66,7 @@ import { MessageService } from "primeng/api";
       transition("initial=>final", animate("1000ms ease-out")),
       transition("final=>initial", animate("500ms ease-out")),
     ]),
-  ],
+  ]
 })
 export class SearchPanelComponent implements OnInit {
   @Input() title: string;

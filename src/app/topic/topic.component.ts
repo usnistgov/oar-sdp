@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { Component, Input, Output, OnInit, HostListener, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-topic',
-  templateUrl: './topic.component.html',
-  styleUrls: ['./topic.component.css']
+    selector: 'app-topic',
+    templateUrl: './topic.component.html',
+    styleUrls: ['./topic.component.css']
 })
 export class TopicComponent implements OnInit {
     titleFontSize: string = '1.2vw';
@@ -16,7 +16,11 @@ export class TopicComponent implements OnInit {
     @Input() title: string = "Title";
     @Input() image: string = "";
     @Input() icon: string = "";
+    @Input() link: string;
     @Input() showIcon: boolean = false;
+    @Output() cardClick = new EventEmitter<void>();
+
+    expanded: boolean = false;
 
     constructor() { }
 
@@ -37,19 +41,19 @@ export class TopicComponent implements OnInit {
 
     private detectScreenSize() {
         setTimeout(() => {
-            if(window.innerWidth > 768) {
+            if (window.innerWidth > 768) {
                 this.titleFontSize = '1.3vw';
                 this.descLineHeight = '20px';
                 this.descFontSize = '.9vw';
                 this.screenMode = "large";
                 this.descOpacity = 0;
-            }else if(window.innerWidth > 576){
+            } else if (window.innerWidth > 576) {
                 this.titleFontSize = '16px';
                 this.descLineHeight = '15px';
                 this.descFontSize = '12px';
                 this.screenMode = "medium";
                 this.descOpacity = 1;
-            }else{
+            } else {
                 this.titleFontSize = '16px';
                 this.descLineHeight = '15px';
                 this.descFontSize = '15px';
@@ -58,15 +62,35 @@ export class TopicComponent implements OnInit {
             }
         }, 0);
     }
-     
+
     onMouseOver() {
-        
+
         this.descOpacity = 1;
     }
 
     onMouseOut() {
-        if(this.screenMode != "large") return;
+        if (this.screenMode != "large") return;
 
         this.descOpacity = 0;
+    }
+
+    toggleDescription(event: Event) {
+        event.stopPropagation();  // Stop the click event from propagating to the parent elements
+        this.expanded = !this.expanded;
+    }
+    stopPropagation(event: Event) {
+        event.stopPropagation();  // Stop the click event from propagating to the parent elements
+    }
+    handleCardClick(event: Event) {
+        // Check if the click event is from the toggle button or icon area
+        const target = event.target as HTMLElement;
+        if (target.closest('button') || target.closest('.subheader')) {
+            return;
+        }
+        this.cardClick.emit();
+    }
+    openLink(event: Event) {
+        event.stopPropagation();  // Stop the click event from propagating to the parent elements
+        window.open(this.link, '_blank');
     }
 }

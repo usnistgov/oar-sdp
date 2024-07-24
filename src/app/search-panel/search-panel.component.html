@@ -8,16 +8,21 @@
 </p-toast>
 
 <div>
-  <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 3em;">
+  <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 3em">
     <div>
       <h3 *ngIf="title" class="heading title has-text-black">{{ title }}</h3>
       <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
-        <i class="pi pi-question-circle help-icon" data-toggle="tooltip" title="How to build Advanced Search Queries"></i>
+        <i
+          class="pi pi-question-circle help-icon"
+          data-toggle="tooltip"
+          title="How to build Advanced Search Queries"
+        ></i>
       </a>
       <p *ngIf="subtitle" class="TexAlCenter subTitle">
         <i>
-          Explore data, tools, and resources for Science, Engineering, Technology and
-          <a href="" [routerLink]="['/about']" ><u>more.</u></a>
+          Explore data, tools, and resources for Science, Engineering,
+          Technology and
+          <a href="" [routerLink]="['/about']"><u>more.</u></a>
         </i>
       </p>
 
@@ -26,51 +31,101 @@
           pInputText
           p-fluid
           #audocomp
-          [inputStyle]="{ 'width': '100%', 'padding-left': '2rem', 'color': 'white' }"
+          [inputStyle]="{
+            width: '100%',
+            'padding-left': '2rem',
+            color: 'white',
+            'border-color': 'white'
+          }"
           (onFocus)="clearText()"
           (onBlur)="addPlaceholder()"
           [placeholder]="placeholder"
           [(ngModel)]="searchValue"
           inputId="searchinput"
           name="searchinput"
-          (keyup.enter)="audocomp.handleDropdownClick(); search(searchValue, searchTaxonomyKey)"
+          (keyup.enter)="
+            audocomp.handleDropdownClick();
+            search(searchValue, searchTaxonomyKey)
+          "
           (ngModelChange)="onSearchValueChange()"
           [suggestions]="suggestedTaxonomyList"
           (completeMethod)="filterTaxonomies($event)"
           [minLength]="1"
           [maxlength]="2048"
           [size]="100"
-          [style]="{ width: '100%' }"
+          [style]="{ width: '100%', border: 'white' }"
         >
           <ng-template let-taxonomy pTemplate="item">
-            <div class="autoComplete autocompleteItem" style="color: black">{{ taxonomy }}</div>
+            <div
+              class="autoComplete autocompleteItem"
+              style="color: white; text-align: left; margin-left: 40px"
+            >
+              {{ taxonomy }}
+            </div>
           </ng-template>
         </p-autoComplete>
-        <span class="p-inputgroup-addon">
-          <i class="pi pi-search" (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"></i>
+        <span
+          class="p-inputgroup-addon"
+          style="cursor: pointer; color: white; border-color: white"
+        >
+          <i
+            class="pi pi-search"
+            (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
+          ></i>
         </span>
-        <span class="p-inputgroup-addon">
+        <span
+          class="p-inputgroup-addon"
+          style="cursor: pointer; color: white; border-color: white"
+        >
           <i class="pi pi-times" (click)="clearSearchBox()"></i>
         </span>
       </div>
 
-      <div style="width: 100%; text-align: left; color: rgb(255, 162, 162)" *ngIf="queryStringError" [innerHTML]="queryStringErrorMessage"></div>
+      <div
+        style="width: 100%; text-align: left; color: rgb(255, 162, 162)"
+        *ngIf="queryStringError"
+        [innerHTML]="queryStringErrorMessage"
+      ></div>
 
-      <div class="p-d-flex p-jc-between" style="margin-top: 1em;">
-        <span id="example" *ngIf="!showExampleStatus" (click)="searchQueryService.setShowExamples(true)">Show Examples</span>
-        <span *ngIf="showExampleStatus" (click)="searchQueryService.setShowExamples(false)">Hide Examples</span>
-        <a *ngIf="advanceLink" [routerLink]="['/advanced']" style="padding-left: 1em" (click)="searchQueryService.setShowExamples(false)">Advanced Queries</a>
+      <div class="p-d-flex p-jc-between" style="margin-top: 1em">
+        <span
+          id="example"
+          *ngIf="!showExampleStatus"
+          (click)="searchQueryService.setShowExamples(true)"
+          style="padding-left: 1em; cursor: pointer; text-decoration: underline"
+          >Show Examples</span
+        >
+        <a
+          *ngIf="showExampleStatus"
+          (click)="searchQueryService.setShowExamples(false)"
+          style="padding-left: 1em; cursor: pointer; text-decoration: underline"
+          >Hide Examples</a
+        >
+        <a
+          *ngIf="advanceLink"
+          [routerLink]="['/advanced']"
+          style="padding-left: 1em"
+          (click)="searchQueryService.setShowExamples(false)"
+          >Advanced Queries</a
+        >
       </div>
     </div>
   </div>
 
   <div class="help-wrapper" [@changeDivSize]="currentState">
+    <!--     
     <span class="p-float-right p-m-1" (click)="searchQueryService.setShowExamples(false)">
       <i class="pi pi-times icon-black" id="btn-close" aria-hidden="true" data-toggle="tooltip" title="Hide Examples"></i>
-    </span>
+    </span> -->
     <div class="p-card">
       <div class="p-card-header">
         <p class="p-card-title">Syntax Rules</p>
+        <p-button
+          class="p-float-right p-m-1 align-right"
+          icon="pi pi-times"
+          (onClick)="searchQueryService.setShowExamples(false)"
+          label="Hide Examples"
+        ></p-button>
       </div>
       <div class="p-card-body">
         <p-table [value]="syntaxRules" class="p-datatable">
@@ -85,7 +140,18 @@
             <tr>
               <td>{{ rule.criteria }}</td>
               <td>
-                <a class="examples" (click)="$event.preventDefault(); setSearchValue(rule.example)">{{ rule.example }}</a>
+                <a
+                  class="examples"
+                  (click)="
+                    $event.preventDefault(); setSearchValue(rule.example)
+                  "
+                  style="
+                    padding-left: 1em;
+                    cursor: pointer;
+                    text-decoration: underline;
+                  "
+                  >{{ rule.example }}</a
+                >
               </td>
               <td>{{ rule.description }}</td>
             </tr>
@@ -97,7 +163,11 @@
 
   <p-overlayPanel #op1 [dismissable]="true" [showCloseIcon]="false">
     <div class="p-grid">
-      <div class="p-col" *ngFor="let field of observableFields | async" (click)="appendToSearchBox(field.value, '=', op1)">
+      <div
+        class="p-col"
+        *ngFor="let field of observableFields | async"
+        (click)="appendToSearchBox(field.value, '=', op1)"
+      >
         <div>{{ field.label }} - {{ field.value }}</div>
       </div>
     </div>
@@ -106,14 +176,28 @@
   <p-overlayPanel #op2 [dismissable]="false" [showCloseIcon]="true">
     <div class="p-grid">
       <div class="p-col-6">
-        <button pButton type="button" label="AND" (click)="appendToSearchBox(' AND ', null, op2)"></button>
+        <button
+          pButton
+          type="button"
+          label="AND"
+          (click)="appendToSearchBox(' AND ', null, op2)"
+        ></button>
       </div>
       <div class="p-col-6">
-        <button pButton type="button" label="OR" (click)="appendToSearchBox(' OR ', null, op2)"></button>
+        <button
+          pButton
+          type="button"
+          label="OR"
+          (click)="appendToSearchBox(' OR ', null, op2)"
+        ></button>
       </div>
     </div>
     <div class="p-grid">
-      <div class="p-col" *ngFor="let field of observableFields | async" (click)="addKeyValuePairToSearchBox($event, field.value, op2, op4)">
+      <div
+        class="p-col"
+        *ngFor="let field of observableFields | async"
+        (click)="addKeyValuePairToSearchBox($event, field.value, op2, op4)"
+      >
         <div>{{ field.value }}</div>
         <div>{{ field.label }}</div>
       </div>
@@ -124,15 +208,37 @@
     <div class="p-grid">
       <div class="p-col-12">
         <span class="inner-addon">
-          <input pInputText type="text" class="overlay-input" #field placeholder="Please enter a value here" (keyup.enter)="processInputValue($event.target.value, op4)" style="background-color: rgb(252, 246, 237)" />
-          <i class="pi pi-times clear-box2" (click)="field.value = ''" data-toggle="tooltip" title="Clear the search box"></i>
+          <input
+            pInputText
+            type="text"
+            class="overlay-input"
+            #field
+            placeholder="Please enter a value here"
+            (keyup.enter)="processInputValue($event.target.value, op4)"
+            style="background-color: rgb(252, 246, 237)"
+          />
+          <i
+            class="pi pi-times clear-box2"
+            (click)="field.value = ''"
+            data-toggle="tooltip"
+            title="Clear the search box"
+          ></i>
         </span>
-        <button pButton type="button" label="Set" (click)="processInputValue(field.value, op4)"></button>
+        <button
+          pButton
+          type="button"
+          label="Set"
+          (click)="processInputValue(field.value, op4)"
+        ></button>
         <div style="font-style: italic; font-size: 12px; padding-top: 0.2em">
           Example:
-          <span class="link-text" (click)="field.value = getExample()">{{ getExample() }}</span>
+          <span class="link-text" (click)="field.value = getExample()">{{
+            getExample()
+          }}</span>
         </div>
-        <div *ngIf="inputValueMissing" style="color: red">A value is required.</div>
+        <div *ngIf="inputValueMissing" style="color: red">
+          A value is required.
+        </div>
       </div>
     </div>
   </p-overlayPanel>
@@ -141,10 +247,28 @@
     <div class="p-grid">
       <div class="p-col-12">
         <span class="inner-addon">
-          <input pInputText type="text" class="overlay-input" #field2 placeholder="Please enter unique query name" (keyup.enter)="saveAdvQuery($event.target.value, op5)" style="background-color: rgb(252, 246, 237)" />
-          <i class="pi pi-times clear-box2" (click)="field2.value = ''" data-toggle="tooltip" title="Clear the search box"></i>
+          <input
+            pInputText
+            type="text"
+            class="overlay-input"
+            #field2
+            placeholder="Please enter unique query name"
+            (keyup.enter)="saveAdvQuery($event.target.value, op5)"
+            style="background-color: rgb(252, 246, 237)"
+          />
+          <i
+            class="pi pi-times clear-box2"
+            (click)="field2.value = ''"
+            data-toggle="tooltip"
+            title="Clear the search box"
+          ></i>
         </span>
-        <button pButton type="button" label="Save Query" (click)="saveAdvQuery(field2.value, op5)"></button>
+        <button
+          pButton
+          type="button"
+          label="Save Query"
+          (click)="saveAdvQuery(field2.value, op5)"
+        ></button>
       </div>
     </div>
   </p-overlayPanel>

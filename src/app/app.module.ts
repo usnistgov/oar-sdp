@@ -36,6 +36,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { fakeBackendProvider } from './_helpers/fakeBackendInterceptor';
 import { TopicModule } from './topic/topic.module';
 import { MenubarModule } from "primeng/menubar";
+import { MegaMenuModule } from 'primeng/megamenu';
 import { TagModule } from 'primeng/tag'
 /**
  * Initialize the configs for backend services
@@ -90,6 +91,7 @@ enableProdMode();
     SharedModule.forRoot(),
     TopicModule,
     MenubarModule,
+    MegaMenuModule,
     TagModule
   ],
   exports: [

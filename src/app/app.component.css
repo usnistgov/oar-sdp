@@ -1,35 +1,40 @@
+/* app.component.css or global styles */
+
+/* Ensure the layout wrapper and container take full width */
 .layout-wrapper,
-.layout-container,
-.grid {
+.layout-container {
   width: 100%;
   margin: 0;
   padding: 0;
 }
 
-.p-menubar {
+/* Ensure the content div and router-outlet take full width */
+.content {
   width: 100%;
-}
-
-.p-menubar .p-menubar-end {
-  margin-left: auto;
-}
-
-.p-d-flex {
+  margin: 0;
+  padding: 0;
+  flex-grow: 1; /* Ensure it grows to take available space */
   display: flex;
+  flex-direction: column;
 }
 
-.p-ai-center {
-  align-items: center;
+router-outlet + * {
+  width: 120%;
+  margin: 0;
+  padding: 0;
+  flex-grow: 1; /* Ensure the routed component takes available space */
 }
 
-.p-d-inline-block {
-  display: inline-block;
+sdp-footbar {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
-.has-text-white {
-  color: white;
+/* Remove any default padding/margin from the body and html elements */
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }

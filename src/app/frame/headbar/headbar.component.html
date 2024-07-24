@@ -1,5 +1,5 @@
 <p-menubar [model]="items">
-  <ng-template pTemplate="end">
+  <ng-template pTemplate="start">
     <div
       id="logo"
       (click)="goHome()"
@@ -9,7 +9,6 @@
         src="./assets/images/nist_logo_reverse.png"
         alt="NIST Science Data Portal"
         title="NIST Science Data Portal"
-        style="float: left"
       />
       <div style="display: inline-block; margin-left: 5px; margin-top: -5.5px">
         <div class="ml-2 heading has-text-white">SCIENCE</div>
@@ -18,7 +17,7 @@
       <p-tag
         severity="contrast"
         [value]="appVersion"
-        style="margin-left: 1em; margin-top: -15px;"
+        style="margin-left: 1em; margin-top: -15px"
       ></p-tag>
     </div>
   </ng-template>

@@ -1,3 +1,13 @@
+/* headbar.component.css */
+#logo {
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  margin-left: 10px;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
 .logo-text {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   line-height: 16.5px;
@@ -7,19 +17,18 @@
   white-space: nowrap;
 }
 
-#logo {
-  display: inline-block;
-  background-color: #000000;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
 ::ng-deep .p-menubar {
   background-color: #000000;
+  margin-left: auto;;
   color: #ffffff;
   border: none;
 }
 
+::ng-deep .p-menubar .p-menubar-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
 
 .layout-wrapper,
 .layout-container,
@@ -55,4 +64,25 @@
 
 .has-text-white {
   color: white;
+}
+
+.p-menuitem {
+  display: flex;
+  align-items: center;
+}
+
+.p-menuitem-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+.p-menuitem-link:hover {
+  background-color: #444444;
+}
+
+.p-menuitem-icon {
+  margin-right: 0.5rem;
 }

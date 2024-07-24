@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {ToastModule} from 'primeng/toast';
 import { TableModule }  from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 @NgModule({
   imports: [
     CommonModule,
@@ -15,7 +16,8 @@ import { TableModule }  from 'primeng/table';
     RouterModule,
     FormsModule,
     ToastModule,
-    TableModule
+    TableModule,
+    ButtonModule
   ],
   declarations: [SearchPanelComponent],
   exports: [SearchPanelComponent]
