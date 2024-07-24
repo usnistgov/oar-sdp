@@ -1,31 +1,9 @@
-/* Add this to your global CSS or component-specific CSS file */
-
-/* Ensure container can expand fully */
-.container, .grid-container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 1rem; /* Adjust padding as necessary */
-}
 
 /* Optional: Ensure grid columns stretch to fill available space */
-.grid-container {
+.container {
   display: flex;
+  margin-left: 3em;
+  margin-right: 2em;
   flex-wrap: wrap;
 }
 
-.grid-container > .col-12 {
-  flex: 1 1 100%;
-}
-
-.grid-container > .md\:col-6 {
-  flex: 1 1 50%;
-}
-
-.grid-container > .lg\:col-3 {
-  flex: 1 1 25%;
-}
-
-.effect1 {
-  width: 100%; /* Ensure the effect1 divs take the full width of their container */
-}
