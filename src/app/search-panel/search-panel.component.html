@@ -11,6 +11,31 @@
   <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 3em">
     <div>
       <h3 *ngIf="title" class="heading title has-text-black">{{ title }}</h3>
+      <p-button
+        class="ml-3"
+        style="position: relative; top: 3px"
+        severity="success"
+        [raised]="true"
+        [rounded]="true"
+        size="small"
+        (click)="showDialog()"
+        icon="pi pi-code"
+        label="DEV"
+      ></p-button>
+      <p-dialog
+        header="Work In Progress"
+        [(visible)]="visible"
+        [style]="{ width: '50vw' }"
+      >
+        <p style="text-align: left">
+          This is a development version of the NIST Data Discovery. <br />
+          We are redesigning every aspect of the application to make it more
+          user friendly and to provide a better user experience. As of now, only
+          this home page is available. Other pages and features will be added
+          soon. <br />
+          Please provide your feedback by emailing mehdi[at]nist[dot]gov.
+        </p>
+      </p-dialog>
       <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
         <i
           class="pi pi-question-circle help-icon"

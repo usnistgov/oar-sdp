@@ -2,7 +2,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AppConfig, Config } from '../shared/config-service/config.service';
-
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -17,6 +16,7 @@ export class HomeComponent implements OnInit {
     PDRAPIURL: string;
     SDPAPIURL: string;
     forensicsURL: string;
+
 
     themes: any = {
         it: {
@@ -73,7 +73,6 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-
     }
 
     /**

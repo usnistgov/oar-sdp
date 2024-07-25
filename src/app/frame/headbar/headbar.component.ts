@@ -36,7 +36,8 @@ export class HeadbarComponent implements OnInit {
 
     this.appConfig.getConfig().subscribe(
       (conf) => {
-        this.appVersion = conf.APPVERSION
+        // this.appVersion = conf.APPVERSION
+        this.appVersion = 'DEV'
       }
     );
 

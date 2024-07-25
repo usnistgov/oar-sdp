@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import {ToastModule} from 'primeng/toast';
 import { TableModule }  from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +18,8 @@ import { ButtonModule } from 'primeng/button';
     FormsModule,
     ToastModule,
     TableModule,
-    ButtonModule
+    ButtonModule,
+    DialogModule
   ],
   declarations: [SearchPanelComponent],
   exports: [SearchPanelComponent]
