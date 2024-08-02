@@ -27,6 +27,8 @@ import { SearchPanelModule } from '../search-panel/search-panel.module';
 import { FiltersComponent } from './filters/filters.component';
 import { ResultsComponent } from './results/results.component';
 import { PaginationComponent } from './pagination/pagination.component';
+import { TagModule } from 'primeng/tag';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
     imports: [
@@ -48,7 +50,9 @@ import { PaginationComponent } from './pagination/pagination.component';
       TooltipModule, 
       ProgressSpinnerModule, 
       InputTextareaModule,
-      SearchPanelModule],
+      SearchPanelModule,
+      TagModule,
+      DividerModule],
     declarations: [SearchComponent,ReadMoreComponent, FiltersComponent, ResultsComponent, PaginationComponent],
     exports: [SearchComponent,ReadMoreComponent],
     providers: [TaxonomyListService, SearchfieldsListService, SearchQueryService ]

@@ -93,7 +93,53 @@
         else noresult
       "
     >
-      <div class="result-items">
+      <div class="">
+        <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
+          <p-panel>
+            <ng-template pTemplate="header">
+              <div
+                class="header-container"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                "
+              >
+                <a
+                  href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
+                  (click)="openSearchResult(resultItem.ediid)"
+                >
+                  {{ resultItem.title }}
+                </a>
+                <a
+                  *ngIf="resultItem.landingPage"
+                  [(href)]="resultItem.landingPage"
+                  target="_blank"
+                  rel="noopener"
+                  (click)="
+                    gaService.gaTrackEvent(
+                      'outbound',
+                      $event,
+                      'Visit to homepage',
+                      resultItem.landingPage
+                    )
+                  "
+                >
+                  <p-button
+                    label="Visit Home Page"
+                    severity="success"
+                    size="small"
+                    icon="faa faa-external-link"
+                    iconPos="left"
+                  ></p-button>
+                </a>
+              </div>
+            </ng-template>
+            {{ resultItem.description }}
+            <p-divider></p-divider>
+          </p-panel>
+        </div>
+
         <div *ngFor="let resultItem of searchResults" class="result-item">
           <div class="result-details">
             <div
@@ -126,14 +172,13 @@
                   )
                 "
               >
-                <button
-                  pButton
+                <p-button
                   label="Visit Home Page"
-                  type="button"
+                  severity="primary"
+                  size="small"
                   icon="faa faa-external-link"
                   iconPos="left"
-                  class="visit-home-page"
-                ></button>
+                ></p-button>
               </a>
               <a
                 *ngIf="!resultItem.landingPage"
@@ -204,12 +249,12 @@
             >
               <div class="ui-grid-col-12">
                 <b>Research Topic: </b>
-                <i style="color: gray">
+                <p-tag>
                   <span *ngFor="let topic of resultItem.topic; let i = index"
                     >{{ topic.tag
                     }}<span *ngIf="i < resultItem.topic.length - 1">, </span>
                   </span>
-                </i>
+                </p-tag>
               </div>
             </div>
             <div
@@ -226,12 +271,18 @@
               *ngIf="selectedFields.indexOf('Subject keywords') !== -1"
             >
               <div class="ui-grid-col-12">
-                <b>Subject Keywords: </b>
                 <i style="color: #515151">
-                  <read-more
+                  <span
+                    class="mr-2"
+                    *ngFor="let keyword of resultItem.keyword; let i = index"
+                  >
+                    <p-tag>{{ keyword }}</p-tag>
+                  </span>
+
+                  <!-- <read-more
                     [text]="resultItem.keyword.join(', ')"
                     [maxLength]="110"
-                  ></read-more>
+                  ></read-more> -->
                 </i>
               </div>
             </div>
