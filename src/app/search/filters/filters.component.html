@@ -3,6 +3,7 @@
     mobileMode ? 'expanded' : isActive ? 'expanded' : 'collapsed'
   "
   [ngStyle]="{ width: mobileMode ? '100%' : filterWidthNum + 'px' }"
+  style="background-color: white"
 >
   <div
     class="normalFilter"
@@ -82,6 +83,7 @@
                     class="text-nowrap"
                     style="color: black"
                     data-toggle="tooltip"
+                    title="test"
                     [title]="filterTooltip(node)"
                   >
                     <span
@@ -226,7 +228,6 @@
             <label><b>Authors and Contributors</b></label>
           </div>
           <div class="filter-input p-fluid">
-            <label for="suggestedauthor" class="hideLabel">Search Input</label>
             <p-autoComplete
               [(ngModel)]="selectedAuthor"
               inputId="suggestedauthor"
@@ -238,7 +239,13 @@
               [minLength]="1"
               [maxlength]="30"
               [style]="filterStyle"
+              [inputStyle]="{ width: '100%' }"
             >
+              <ng-template let-author pTemplate="item">
+                <div style="margin-left: 40px">
+                  {{ author }}
+                </div>
+              </ng-template>
             </p-autoComplete>
           </div>
         </div>
@@ -249,7 +256,6 @@
             <label><b>Keyword</b></label>
           </div>
           <div class="filter-input p-fluid">
-            <label for="keyword" class="hideLabel">Keyword</label>
             <p-autoComplete
               inputId="keyword"
               [(ngModel)]="selectedKeywords"
@@ -267,6 +273,7 @@
                 <div
                   data-toggle="tooltip"
                   [title]="suggestedKeywordsLkup[keyword]"
+                  style="margin-left: 40px"
                 >
                   {{ keyword }}
                 </div>

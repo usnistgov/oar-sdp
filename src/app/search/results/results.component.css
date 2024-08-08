@@ -237,8 +237,8 @@
 }
 
 ::ng-deep .p-panel-header {
-  background-color: var(--teal-500);
-  border-color: var(--teal-500);
+  background-color: black;
+  border-color: black;
   color: #ffffff;
 }
 ::ng-deep .p-panel-header a {
@@ -246,7 +246,7 @@
   }
 
 ::ng-deep .p-panel-content {
-  border-color: var(--teal-500);
+  border-color: black;
   background-color: #ffffff;
   color: black;
 }

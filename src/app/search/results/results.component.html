@@ -55,21 +55,21 @@
       <!-- Display Fields config -->
       <div
         [ngClass]="flexgrow(1)"
-        style="padding: 5px 10px 5px 0px"
         *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
       >
-        <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
-          <button
-            type="button"
+        <div [ngClass]="flexgrow(1)">
+          <p-button
+            style="position: relative; top: -2px"
+            class="m-2"
             id="controlBtn"
-            class="controlBtn"
+            severity="contrast"
+            size="small"
             [ngStyle]="{ float: customizeViewPosition() }"
-            pButton
             label="Customize View"
             icon="faa faa-cog"
             iconPos="left"
             (click)="op1.toggle($event)"
-          ></button>
+          ></p-button>
         </div>
       </div>
     </div>
@@ -93,71 +93,11 @@
         else noresult
       "
     >
-      <div class="">
+      <div class="mt-4">
         <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
           <p-panel>
             <ng-template pTemplate="header">
-              <div
-                class="header-container"
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                "
-              >
-                <a
-                  href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
-                  (click)="openSearchResult(resultItem.ediid)"
-                >
-                  {{ resultItem.title }}
-                </a>
-                <a
-                  *ngIf="resultItem.landingPage"
-                  [(href)]="resultItem.landingPage"
-                  target="_blank"
-                  rel="noopener"
-                  (click)="
-                    gaService.gaTrackEvent(
-                      'outbound',
-                      $event,
-                      'Visit to homepage',
-                      resultItem.landingPage
-                    )
-                  "
-                >
-                  <p-button
-                    label="Visit Home Page"
-                    severity="success"
-                    size="small"
-                    icon="faa faa-external-link"
-                    iconPos="left"
-                  ></p-button>
-                </a>
-              </div>
-            </ng-template>
-            {{ resultItem.description }}
-            <p-divider></p-divider>
-          </p-panel>
-        </div>
-
-        <div *ngFor="let resultItem of searchResults" class="result-item">
-          <div class="result-details">
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-              "
-            >
-              <h3 class="result-title">
-                <a
-                  href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
-                  (click)="openSearchResult(resultItem.ediid)"
-                >
-                  {{ resultItem.title }}
-                </a>
-              </h3>
+              <i class="pi pi-external-link" style="margin-right: 10px"></i>
               <a
                 *ngIf="resultItem.landingPage"
                 [(href)]="resultItem.landingPage"
@@ -172,141 +112,100 @@
                   )
                 "
               >
-                <p-button
-                  label="Visit Home Page"
-                  severity="primary"
-                  size="small"
-                  icon="faa faa-external-link"
-                  iconPos="left"
-                ></p-button>
+                {{ resultItem.title }}
               </a>
-              <a
-                *ngIf="!resultItem.landingPage"
-                href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
-                target="_blank"
-                (click)="
-                  gaService.gaTrackEvent(
-                    'outbound',
-                    $event,
-                    'Visit to homepage',
-                    resultItem.landingPage
-                  )
-                "
+            </ng-template>
+            <div class="result-details">
+              <div class="result-description">
+                <read-more
+                  [text]="resultItem.description"
+                  [maxLength]="300"
+                ></read-more>
+              </div>
+              <div
+                class="ui-grid-row details"
+                *ngIf="selectedFields.indexOf('Point of Contact') !== -1"
               >
-                <button
-                  pButton
-                  label="Visit Home Page"
-                  type="button"
-                  icon="faa faa-external-link"
-                  iconPos="left"
-                  class="visit-home-page"
-                ></button>
-              </a>
-            </div>
-            <hr />
-            <div class="result-description">
-              <read-more
-                [text]="resultItem.description"
-                [maxLength]="270"
-              ></read-more>
-            </div>
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('Point of Contact') !== -1"
-            >
-              <div class="ui-grid-col-12">
-                <b>Point of Contact: </b>
-                <i style="color: gray">
-                  {{ resultItem.contactPoint }}
-                </i>
+                <div class="ui-grid-col-12">
+                  <b>Point of Contact: </b>
+                  <i style="color: gray">
+                    {{ resultItem.contactPoint }}
+                  </i>
+                </div>
               </div>
-            </div>
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('Contact\'s full name') !== -1"
-            >
-              <div class="ui-grid-col-12">
-                <b>Contact Full Name: </b>
-                <i style="color: gray">
-                  {{ resultItem.contactPoint.fn }}
-                </i>
+              <div
+                class="ui-grid-row details"
+                *ngIf="selectedFields.indexOf('Contact\'s full name') !== -1"
+              >
+                <div class="ui-grid-col-12">
+                  <b>Contact Full Name: </b>
+                  <i style="color: gray">
+                    {{ resultItem.contactPoint.fn }}
+                  </i>
+                </div>
               </div>
-            </div>
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('Resource Home Page') !== -1"
-            >
-              <div class="ui-grid-col-12">
-                <b>Resource Home Page: </b>
-                <i style="color: gray">
-                  {{ resultItem.landingPage }}
-                </i>
+              <div
+                class="ui-grid-row details"
+                *ngIf="selectedFields.indexOf('Resource Home Page') !== -1"
+              >
+                <div class="ui-grid-col-12">
+                  <b>Resource Home Page: </b>
+                  <i style="color: gray">
+                    {{ resultItem.landingPage }}
+                  </i>
+                </div>
               </div>
-            </div>
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('Research Topic') !== -1"
-            >
-              <div class="ui-grid-col-12">
-                <b>Research Topic: </b>
-                <p-tag>
-                  <span *ngFor="let topic of resultItem.topic; let i = index"
-                    >{{ topic.tag
-                    }}<span *ngIf="i < resultItem.topic.length - 1">, </span>
-                  </span>
-                </p-tag>
+              <div
+                class="ui-grid-row details"
+                *ngIf="selectedFields.indexOf('Research Topic') !== -1"
+              >
+                <div class="ui-grid-col-12">
+                  <b>Research Topic: </b>
+                  <p-tag>
+                    <span *ngFor="let topic of resultItem.topic; let i = index"
+                      >{{ topic.tag
+                      }}<span *ngIf="i < resultItem.topic.length - 1">, </span>
+                    </span>
+                  </p-tag>
+                </div>
               </div>
-            </div>
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('research topic') !== -1"
-            >
-              <div class="ui-grid-col-12">
-                <b>Research Topic - Component: </b>
+              <div
+                class="ui-grid-row details"
+                *ngIf="selectedFields.indexOf('research topic') !== -1"
+              >
+                <div class="ui-grid-col-12">
+                  <b>Research Topic - Component: </b>
+                </div>
               </div>
-            </div>
-            <hr />
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('Subject keywords') !== -1"
-            >
-              <div class="ui-grid-col-12">
-                <i style="color: #515151">
-                  <span
-                    class="mr-2"
-                    *ngFor="let keyword of resultItem.keyword; let i = index"
-                  >
-                    <p-tag>{{ keyword }}</p-tag>
-                  </span>
+              <div
+                class="ui-grid-row details"
+                *ngIf="selectedFields.indexOf('DOI') !== -1"
+              >
+                <b>DOI: </b>
+                <span style="color: #1471ae" *ngIf="resultItem.doi != null">
+                  {{ resultItem.doi || "None" }}
+                </span>
+                <span style="color: #000" *ngIf="resultItem.doi == null">
+                  None
+                </span>
+              </div>
 
-                  <!-- <read-more
-                    [text]="resultItem.keyword.join(', ')"
-                    [maxLength]="110"
-                  ></read-more> -->
-                </i>
+              <div
+                class="ui-grid-row details"
+                style="margin-top: 1.5em"
+                *ngIf="selectedFields.indexOf('Subject keywords') !== -1"
+              >
+                <div class="ui-grid-col-12">
+                  <i style="color: #515151">
+                    <read-more
+                      [keywords]="resultItem.keyword"
+                      [maxKeywords]="5"
+                    ></read-more>
+                  </i>
+                </div>
               </div>
             </div>
-            <div
-              class="ui-grid-row details"
-              *ngIf="selectedFields.indexOf('DOI') !== -1"
-            >
-              <div class="ui-grid-col-1"><b>DOI: </b></div>
-              <div
-                class="ui-grid-col-11"
-                style="color: #1471ae"
-                *ngIf="resultItem.doi != null"
-              >
-                {{ resultItem.doi || "None" }}
-              </div>
-              <div
-                class="ui-grid-col-11"
-                style="color: #000"
-                *ngIf="resultItem.doi == null"
-              >
-                None
-              </div>
-            </div>
-          </div>
+          </p-panel>
         </div>
       </div>
 
@@ -334,17 +233,14 @@
         </div>
 
         <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
-          <button
-            type="button"
+          <p-button
             id="controlBtn"
-            class="controlBtn"
             [ngStyle]="{ float: customizeViewPosition() }"
-            pButton
             label="Customize View"
             icon="faa faa-cog"
             iconPos="left"
             (click)="op1.toggle($event)"
-          ></button>
+          ></p-button>
         </div>
       </div>
     </div>

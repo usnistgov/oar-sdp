@@ -102,18 +102,18 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     resultsClass: string;
     nodeExpanded: boolean = true;
     comheight: string; // parent div height
-    comwidth: string;  // parent div width
+    comwidth: string;  // parent div width  
     dropdownLabelLengthLimit: number = 30;
 
-    filterStyle = {'width':'100%', 'background-color': '#FFFFFF','font-weight': '400','font-style': 'italic', 'font-family': 'sans-serif'};
+    filterStyle = {'width':'100%', 'background-color': 'white','font-weight': '400','font-style': 'italic', 'font-family': 'sans-serif'};
 
     ResourceTypeStyle = {'width':'auto','padding-top': '.5em','padding-right': '.5em',
-    'padding-bottom': '.5em','background-color': '#F8F9F9','border-width':'0', 'font-family': 'sans-serif'};
+    'padding-bottom': '.5em','background-color': 'white','border-width':'0', 'font-family': 'sans-serif'};
 
-    researchTopicStyle = {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': '#F8F9F9', 'overflow':'hidden','border-width':'0', 'font-family': 'sans-serif'};
+    researchTopicStyle = {'width':'100%','padding-top': '.5em', 'padding-bottom': '.5em', 'background-color': 'white', 'overflow':'hidden','border-width':'0', 'font-family': 'sans-serif'};
 
     recordHasStyle = {'width':'auto','padding-top': '.5em','padding-right': '.5em',
-    'padding-bottom': '.5em','background-color': '#F8F9F9','border-width':'0', 'font-family': 'sans-serif'}
+    'padding-bottom': '.5em','background-color': 'white','border-width':'0', 'font-family': 'sans-serif'}
 
     //Error handling
     queryStringErrorMessage: string = "";

@@ -8,10 +8,11 @@
 </p-toast>
 
 <div>
-  <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 3em">
+  <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 1em">
     <div>
       <h3 *ngIf="title" class="heading title has-text-black">{{ title }}</h3>
       <p-button
+        *ngIf="title"
         class="ml-3"
         style="position: relative; top: 3px"
         severity="success"
