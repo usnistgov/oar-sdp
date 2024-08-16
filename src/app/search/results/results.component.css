@@ -242,8 +242,8 @@
   color: #ffffff;
 }
 ::ng-deep .p-panel-header a {
-    color: #ffffff;
-  }
+  color: #ffffff;
+}
 
 ::ng-deep .p-panel-content {
   border-color: black;
@@ -251,18 +251,24 @@
   color: black;
 }
 
-
 .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .header-container a {
-    flex: 1;
-  }
-  
-  .header-container a:last-child {
-    flex: 0 0 auto;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-container a {
+  flex: 1;
+}
+
+.header-container a:last-child {
+  flex: 0 0 auto;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}

@@ -30,21 +30,70 @@
     <div class="EmptyBox80" style="background-color: #ffffff"></div>
   </div>
 
+  <!-- Handle no result -->
+  <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems == 0">
+    <div
+      class="col-12"
+      style="background-color: #ffffff; font-size: 2em; line-height: 1.5em"
+    >
+      No results found for your search. Please try a different search.
+    </div>
+    <div class="EmptyBox80" style="background-color: #ffffff"></div>
+  </div>
+
+  <!-- Handle Loading -->
+  <div
+    *ngIf="
+      resultStatus != RESULT_STATUS.success &&
+      resultStatus != RESULT_STATUS.userError &&
+      resultStatus != RESULT_STATUS.sysError
+    "
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vh;
+      margin-top: 10px;
+    "
+  >
+    <div>
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="8"
+        fill="var(--surface-ground)"
+        animationDuration=".5s"
+      ></p-progressSpinner>
+    </div>
+  </div>
+
   <div>
     <!-- Top bar -->
-    <div [ngClass]="resultTopBarClass()">
-      <div
-        [ngClass]="flexgrow(1)"
-        style="color: #000; font-weight: 800; padding: 10px 0 0 10px"
-      >
-        {{ totalItems }} records found
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      "
+    >
+      <!-- Records Found -->
+      <div style="flex: 1; display: flex; justify-content: flex-start">
+        <p-chip
+          style="padding: 10px 0 0 10px"
+          class="flexgrow(1)"
+          *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+          icon="pi pi-list"
+          [label]="totalItems + ' records found'"
+        >
+        </p-chip>
       </div>
 
       <!-- Pagination -->
+
       <div
-        [ngClass]="flexgrow(8)"
         id="pagination"
         *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+        style="margin-top: 0px;"
       >
         <app-pagination
           [totalItems]="totalItems"
@@ -52,24 +101,33 @@
         ></app-pagination>
       </div>
 
-      <!-- Display Fields config -->
+      <!-- Customize View -->
       <div
-        [ngClass]="flexgrow(1)"
-        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+        style="
+          flex: 1;
+          display: flex;
+          justify-content: flex-end;
+          margin-right: 10px;
+        "
       >
-        <div [ngClass]="flexgrow(1)">
-          <p-button
-            style="position: relative; top: -2px"
-            class="m-2"
-            id="controlBtn"
-            severity="contrast"
-            size="small"
-            [ngStyle]="{ float: customizeViewPosition() }"
-            label="Customize View"
-            icon="faa faa-cog"
-            iconPos="left"
-            (click)="op1.toggle($event)"
-          ></p-button>
+        <div
+          [ngClass]="flexgrow(1)"
+          *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+        >
+          <div [ngClass]="flexgrow(1)">
+            <p-button
+              style="position: relative; top: -2px"
+              class="m-2"
+              id="controlBtn"
+              severity="contrast"
+              size="small"
+              [ngStyle]="{ float: customizeViewPosition() }"
+              label="Customize View"
+              icon="faa faa-cog"
+              iconPos="left"
+              (click)="op1.toggle($event)"
+            ></p-button>
+          </div>
         </div>
       </div>
     </div>
@@ -210,21 +268,23 @@
       </div>
 
       <!-- Bottom bar -->
-      <div
-        [ngClass]="resultTopBarClass()"
-        style="width: 100%; margin-bottom: 1em"
-      >
-        <div
+      <div style="width: 100%; margin-bottom: 1em">
+        <!-- <div
           [ngClass]="flexgrow(1)"
           style="color: #000; font-weight: 800; padding-top: 10px"
         >
           &nbsp;&nbsp;{{ totalItems }} records found
-        </div>
+        </div> -->
 
         <!-- Pagination -->
         <div
           [ngClass]="flexgrow(8)"
-          style="padding: 0px 10px 0px 10px; margin: -1em 0em"
+          style="
+            padding: 0px 10px 0px 10px;
+            margin: -1em 0em;
+            display: flex;
+            justify-content: center;
+          "
         >
           <app-pagination
             [totalItems]="totalItems"
@@ -232,7 +292,7 @@
           ></app-pagination>
         </div>
 
-        <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
+        <!-- <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
           <p-button
             id="controlBtn"
             [ngStyle]="{ float: customizeViewPosition() }"
@@ -241,16 +301,12 @@
             iconPos="left"
             (click)="op1.toggle($event)"
           ></p-button>
-        </div>
+        </div> -->
       </div>
     </div>
     <ng-template #noresult>
-      <div
-        style="text-align: center; border-bottom: 1px solid grey"
-        *ngIf="dataReady"
-      >
+      <div style="text-align: center" *ngIf="dataReady">
         <img id="dog" src="./assets/images/NothingFound2_s.png" />
-        <span class="nothing-found-text">Nothing found...</span>
       </div>
     </ng-template>
   </div>

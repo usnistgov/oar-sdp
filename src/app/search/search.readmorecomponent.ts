@@ -27,7 +27,7 @@ import { Component, Input, ElementRef, AfterViewInit } from '@angular/core';
     </span>
     <p-button
       *ngIf="!isKeywords && !hideToggle"
-      style="margin-left: 20px; position: relative; top: 7px;"
+      style="margin-left: 20px; position: relative; top: 7px; font-size: 0.5em;"
       size="small"
       severity="secondary"
       [rounded]="true"

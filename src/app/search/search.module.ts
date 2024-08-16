@@ -29,6 +29,8 @@ import { ResultsComponent } from "./results/results.component";
 import { PaginationComponent } from "./pagination/pagination.component";
 import { TagModule } from "primeng/tag";
 import { DividerModule } from "primeng/divider";
+import { ChipModule } from "primeng/chip";
+import { PaginatorModule } from "primeng/paginator";
 @NgModule({
   imports: [
     HttpClientModule,
@@ -52,6 +54,8 @@ import { DividerModule } from "primeng/divider";
     SearchPanelModule,
     TagModule,
     DividerModule,
+    ChipModule,
+    PaginatorModule
   ],
   declarations: [
     SearchComponent,

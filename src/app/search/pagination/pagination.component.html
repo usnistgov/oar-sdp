@@ -1,4 +1,4 @@
-<div id="pages">
+<!-- <div id="pages">
     <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
         <li [ngClass]="{disabled:pager.currentPage === 1}">
             <a (click)="setPage(pager.currentPage - 1)"><< Previous</a>
@@ -22,4 +22,14 @@
             <a (click)="setPage(pager.currentPage + 1)">Next >></a>
         </li>
     </ul>
+</div> -->
+
+<div id="pages">
+  <p-paginator
+    [rows]="pager.pageSize"
+    [totalRecords]="pager.totalItems"
+    [first]="(pager.currentPage - 1) * pager.pageSize"
+    (onPageChange)="onPageChange($event)"
+    [rowsPerPageOptions]="[10, 20, 30]"
+  ></p-paginator>
 </div>
