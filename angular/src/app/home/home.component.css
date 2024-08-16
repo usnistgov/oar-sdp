@@ -1,0 +1,9 @@
+
+/* Optional: Ensure grid columns stretch to fill available space */
+.container {
+  display: flex;
+  margin-left: 3em;
+  margin-right: 2em;
+  flex-wrap: wrap;
+}
+

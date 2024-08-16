@@ -1,0 +1,77 @@
+<p-card
+  class="flex mr-4 topic-card"
+  [style]="{
+    width: '100%',
+    cursor: 'pointer',
+    position: 'relative',
+    height: '100px;'
+  }"
+  (click)="handleCardClick($event)"
+>
+  <ng-template pTemplate="header">
+    <div
+      class="image-container"
+      style="position: relative; width: 100%; height: 100%; overflow: hidden"
+    >
+      <img alt="Card" [src]="image" style="object-fit: cover" />
+      <div
+        *ngIf="expanded"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 200px;
+          background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.7) 70%,
+            rgba(0, 0, 0, 0) 100%
+          );
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1rem;
+        "
+      >
+        <p style="font-size: 0.875rem; line-height: 1.25rem; margin: 0">
+          {{ description }}
+        </p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="title">
+    <div
+      class="flex align-items-center justify-content-between"
+      style="position: absolute; width: 100%; padding-right: 30px"
+    >
+      <span style="font-size: 1.2rem">{{ title }}</span>
+      <button
+        pButton
+        type="button"
+        icon="{{ expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-up' }}"
+        (click)="toggleDescription($event, $event.stopPropagation())"
+        style="font-size: 1rem; margin-bottom: 10; color: white"
+      ></button>
+    </div>
+
+    <div
+      *ngIf="showIcon"
+      class=""
+      style="position: absolute; right: -10px; top: -10px"
+    >
+      <!-- <p-chip label="A Curated Collection" [image]="icon"></p-chip> -->
+      <p-button severity="dark" (click)="openLink($event)" [rounded]="true">
+        <img
+          [src]="icon"
+          alt="A Curated Collection"
+          class="curated-collection-icon"
+        />
+        <span class="curated-collection-label" style="font-size: 1rem"
+          >A Curated Collection</span
+        >
+      </p-button>
+    </div>
+  </ng-template>
+</p-card>

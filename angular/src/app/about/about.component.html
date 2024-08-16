@@ -1,0 +1,61 @@
+<!-- Top banner -->
+<div class="top-banner" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
+    <div class="container inner-top-banner">
+        <span style="font-size: xx-large;">
+            <i class="faa faa-info-circle faa-lg" style="padding-right: .5em;"></i><label id='title'>About NIST
+                Data</label>
+        </span>
+        <ol class="breadcrumb" style="float: right;">
+            <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
+                    (click)="commonService.goHome()">Home</span></li>
+            <li class="breadcrumb-item">About</li>
+            <li class="breadcrumb-item">NIST Data</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Text body -->
+<div class="text-body" style="padding: 0px;">
+    <div class="container">
+        <div style="clear: both; border: 1px solid white;">
+            <img HSPACE=”50” VSPACE=”0” align=right class="main-image"
+            src="./assets/images/AboutNIST-wordcloud_D.jpg" alt="AboutNIST">
+            <div class="adv-step">
+                This National Institute of Standards and Technology (NIST) <b>Science Data Portal</b> provides a
+                user-friendly discovery and exploration tool for publicly available datasets at NIST. These data
+                products are generated as part of the NIST mission, spanning multiple
+                disciplines of scientific, engineering and technology research. NIST's publicly available data
+                sets showcase its commitment to providing accurate, well-curated measurements of physical
+                properties, exemplified by the <a href="https://www.nist.gov/srd" target="_blank" rel="noopener"
+                    (click)="gaService.gaTrackEvent('outbound', $event, 'Standard Reference Data program')">
+                    Standard Reference Data program</a>, as well as its commitment to advancing basic research.
+            </div>
+            <div class="adv-step">
+                For <a
+                    href="https://www.nist.gov/topics/data/public-access-nist-research/copyright-fair-use-and-licensing-statements-srd-data-and"
+                    target="_blank" rel="noopener" (click)="gaService.gaTrackEvent('outbound', $event, 'Fair Use')"><b>Fair
+                        Use</b></a> of these data, please include citation in your works including the Digital
+                Object
+                Identifier (DOI). NIST DOIs are registered with the <a href="https://www.datacite.org"
+                    target="_blank" rel="noopener" (click)="gaService.gaTrackEvent('outbound', $event, 'DataCite')">DataCite
+                    organization</a> and provide globally unique persistent identifiers. The DOI also serves as
+                a direct link to data <i>homepages</i> giving access to the full research publication
+                description and underlying datasets.
+            </div>
+            <hr>
+            <div class="adv-step">
+                This portal is designed with <a href="https://www.go-fair.org/fair-principles/" target="_blank"
+                    rel="noopener"
+                    (click)="gaService.gaTrackEvent('outbound', $event, 'FAIR Data')"> FAIR principles</a> and
+                best practice for <a href="https://strategy.data.gov/" target="_blank" rel="noopener"
+                    (click)="gaService.gaTrackEvent('outbound', $event, 'FDS')">Federal Data Strategy</a> (See
+                <a href="#/policy" target="_blank"
+                    (click)="gaService.gaTrackEvent('outbound', $event, 'Policy')">Policy page</a> for more
+                details). This portal and related software is hosted in the USNISTGOV organization <a
+                    href="https://github.com/usnistgov/oar-developer" target="_blank" rel="noopener"
+                    (click)="gaService.gaTrackEvent('outbound', $event, 'OAR Github')">github repository</a> as
+                an open source solution.
+            </div>
+        </div>
+    </div>
+</div>

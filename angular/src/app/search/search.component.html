@@ -1,0 +1,53 @@
+<div
+  [ngStyle]="{ width: mobWidth + 'px' }"
+  style="margin-left: -0.5em; margin-right: -0.5em"
+>
+  <app-search-panel
+    title=""
+    [subtitle]="false"
+    [helpicon]="false"
+    [advanceLink]="true"
+    jumbotronPadding="1em 1em 0em 1em"
+  ></app-search-panel>
+
+  <div
+    #parentDiv
+    style="background-color: white; color: black; align-content: center"
+    [ngStyle]="{ display: getDisplayStyle() }"
+  >
+    <div
+      class="filter"
+      [@filterStatus]="filterToggler"
+      [ngStyle]="{ width: filterWidthStr }"
+      (window:resize)="onResize($event)"
+    >
+      <app-filters
+        [searchValue]="searchValue"
+        [searchTaxonomyKey]="searchTaxonomyKey"
+        [parent]="parentDiv"
+        [filterWidthNum]="filterWidth"
+        [mobileMode]="mobileMode"
+        (filterMode)="updateWidth($event)"
+      ></app-filters>
+    </div>
+
+    <!-- Drag bar to resize the filter panel -->
+    <div
+      *ngIf="!mobileMode"
+      class="splitter"
+      (mousedown)="onMousedown($event)"
+      (mouseup)="onMouseUp($event)"
+    >
+      <div id="separator">||</div>
+    </div>
+
+    <div #results class="search-result" [ngStyle]="{ width: resultWidth }">
+      <app-results
+        [searchValue]="searchValue"
+        [searchTaxonomyKey]="searchTaxonomyKey"
+        [currentPage]="page"
+        [mobWidth]="mobWidth"
+      ></app-results>
+    </div>
+  </div>
+</div>
