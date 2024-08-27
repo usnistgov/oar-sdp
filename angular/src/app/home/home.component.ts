@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
             image:"assets/images/Theme_Chemistry.png"
         },
         chips: {
-            title: "CHIPS METROLOGY",
+            title: "CHIPS METIS",
             description: "NIST is working to develop the measurement science needed to support the next generation of computer chips.",
             image:"assets/images/Theme_CHIPS.png",
             icon:"assets/images/forensics_collection.png"

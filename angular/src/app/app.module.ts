@@ -22,7 +22,8 @@ import { TooltipModule } from "primeng/tooltip";
 import { AppConfig } from "./shared/config-service/config.service";
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { AboutComponent } from "./about/about.component";
-import { AdvSearchModule } from "./adv-search/adv_search.module";
+// MARK: 08/21/2024: Disabled for now until rework
+// import { AdvSearchModule } from "./adv-search/adv_search.module";
 import { PolicyModule } from "./policy/policy.module";
 import { HelpModule } from "./help/help.module";
 import { ApiModule } from "./api/api.module";
@@ -85,7 +86,8 @@ enableProdMode();
     AutoCompleteModule,
     HelpModule,
     ApiModule,
-    AdvSearchModule,
+    // MARK: 08/21/2024: Disabled for now until rework
+    // AdvSearchModule,
     PolicyModule,
     environment.possiblyMockModule,
     NgbModule,

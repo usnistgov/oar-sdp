@@ -89,7 +89,9 @@ export function find(search_phrase: String, parsed_data: String[][], parsed_data
                 }
             }
         } catch (e) {
-            console.log(data)
+            // MARK 08/21/2024: This keeps logging ["\"quality of experience"] (1) so I disabled
+            // the logging
+            // console.log(data)
         }
     });
 

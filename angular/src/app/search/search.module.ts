@@ -2,7 +2,8 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SharedModule } from "../shared/shared.module";
 import { SearchComponent } from "./search.component";
-import { ReadMoreComponent } from "./search.readmorecomponent";
+import { ReadMoreKeywordsComponent } from "./search.readmorekeywords";
+import { ReadMoreDescriptionComponent } from "./search.readmoredescription";
 import { HttpClientModule } from "@angular/common/http";
 
 import { TaxonomyListService } from "../shared/taxonomy-list/index";
@@ -59,12 +60,13 @@ import { PaginatorModule } from "primeng/paginator";
   ],
   declarations: [
     SearchComponent,
-    ReadMoreComponent,
+    ReadMoreDescriptionComponent,
+    ReadMoreKeywordsComponent,
     FiltersComponent,
     ResultsComponent,
     PaginationComponent,
   ],
-  exports: [SearchComponent, ReadMoreComponent],
+  exports: [SearchComponent, ReadMoreDescriptionComponent, ReadMoreKeywordsComponent],
   providers: [TaxonomyListService, SearchfieldsListService, SearchQueryService],
 })
 export class SearchModule {}

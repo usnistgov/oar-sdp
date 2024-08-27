@@ -1,3 +1,5 @@
+<!-- MARK: Emphasis collections by a different header color -->
+<!--  -->
 <div style="padding-left: 0.5em">
   <!-- Handle user error -->
   <div *ngIf="resultStatus == RESULT_STATUS.userError">
@@ -78,14 +80,19 @@
     >
       <!-- Records Found -->
       <div style="flex: 1; display: flex; justify-content: flex-start">
-        <p-chip
-          style="padding: 10px 0 0 10px"
-          class="flexgrow(1)"
+        <p-tag
+          styleClass="p-tag-custom"
+          style="margin-top: 10px"
           *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
           icon="pi pi-list"
-          [label]="totalItems + ' records found'"
         >
-        </p-chip>
+          <span
+            class="border-circle w-2rem h-2rem flex align-items-center justify-content-center"
+          >
+            {{ totalItems }}
+          </span>
+          <span class="ml-2 font-medium mr-3"> records found </span>
+        </p-tag>
       </div>
 
       <!-- Pagination -->
@@ -93,7 +100,7 @@
       <div
         id="pagination"
         *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
-        style="margin-top: 0px;"
+        style="margin-top: 0px"
       >
         <app-pagination
           [totalItems]="totalItems"
@@ -115,18 +122,18 @@
           *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
         >
           <div [ngClass]="flexgrow(1)">
-            <p-button
-              style="position: relative; top: -2px"
-              class="m-2"
+            <a
+              pButton
+              class="customize-button"
+              style="position: relative; top: 5px"
               id="controlBtn"
-              severity="contrast"
               size="small"
               [ngStyle]="{ float: customizeViewPosition() }"
               label="Customize View"
               icon="faa faa-cog"
               iconPos="left"
               (click)="op1.toggle($event)"
-            ></p-button>
+            ></a>
           </div>
         </div>
       </div>
@@ -155,30 +162,27 @@
         <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
           <p-panel>
             <ng-template pTemplate="header">
-              <i class="pi pi-external-link" style="margin-right: 10px"></i>
+              <i class="pi pi-arrow-up-right" style="margin-right: 10px"></i>
               <a
-                *ngIf="resultItem.landingPage"
-                [(href)]="resultItem.landingPage"
+                href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
                 target="_blank"
-                rel="noopener"
-                (click)="
-                  gaService.gaTrackEvent(
-                    'outbound',
-                    $event,
-                    'Visit to homepage',
-                    resultItem.landingPage
-                  )
-                "
+                pButton
+                size="small"
+                class="anchor-button"
               >
                 {{ resultItem.title }}
               </a>
             </ng-template>
+            <ng-template pTemplate="icons">
+              <p-tag>{{ clearResultItemType(resultItem["@type"][0]) }}</p-tag>
+            </ng-template>
+
             <div class="result-details">
               <div class="result-description">
-                <read-more
+                <read-more-description
                   [text]="resultItem.description"
                   [maxLength]="300"
-                ></read-more>
+                ></read-more-description>
               </div>
               <div
                 class="ui-grid-row details"
@@ -209,7 +213,7 @@
                 <div class="ui-grid-col-12">
                   <b>Resource Home Page: </b>
                   <i style="color: gray">
-                    {{ resultItem.landingPage }}
+                    {{ resultItem }}
                   </i>
                 </div>
               </div>
@@ -235,11 +239,12 @@
                   <b>Research Topic - Component: </b>
                 </div>
               </div>
+              <!-- MARK: TUrn on DOI by default in customize view -->
               <div
                 class="ui-grid-row details"
-                *ngIf="selectedFields.indexOf('DOI') !== -1"
+                *ngIf="selectedFields.indexOf('DOI') !== 1"
               >
-                <b>DOI: </b>
+                <p-tag severity="secondary">DOI</p-tag>
                 <span style="color: #1471ae" *ngIf="resultItem.doi != null">
                   {{ resultItem.doi || "None" }}
                 </span>
@@ -247,19 +252,49 @@
                   None
                 </span>
               </div>
+              <div class="header-container">
+                <div
+                  class="keywords"
+                  style="margin-top: 1.5em"
+                  *ngIf="selectedFields.indexOf('Subject keywords') !== -1"
+                >
+                  <div class="ui-grid-col-12">
+                    <i style="color: #515151">
+                      <read-more-keywords
+                        [text]="resultItem.keyword"
+                        [maxKeywords]="5"
+                      ></read-more-keywords>
+                    </i>
+                  </div>
+                </div>
 
-              <div
-                class="ui-grid-row details"
-                style="margin-top: 1.5em"
-                *ngIf="selectedFields.indexOf('Subject keywords') !== -1"
-              >
-                <div class="ui-grid-col-12">
-                  <i style="color: #515151">
-                    <read-more
-                      [keywords]="resultItem.keyword"
-                      [maxKeywords]="5"
-                    ></read-more>
-                  </i>
+                <div>
+                  <!-- MARK: Align button with keywords -->
+                  <!-- Also fix onClick??? -->
+                  <!-- Conditional icon if pdr link === homepage link -->
+                  <!-- If yes: pi-arrow-up-right else pi-external-link -->
+                  <!-- Change to <a> so that link can display in web browser on hover -->
+                  <a
+                    pButton
+                    size="small"
+                    *ngIf="resultItem.landingPage"
+                    href="{{ resultItem.landingPage }}"
+                    target="_blank"
+                    rel="noopener"
+                    [ngStyle]="{ float: customizeViewPosition() }"
+                    label="Visit Homepage"
+                    icon="pi pi-external-link"
+                    (click)="
+                      gaService.gaTrackEvent(
+                        'outbound',
+                        $event,
+                        'Visit to homepage',
+                        resultItem.landingPage
+                      )
+                    "
+                    class="anchor-button"
+                  >
+                  </a>
                 </div>
               </div>
             </div>
@@ -318,8 +353,8 @@
     [style]="{ 'background-color': '#F8F9F9' }"
     [appendTo]="'body'"
   >
-    <div class="lbl-display-fields">
-      <b>Display Fields</b>
+    <div class="">
+      <b style="color: black">Display Fields</b>
       <span
         class="link-text"
         style="float: right"
@@ -327,8 +362,10 @@
         ><i class="faa faa-refresh"></i> Reset</span
       >
     </div>
-    <div style="text-align: left">
+    <div style="text-align: left; margin-top: 10px">
       <p-checkbox
+        style="color: black"
+        class="label"
         inputId="group2"
         binary="true"
         [(ngModel)]="allChecked"
@@ -349,8 +386,10 @@
       >
       </p-checkbox>
     </div>
-    <div class="lbl-display-fields"><b>Sort Results</b> <br /></div>
-    <div>
+    <div class="lbl-display-fields" style="color: black">
+      <b>Sort Results</b> <br />
+    </div>
+    <div class="pb-4">
       <p-dropdown
         [options]="filterableFields"
         [(ngModel)]="sortItemKey"

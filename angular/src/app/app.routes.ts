@@ -6,7 +6,8 @@ import { ApiRoutes } from './api//api.routes';
 import { HelpRoutes } from './help/help.routes';
 import { PolicyRoutes } from './policy/policy.routes';
 import { SearchRoutes } from './search/search.routes';
-import { AdvSearchRoutes } from './adv-search/adv_search.routes';
+// MARK: 08/21/2024: Disabled for now until rework
+// import { AdvSearchRoutes } from './adv-search/adv_search.routes';
 
 export const routes = [
   ...HomeRoutes,
@@ -14,7 +15,8 @@ export const routes = [
   // ...FaqRoutes,
   ...ApiRoutes,
   ...SearchRoutes,
-  ...AdvSearchRoutes,
+  // MARK: 08/21/2024: Disabled for now until rework
+  // ...AdvSearchRoutes,
   ...PolicyRoutes,
   ...HelpRoutes
 ];

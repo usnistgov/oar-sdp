@@ -11,7 +11,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { ReadMoreComponent } from '../search.readmorecomponent';
+import { ReadMoreComponent } from '../search.readmorekeywords';
 import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
 import { NO_ERRORS_SCHEMA } from '@angular/core';

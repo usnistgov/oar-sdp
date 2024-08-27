@@ -180,10 +180,6 @@
   margin-bottom: 5px;
 }
 
-.result-actions {
-  /* margin-top: 10px; */
-}
-
 .visit-home-page {
   background-color: #0071bc;
   color: #fff;
@@ -240,7 +236,10 @@
   background-color: black;
   border-color: black;
   color: #ffffff;
+  display: flex;
+  justify-content: space-between;
 }
+
 ::ng-deep .p-panel-header a {
   color: #ffffff;
 }
@@ -248,6 +247,20 @@
 ::ng-deep .p-panel-content {
   border-color: black;
   background-color: #ffffff;
+  color: black;
+}
+
+.anchor-button {
+  border: 1px solid white; /* Set border color to black */
+  color: white; /* Set text color to black */
+  text-decoration: none; /* Remove underline */
+  margin-right: 10px;
+  text-align: left;;
+  background-color: black; /* Set background color */
+}
+.anchor-button:hover {
+  background-color: #93C5FD;
+  border-color: black; /* Optional: Set border color on hover */
   color: black;
 }
 
@@ -271,4 +284,74 @@
   align-items: center;
   height: 100%;
   width: 100%;
+}
+
+/* Make the button black */
+::ng-deep a .custom-black-button .p-button {
+  border-color: black; /* Set border color to black */
+  color: black;
+  text-decoration: none;
+}
+
+a .custom-black-button .p-button .p-button-icon {
+  color: white; /* Ensure the icon is white */
+}
+
+::ng-deep a .custom-black-button .p-button:hover {
+  background-color: lightgray; /* Optional: Set a darker color for hover state */
+  border-color: #333; /* Optional: Set border color for hover state */
+}
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-container .keywords {
+  flex: 1; /* Take up remaining space */
+}
+
+.header-container .anchor-button {
+  border: 1px solid black; /* Set border color to black */
+  color: black; /* Set text color to black */
+  text-decoration: none; /* Remove underline */
+  padding: 0.5em 1em; /* Add padding to make it look like a button */
+  display: inline-block; /* Ensure it behaves like a button */
+  background-color: white; /* Set background color */
+  margin-left: auto; /* Push the button to the right */
+  position: relative;
+  top: 12px;
+}
+
+.header-container .anchor-button:hover {
+  background-color: lightgray; /* Optional: Set a different background color on hover */
+  border-color: #333; /* Optional: Set border color on hover */
+}
+
+::host ::ng-deep .p-tag{
+  background-color: red !important;
+}
+
+::ng-deep a .custom-tag .p-tag {
+  background-color: red !important;
+}
+
+::ng-deep .p-tag.p-tag-custom {
+  background-color: black;
+  color: white;
+}
+
+.customize-button {
+  font-size: 12px;
+  border: 1px solid white; /* Set border color to black */
+  color: white; /* Set text color to black */
+  text-decoration: none; /* Remove underline */
+  margin-right: 10px;
+  text-align: left;;
+  background-color: black; /* Set background color */
+}
+.customize-button:hover {
+  background-color: #93C5FD;
+  border-color: black; /* Optional: Set border color on hover */
+  color: black;
 }

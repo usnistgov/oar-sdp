@@ -1,9 +1,21 @@
 
-/* Optional: Ensure grid columns stretch to fill available space */
+/* Ensure grid columns stretch to fill available space */
 .container {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   margin-left: 3em;
   margin-right: 2em;
+}
+
+.grid-container {
+  display: flex;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
+.grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

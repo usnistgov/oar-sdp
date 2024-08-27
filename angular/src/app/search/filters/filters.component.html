@@ -54,7 +54,7 @@
         ></i>
       </div>
 
-      <div style="padding-left: 0.5em" *ngIf="isActive && !searching">
+      <div *ngIf="isActive && !searching">
         <!-- NIST Research topics -->
         <div class="bottom-line">
           <div class="filter-checkbox">
@@ -83,26 +83,18 @@
                     class="text-nowrap"
                     style="color: black"
                     data-toggle="tooltip"
-                    title="test"
                     [title]="filterTooltip(node)"
                   >
-                    <span
-                      *ngIf="node.label.split('-')[1] != ''; else header1"
-                      class="invisible-scrollbar"
-                    >
-                      {{ node.label.split("-")[0] }}&nbsp;</span
-                    >
-                    <ng-template #header1>
-                      <span
-                        ><b> {{ node.label.split("-")[0] }}&nbsp;</b></span
-                      >
-                    </ng-template>
+                    <span *ngIf="node.label.split('-')[1] != ''; else header1">
+                      {{ node.label.split("-")[0] }}&nbsp;
+                      <p-tag severity="success">
+                        <span>{{ node.label.split("-")[1] }}</span>
+                      </p-tag>
+                    </span>
 
-                    <p-tag severity="success">
-                      <span *ngIf="node.label.split('-')[1] != ''">
-                        {{ node.label.split("-")[1] }}</span
-                      >
-                    </p-tag>
+                    <ng-template #header1>
+                      <b>{{ node.label.split("-")[0] }}&nbsp;</b>
+                    </ng-template>
                   </div>
                 </ng-template>
               </p-tree>
@@ -146,7 +138,7 @@
             [@expandOptions]="MoreOptionsDisplayed ? 'collapsed' : 'expanded'"
           >
             <!-- Resource type -->
-            <div class="filter-checkbox bottom-line">
+            <div class="bottom-line">
               <p-tree
                 [value]="resourceTypeTree"
                 selectionMode="checkbox"
@@ -154,137 +146,135 @@
                 [(selection)]="selectedResourceTypeNode"
                 (onNodeUnselect)="filterResults()"
                 (onNodeSelect)="filterResults()"
+                (onNodeExpand)="showMoreLink = true; nodeExpanded = true"
+                (onNodeCollapse)="nodeExpanded = false"
               >
                 <ng-template let-node pTemplate="default">
                   <div
                     class="text-nowrap"
+                    style="color: black"
                     data-toggle="tooltip"
                     [title]="filterTooltip(node)"
-                    style="color: black"
                   >
-                    <span *ngIf="node.label.split('-')[1] != ''; else header2">
-                      {{ node.label.split("-")[0] }}&nbsp;</span
-                    >
-                    <ng-template #header2>
-                      <span
-                        ><b> {{ node.label.split("-")[0] }}&nbsp;</b></span
-                      >
-                    </ng-template>
+                    <span *ngIf="node.label.split('-')[1] != ''; else header1">
+                      {{ node.label.split("-")[0] }}&nbsp;
+                      <p-tag severity="success">
+                        <span>{{ node.label.split("-")[1] }}</span>
+                      </p-tag>
+                    </span>
 
-                    <p-tag severity="success">
-                      <span *ngIf="node.label.split('-')[1] != ''">
-                        {{ node.label.split("-")[1] }}</span
-                      >
-                    </p-tag>
+                    <ng-template #header1>
+                      <b>{{ node.label.split("-")[0] }}&nbsp;</b>
+                    </ng-template>
                   </div>
                 </ng-template>
               </p-tree>
             </div>
 
             <!-- Components -->
-            <div
-              class="filter-checkbox bottom-line"
-              *ngIf="componentsTree.length > 0"
-            >
-              <p-tree
-                [value]="componentsTree"
-                selectionMode="checkbox"
-                [style]="recordHasStyle"
-                [(selection)]="selectedComponentsNode"
-                (onNodeUnselect)="filterResults()"
-                (onNodeSelect)="filterResults()"
-              >
-                <ng-template let-node pTemplate="default">
-                  <div
-                    class="text-nowrap"
-                    data-toggle="tooltip"
-                    [title]="filterTooltip(node)"
-                    style="color: black"
-                  >
-                    <span *ngIf="node.label.split('-')[1] != ''; else header3">
-                      {{ node.label.split("-")[0] }}&nbsp;</span
-                    >
-                    <ng-template #header3>
-                      <span
-                        ><b> {{ node.label.split("-")[0] }}&nbsp;</b></span
-                      >
-                    </ng-template>
 
-                    <p-tag severity="success">
-                      <span *ngIf="node.label.split('-')[1] != ''">
-                        {{ node.label.split("-")[1] }}</span
+            <div class="bottom-line" *ngIf="componentsTree.length > 0">
+              <div class="bottom-line">
+                <p-tree
+                  [value]="componentsTree"
+                  selectionMode="checkbox"
+                  [style]="researchTopicStyle"
+                  [(selection)]="selectedComponentsNode"
+                  (onNodeUnselect)="filterResults()"
+                  (onNodeSelect)="filterResults()"
+                  (onNodeExpand)="showMoreLink = true; nodeExpanded = true"
+                  (onNodeCollapse)="nodeExpanded = false"
+                >
+                  <ng-template let-node pTemplate="default">
+                    <div
+                      class="text-nowrap"
+                      style="color: black"
+                      data-toggle="tooltip"
+                      [title]="filterTooltip(node)"
+                    >
+                      <span
+                        *ngIf="node.label.split('-')[1] != ''; else header1"
                       >
-                    </p-tag>
-                  </div>
-                </ng-template>
-              </p-tree>
+                        {{ node.label.split("-")[0] }}&nbsp;
+                        <p-tag severity="success">
+                          <span>{{ node.label.split("-")[1] }}</span>
+                        </p-tag>
+                      </span>
+
+                      <ng-template #header1>
+                        <b>{{ node.label.split("-")[0] }}&nbsp;</b>
+                      </ng-template>
+                    </div>
+                  </ng-template>
+                </p-tree>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Authors and Contributors -->
-        <div>
-          <div class="lbl-filter">
-            <label><b>Authors and Contributors</b></label>
-          </div>
-          <div class="filter-input p-fluid">
-            <p-autoComplete
-              [(ngModel)]="selectedAuthor"
-              inputId="suggestedauthor"
-              [suggestions]="suggestedAuthors"
-              (completeMethod)="filterAuthors($event)"
-              (onSelect)="filterResults()"
-              (onUnselect)="filterResults()"
-              [multiple]="true"
-              [minLength]="1"
-              [maxlength]="30"
-              [style]="filterStyle"
-              [inputStyle]="{ width: '100%' }"
-            >
-              <ng-template let-author pTemplate="item">
-                <div style="margin-left: 40px">
-                  {{ author }}
-                </div>
-              </ng-template>
-            </p-autoComplete>
-          </div>
-        </div>
+          <!-- Authors and Contributors -->
+          <div style="margin-top: -15px">
+            <!-- MARK: Make style fit the Visit Homepage button -->
+            <!-- i.e. border-color: black; and background-color: white; -->
+            <div class="lbl-filter">
+              <label><b>Authors and Contributors</b></label>
+            </div>
+            <div class="filter-input p-fluid">
+              <p-autoComplete
+                [(ngModel)]="selectedAuthor"
+                inputId="suggestedauthor"
+                [suggestions]="suggestedAuthors"
+                (completeMethod)="filterAuthors($event)"
+                (onSelect)="filterResults()"
+                (onUnselect)="filterResults()"
+                [multiple]="true"
+                [minLength]="1"
+                [maxlength]="30"
+                [inputStyle]="{ width: '100%', color: 'black' }"
+              >
+                <ng-template let-author pTemplate="item">
+                  <div style="margin-left: 40px">
+                    {{ author }}
+                  </div>
+                </ng-template>
+              </p-autoComplete>
+            </div>
 
-        <!-- Keyword -->
-        <div>
-          <div class="lbl-filter">
-            <label><b>Keyword</b></label>
-          </div>
-          <div class="filter-input p-fluid">
-            <p-autoComplete
-              inputId="keyword"
-              [(ngModel)]="selectedKeywords"
-              [suggestions]="suggestedKeywords"
-              (completeMethod)="updateSuggestedKeywords($event)"
-              [multiple]="true"
-              (onSelect)="filterResults()"
-              (onUnselect)="filterResults()"
-              [minLength]="1"
-              [maxlength]="30"
-              [style]="filterStyle"
-              [inputStyle]="{ width: '100%' }"
-            >
-              <ng-template let-keyword pTemplate="item">
-                <div
-                  data-toggle="tooltip"
-                  [title]="suggestedKeywordsLkup[keyword]"
-                  style="margin-left: 40px"
+            <!-- Keyword -->
+            <div class="margin-bottom: 30px;">
+              <div class="lbl-filter">
+                <label><b>Keyword</b></label>
+              </div>
+              <div class="filter-input p-fluid">
+                <p-autoComplete
+                  inputId="keyword"
+                  [(ngModel)]="selectedKeywords"
+                  [suggestions]="suggestedKeywords"
+                  (completeMethod)="updateSuggestedKeywords($event)"
+                  [multiple]="true"
+                  (onSelect)="filterResults()"
+                  (onUnselect)="filterResults()"
+                  [minLength]="1"
+                  [maxlength]="30"
+                  [style]="filterStyle"
+                  [inputStyle]="{ width: '100%', color: 'black' }"
                 >
-                  {{ keyword }}
-                </div>
-              </ng-template>
-            </p-autoComplete>
+                  <ng-template let-keyword pTemplate="item">
+                    <div
+                      data-toggle="tooltip"
+                      [title]="suggestedKeywordsLkup[keyword]"
+                      style="margin-left: 40px"
+                    >
+                      {{ keyword }}
+                    </div>
+                  </ng-template>
+                </p-autoComplete>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <div
     *ngIf="!searching && !isActive && !mobileMode"
     class="collapsedFilterBox"

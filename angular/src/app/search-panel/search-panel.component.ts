@@ -25,7 +25,8 @@ import {
   transition,
 } from "@angular/animations";
 import { OverlayPanel } from "primeng/overlaypanel";
-import { AdvSearchComponent } from "../adv-search/adv-search.component";
+// MARK: 08/21/2024: Disabled for now until rework
+// import { AdvSearchComponent } from "../adv-search/adv-search.component";
 import { SearchQueryService } from "../shared/search-query/search-query.service";
 import { Observable } from "rxjs";
 import {
@@ -91,8 +92,8 @@ export class SearchPanelComponent implements OnInit {
   errorMessage: string;
   _searchValue: string = "";
   suggestedTaxonomies: string[];
-  suggestedTaxonomyList: string[];
-  searchTaxonomyKey: string;
+  suggestedTaxonomyList: string[] = [];
+  searchTaxonomyKey: string = "";
   queryAdvSearch: string = "";
   operators: SelectItem[] = [
     { label: "AND", value: "AND" },
@@ -102,7 +103,7 @@ export class SearchPanelComponent implements OnInit {
   imageURL: string = "";
   mobHeight: number;
   mobWidth: number;
-  placeholder: string;
+  placeholder: string = "Search...";
   showExampleStatus: boolean = false;
   searchBottonWith: string = "10%";
   breadcrumb_top: string = "6em";
@@ -113,15 +114,7 @@ export class SearchPanelComponent implements OnInit {
     "XPDB",
     "Interatomic Potentials",
   ];
-  inputStyle: any = {
-    width: "100%",
-    "padding-left": "40px",
-    "padding-right": "40px",
-    height: "40px",
-    "font-weight": "400",
-    "font-style": "italic",
-    border: "0px",
-  };
+  inputStyle = {};
   fields: SelectItem[];
   currentState = "initial";
   showDropdown: boolean = true;
@@ -152,8 +145,9 @@ export class SearchPanelComponent implements OnInit {
   @ViewChild("field2") queryName: ElementRef;
 
   // injected as ViewChilds so that this class can call its public functions
-  @ViewChild(AdvSearchComponent)
-  private advSearchComp: AdvSearchComponent;
+  // MARK: 08/21/2024: Disabled for now until rework
+  // @ViewChild(AdvSearchComponent)
+  // private advSearchComp: AdvSearchComponent;
 
   get searchValue(): string {
     return this._searchValue;
@@ -290,7 +284,7 @@ export class SearchPanelComponent implements OnInit {
       );
     }
 
-    this.getTextWidth();
+    // this.getTextWidth();
   }
 
   /**
@@ -387,7 +381,7 @@ export class SearchPanelComponent implements OnInit {
       }
     );
 
-    this.getTextWidth();
+    // this.getTextWidth();
   }
 
   /**
@@ -590,19 +584,20 @@ export class SearchPanelComponent implements OnInit {
     else return "physics";
   }
 
-  getTextWidth() {
-    if (this.mobWidth > 461) {
-      var test = document.getElementById("autocompleteText");
-      test.style.fontSize = "12";
+  // MARK: 08/21/2024 disabled for now since moving to PrimeNG
+  // getTextWidth() {
+  //   if (this.mobWidth > 461) {
+  //     var test = document.getElementById("autocompleteText");
 
-      this.searchTextWidth =
-        test.clientWidth + 1 < 500
-          ? 500
-          : test.clientWidth + 1 > 700
-          ? 700
-          : test.clientWidth + 1;
-    }
-  }
+
+  //     this.searchTextWidth =
+  //       test.clientWidth + 1 < 500
+  //         ? 500
+  //         : test.clientWidth + 1 > 700
+  //         ? 700
+  //         : test.clientWidth + 1;
+  //   }
+  // }
 
   /**
    * Clear the search box text and reset default value

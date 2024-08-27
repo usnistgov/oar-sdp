@@ -11,7 +11,7 @@
   <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 1em">
     <div>
       <h3 *ngIf="title" class="heading title has-text-black">{{ title }}</h3>
-      <p-button
+      <!-- <p-button
         *ngIf="title"
         class="ml-3"
         style="position: relative; top: 3px"
@@ -36,7 +36,7 @@
           soon. <br />
           Please provide your feedback by emailing mehdi[at]nist[dot]gov.
         </p>
-      </p-dialog>
+      </p-dialog> -->
       <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
         <i
           class="pi pi-question-circle help-icon"
@@ -78,8 +78,7 @@
           (completeMethod)="filterTaxonomies($event)"
           [minLength]="1"
           [maxlength]="2048"
-          [size]="100"
-          [style]="{ width: '100%', border: 'white' }"
+          [style]="{ width: '100%', color: 'white' }"
         >
           <ng-template let-taxonomy pTemplate="item">
             <div
@@ -127,13 +126,13 @@
           style="padding-left: 1em; cursor: pointer; text-decoration: underline"
           >Hide Examples</a
         >
-        <a
+        <!-- <a
           *ngIf="advanceLink"
           [routerLink]="['/advanced']"
           style="padding-left: 1em"
           (click)="searchQueryService.setShowExamples(false)"
           >Advanced Queries</a
-        >
+        > -->
       </div>
     </div>
   </div>

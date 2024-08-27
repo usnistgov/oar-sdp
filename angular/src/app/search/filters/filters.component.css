@@ -11,10 +11,9 @@
 }
 
 #filtersLabel {
-  color: #ffffff;
+  color: black;
   font-weight: 900;
   text-decoration: none;
-  padding-left: 0.5em;
 }
 
 .spinner {
@@ -50,6 +49,24 @@
   font-size: larger;
 }
 
+.rotatedFilterText {
+  display: block;
+  color: #fff;
+  padding: 55px 5px 0px 45px;
+  font-size: larger;
+  width: 120px;
+  height: 20px;
+}
+
+
+
+.collapsedFilterIcon {
+  color: #fff;
+  zoom: 130%;
+  padding-top: -3em !important;
+  padding-left: 15px;
+}
+
 .collapsedFilterBox {
   /* text-align:center;
     padding: 0px 5pxpx 0px 5px; */
@@ -60,22 +77,6 @@
   height: 300px;
   cursor: pointer;
   padding-top: 10px;
-}
-
-.rotatedFilterText {
-  display: block;
-  color: #fff;
-  padding: 55px 5px 0px 45px;
-  font-size: larger;
-  width: 120px;
-  height: 20px;
-}
-
-.collapsedFilterIcon {
-  color: #fff;
-  zoom: 130%;
-  padding-top: -3em !important;
-  padding-left: 15px;
 }
 
 .normalFilter {
@@ -100,6 +101,7 @@
 .filter-checkbox {
   width: 100%;
   overflow-x: hidden;
+  padding-bottom: 25px;
 }
 
 .bottom-line {
@@ -116,10 +118,6 @@
   cursor: pointer;
 }
 
-.ui-tree {
-  white-space: nowrap !important;
-}
-
 .text-nowrap {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -128,9 +126,49 @@
   min-width: 1px;
 }
 
-::ng-deep .p-autocomplete-items li {
-    margin-top: 3px !important;
-    margin-left: -30px !important;
-    padding-left: 3px;
-    color: white;
-  }
+:host ::ng-deep .p-autocomplete-panel {
+  background-color: white !important;
+  border: 1px solid black !important;
+  color: black !important;
+}
+
+:host ::ng-deep .p-autocomplete .p-inputtext {
+  background-color: white !important;
+  border-color: black !important;
+  color: black !important;
+}
+
+:host ::ng-deep .p-autocomplete-items {
+  background-color: white !important;
+  border-color: black !important;
+  color: black !important;
+}
+
+:host ::ng-deep .p-autocomplete-items li {
+  background-color: white !important;
+  color: black !important;
+  border-color: black !important;
+}
+
+:host ::ng-deep .p-checkbox-box {
+  background-color: white !important;
+  border-color: black !important;
+}
+
+:host ::ng-deep .p-checkbox-box.p-highlight {
+  background-color: white !important;
+  border-color: black !important;
+}
+
+::ng-deep .p-tree .p-tree-toggler-icon {
+  color: #000; 
+}
+
+::ng-deep .p-tree .p-tree-checkbox .p-checkbox-box {
+  background-color: #fff; 
+  border: 1px solid #000; 
+}
+
+::ng-deep .p-tree .p-tree-checkbox .p-checkbox-icon {
+  color: #000;
+}
