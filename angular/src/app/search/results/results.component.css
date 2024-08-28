@@ -253,6 +253,8 @@
 .anchor-button {
   border: 1px solid white; /* Set border color to black */
   color: white; /* Set text color to black */
+  margin-top: -10px;
+  margin-bottom: -10px;
   text-decoration: none; /* Remove underline */
   margin-right: 10px;
   text-align: left;;

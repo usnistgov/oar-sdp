@@ -8,7 +8,6 @@ import { Component, Input, OnInit } from "@angular/core";
       <p-button
         *ngIf="!hideToggle"
         severity="secondary"
-        [rounded]="true"
         (click)="toggleView()"
         [icon]="isCollapsed ? 'pi pi-angle-right' : 'pi pi-angle-left'"
         label="Read {{ isCollapsed ? 'more' : 'less' }}"
@@ -20,7 +19,7 @@ import { Component, Input, OnInit } from "@angular/core";
     `
       :host ::ng-deep .small-button {
         position: relative;
-        top: -1px;
+        top: -2px;
         font-size: 0.8em;
         height: 1.5em;
         padding: 5px 5px;

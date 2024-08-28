@@ -437,4 +437,8 @@ export class ResultsComponent implements OnInit {
     const result = secondPart.replace(/([a-z])([A-Z])/g, "$1 $2");
     return result;
   }
+
+  isPdrLink(link: string): boolean {
+    return link.includes("data.nist.gov/od/id/");
+  }
 }

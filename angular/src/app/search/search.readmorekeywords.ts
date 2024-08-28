@@ -11,7 +11,7 @@ import { Component, Input, OnInit } from "@angular/core";
       ></p-tag>
       <p-button
         *ngIf="!hideToggle"
-        severity="success"
+        severity="secondary"
         (click)="toggleView()"
         [icon]="isCollapsed ? 'pi pi-angle-right' : 'pi pi-angle-left'"
         label="Read {{ isCollapsed ? 'more' : 'less' }}"

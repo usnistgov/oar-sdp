@@ -162,15 +162,16 @@
         <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
           <p-panel>
             <ng-template pTemplate="header">
-              <i class="pi pi-arrow-up-right" style="margin-right: 10px"></i>
+              <!-- Option 2 -->
               <a
                 href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
                 target="_blank"
                 pButton
+                [label]="resultItem.title"
                 size="small"
+                icon="pi pi-arrow-up-right"
                 class="anchor-button"
               >
-                {{ resultItem.title }}
               </a>
             </ng-template>
             <ng-template pTemplate="icons">
@@ -274,6 +275,7 @@
                   <!-- Conditional icon if pdr link === homepage link -->
                   <!-- If yes: pi-arrow-up-right else pi-external-link -->
                   <!-- Change to <a> so that link can display in web browser on hover -->
+
                   <a
                     pButton
                     size="small"
@@ -283,7 +285,11 @@
                     rel="noopener"
                     [ngStyle]="{ float: customizeViewPosition() }"
                     label="Visit Homepage"
-                    icon="pi pi-external-link"
+                    [icon]="
+                      isPdrLink(resultItem.landingPage)
+                        ? 'pi pi-arrow-up-right'
+                        : 'pi pi-external-link'
+                    "
                     (click)="
                       gaService.gaTrackEvent(
                         'outbound',
