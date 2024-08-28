@@ -43,6 +43,8 @@ import { TopicModule } from "./topic/topic.module";
 import { MenubarModule } from "primeng/menubar";
 import { MegaMenuModule } from "primeng/megamenu";
 import { TagModule } from "primeng/tag";
+import { BreadcrumbModule } from "primeng/breadcrumb";
+import { ImageModule } from "primeng/image"
 /**
  * Initialize the configs for backend services
  */
@@ -101,6 +103,8 @@ enableProdMode();
     MenubarModule,
     MegaMenuModule,
     TagModule,
+    BreadcrumbModule,
+    ImageModule,
   ],
   exports: [AutoCompleteModule],
   providers: [

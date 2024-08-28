@@ -1,50 +1,50 @@
-:host {
-  display: block;
+/* Ensure grid columns stretch to fill available space */
+.container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-left: 3em;
+  margin-right: 2em;
 }
 
-h2 {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.005em;
-  margin-bottom: 0;
-  margin-top: 0.83em;
+::ng-deep .p-panel-header {
+  background-color: black;
+  border-color: black;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
 }
 
-hr {
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
-  border: 1px solid #666;
-  padding-bottom: -1px;
-  margin: 1.25rem 0;
+::ng-deep .p-panel-header a {
+  color: #ffffff;
 }
 
-.labelAbout {
-  font-size: xx-large;
-  float: left;
-  display: block;
+::ng-deep .p-panel-content {
+  border-color: black;
+  background-color: #ffffff;
+  color: black;
 }
 
-.breadCrumb {
-  color: #4b4b4b;
+.anchor-button {
+  border: 1px solid white; /* Set border color to black */
+  color: white; /* Set text color to black */
+  text-decoration: none; /* Remove underline */
+  margin-right: 10px;
+  text-align: left;
+  background-color: black; /* Set background color */
+}
+.anchor-button:hover {
+  background-color: #93c5fd;
+  border-color: black; /* Optional: Set border color on hover */
+  color: black;
 }
 
-.breadCrumbFirstElement {
-  color: #fff;
+::ng-deep .p-breadcrumb {
+  background-color: black;
+  border-color: white;
+  color: white;
 }
 
-:host ::ng-deep .breadcrumb {
-  background-color: #153971;
-}
-
-.breadCrumb-item {
-  color: #fff;
-  font-weight: 300;
-}
-
-.main-image{
-    width:50%; 
-    margin: 1em 0em 0em 0em;
-    min-width: 200px;
+::host ::ng-deep .p-image-action {
+  flex: 0 0 20%;
 }

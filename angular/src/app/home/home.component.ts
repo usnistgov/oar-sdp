@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
     PDRAPIURL: string;
     SDPAPIURL: string;
     forensicsURL: string;
+    chipsURL: string;
 
 
     themes: any = {
@@ -74,6 +75,7 @@ export class HomeComponent implements OnInit {
                 this.PDRAPIURL = conf.SDPAPI;
                 this.SDPAPIURL = conf.SDPAPI;
                 this.forensicsURL = conf.SERVERBASE + "/forensics";
+                this.chipsURL = conf.SERVERBASE + "/chips";
             }
         );
     }

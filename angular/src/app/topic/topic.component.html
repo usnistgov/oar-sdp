@@ -62,16 +62,18 @@
       style="position: absolute; right: -10px; top: -10px"
     >
       <!-- <p-chip label="A Curated Collection" [image]="icon"></p-chip> -->
-      <p-button severity="dark" (click)="openLink($event)" [rounded]="true">
-        <img
-          [src]="icon"
-          alt="A Curated Collection"
-          class="curated-collection-icon"
-        />
-        <span class="curated-collection-label" style="font-size: 1rem"
-          >A Curated Collection</span
-        >
-      </p-button>
+      <a [href]="link" target="_blank">
+        <p-button [rounded]="true" >
+          <img
+            [src]="icon"
+            alt="A Curated Collection"
+            class="curated-collection-icon"
+          />
+          <span class="curated-collection-label" style="font-size: 1rem">
+            A Curated Collection
+          </span>
+        </p-button>
+      </a>
     </div>
   </ng-template>
 </p-card>

@@ -66,3 +66,7 @@ button {
 .curated-collection-button:hover .curated-collection-label {
   text-decoration: underline;
 }
+.anchor-button {
+  text-decoration: none; /* Remove underline */
+  margin-right: 10px;
+}
