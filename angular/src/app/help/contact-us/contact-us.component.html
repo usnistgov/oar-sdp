@@ -1,31 +1,47 @@
-<!-- Top banner -->
-<div class="top-banner" [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
-    <div class="container inner-top-banner">
-        <span style="font-size: xx-large;">
-            <i class="faa faa-question faa-lg" style="padding-right: .5em;"></i><label id='title'>Help</label>
-        </span>
-        <ol class="breadcrumb" style="float: right;">
-            <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
-                    (click)="commonService.goHome()">Home</span></li>
-            <li class="breadcrumb-item">About</li>
-            <li class="breadcrumb-item">Contact Us</li>
-        </ol>
-    </div>
-</div>
+<div
+  style="
+    background-color: white;
+    margin-left: -0.5em;
+    margin-right: -0.5em;
+    padding: 2em;
+  "
+>
+  <p-panel>
+    <!-- Header with icon and title -->
+    <ng-template pTemplate="header" class="header-container">
+      <a target="_blank" pButton size="small" class="anchor-button" icon="">
+        <i
+          class="faa faa-question faa-lg icon-padding"
+          style="margin-right: 10px"
+        ></i>
+        <label id="title">Help</label>
+      </a>
+    </ng-template>
 
-<div style="width: 100%; background-color: white;">
-    <div class="container">
-        <div class="content text-body">
-            <p> For comments or questions, please contact the support team at <a
-                    href="mailto:datasupport@nist.gov?Subject=SDP"
-                    (click)="gaService.gaTrackEvent('Email', $event, 'Comments or questions')">datasupport@nist.gov</a>.
-                <p>
-                For NIST internal data publication issues, please use the ITAC service portal for assistance. 
-                <p>       
-                Thank you,
-                <br>  
-                NIST Public Data Repository
-            </p>
-        </div>
+    <!-- Breadcrumb navigation -->
+    <ng-template pTemplate="icons">
+      <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+    </ng-template>
+
+    <!-- Main content -->
+    <div class="result-details" style="padding-top: 1em;">
+      <div class="content text-body" style="flex: 1;">
+        <p>
+          For comments or questions, please contact the support team at
+          <a
+            href="mailto:datasupport@nist.gov?Subject=SDP"
+            (click)="gaService.gaTrackEvent('Email', $event, 'Comments or questions')"
+            >datasupport@nist.gov</a
+          >.
+        </p>
+        <p>
+          For NIST internal data publication issues, please use the ITAC service portal for assistance.
+        </p>
+        <p>
+          Thank you,<br />
+          NIST Public Data Repository
+        </p>
+      </div>
     </div>
+  </p-panel>
 </div>

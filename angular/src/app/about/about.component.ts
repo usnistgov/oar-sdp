@@ -10,18 +10,13 @@ import { MenuItem } from "primeng/api";
   styleUrls: ["./about.component.css"],
 })
 export class AboutComponent implements OnInit {
-  imageURL: string;
   breadcrumbItems: MenuItem[];
   constructor(
     public gaService: GoogleAnalyticsService,
-    private appConfig: AppConfig,
     public commonService: CommonService
   ) {}
 
   ngOnInit() {
-    this.appConfig.getConfig().subscribe((conf) => {
-      this.imageURL = conf.SDPAPI + "assets/images/sdp-background.jpg";
-    });
     this.breadcrumbItems = [
       { label: "Home", command: () => this.commonService.goHome() },
       { label: "About" },

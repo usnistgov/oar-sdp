@@ -57,7 +57,7 @@ export class HeadbarComponent implements OnInit {
           },
           { label: "About NIST Data", routerLink: "/about" },
           { label: "Policy", routerLink: "/policy" },
-          { label: "Help", routerLink: "/contactus" },
+          { label: "Help", routerLink: "/help" },
         ],
       },
       {
