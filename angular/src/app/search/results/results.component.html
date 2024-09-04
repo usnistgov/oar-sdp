@@ -153,6 +153,7 @@
     <!-- Search result -->
 
     <div
+      
       *ngIf="
         resultStatus == RESULT_STATUS.success && totalItems > 0;
         else noresult
@@ -178,7 +179,7 @@
               <p-tag>{{ clearResultItemType(resultItem["@type"][0]) }}</p-tag>
             </ng-template>
 
-            <div class="result-details">
+            <div class="result-details" style="margin-top: -10px !important; margin-bottom: -10px;">
               <div class="result-description">
                 <read-more-description
                   [text]="resultItem.description"
@@ -252,7 +253,7 @@
                   None
                 </span>
               </div>
-              <div class="header-container">
+              <div class="header-container" style="margin-top: -20px">
                 <div
                   class="keywords"
                   style="margin-top: 1.5em"
@@ -298,6 +299,7 @@
                       )
                     "
                     class="anchor-button"
+                    style="margin-top: -1.4em"
                   >
                   </a>
                 </div>

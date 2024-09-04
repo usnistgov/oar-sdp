@@ -58,8 +58,6 @@
   height: 20px;
 }
 
-
-
 .collapsedFilterIcon {
   color: #fff;
   zoom: 130%;
@@ -88,8 +86,8 @@
   margin-top: 1em;
   background-color: white;
   width: 100%;
-  padding-left: 1em;
-  padding-top: 1em;
+  padding-left: 0.5em;
+  padding-top: 0.5em;
 }
 
 .filter-input {
@@ -161,14 +159,28 @@
 }
 
 ::ng-deep .p-tree .p-tree-toggler-icon {
-  color: #000; 
+  color: #000;
+  font-size: 10px;
 }
 
 ::ng-deep .p-tree .p-tree-checkbox .p-checkbox-box {
-  background-color: #fff; 
-  border: 1px solid #000; 
+  background-color: #fff;
+  border: 1px solid #000;
 }
 
 ::ng-deep .p-tree .p-tree-checkbox .p-checkbox-icon {
   color: #000;
+}
+
+
+/* Adjust padding for the p-tree nodes */
+::ng-deep .p-tree .p-treenode-content {
+  padding: 0px; /* Remove padding */
+  font-size: 12px;
+}
+
+/* Ensure the p-tree container has enough height */
+::ng-deep .p-tree {
+  max-height: 400px; /* Adjust height as necessary */
+  overflow-y: auto; /* Add scroll if content exceeds container height */
 }

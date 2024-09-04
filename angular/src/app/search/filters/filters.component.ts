@@ -142,11 +142,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   researchTopicStyle = {
     width: "100%",
-    "padding-top": ".5em",
-    "padding-right": ".5em",
-    "padding-bottom": ".5em",
     "background-color": "white",
-    overflow: "hidden",
     "border-width": "0",
     "font-family": "sans-serif",
   };

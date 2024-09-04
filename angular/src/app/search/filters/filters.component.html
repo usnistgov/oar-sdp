@@ -56,7 +56,7 @@
 
       <div *ngIf="isActive && !searching">
         <!-- NIST Research topics -->
-        <div class="bottom-line">
+        <div class="bottom-line compact-filter">
           <div class="filter-checkbox">
             <div
               [@expand]="
@@ -138,7 +138,7 @@
             [@expandOptions]="MoreOptionsDisplayed ? 'collapsed' : 'expanded'"
           >
             <!-- Resource type -->
-            <div class="bottom-line">
+            <div class="bottom-line compact-filter">
               <p-tree
                 [value]="resourceTypeTree"
                 selectionMode="checkbox"
@@ -173,7 +173,7 @@
 
             <!-- Components -->
 
-            <div class="bottom-line" *ngIf="componentsTree.length > 0">
+            <div class="bottom-line compact-filter" *ngIf="componentsTree.length > 0">
               <div class="bottom-line">
                 <p-tree
                   [value]="componentsTree"

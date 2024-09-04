@@ -30,7 +30,8 @@ export class ResultsComponent implements OnInit {
   totalItems: number;
   itemsPerPage: number = 10;
   searchResults: any[];
-  selectedFields: string[] = ["Resource Description", "Subject keywords", "DOI"];
+  // MARK: 09/04/2024 - took off DOI by default
+  selectedFields: string[] = ["Resource Description", "Subject keywords"];
   allChecked: boolean = false;
   fieldsArray: any[];
   displayFields: string[] = [];
@@ -342,7 +343,8 @@ export class ResultsComponent implements OnInit {
    * Also reset sort order to default ("")
    */
   resetSelectedFields() {
-    this.selectedFields = ["Resource Description", "Subject keywords", "DOI"];
+    // MARK: 09/04/2024 - took off DOI by default
+    this.selectedFields = ["Resource Description", "Subject keywords"];
     this.allChecked = false;
     this.sortItemKey = null;
     this.currentSortOrder = "";
