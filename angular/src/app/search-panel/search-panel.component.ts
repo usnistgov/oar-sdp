@@ -384,6 +384,25 @@ export class SearchPanelComponent implements OnInit {
     // this.getTextWidth();
   }
 
+  onEnter(event: KeyboardEvent) {
+    // Prevent the default behavior of selecting the first option
+    console.log("onEnter");
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Proceed with search or other actions using the current input value
+    this.search(this.searchValue, this.searchTaxonomyKey);
+  }
+
+  /**
+   *  Clear the search text box
+   */
+  selectAll() {
+    var field = <HTMLInputElement>document.getElementById("searchinput");
+
+    field.select();
+  }
+
   /**
    * Set the search parameters and redirect to search page
    * @param searchValue
@@ -588,7 +607,6 @@ export class SearchPanelComponent implements OnInit {
   // getTextWidth() {
   //   if (this.mobWidth > 461) {
   //     var test = document.getElementById("autocompleteText");
-
 
   //     this.searchTextWidth =
   //       test.clientWidth + 1 < 500
