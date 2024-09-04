@@ -201,7 +201,7 @@
                 *ngIf="selectedFields.indexOf('Contact\'s full name') !== -1"
               >
                 <div class="ui-grid-col-12">
-                  <b>Contact Full Name: </b>
+                  <p-tag severity="secondary">Contact Full Name</p-tag>
                   <i style="color: gray">
                     {{ resultItem.contactPoint.fn }}
                   </i>
@@ -212,9 +212,9 @@
                 *ngIf="selectedFields.indexOf('Resource Home Page') !== -1"
               >
                 <div class="ui-grid-col-12">
-                  <b>Resource Home Page: </b>
+                  <p-tag severity="secondary">Resource Home Page</p-tag>
                   <i style="color: gray">
-                    {{ resultItem }}
+                    {{ resultItem.landingPage }}
                   </i>
                 </div>
               </div>
@@ -223,7 +223,7 @@
                 *ngIf="selectedFields.indexOf('Research Topic') !== -1"
               >
                 <div class="ui-grid-col-12">
-                  <b>Research Topic: </b>
+                  <p-tag severity="secondary">Research Topic</p-tag>
                   <p-tag>
                     <span *ngFor="let topic of resultItem.topic; let i = index"
                       >{{ topic.tag
@@ -237,13 +237,12 @@
                 *ngIf="selectedFields.indexOf('research topic') !== -1"
               >
                 <div class="ui-grid-col-12">
-                  <b>Research Topic - Component: </b>
+                  <p-tag severity="secondary">Research Topic - Component</p-tag>
                 </div>
               </div>
-              <!-- MARK: TUrn on DOI by default in customize view -->
               <div
                 class="ui-grid-row details"
-                *ngIf="selectedFields.indexOf('DOI') !== 1"
+                *ngIf="selectedFields.indexOf('DOI') !== -1"
               >
                 <p-tag severity="secondary">DOI</p-tag>
                 <span style="color: #1471ae" *ngIf="resultItem.doi != null">
