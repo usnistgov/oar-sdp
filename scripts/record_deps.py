@@ -1,4 +1,4 @@
-#! /usr/bin/python2
+#! /usr/bin/env python3
 #
 # record_deps.py -- encode the dependencies of a distribution as JSON object,
 #                   writing it to standard output.
@@ -52,6 +52,6 @@ data['name'] = distname
 data['version'] = vers
 
 data['dependencies'] = OrderedDict([(pkgname, repodep), ("npm", npmdep)] +
-                                   data.get('dependencies', {}).items())
+                                   list(data.get('dependencies', {}).items()))
 
 json.dump(data, sys.stdout, indent=2)

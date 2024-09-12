@@ -1,129 +1,186 @@
 :host ::ng-deep {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 #filterHeader {
-    background-color: #606165;
-    border-bottom:.5px solid #e6e6e6;
-    width: 100%;
-    padding: .625em;
-    box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);
+  background-color: black;
+  border-bottom: 0.5px solid #e6e6e6;
+  width: 100%;
+  padding: 0.625em;
+  box-shadow: inset -2px 0 16px -9px rgba(0, 0, 0, 0.5);
 }
 
 #filtersLabel {
-    color: #FFFFFF;
-    font-weight: 900;
-    text-decoration:none; 
-    padding-left: .5em;
+  color: black;
+  font-weight: 900;
+  text-decoration: none;
 }
 
 .spinner {
-    position: relative;
-    width: 100%;
-    margin-top: 2em;
+  position: relative;
+  width: 100%;
+  margin-top: 2em;
 }
 
 #clear-all {
-    float: right;
-    font-weight:900;
-    vertical-align: middle;
-    color: #FFFFFF
+  float: right;
+  font-weight: 900;
+  vertical-align: middle;
+  color: #ffffff;
 }
 
 #activeFilter {
-    background-color: #F8F9F9;
-    padding: 0px 0px 0px 0px;
+  background-color: white;
+  padding: 0px 0px 0px 0px;
 }
 
 .rotate {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .rotatedFilter {
-    display: block; 
-    color: #fff; 
-    padding-left: .5em;
-    font-size: larger;
-}
-
-.collapsedFilterBox {
-    /* text-align:center;
-    padding: 0px 5pxpx 0px 5px; */
-    /* background-color: var(--science-theme-background-default); */
-    background-image: linear-gradient( #696666, white);
-    color: #fff; 
-    width: 40px;
-    height: 300px;
-    cursor: pointer;
-    padding-top: 10px;
+  display: block;
+  color: #fff;
+  padding-left: 0.5em;
+  font-size: larger;
 }
 
 .rotatedFilterText {
-    display: block; 
-    color: #fff; 
-    padding: 55px 5px 0px 45px;
-    font-size: larger;
-    width: 120px;
-    height: 20px;
+  display: block;
+  color: #fff;
+  padding: 55px 5px 0px 45px;
+  font-size: larger;
+  width: 120px;
+  height: 20px;
 }
 
 .collapsedFilterIcon {
-    color: #fff;
-    zoom: 130%;
-    padding-top: -3em !important;
-    padding-left: 15px;
+  color: #fff;
+  zoom: 130%;
+  padding-top: -3em !important;
+  padding-left: 15px;
+}
+
+.collapsedFilterBox {
+  /* text-align:center;
+    padding: 0px 5pxpx 0px 5px; */
+  /* background-color: var(--science-theme-background-default); */
+  background-image: linear-gradient(black, white);
+  color: #fff;
+  width: 40px;
+  height: 300px;
+  cursor: pointer;
+  padding-top: 10px;
 }
 
 .normalFilter {
-    /* float: left; */
-    width: 100%;
+  /* float: left; */
+  width: 100%;
 }
 
 .lbl-filter {
-    margin-top:1em;
-    background-color:#F8F9F9;
-    width: 100%;
-    padding-left: 1em;
-    padding-top:1em;
+  margin-top: 1em;
+  background-color: white;
+  width: 100%;
+  padding-left: 0.5em;
+  padding-top: 0.5em;
 }
 
 .filter-input {
-    background-color: #F8F9F9;
-    padding-left:15px;
-    padding-right:1.0em;
+  background-color: white;
+  padding-left: 15px;
+  padding-right: 1em;
 }
 
 .filter-checkbox {
-    width: 100%;
-    overflow-x: hidden;
+  width: 100%;
+  overflow-x: hidden;
+  padding-bottom: 25px;
 }
 
 .bottom-line {
-    border-bottom:.5px solid #e6e6e6;
+  border-bottom: 0.5px solid #e6e6e6;
 }
 
 .show-more-less {
-    color: #1E6BA1;
-    background-color: #F8F9F9; 
-    text-align: right;
-    padding-right: 20px;
-    width: 100%;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.ui-tree {
-	white-space: nowrap !important;
+  color: #1e6ba1;
+  background-color: #f8f9f9;
+  text-align: right;
+  padding-right: 20px;
+  width: 100%;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .text-nowrap {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: block;
-    width: 100%;
-    min-width: 1px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
+  min-width: 1px;
+}
+
+:host ::ng-deep .p-autocomplete-panel {
+  background-color: white !important;
+  border: 1px solid black !important;
+  color: black !important;
+}
+
+:host ::ng-deep .p-autocomplete .p-inputtext {
+  background-color: white !important;
+  border-color: black !important;
+  color: black !important;
+}
+
+:host ::ng-deep .p-autocomplete-items {
+  background-color: white !important;
+  border-color: black !important;
+  color: black !important;
+}
+
+:host ::ng-deep .p-autocomplete-items li {
+  background-color: white !important;
+  color: black !important;
+  border-color: black !important;
+}
+
+:host ::ng-deep .p-checkbox-box {
+  background-color: white !important;
+  border-color: black !important;
+}
+
+:host ::ng-deep .p-checkbox-box.p-highlight {
+  background-color: white !important;
+  border-color: black !important;
+}
+
+::ng-deep .p-tree .p-tree-toggler-icon {
+  color: #000;
+  font-size: 10px;
+}
+
+::ng-deep .p-tree .p-tree-checkbox .p-checkbox-box {
+  background-color: #fff;
+  border: 1px solid #000;
+}
+
+::ng-deep .p-tree .p-tree-checkbox .p-checkbox-icon {
+  color: #000;
+}
+
+
+/* Adjust padding for the p-tree nodes */
+::ng-deep .p-tree .p-treenode-content {
+  padding: 0px; /* Remove padding */
+  font-size: 12px;
+}
+
+/* Ensure the p-tree container has enough height */
+::ng-deep .p-tree {
+  max-height: 400px; /* Adjust height as necessary */
+  overflow-y: auto; /* Add scroll if content exceeds container height */
 }

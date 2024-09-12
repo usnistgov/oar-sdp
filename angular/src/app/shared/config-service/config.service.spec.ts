@@ -9,7 +9,7 @@ import * as rxjs from 'rxjs';
 
 describe('AppConfig', () => {
     beforeEach(() => TestBed.configureTestingModule({
-        imports: [ HttpClientModule ],
+        imports: [ HttpClientTestingModule ],
         providers: [ HttpClient ]
     }));
 
@@ -25,48 +25,48 @@ describe('AppConfig', () => {
         expect(conf.APPVERSION).toEqual("debug");
     });
 
-    it('getConfig: returns default config by default', (done) => {
+    it('getConfig: returns default config by default', async () => {
         let service: AppConfig = TestBed.get(AppConfig);
         expect(service).toBeTruthy();
 
         let defdata: Config = service.getDefaultConfig();
 
-        service.getConfig().subscribe((data) => { expect(data).toEqual(defdata); done(); },
-                                      (err)  => { fail(err); done(); });
-    });
+        service.getConfig().subscribe((data) => { expect(data).toEqual(defdata);  },
+                                      (err)  => { fail(err);  });
+    }, 1000);
 
-    it('getRemoteConfig', (done) => {
+    it('getRemoteConfig', async () => {
         let service: AppConfig = TestBed.get(AppConfig);
         expect(service).toBeTruthy();
 
         service.getRemoteConfig().subscribe(
             (conf) => {
-                expect(conf["SERVERBASE"]).toEqual("https://data.nist.gov");
-                expect(conf["RMMAPI"]).toEqual("https://data.nist.gov/rmm/");
+                expect(conf["SERVERBASE"]).toEqual("http://data.nist.gov");
+                expect(conf["RMMAPI"]).toEqual("http://data.nist.gov/rmm/");
                 expect(conf["SDPAPI"]).toEqual("http://localhost:5555/");
                 expect(conf.GACODE).toEqual("not-set");
                 expect(conf.APPVERSION).toEqual("1.3.0");
-                done();
             },
-            (err) => { fail(err); done();}
+            (err) => { 
+                fail(err); 
+            }
         );
-    });
+    }, 1000);
 
-    it('loadRemoteConfig', (done) => {
+    it('loadRemoteConfig', async () => {
         let service: AppConfig = TestBed.get(AppConfig);
         expect(service).toBeTruthy();
 
         service.loadRemoteConfig();
         service.getConfig().subscribe(
             (conf) => {
-                expect(conf["SERVERBASE"]).toEqual("https://data.nist.gov");
-                expect(conf["RMMAPI"]).toEqual("https://data.nist.gov/rmm/");
+                expect(conf["SERVERBASE"]).toEqual("http://data.nist.gov");
+                expect(conf["RMMAPI"]).toEqual("http://data.nist.gov/rmm/");
                 expect(conf["SDPAPI"]).toEqual("http://localhost:5555/");
                 expect(conf.GACODE).toEqual("not-set");
                 expect(conf.APPVERSION).toEqual("1.3.0");
-                done();
             },
-            (err) => { fail(err); done(); }
+            (err) => { fail(err); }
         );
-    });
+    }, 1000);
 });

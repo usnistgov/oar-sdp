@@ -1,14 +1,17 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
+angular/dist/
 /dist
 /tmp
 /out-tsc
 
 # dependencies
 /node_modules
+angular/node_modules/
 
 # IDEs and editors
+.angular
 /.idea
 .project
 .classpath

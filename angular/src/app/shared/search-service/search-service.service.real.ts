@@ -131,8 +131,7 @@ export class RealSearchService implements SearchService{
             url = 'records?';
     
             if(searchPhraseValue)
-                url += searchPhraseValue.trim();
-            // url += "&" + searchPhraseValue.trim();
+                url += "&" + searchPhraseValue.trim();
            
             if(sortOrder){
                 url += '&sort.asc=' + sortOrder;
@@ -161,7 +160,6 @@ export class RealSearchService implements SearchService{
             url += '&include=ediid,description,title,keyword,topic.tag,contactPoint,components,@type,doi,landingPage&exclude=_id';
         }
 
-        console.log("Calling back end==============:", url);
         return this.appConfig.getConfig().pipe(
             rxjsop.mergeMap((conf) => {
                 return this.http.get(conf.RMMAPI + url);

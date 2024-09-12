@@ -2,7 +2,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AppConfig, Config } from '../shared/config-service/config.service';
-
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -17,6 +16,8 @@ export class HomeComponent implements OnInit {
     PDRAPIURL: string;
     SDPAPIURL: string;
     forensicsURL: string;
+    chipsURL: string;
+
 
     themes: any = {
         it: {
@@ -58,7 +59,13 @@ export class HomeComponent implements OnInit {
         Chemistry: {
             title: "CHEMISTRY",
             description: "NIST develops the technology, measurement methods and standards to address the needs of the chemical industry.",
-            image:"assets/images/Theme_Chemistry.jpg"
+            image:"assets/images/Theme_Chemistry.png"
+        },
+        chips: {
+            title: "CHIPS METIS",
+            description: "NIST is working to develop the measurement science needed to support the next generation of computer chips.",
+            image:"assets/images/Theme_CHIPS.png",
+            icon:"assets/images/forensics_collection.png"
         }
     }
 
@@ -68,12 +75,12 @@ export class HomeComponent implements OnInit {
                 this.PDRAPIURL = conf.SDPAPI;
                 this.SDPAPIURL = conf.SDPAPI;
                 this.forensicsURL = conf.SERVERBASE + "/forensics";
+                this.chipsURL = conf.SERVERBASE + "/chips";
             }
         );
     }
 
     ngOnInit() {
-
     }
 
     /**

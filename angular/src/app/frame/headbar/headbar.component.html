@@ -1,19 +1,24 @@
-<div style="background-color: #000000;margin: .6em 3em 0.5em .6em;">
-  <div id="logo" (click)="goHome()">
-      <img src="./assets/images/nist_logo_reverse.png" 
-      alt="NIST Science Data Portal" title="NIST Science Data Portal" style="float: left; margin-left: 1em;">
-      <div style="display:inline-block;">
-        <div class="logo-text">SCIENCE </div>
-        <div class="logo-text">DATA PORTAL</div>
+<p-menubar [model]="items">
+  <ng-template pTemplate="start">
+    <div
+      id="logo"
+      (click)="goHome()"
+      style="display: flex; align-items: center; margin-right: 10px;"
+    >
+      <img
+        src="./assets/images/nist_logo_reverse.png"
+        alt="NIST Science Data Portal"
+        title="NIST Science Data Portal"
+      />
+      <div class="logo-text">
+        <div class="ml-2">SCIENCE</div>
+        <div class="ml-2">DATA PORTAL</div>
+      </div>
+      <p-tag
+        severity="contrast"
+        [value]="appVersion"
+        style="margin-left: 1em; margin-top: -15px"
+      ></p-tag>
     </div>
-  </div>
-  <div class="badge" style="display:inline-block;color:black;background-color:#f0f0f0;vertical-align: text-top; margin-left: 3em; font-size:10px; margin-top:-16px;">{{appVersion}}</div>
-    <span>
-          <a id="menu-button" href="#" (click)="app.onMenuButtonClick($event)">
-                <i></i>
-            </a>
-      <a style="position: absolute; right: 2em; top: 15px; z-index: 1" href="javascript:;"><span class="textlinks" style="color: white;" [routerLink]="['/advanced']" (click)="hideExamples()"><b>
-          <div>Saved</div><div style="margin-top: -5px;">Queries </div></b></span>
-        <span class="w3-badge badge-notify1" >{{queryLength}}</span></a>
-     </span>
-  </div>
+  </ng-template>
+</p-menubar>

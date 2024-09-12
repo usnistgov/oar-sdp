@@ -13,6 +13,7 @@ export const environment = {
 
 export const default_config: Config = {
     "SERVERBASE": "http://localhost:4000/",
+    "RMMAPI": "http://testdata.nist.gov/rmm/",
     "GACODE": "not-set",
     "APPVERSION": "debug"
 }

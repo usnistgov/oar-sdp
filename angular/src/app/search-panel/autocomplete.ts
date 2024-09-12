@@ -74,7 +74,7 @@ export function find(search_phrase: String, parsed_data: String[][], parsed_data
 
     parsed_data.forEach(data => {
         try {
-            if (data && data != [""]) {
+            if (data) {
                 var similarity = get_similarity(search_phrase, data[term_reduced].toLowerCase().trim());
                 var rank = similarity + Math.pow(parseInt(data[freq].toString()), 0.0625);
                 if (rank >= 0.5 && similarity > 0.4) {
@@ -89,7 +89,9 @@ export function find(search_phrase: String, parsed_data: String[][], parsed_data
                 }
             }
         } catch (e) {
-            console.log(data)
+            // MARK 08/21/2024: This keeps logging ["\"quality of experience"] (1) so I disabled
+            // the logging
+            // console.log(data)
         }
     });
 

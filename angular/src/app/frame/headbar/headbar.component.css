@@ -1,16 +1,79 @@
-.logo-text {
-    font-family: Roboto,'Helvetica Neue',sans-serif;
-    line-height: 16.5px;
-    vertical-align: text-top;
-    color: #FFFFFF;
-    font-size:14px;
-    padding-left: 4%;
-    white-space: nowrap;
+/* headbar.component.css */
+#logo {
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
-#logo {
-    display:inline-block; 
-    background-color: #000000; 
-    margin-left: 10px;
-    cursor: pointer;
+.logo-text {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 18px;
+  color: #ffffff;
+  font-size: 12px;
+  white-space: nowrap;
+  margin-right: -10px;
+}
+
+::ng-deep .p-menubar {
+  background-color: #000000;
+  margin-left: auto;
+  color: #ffffff;
+  border: none;
+}
+
+::ng-deep .p-menubar .p-menubar-end {
+  margin-left: 100px;
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .p-menuitem-text {
+  font-size: 14px;
+}
+
+@media (max-width: 1200px) {
+  ::ng-deep .p-menuitem-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 992px) {
+  ::ng-deep .p-menuitem-text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .p-menuitem-text {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 576px) {
+  ::ng-deep .p-menuitem-text {
+    font-size: 10px;
+  }
+}
+
+
+::ng-deep .p-menuitem-link:hover {
+  background-color: #444444;
+}
+
+::ng-deep .p-menuitem-icon {
+  margin-right: .5rem;
+}
+
+.layout-wrapper,
+.layout-container,
+.grid {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+::ng-deep .p-menubar .p-menubar-end {
+  margin-left: auto;
 }

@@ -1,10 +1,10 @@
 <!-- Use absolute position for breadcrumb so it won't affect other elements' layout
      We have onWindowResize() to dynamically adjust breadcrumb location -->
      <div style="position: absolute; right: 1em; " [ngStyle]="{'margin-top': breadcrumb_top}">
-        <ol class="breadcrumb" style="float: right;">
+        <ol class="breadcrumb mt-2" style="float: right;">
             <li class="breadcrumb-item"><a href='/' style="color: #fff;"
                     (click)="gaService.gaTrackPageview('/', 'homepage')">Home</a></li>
-            <li id='title' class="active breadcrumb-item">Advanced Search Builder</li>
+            <li id='title' class="active breadcrumb-item has-text-white">Advanced Search Builder</li>
         </ol>
     </div>
     <app-search-panel title='Advanced Search Builder' [subtitle]='false' [helpicon]='true' [advanceLink]='false' [(editmode)]='dataChanged'

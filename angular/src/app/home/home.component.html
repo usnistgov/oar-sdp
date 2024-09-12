@@ -1,102 +1,127 @@
-<app-search-panel title='NIST Data Discovery' [subtitle]='true' [helpicon]='false' [advanceLink]='true' [homePage]='true' jumbotronHeight='35vh' jumbotronPadding='2em 3em 0em 3em'></app-search-panel>
+<app-search-panel
+  title="NIST Data Discovery"
+  [subtitle]="true"
+  [helpicon]="false"
+  [advanceLink]="true"
+  [homePage]="true"
+  jumbotronHeight="35vh"
+  jumbotronPadding="2em 3em 0em 3em"
+></app-search-panel>
 
-<!-- First row -->
-<div style="background-color: #F5F5F5;padding-top: 2em;">
-    <div class="grid" style="width: 90%; margin: auto;">
-      <!-- <div class="grid form-group" style="margin-bottom: 0em"> -->
-        <div class="col-12 col-md-3 col-sm-6">
-          <div (click)="search('IT')" class="box effect1">
-                <app-topic 
-                    [title]="themes.it.title" 
-                    [description]="themes.it.description"
-                    [image]="getImageFullPath(themes.it.image)"></app-topic>
-          </div>
+<div
+  style="background-color: #f5f5f5; margin-left: -0.5em; margin-right: -0.5em"
+>
+  <!-- First row -->
+  <div style="padding-top: 2em" class="container">
+    <div class="grid nogutter grid-container">
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.chips.title"
+            [description]="themes.chips.description"
+            [image]="getImageFullPath(themes.chips.image)"
+            (cardClick)="search('CHIPS')"
+            [icon]="getIconFullPath(themes.forensics.icon)"
+            [showIcon]="true"
+            [link]="chipsURL"
+          ></app-topic>
         </div>
-
-        <div class="col-12 col-md-3 col-sm-6">
-            <div (click)="search('MS')" class="box effect1">
-                <app-topic 
-                    [title]="themes.ms.title" 
-                    [description]="themes.ms.description"
-                    [image]="getImageFullPath(themes.ms.image)"></app-topic>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-3 col-sm-6">
-          <div (click)="search('Manufacturing')" class="box effect1">
-            <app-topic 
-            [title]="themes.manufacturing.title" 
+      </div>
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.manufacturing.title"
             [description]="themes.manufacturing.description"
-            [image]="getImageFullPath(themes.manufacturing.image)"></app-topic>
-          </div>
+            [image]="getImageFullPath(themes.manufacturing.image)"
+            (cardClick)="search('Manufacturing')"
+          ></app-topic>
         </div>
-
-        <div class="col-12 col-md-3 col-sm-6">
-          <a [href]="forensicsURL" target="_blank">
-              <div class="box effect1">
-                <app-topic 
-                    [title]="themes.forensics.title" 
-                    [description]="themes.forensics.description"
-                    [image]="getImageFullPath(themes.forensics.image)"
-                    [icon]="getIconFullPath(themes.forensics.icon)"
-                    [showIcon]="true">
-                </app-topic>
-              </div>
-          </a>
-          <!--
-          <div (click)="search('Forensics')" class="box effect1">
-            <app-topic 
-                [title]="themes.forensics.title" 
-                [description]="themes.forensics.description"
-                [image]="getImageFullPath(themes.forensics.image)"
-                [icon]="getIconFullPath(themes.forensics.icon)"
-                [showIcon]="true">
-            </app-topic>
-          </div>
-            -->
+      </div>
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.forensics.title"
+            [description]="themes.forensics.description"
+            [image]="getImageFullPath(themes.forensics.image)"
+            [icon]="getIconFullPath(themes.forensics.icon)"
+            (cardClick)="search('Forensics')"
+            [showIcon]="true"
+            [link]="forensicsURL"
+          ></app-topic>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Second row -->
-<div style="background-color: #F5F5F5;padding: 2em 0;">
-    <div class="grid" style="width: 90%; margin: auto;">
-
-        <div class="col-12 col-md-3 col-sm-6">
-            <div (click)="search('Materials')" class="box effect1">
-              <app-topic 
-                [title]="themes.Materials.title" 
-                [description]="themes.Materials.description"
-                [image]="getImageFullPath(themes.Materials.image)"></app-topic>
-            </div>
+  <!-- Second row -->
+  <div style="padding-top: 2em;" class="container">
+    <div class="grid nogutter grid-container">
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.ms.title"
+            [description]="themes.ms.description"
+            [image]="getImageFullPath(themes.ms.image)"
+            (cardClick)="search('MS')"
+          ></app-topic>
         </div>
-
-        <div class="col-12 col-md-3 col-sm-6">
-            <div (click)="search('PN')" class="box effect1">
-              <app-topic 
-                [title]="themes.Physics.title" 
-                [description]="themes.Physics.description"
-                [image]="getImageFullPath(themes.Physics.image)"></app-topic>
-            </div>
+      </div>
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.Materials.title"
+            [description]="themes.Materials.description"
+            [image]="getImageFullPath(themes.Materials.image)"
+            (cardClick)="search('Materials')"
+          ></app-topic>
         </div>
-
-        <div class="col-12 col-md-3 col-sm-6">
-            <div (click)="search('AC')" class="box effect1">
-              <app-topic 
-                [title]="themes.Communications.title" 
-                [description]="themes.Communications.description"
-                [image]="getImageFullPath(themes.Communications.image)"></app-topic>
-            </div>
+      </div>
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.Chemistry.title"
+            [description]="themes.Chemistry.description"
+            [image]="getImageFullPath(themes.Chemistry.image)"
+            (cardClick)="search('Chemistry')"
+          ></app-topic>
         </div>
-
-        <div class="col-12 col-md-3 col-sm-6">
-            <div (click)="search('Chemistry')" class="box effect1">
-              <app-topic 
-                [title]="themes.Chemistry.title" 
-                [description]="themes.Chemistry.description"
-                [image]="getImageFullPath(themes.Chemistry.image)"></app-topic>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
+  </div>
 
+  <!-- Third row -->
+  <div style="padding-top: 2em; padding-bottom: 2em;" class="container">
+    <div class="grid nogutter grid-container">
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.it.title"
+            [description]="themes.it.description"
+            [image]="getImageFullPath(themes.it.image)"
+            (cardClick)="search('IT')"
+          ></app-topic>
+        </div>
+      </div>
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.Physics.title"
+            [description]="themes.Physics.description"
+            [image]="getImageFullPath(themes.Physics.image)"
+            (cardClick)="search('PN')"
+          ></app-topic>
+        </div>
+      </div>
+      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
+        <div class="effect1" style="width: 100%;">
+          <app-topic
+            [title]="themes.Communications.title"
+            [description]="themes.Communications.description"
+            [image]="getImageFullPath(themes.Communications.image)"
+            (cardClick)="search('AC')"
+          ></app-topic>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

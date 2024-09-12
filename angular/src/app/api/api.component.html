@@ -1,38 +1,58 @@
-<!-- Top banner -->
-<div class="top-banner " [ngStyle]="{ 'background-image': 'url(' + imageURL + ')'}">
-  <div class="container" style="display: block; width: 100%;">
-    <span style="font-size: xx-large;">
-      <i class="faa faa-cogs faa-lg" style="padding-right: .5em;"></i><label id='title'>APIs</label>
-    </span> <span style="font-size: 20px; padding-left: .5em;">for developers</span>
-    <ol class="breadcrumb" style="float: right;">
-      <li class="active breadcrumb-item"><span style="color: #fff; font-weight:normal; cursor: pointer;"
-          (click)="commonService.goHome()">Home</span></li>
-      <li class="breadcrumb-item">Developer</li>
-      <li class="breadcrumb-item">APIs</li>
-    </ol>
-  </div>
-</div>
+<div
+  style="
+    background-color: white;
+    margin-left: -0.5em;
+    margin-right: -0.5em;
+    padding: 2em;
+  "
+>
+  <p-panel>
+    <!-- Header with icon and title -->
+    <ng-template pTemplate="header" class="header-container">
+      <a target="_blank" pButton size="small" class="anchor-button" icon="">
+        <i
+          class="faa faa-cogs faa-lg icon-padding"
+          style="margin-right: 10px"
+        ></i>
+        <label id="title">APIs for developers</label>
+      </a>
+    </ng-template>
 
-<!-- Text body -->
-<div style="background-color: white;">
-  <div class="container text-body">
-    <div class="main-image">
-      <!-- <img src="./assets/images/API.jpg" alt="DeveloperAPI"> -->
-      <button class="btn api"><i class="faa faa-external-link"></i>
-        <a href="{{RestAPIURL}}v3/api-docs" target="_blank" rel="noopener" style="color: white;padding-left: .5em;"
-          (click)="gaService.gaTrackEvent('outbound', $event)">Explore Data Discovery API</a>
-      </button>
+    <!-- Breadcrumb navigation -->
+    <ng-template pTemplate="icons">
+      <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+    </ng-template>
+
+    <!-- Main content -->
+    <div class="result-details" style="padding-top: 1em">
+      <a
+        href="{{ RestAPIURL }}v3/api-docs"
+        target="_blank"
+        rel="noopener"
+        (click)="gaService.gaTrackEvent('outbound', $event)"
+        pButton
+        icon="faa faa-external-link"
+        label="Explore Data Discovery API"
+        class="anchor-button"
+      >
+      </a>
+
+      <p>
+        This NIST Data Discovery web portal hosts access to a RestFul web
+        service public API, Application Programming Interface. This API provides
+        our developer community the capability to dynamically query the
+        underlying data resource catalog, a collection of key NIST research
+        dataset descriptions (metadata).
+      </p>
+
+      <p style="margin-top: 1em">
+        The search API returns JSON open-standard format data objects containing
+        high-level resource information and scientific domain-specific metadata
+        representations. We are in the process of extending these results as our
+        data holdings increase in NIST’s Public Data Repository system to
+        further capabilities in scientific data discovery and mining of NIST
+        research public data sets.
+      </p>
     </div>
-
-    This NIST Data Discovery web portal hosts access to a RestFul web service public API, Application Programming
-    Interface. This API provides our developer community the capability to dynamically query the underlying data
-    resource catalog, a collection of key NIST research dataset descriptions (metadata).
-
-    <p style="margin-top: 1em;">
-      The search API returns JSON open-standard format data objects containing high level resource information and
-      scientific domain specific metadata representations. We are in the process of extending these results as our data
-      holdings increase in NIST’s Public Data Repository
-      system to further capabilities in scientific data discovery and mining of NIST research public data sets.
-
-  </div>
+  </p-panel>
 </div>

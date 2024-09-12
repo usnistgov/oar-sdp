@@ -92,12 +92,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.mobWidth = (window.innerWidth);
         // Init search box size and breadcrumb position
         this.onWindowResize();
-
-        this.searchFieldsListService.watchFields(
-            (fields) =>{
-                this.fields = this.toFieldItems(fields);
-            }
-        );
     }
 
     /**
@@ -105,7 +99,26 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
      */
     ngOnInit() {
         var i = 0;
-        this.setSearchQuery();
+
+        this.searchFieldsListService.getSearchFields().subscribe(
+            (fields) => {
+                this.fields = (fields as SelectItem[]);
+                this.queries = this.searchQueryService.getQueries();
+                this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
+                this.currentQuery = this.currentQueryInfo.query;
+                this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
+                this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+                if(!this.currentQuery) this.currentQuery = new SDPQuery();
+                if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
+
+                this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+                // Update search box in the top search panel
+                this.searchService.setQueryValue(this.searchValue, '', '');
+            },
+            (err) => {
+                this.errorMessage = <any>err;
+            }
+        );
 
         this.searchQueryService.watchQueries().subscribe(value => {
             if(value)
@@ -113,19 +126,6 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         });
     }
 
-    setSearchQuery() {
-        this.queries = this.searchQueryService.getQueries();
-        this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
-        this.currentQuery = this.currentQueryInfo.query;
-        this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
-        this.currentQueryIndex = this.currentQueryInfo.queryIndex;
-        if(!this.currentQuery) this.currentQuery = new SDPQuery();
-        if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
-
-        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
-        // Update search box in the top search panel
-        this.searchService.setQueryValue(this.searchValue, '', '');
-    }
     /**
      *  Following functions detect screen size
      */
@@ -579,32 +579,4 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.searchQueryService.saveQueries(this.queries);
         op.hide();
     }
-
-    /**
-     * Advanced Search fields dropdown
-     */
-    toFieldItems(fields: any[]): SelectItem[] {
-        // let items: SelectItem[] = [];
-        // items.push({ label: this.ALL, value: 'searchphrase' });
-        let fieldItems: SelectItem[] = [];
-        for (let field of fields) {
-            if (_.includes(field.tags, 'searchable')) {
-                let dup = false;
-                //For some reason, the filter function does not work for fields. Have to use this loop...
-                for(let item of fieldItems){
-                    if(item.label == field.label && item.value == field.name.replace('component.', 'components.')){
-                        dup = true;
-                        break;
-                    }
-                }
-
-                if(!dup){
-                    fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
-                }
-            }
-        };
-        fieldItems = _.sortBy(fieldItems, ['label', 'value']);
-
-        return fieldItems;
-    }    
 }
