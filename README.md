@@ -12,7 +12,7 @@ docker/    --> Docker containers for building and running tests
 ## Prerequisites
 
 As a Javascript/Typescript application, this product is built and run using node and npm. 
-*	node 8.9.0 or higher
+*	node 16.17.1 or higher
 
 All prerequisite Javascript modules needed are provided via the npm build tool. See angular/package.json for a listing of primary dependencies and angular/package-lock.json for a complete listing of all dependencies.
 

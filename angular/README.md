@@ -2,17 +2,17 @@
 
 This directory provides the `sdp` software product, an [Angular](https://angular.io) which provides a browser-based interface for searching and browsing NIST data products.
 
-This software is built on the Angular framework using Angular CLI and implemented primarily in Typescript. It is currently built on Angular 6.
+This software is built on the Angular framework using Angular CLI and implemented primarily in Typescript. It is currently built on Angular 16.
 
 ## Prerequisites
 
-- [node](https://nodejs.org/en/download/) version 8.9.4 or higher (10.9 is recommended).  This provides the `npm` build tool.
+- [node](https://nodejs.org/en/download/) version 16.17.1 or higher.  This provides the `npm` build tool.
 
 All other required modules can be installed automatically via the `npm` tool (by typing `npm install` in this directory).
 
 You may be interested these related links:
  - [Get VS Code](https://code.visualstudio.com/download) (an IDE)
- - [Angular CLI](https://github.com/angular/angular-cli) version 1.6.8.
+ - [Angular CLI](https://github.com/angular/angular-cli) version 16.X
  
 ## Building the app from scratch
 
