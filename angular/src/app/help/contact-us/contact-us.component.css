@@ -25,6 +25,7 @@
   color: black;
 }
 
+
 .anchor-button {
   border: 1px solid white; /* Set border color to black */
   color: white; /* Set text color to black */
@@ -32,17 +33,14 @@
   margin-right: 10px;
   text-align: left;
   background-color: black; /* Set background color */
-}
-.anchor-button:hover {
-  background-color: #93c5fd;
-  border-color: black; /* Optional: Set border color on hover */
-  color: black;
+  cursor: default;
 }
 
 ::ng-deep .p-breadcrumb {
   background-color: black;
   border-color: white;
   color: white;
+  cursor: pointer;
 }
 
 ::host ::ng-deep .p-image-action {
