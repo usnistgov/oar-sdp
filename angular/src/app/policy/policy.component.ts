@@ -24,7 +24,6 @@ export class PolicyComponent {
   ngOnInit() {
     this.breadcrumbItems = [
       { label: "Home", command: () => this.commonService.goHome() },
-      { label: "About" },
       { label: "Policy" },
     ];
   }

@@ -32,7 +32,6 @@ export class ApiComponent {
     });
     this.breadcrumbItems = [
       { label: "Home", command: () => this.commonService.goHome() },
-      { label: "About" },
       { label: "API" },
     ];
   }

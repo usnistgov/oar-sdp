@@ -19,7 +19,6 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     this.breadcrumbItems = [
       { label: "Home", command: () => this.commonService.goHome() },
-      { label: "About" },
       { label: "NIST Data" },
     ];
   }
