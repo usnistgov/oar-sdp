@@ -183,7 +183,10 @@
               class="result-details"
               style="margin-top: -10px !important; margin-bottom: -10px"
             >
-              <div class="result-description">
+              <div
+                class="result-description"
+                *ngIf="selectedFields.indexOf('Resource Description') !== -1"
+              >
                 <read-more-description
                   [text]="resultItem.description"
                   [maxLength]="300"
@@ -381,7 +384,6 @@
         [(ngModel)]="allChecked"
         label="Select All"
         (onChange)="selectAllFields()"
-        [(ngModel)]="selectedFields"
       ></p-checkbox>
     </div>
     <div *ngFor="let field of displayFields" style="text-align: left">
