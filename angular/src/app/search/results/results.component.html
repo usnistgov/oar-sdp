@@ -80,7 +80,8 @@
     >
       <!-- Records Found -->
       <div style="flex: 1; display: flex; justify-content: flex-start">
-        <p-tag
+        <span
+          [ngClass]="{ 'p-tag': true, 'p-tag-custom': true }"
           styleClass="p-tag-custom"
           style="margin-top: 10px"
           *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
@@ -92,7 +93,7 @@
             {{ totalItems }}
           </span>
           <span class="ml-2 font-medium mr-3"> records found </span>
-        </p-tag>
+        </span>
       </div>
 
       <!-- Pagination -->
@@ -153,7 +154,6 @@
     <!-- Search result -->
 
     <div
-      
       *ngIf="
         resultStatus == RESULT_STATUS.success && totalItems > 0;
         else noresult
@@ -179,7 +179,10 @@
               <p-tag>{{ clearResultItemType(resultItem["@type"][0]) }}</p-tag>
             </ng-template>
 
-            <div class="result-details" style="margin-top: -10px !important; margin-bottom: -10px;">
+            <div
+              class="result-details"
+              style="margin-top: -10px !important; margin-bottom: -10px"
+            >
               <div class="result-description">
                 <read-more-description
                   [text]="resultItem.description"
