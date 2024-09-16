@@ -360,7 +360,7 @@
     [style]="{ 'background-color': '#F8F9F9' }"
     [appendTo]="'body'"
   >
-    <div class="">
+    <div class="lbl-display-fields">
       <b style="color: black">Display Fields</b>
       <span
         class="link-text"
@@ -371,13 +371,11 @@
     </div>
     <div style="text-align: left; margin-top: 10px">
       <p-checkbox
-        style="color: black"
-        class="label"
-        inputId="group2"
-        binary="true"
+        class="select-all-label"
         [(ngModel)]="allChecked"
         label="Select All"
         (onChange)="selectAllFields()"
+        [(ngModel)]="selectedFields"
       ></p-checkbox>
     </div>
     <div *ngFor="let field of displayFields" style="text-align: left">
@@ -392,7 +390,7 @@
       >
       </p-checkbox>
     </div>
-    <div class="lbl-display-fields" style="color: black">
+    <div class="lbl-display-fields" style="color: black; margin-top: 10px; margin-bottom: 10px;">
       <b>Sort Results</b> <br />
     </div>
     <div class="pb-4">

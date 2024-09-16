@@ -55,7 +55,15 @@
   font-style: italic;
   font-size: 14px;
 }
-
+.select-all-label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: normal;
+  color: black;
+  font-style: italic;
+  font-size: 14px;
+}
 .title {
   color: #1471ae;
   font-size: 15px;
@@ -257,11 +265,11 @@
   margin-bottom: -10px;
   text-decoration: none; /* Remove underline */
   margin-right: 10px;
-  text-align: left;;
+  text-align: left;
   background-color: black; /* Set background color */
 }
 .anchor-button:hover {
-  background-color: #93C5FD;
+  background-color: #93c5fd;
   border-color: black; /* Optional: Set border color on hover */
   color: black;
 }
@@ -330,7 +338,7 @@ a .custom-black-button .p-button .p-button-icon {
   border-color: #333; /* Optional: Set border color on hover */
 }
 
-::host ::ng-deep .p-tag{
+::host ::ng-deep .p-tag {
   background-color: red !important;
 }
 
@@ -349,11 +357,11 @@ a .custom-black-button .p-button .p-button-icon {
   color: white; /* Set text color to black */
   text-decoration: none; /* Remove underline */
   margin-right: 10px;
-  text-align: left;;
+  text-align: left;
   background-color: black; /* Set background color */
 }
 .customize-button:hover {
-  background-color: #93C5FD;
+  background-color: #93c5fd;
   border-color: black; /* Optional: Set border color on hover */
   color: black;
 }
