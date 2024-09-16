@@ -360,7 +360,7 @@ export class ResultsComponent implements OnInit {
    * Select all checkboxes
    */
   selectAllFields() {
-    this.selectedFields = [];
+    this.selectedFields = ['Subject keywords'];
     if (this.allChecked) {
       for (let field of this.fieldsArray) {
         if (_.includes(field.tags, "filterable")) {

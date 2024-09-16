@@ -181,7 +181,7 @@
 
             <div
               class="result-details"
-              style="margin-top: -10px !important; margin-bottom: -10px"
+              style="margin-top: -10px !important; margin-bottom: 10px"
             >
               <div
                 class="result-description"
@@ -250,6 +250,7 @@
               <div
                 class="ui-grid-row details"
                 *ngIf="selectedFields.indexOf('DOI') !== -1"
+                style="margin-bottom: 20px"
               >
                 <p-tag severity="secondary">DOI</p-tag>
                 <span style="color: #1471ae" *ngIf="resultItem.doi != null">
@@ -276,12 +277,6 @@
                 </div>
 
                 <div>
-                  <!-- MARK: Align button with keywords -->
-                  <!-- Also fix onClick??? -->
-                  <!-- Conditional icon if pdr link === homepage link -->
-                  <!-- If yes: pi-arrow-up-right else pi-external-link -->
-                  <!-- Change to <a> so that link can display in web browser on hover -->
-
                   <a
                     pButton
                     size="small"
@@ -305,7 +300,6 @@
                       )
                     "
                     class="anchor-button"
-                    style="margin-top: -1.4em"
                   >
                   </a>
                 </div>
