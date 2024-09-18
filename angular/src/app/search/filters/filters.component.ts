@@ -132,16 +132,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   ResourceTypeStyle = {
     width: "auto",
-    "padding-top": ".5em",
-    "padding-right": ".5em",
-    "padding-bottom": ".5em",
-    "background-color": "white",
-    "border-width": "0",
-    "font-family": "sans-serif",
-  };
-
-  researchTopicStyle = {
-    width: "100%",
     "background-color": "white",
     "border-width": "0",
     "font-family": "sans-serif",
@@ -149,9 +139,12 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   recordHasStyle = {
     width: "auto",
-    "padding-top": ".5em",
-    "padding-right": ".5em",
-    "padding-bottom": ".5em",
+    "background-color": "white",
+    "border-width": "0",
+    "font-family": "sans-serif",
+  };
+  researchTopicStyle = {
+    width: "100%",
     "background-color": "white",
     "border-width": "0",
     "font-family": "sans-serif",
