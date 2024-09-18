@@ -93,7 +93,7 @@
                     </span>
 
                     <ng-template #header1>
-                      <b>{{ node.label.split("-")[0] }}&nbsp;</b>
+                      <b style="font-size: 16px;">{{ node.label.split("-")[0] }}&nbsp;</b>
                     </ng-template>
                   </div>
                 </ng-template>
@@ -173,8 +173,8 @@
 
             <!-- Components -->
 
-            <div class="bottom-line compact-filter" *ngIf="componentsTree.length > 0">
-              <div class="bottom-line">
+            <div class="compact-filter" *ngIf="componentsTree.length > 0">
+              <div class="bottom-line compact-filter">
                 <p-tree
                   [value]="componentsTree"
                   selectionMode="checkbox"

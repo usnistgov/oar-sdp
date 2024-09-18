@@ -9,13 +9,13 @@
   <p-panel>
     <!-- Header with icon and title -->
     <ng-template pTemplate="header" class="header-container">
-      <a target="_blank" pButton size="small" class="anchor-button" icon="">
+      <span class="anchor-button" pButton size="small">
         <i
           class="faa faa-question faa-lg icon-padding"
           style="margin-right: 10px"
         ></i>
         <label id="title">Help</label>
-      </a>
+      </span>
     </ng-template>
 
     <!-- Breadcrumb navigation -->
@@ -24,18 +24,21 @@
     </ng-template>
 
     <!-- Main content -->
-    <div class="result-details" style="padding-top: 1em;">
-      <div class="content text-body" style="flex: 1;">
+    <div class="result-details" style="padding-top: 1em">
+      <div class="content text-body" style="flex: 1">
         <p>
           For comments or questions, please contact the support team at
           <a
             href="mailto:datasupport@nist.gov?Subject=SDP"
-            (click)="gaService.gaTrackEvent('Email', $event, 'Comments or questions')"
+            (click)="
+              gaService.gaTrackEvent('Email', $event, 'Comments or questions')
+            "
             >datasupport@nist.gov</a
           >.
         </p>
         <p>
-          For NIST internal data publication issues, please use the ITAC service portal for assistance.
+          For NIST internal data publication issues, please use the ITAC service
+          portal for assistance.
         </p>
         <p>
           Thank you,<br />

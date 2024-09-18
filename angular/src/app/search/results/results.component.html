@@ -80,7 +80,8 @@
     >
       <!-- Records Found -->
       <div style="flex: 1; display: flex; justify-content: flex-start">
-        <p-tag
+        <span
+          [ngClass]="{ 'p-tag': true, 'p-tag-custom': true }"
           styleClass="p-tag-custom"
           style="margin-top: 10px"
           *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
@@ -92,7 +93,7 @@
             {{ totalItems }}
           </span>
           <span class="ml-2 font-medium mr-3"> records found </span>
-        </p-tag>
+        </span>
       </div>
 
       <!-- Pagination -->
@@ -153,7 +154,6 @@
     <!-- Search result -->
 
     <div
-      
       *ngIf="
         resultStatus == RESULT_STATUS.success && totalItems > 0;
         else noresult
@@ -179,8 +179,14 @@
               <p-tag>{{ clearResultItemType(resultItem["@type"][0]) }}</p-tag>
             </ng-template>
 
-            <div class="result-details" style="margin-top: -10px !important; margin-bottom: -10px;">
-              <div class="result-description">
+            <div
+              class="result-details"
+              style="margin-top: -10px !important; margin-bottom: 10px"
+            >
+              <div
+                class="result-description"
+                *ngIf="selectedFields.indexOf('Resource Description') !== -1"
+              >
                 <read-more-description
                   [text]="resultItem.description"
                   [maxLength]="300"
@@ -244,6 +250,7 @@
               <div
                 class="ui-grid-row details"
                 *ngIf="selectedFields.indexOf('DOI') !== -1"
+                style="margin-bottom: 20px"
               >
                 <p-tag severity="secondary">DOI</p-tag>
                 <span style="color: #1471ae" *ngIf="resultItem.doi != null">
@@ -270,12 +277,6 @@
                 </div>
 
                 <div>
-                  <!-- MARK: Align button with keywords -->
-                  <!-- Also fix onClick??? -->
-                  <!-- Conditional icon if pdr link === homepage link -->
-                  <!-- If yes: pi-arrow-up-right else pi-external-link -->
-                  <!-- Change to <a> so that link can display in web browser on hover -->
-
                   <a
                     pButton
                     size="small"
@@ -299,7 +300,6 @@
                       )
                     "
                     class="anchor-button"
-                    style="margin-top: -1.4em"
                   >
                   </a>
                 </div>
@@ -360,7 +360,7 @@
     [style]="{ 'background-color': '#F8F9F9' }"
     [appendTo]="'body'"
   >
-    <div class="">
+    <div class="lbl-display-fields">
       <b style="color: black">Display Fields</b>
       <span
         class="link-text"
@@ -371,10 +371,7 @@
     </div>
     <div style="text-align: left; margin-top: 10px">
       <p-checkbox
-        style="color: black"
-        class="label"
-        inputId="group2"
-        binary="true"
+        class="select-all-label"
         [(ngModel)]="allChecked"
         label="Select All"
         (onChange)="selectAllFields()"
@@ -393,7 +390,7 @@
       >
       </p-checkbox>
     </div>
-    <div class="lbl-display-fields" style="color: black">
+    <div class="lbl-display-fields" style="color: black; margin-top: 10px; margin-bottom: 10px;">
       <b>Sort Results</b> <br />
     </div>
     <div class="pb-4">

@@ -3,7 +3,7 @@
     <div
       id="logo"
       (click)="goHome()"
-      style="display: flex; align-items: center; margin-right: 10px;"
+      style="display: flex; align-items: center; margin-right: 10px"
     >
       <img
         src="./assets/images/nist_logo_reverse.png"
@@ -14,11 +14,14 @@
         <div class="ml-2">SCIENCE</div>
         <div class="ml-2">DATA PORTAL</div>
       </div>
-      <p-tag
-        severity="contrast"
-        [value]="appVersion"
+
+      <span
+        class="tag"
+        [ngClass]="{ 'p-tag': true, 'p-tag-contrast': true }"
         style="margin-left: 1em; margin-top: -15px"
-      ></p-tag>
+      >
+        {{ appVersion }}</span
+      >
     </div>
   </ng-template>
 </p-menubar>

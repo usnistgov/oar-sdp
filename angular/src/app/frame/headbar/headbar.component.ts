@@ -35,7 +35,6 @@ export class HeadbarComponent implements OnInit {
   ngOnInit() {
     this.queryLength = this.searchQueryService.getQueries().length;
     this.queries = this.searchQueryService.getQueries();
-
     this.appConfig.getConfig().subscribe((conf) => {
       this.appVersion = conf.APPVERSION
     });

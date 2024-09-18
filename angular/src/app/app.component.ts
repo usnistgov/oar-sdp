@@ -114,7 +114,7 @@ export class AppComponent implements AfterViewInit {
     handleRouteEvents() {
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
-                const title = this.getTitle(this.router.routerState, this.router.routerState.root).join('-');
+                const title = this.getTitle(this.router.routerState, this.router.routerState.root).join('-') || 'NIST Data Repository Page';
                 this.titleService.setTitle(title);
                 
                 gtag('event', 'page_view', {
