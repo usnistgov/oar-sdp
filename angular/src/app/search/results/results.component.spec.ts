@@ -11,10 +11,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { ReadMoreComponent } from '../search.readmorekeywords';
 import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ReadMoreKeywordsComponent } from '../search.readmorekeywords';
+import { ReadMoreDescriptionComponent } from '../search.readmoredescription';
 
 describe('ResultsComponent', () => {
   let component: ResultsComponent;
@@ -22,11 +23,17 @@ describe('ResultsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultsComponent, PaginationComponent, OverlayPanel, ReadMoreComponent ],
+      declarations: [
+        ResultsComponent,
+        PaginationComponent,
+        OverlayPanel,
+        ReadMoreKeywordsComponent,
+        ReadMoreDescriptionComponent
+      ],
       imports: [
-        TreeModule, 
-        AutoCompleteModule, 
-        MockModule, 
+        TreeModule,
+        AutoCompleteModule,
+        MockModule,
         FormsModule,
         HttpClientTestingModule,
         RouterTestingModule,
@@ -35,7 +42,7 @@ describe('ResultsComponent', () => {
         ToastrModule.forRoot()
       ],
       providers: [
-        {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}
+        { provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
