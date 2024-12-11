@@ -9,6 +9,24 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 
+global.fetch = jest.fn(() => Promise.resolve({
+  ok: true,
+  status: 200,
+  json: () => Promise.resolve({ data: [] }),
+  headers: new Headers(),
+  redirected: false,
+  statusText: 'OK',
+  type: 'basic',
+  url: '',
+  clone: jest.fn(),
+  body: null,
+  bodyUsed: false,
+  arrayBuffer: jest.fn(),
+  blob: jest.fn(),
+  formData: jest.fn(),
+  text: jest.fn()
+}));
+
 describe('SearchPanelComponent', () => {
   let component: SearchPanelComponent;
   let fixture: ComponentFixture<SearchPanelComponent>;
