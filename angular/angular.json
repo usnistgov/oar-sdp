@@ -28,6 +28,7 @@
               "src/styles.css"
             ],
             "scripts": ["node_modules/primeui/primeui-ng-all.min.js"],
+            "allowedCommonJsDependencies": ["lodash"],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
