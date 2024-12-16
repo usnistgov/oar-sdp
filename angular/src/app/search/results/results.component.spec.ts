@@ -6,7 +6,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { PaginationComponent } from '../pagination/pagination.component';
@@ -16,6 +16,7 @@ import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analy
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReadMoreKeywordsComponent } from '../search.readmorekeywords';
 import { ReadMoreDescriptionComponent } from '../search.readmoredescription';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ResultsComponent', () => {
   let component: ResultsComponent;
@@ -23,29 +24,28 @@ describe('ResultsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         ResultsComponent,
         PaginationComponent,
         OverlayPanel,
         ReadMoreKeywordsComponent,
         ReadMoreDescriptionComponent
-      ],
-      imports: [
-        TreeModule,
+    ],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [TreeModule,
         AutoCompleteModule,
         MockModule,
         FormsModule,
-        HttpClientTestingModule,
         RouterTestingModule,
         CheckboxModule,
         DropdownModule,
-        ToastrModule.forRoot()
-      ],
-      providers: [
-        { provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
+        ToastrModule.forRoot()],
+    providers: [
+        { provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

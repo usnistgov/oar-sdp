@@ -5,8 +5,9 @@ import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.se
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
 import { CommonService } from '../shared/common/common.service';
 import { RouterModule } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PolicyComponent', () => {
   let component: PolicyComponent;
@@ -14,12 +15,14 @@ describe('PolicyComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterModule, RouterTestingModule],
-      declarations: [ PolicyComponent ],
-      providers: [
-        {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}, CommonService
-      ]
-    })
+    declarations: [PolicyComponent],
+    imports: [RouterModule, RouterTestingModule],
+    providers: [
+        { provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock }, CommonService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

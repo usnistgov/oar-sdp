@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ComboBoxComponent } from './combo-box.component';
 
@@ -6,7 +6,7 @@ describe('ComboBoxComponent', () => {
   let component: ComboBoxComponent;
   let fixture: ComponentFixture<ComboBoxComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ComboBoxComponent ]
     })

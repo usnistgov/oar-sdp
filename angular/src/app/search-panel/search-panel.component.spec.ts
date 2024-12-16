@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SearchPanelComponent } from './search-panel.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { MockModule } from '../mock.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 global.fetch = jest.fn(() => Promise.resolve({
   ok: true,
@@ -33,18 +34,16 @@ describe('SearchPanelComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-        imports: [
-            RouterTestingModule,
-            HttpClientTestingModule,
-            AutoCompleteModule,
-            FormsModule,
-            MockModule,
-            BrowserAnimationsModule,
-            OverlayPanelModule,
-            ToastrModule.forRoot()
-          ],
-      declarations: [ SearchPanelComponent ]
-    })
+    declarations: [SearchPanelComponent],
+    imports: [RouterTestingModule,
+        AutoCompleteModule,
+        FormsModule,
+        MockModule,
+        BrowserAnimationsModule,
+        OverlayPanelModule,
+        ToastrModule.forRoot()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

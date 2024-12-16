@@ -3,8 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ApiComponent } from './api.component';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ApiComponent', () => {
   let component: ApiComponent;
@@ -12,10 +13,10 @@ describe('ApiComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      declarations: [ ApiComponent ],
-      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}]
-    })
+    declarations: [ApiComponent],
+    imports: [RouterTestingModule],
+    providers: [{ provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

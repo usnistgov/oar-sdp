@@ -8,7 +8,8 @@ import { HowAdvancedSearchComponent } from "./how-advanced-search/how-advanced-s
 import { RouterTestingModule } from '@angular/router/testing';
 import { GoogleAnalyticsService } from "../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../shared/ga-service/google-analytics.service.mock";
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HelpComponent', () => {
   let component: HelpComponent;
@@ -16,18 +17,16 @@ describe('HelpComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule, HttpClientTestingModule
-      ],
-      declarations: [ 
+    declarations: [
         HelpComponent,
         ContactUsComponent,
         SearchSyntaxComponent,
         HelpPageNotFoundComponent,
         HowAdvancedSearchComponent
-      ],
-      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}]
-    })
+    ],
+    imports: [RouterTestingModule],
+    providers: [{ provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 

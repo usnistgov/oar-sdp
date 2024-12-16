@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { HomeComponent } from './home.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppConfig } from '..//shared/config-service/config.service';
 import { MockModule } from '../mock.module';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -17,15 +18,12 @@ describe('HomeComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        MockModule
-      ],
-      declarations: [ HomeComponent ],
-      providers: [ AppConfig ],
-      schemas: [NO_ERRORS_SCHEMA] 
-    })
+    declarations: [HomeComponent],
+    schemas: [NO_ERRORS_SCHEMA],
+    imports: [RouterTestingModule,
+        MockModule],
+    providers: [AppConfig, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   }));
 
