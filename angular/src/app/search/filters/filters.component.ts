@@ -255,7 +255,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         this.errorMessage = <any>error;
-      },
+      }
     });
   }
 
