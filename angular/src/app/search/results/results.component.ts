@@ -89,17 +89,17 @@ export class ResultsComponent implements OnInit {
       if (this.queryStringErrorMessage != "") this.queryStringWarning = true;
     }
 
-    this.searchFieldsListService.get().subscribe(
-      (fields) => {
+    this.searchFieldsListService.getSearchFields().subscribe({
+      next: (fields) => {
         this.filterableFields = this.toSortItems(fields);
 
         //Convert to a query then search
         this.searchSubscription = this.search(null, 1, this.itemsPerPage);
       },
-      (error) => {
+      error: (error) => {
         this.errorMessage = <any>error;
       }
-    );
+    });
 
     this.pageSubscription = this.searchService
       .watchCurrentPage()
