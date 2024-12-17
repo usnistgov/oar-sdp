@@ -11,6 +11,7 @@ import * as _ from 'lodash-es';
 })
 export class SearchfieldsListService {
   ALL: string = 'ALL FIELDS';
+  fields: SelectItem[] = [];
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -54,23 +55,31 @@ export class SearchfieldsListService {
   }
 
   /**
-   * Get database fields for Advanced Search builder
+   * Get database fields for Advanced Search builder.
+   * Since fields do not change very often, once we get them we keep them
+   * and reuse them everytime.
    */
   getSearchFields(): Observable<SelectItem[]> {
-    return new Observable<SelectItem[]>(subscriber => {
-        this.get().subscribe(
-            (res) => {
-                let fields: SelectItem[] = this.toFieldItems(res);
-                subscriber.next(fields);
-                subscriber.complete();
+    if(this.fields.length > 0) {
+      return new Observable<SelectItem[]>(subscriber => {
+        subscriber.next(this.fields);
+      })
+    }else{
+      return new Observable<SelectItem[]>(subscriber => {
+        this.get().subscribe({
+            next: (res) => {
+              this.fields = this.toFieldItems(res);
+              subscriber.next(this.fields);
+              subscriber.complete();
             },
-            (error) => {
+            error: (error) => {
                 console.log(error);
                 subscriber.next(error);
                 subscriber.complete();
             }
-        );
-    });
+        });
+      });
+    }
   }
 
     /**

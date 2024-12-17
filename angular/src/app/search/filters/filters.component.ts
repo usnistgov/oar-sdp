@@ -225,8 +225,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
    * Get the filterable fields and then do the search
    */
   getFields() {
-    this.searchFieldsListService.get().subscribe(
-      (fields) => {
+    this.searchFieldsListService.getSearchFields().subscribe({
+      next: (fields) => {
         this.toSortItems(fields);
         this.searchService.setQueryValue(this.searchValue, "", "");
         this.queryStringErrorMessage =
@@ -246,10 +246,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
           )
         );
       },
-      (error) => {
+      error: (error) => {
         this.errorMessage = <any>error;
       }
-    );
+    });
   }
 
   /**
