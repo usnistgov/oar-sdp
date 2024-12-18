@@ -175,6 +175,11 @@ export class SearchPanelComponent implements OnInit {
 
     this.mobHeight = window.innerHeight;
     this.mobWidth = window.innerWidth;
+
+    // Watch fields
+    this.searchFieldsListService.watchFields().subscribe((fields) => {
+      this.fields = fields;
+    })
   }
 
   /**
@@ -232,15 +237,6 @@ export class SearchPanelComponent implements OnInit {
       this.showExampleStatus = showExample;
       this.changeState(showExample);
     });
-
-    this.searchFieldsListService.getSearchFields().subscribe(
-      (fields) => {
-        this.fields = fields as SelectItem[];
-      },
-      (err) => {
-        console.log("Error getting fields.", err);
-      }
-    );
 
     // Init search box size and breadcrumb position
     this.onWindowResize();

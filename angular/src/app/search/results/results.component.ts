@@ -78,6 +78,13 @@ export class ResultsComponent implements OnInit {
     this.appConfig.getConfig().subscribe((conf) => {
       this.PDRAPIURL = conf.PDRAPI;
     });
+
+    this.searchFieldsListService.watchFields().subscribe((fields) => {
+      this.filterableFields = this.toSortItems(fields);
+
+      //Convert to a query then search
+      this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+    })
   }
 
   ngOnInit() {
@@ -89,17 +96,18 @@ export class ResultsComponent implements OnInit {
       if (this.queryStringErrorMessage != "") this.queryStringWarning = true;
     }
 
-    this.searchFieldsListService.getSearchFields().subscribe({
-      next: (fields) => {
-        this.filterableFields = this.toSortItems(fields);
+    this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+    // this.searchFieldsListService.getSearchFields().subscribe({
+    //   next: (fields) => {
+    //     this.filterableFields = this.toSortItems(fields);
 
-        //Convert to a query then search
-        this.searchSubscription = this.search(null, 1, this.itemsPerPage);
-      },
-      error: (error) => {
-        this.errorMessage = <any>error;
-      }
-    });
+    //     //Convert to a query then search
+    //     this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+    //   },
+    //   error: (error) => {
+    //     this.errorMessage = <any>error;
+    //   }
+    // });
 
     this.pageSubscription = this.searchService
       .watchCurrentPage()

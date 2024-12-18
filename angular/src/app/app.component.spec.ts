@@ -8,16 +8,17 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { GoogleAnalyticsService } from './shared/ga-service/google-analytics.service'
 import { GoogleAnalyticsServiceMock } from "./shared/ga-service/google-analytics.service.mock";
 import { ToastrModule } from 'ngx-toastr';
+import { SearchfieldsListService } from "./shared/searchfields-list/index";
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterModule, RouterTestingModule, ToastrModule.forRoot()],
-      providers: [Location, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}],
+      providers: [Location, {provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}, SearchfieldsListService],
       declarations: [
         AppComponent
       ],
-      schemas: [NO_ERRORS_SCHEMA] 
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
 
