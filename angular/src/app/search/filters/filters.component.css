@@ -99,7 +99,7 @@
 
 .filter-checkbox {
   width: 100%;
-  height: 250px;
+  min-height: 250px;
   overflow-x: hidden;
 }
 
@@ -116,6 +116,12 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+
+.ui-tree {
+	white-space: nowrap !important;
+}
+
 
 .text-nowrap {
   text-overflow: ellipsis;
@@ -183,3 +189,5 @@
 ::ng-deep .p-tree {
   overflow-y: auto; /* Add scroll if content exceeds container height */
 }
+
+

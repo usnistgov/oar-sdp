@@ -85,6 +85,7 @@
                     data-toggle="tooltip"
                     [title]="filterTooltip(node)"
                   >
+                  
                     <span *ngIf="node.label.split('-')[1] != ''; else header1">
                       {{ node.label.split("-")[0] }}&nbsp;
                       <p-tag severity="success">
@@ -93,7 +94,9 @@
                     </span>
 
                     <ng-template #header1>
-                      <b style="font-size: 16px;">{{ node.label.split("-")[0] }}&nbsp;</b>
+                      <b style="font-size: 16px"
+                        >{{ node.label.split("-")[0] }}&nbsp;</b
+                      >
                     </ng-template>
                   </div>
                 </ng-template>
@@ -102,9 +105,9 @@
           </div>
           <div
             class="show-more-less"
-            (click)="$event.preventDefault(); showMoreLink = false"
+            (click)="toggleExpand(true)"
             *ngIf="
-              nodeExpanded == true &&
+              nodeExpanded == false &&
               showMoreLink == true &&
               themesTree[0]?.children.length > 5
             "
@@ -113,7 +116,7 @@
           </div>
           <div
             class="show-more-less"
-            (click)="$event.preventDefault(); showMoreLink = true"
+            (click)="toggleExpand(false)"
             *ngIf="
               nodeExpanded == true &&
               showMoreLink == false &&
@@ -156,8 +159,8 @@
                     data-toggle="tooltip"
                     [title]="filterTooltip(node)"
                   >
-                    <span *ngIf="node.label.split('-')[1] != ''; else header1">
-                      {{ node.label.split("-")[0] }}&nbsp;
+                    <span *ngIf="node.label.split('-')[1] != ''; else header1"
+                      >{{ node.label.split("-")[0] }}&nbsp;
                       <p-tag severity="success">
                         <span>{{ node.label.split("-")[1] }}</span>
                       </p-tag>

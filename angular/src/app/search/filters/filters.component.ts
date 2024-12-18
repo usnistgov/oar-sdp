@@ -117,7 +117,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   isActive: boolean = true;
   filterClass: string;
   resultsClass: string;
-  nodeExpanded: boolean = true;
+  nodeExpanded: boolean = false;
   comheight: string; // parent div height
   comwidth: string; // parent div width
   dropdownLabelLengthLimit: number = 30;
@@ -207,9 +207,16 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   toggleMoreOptions() {
     this.MoreOptionsDisplayed = !this.MoreOptionsDisplayed;
-    if (this.MoreOptionsDisplayed)
+    if (this.MoreOptionsDisplayed) {
+      this.moreOptionsText = "Show Less";
+    } else {
       this.moreOptionsText = "Show More Options...";
-    else this.moreOptionsText = "Hide Options...";
+    }
+  }
+
+  toggleExpand(expand: boolean): void {
+    this.showMoreLink = !expand;
+    this.nodeExpanded = expand;
   }
 
   /**
@@ -248,7 +255,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         this.errorMessage = <any>error;
-      }
+      },
     });
   }
 
