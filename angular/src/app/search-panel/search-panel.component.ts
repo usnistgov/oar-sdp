@@ -36,8 +36,7 @@ import {
 } from "../shared/search-query/query";
 import { ReadVarExpr } from "@angular/compiler";
 import { find } from "./autocomplete";
-import fetch from "cross-fetch";
-
+// import fetch from "cross-fetch";
 import { MessageService } from "primeng/api";
 
 @Component({
