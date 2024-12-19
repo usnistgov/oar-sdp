@@ -311,13 +311,6 @@
 
       <!-- Bottom bar -->
       <div style="width: 100%; margin-bottom: 1em">
-        <!-- <div
-          [ngClass]="flexgrow(1)"
-          style="color: #000; font-weight: 800; padding-top: 10px"
-        >
-          &nbsp;&nbsp;{{ totalItems }} records found
-        </div> -->
-
         <!-- Pagination -->
         <div
           [ngClass]="flexgrow(8)"
@@ -334,16 +327,6 @@
           ></app-pagination>
         </div>
 
-        <!-- <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
-          <p-button
-            id="controlBtn"
-            [ngStyle]="{ float: customizeViewPosition() }"
-            label="Customize View"
-            icon="faa faa-cog"
-            iconPos="left"
-            (click)="op1.toggle($event)"
-          ></p-button>
-        </div> -->
       </div>
     </div>
     <ng-template #noresult>
