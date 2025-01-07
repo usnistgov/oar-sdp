@@ -189,5 +189,3 @@
 ::ng-deep .p-tree {
   overflow-y: auto; /* Add scroll if content exceeds container height */
 }
-
-
