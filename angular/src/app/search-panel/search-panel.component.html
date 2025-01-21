@@ -139,7 +139,7 @@
   </div>
 
   <div class="help-wrapper" [@changeDivSize]="currentState">
-    <!--     
+    <!--
     <span class="p-float-right p-m-1" (click)="searchQueryService.setShowExamples(false)">
       <i class="pi pi-times icon-black" id="btn-close" aria-hidden="true" data-toggle="tooltip" title="Hide Examples"></i>
     </span> -->
@@ -191,7 +191,7 @@
     <div class="p-grid">
       <div
         class="p-col"
-        *ngFor="let field of observableFields | async"
+        *ngFor="let field of fields"
         (click)="appendToSearchBox(field.value, '=', op1)"
       >
         <div>{{ field.label }} - {{ field.value }}</div>
@@ -221,7 +221,7 @@
     <div class="p-grid">
       <div
         class="p-col"
-        *ngFor="let field of observableFields | async"
+        *ngFor="let field of fields"
         (click)="addKeyValuePairToSearchBox($event, field.value, op2, op4)"
       >
         <div>{{ field.value }}</div>

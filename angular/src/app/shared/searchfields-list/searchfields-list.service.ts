@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import * as rxjsop from 'rxjs/operators';
 import { AppConfig, Config } from '../config-service/config.service';
 import { SelectItem } from 'primeng/api';
@@ -11,6 +11,7 @@ import * as _ from 'lodash-es';
 })
 export class SearchfieldsListService {
   ALL: string = 'ALL FIELDS';
+  fields = new BehaviorSubject<SelectItem[]>([]);
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -24,6 +25,23 @@ export class SearchfieldsListService {
   ngOnInit(): void {
 
   }
+
+  /**
+   * Set the value of fields
+   * @param fields
+   */
+  setFields(fields: SelectItem[]) {
+      this.fields.next(fields);
+  }
+
+  /**
+   * Watch the value of fields
+   * @returns fields
+   */
+  watchFields(): Observable<any>{
+      return this.fields.asObservable();
+  }
+
 
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
@@ -54,22 +72,19 @@ export class SearchfieldsListService {
   }
 
   /**
-   * Get database fields for Advanced Search builder
+   * Get database fields for Advanced Search builder.
+   * Since fields do not change very often, once we get them we keep them
+   * and reuse them everytime.
    */
-  getSearchFields(): Observable<SelectItem[]> {
-    return new Observable<SelectItem[]>(subscriber => {
-        this.get().subscribe(
-            (res) => {
-                let fields: SelectItem[] = this.toFieldItems(res);
-                subscriber.next(fields);
-                subscriber.complete();
-            },
-            (error) => {
-                console.log(error);
-                subscriber.next(error);
-                subscriber.complete();
-            }
-        );
+  getSearchFields() {
+    this.get().subscribe({
+        next: (res) => {
+          this.setFields(this.toFieldItems(res));
+        },
+        error: (error) => {
+          //Need better handling of the error message
+          console.log(error);
+        }
     });
   }
 
