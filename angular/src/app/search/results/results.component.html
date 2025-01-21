@@ -106,6 +106,8 @@
         <app-pagination
           [totalItems]="totalItems"
           [currentPage]="currentPage"
+          [pageSize]="pagerConfig.pageSize"
+          (pageChange)="onPageChange($event)"
         ></app-pagination>
       </div>
 
@@ -324,9 +326,10 @@
           <app-pagination
             [totalItems]="totalItems"
             [currentPage]="currentPage"
+            [pageSize]="pagerConfig.pageSize"
+            (pageChange)="onPageChange($event)"
           ></app-pagination>
         </div>
-
       </div>
     </div>
     <ng-template #noresult>
@@ -373,7 +376,10 @@
       >
       </p-checkbox>
     </div>
-    <div class="lbl-display-fields" style="color: black; margin-top: 10px; margin-bottom: 10px;">
+    <div
+      class="lbl-display-fields"
+      style="color: black; margin-top: 10px; margin-bottom: 10px"
+    >
       <b>Sort Results</b> <br />
     </div>
     <div class="pb-4">

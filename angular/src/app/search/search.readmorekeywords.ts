@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from "@angular/core";
       <p-tag
         *ngFor="let keyword of currentKeywords"
         [value]="keyword"
+        styleClass="mt-2"
         class="mr-2"
       ></p-tag>
       <p-button
@@ -24,7 +25,8 @@ import { Component, Input, OnInit } from "@angular/core";
       :host ::ng-deep .small-button {
         font-size: 0.8em;
         height: 2em;
-        padding: 5px 5px;
+        padding: 10px 5px;
+        margin-top: 5px;
         line-height: 1em;
       }
     `,

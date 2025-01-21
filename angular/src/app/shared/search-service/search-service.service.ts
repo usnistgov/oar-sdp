@@ -28,5 +28,8 @@ export interface SearchService {
   setCurrentPage(page: number);
   watchTotalItems():Observable<any>;
   setTotalItems(page: number);
+
+  watchPageSize(): Observable<any>;
+  setPageSize(pageSize: number);
 }
 

@@ -8,15 +8,15 @@ import {
   EventEmitter,
   OnDestroy,
   Inject,
-} from '@angular/core';
-import * as _ from 'lodash-es';
-import { SearchService, SEARCH_SERVICE } from '../../shared/search-service';
-import { Subscription } from 'rxjs';
+} from "@angular/core";
+import * as _ from "lodash-es";
+import { SearchService, SEARCH_SERVICE } from "../../shared/search-service";
+import { Subscription } from "rxjs";
 
 @Component({
-  selector: 'app-pagination',
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.css'],
+  selector: "app-pagination",
+  templateUrl: "./pagination.component.html",
+  styleUrls: ["./pagination.component.css"],
 })
 export class PaginationComponent implements OnInit, OnChanges, OnDestroy {
   pager: any = {}; // Object to store pagination state
@@ -25,7 +25,7 @@ export class PaginationComponent implements OnInit, OnChanges, OnDestroy {
   @Input() totalItems: number = 0; // Total number of items
   @Input() currentPage: number = 1; // Current active page
   @Input() pageSize: number = 10; // Items per page
-  @Output() pageChange = new EventEmitter<number>(); // Emits when the page changes
+  @Output() pageChange = new EventEmitter<{ page: number; pageSize: number }>();
 
   constructor(@Inject(SEARCH_SERVICE) private searchService: SearchService) {}
 
@@ -99,7 +99,7 @@ export class PaginationComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.currentPage = page;
     this.updatePager(page);
-    this.pageChange.emit(page);
+    this.pageChange.emit({ page: this.currentPage, pageSize: this.pageSize });
     this.searchService.setCurrentPage(page); // Notify SearchService
   }
 
@@ -150,7 +150,7 @@ export class PaginationComponent implements OnInit, OnChanges, OnDestroy {
 
     // Update the pager state and notify parent
     this.updatePager(this.currentPage);
-    this.pageChange.emit(this.currentPage);
+    this.pageChange.emit({ page: this.currentPage, pageSize: this.pageSize });
 
     // Notify SearchService about the page change
     this.searchService.setCurrentPage(this.currentPage);
