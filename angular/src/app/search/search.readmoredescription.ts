@@ -19,10 +19,11 @@ import { Component, Input, OnInit } from "@angular/core";
     `
       :host ::ng-deep .small-button {
         position: relative;
-        top: -2px;
-        font-size: 0.8em;
+        top: 3px;
+        right: -5px;
+        font-size: .9em;
         height: 1.5em;
-        padding: 5px 5px;
+        padding: 10px 5px;
         line-height: 1em;
       }
     `,
