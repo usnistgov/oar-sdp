@@ -117,7 +117,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   isActive: boolean = true;
   filterClass: string;
   resultsClass: string;
-  nodeExpanded: boolean = false;
+  nodeExpanded: boolean = true;
   comheight: string; // parent div height
   comwidth: string; // parent div width
   dropdownLabelLengthLimit: number = 30;
@@ -216,7 +216,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   toggleExpand(expand: boolean): void {
     this.showMoreLink = !expand;
-    this.nodeExpanded = expand;
+
   }
 
   /**
