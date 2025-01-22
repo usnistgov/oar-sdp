@@ -1,50 +1,61 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { SearchPanelComponent } from './search-panel.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { SearchPanelComponent } from "./search-panel.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { AutoCompleteModule } from "primeng/autocomplete";
-import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { MockModule } from '../mock.module';
-import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { OverlayPanelModule } from "primeng/overlaypanel";
+import { MockModule } from "../mock.module";
+import { FormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ToastrModule } from "ngx-toastr";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
-global.fetch = jest.fn(() => Promise.resolve({
-  ok: true,
-  status: 200,
-  json: () => Promise.resolve({ data: [] }),
-  headers: new Headers(),
-  redirected: false,
-  statusText: 'OK',
-  type: 'basic',
-  url: '',
-  clone: jest.fn(),
-  body: null,
-  bodyUsed: false,
-  arrayBuffer: jest.fn(),
-  blob: jest.fn(),
-  formData: jest.fn(),
-  text: jest.fn()
-}));
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve({ data: [] }),
+    headers: new Headers(),
+    redirected: false,
+    statusText: "OK",
+    type: "basic",
+    url: "",
+    clone: jest.fn(),
+    body: null,
+    bodyUsed: false,
+    arrayBuffer: jest.fn(),
+    blob: jest.fn(),
+    formData: jest.fn(),
+    text: jest.fn(),
+  })
+);
 
-describe('SearchPanelComponent', () => {
+describe("SearchPanelComponent", () => {
   let component: SearchPanelComponent;
   let fixture: ComponentFixture<SearchPanelComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [SearchPanelComponent],
-    imports: [RouterTestingModule,
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SearchPanelComponent],
+      imports: [
+        RouterTestingModule,
         AutoCompleteModule,
         FormsModule,
         MockModule,
         BrowserAnimationsModule,
         OverlayPanelModule,
-        ToastrModule.forRoot()],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-})
-    .compileComponents();
+        ToastrModule.forRoot(),
+      ],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -53,7 +64,7 @@ describe('SearchPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

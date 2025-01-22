@@ -24,15 +24,16 @@ COPY cacerts/README.md cacerts/*.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 ENV NODE_EXTRA_CA_CERTS /etc/ssl/certs/ca-certificates.crt
 
+ENV NODE_VERSION 18.20.5
 COPY node-*-sha256.txt /tmp/
 RUN arch=`dpkg --print-architecture` && \
     { [ "$arch" != "amd64" ] || arch="x64"; } && echo $arch > /etc/plat-arch
 RUN cd /tmp && arch=`cat /etc/plat-arch`  \
-            && wget https://nodejs.org/dist/v16.17.1/node-v16.17.1-linux-${arch}.tar.xz \
+            && wget https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-${arch}.tar.xz \
             && sha256sum -c node-${arch}-sha256.txt
 RUN cd /usr/local && arch=`cat /etc/plat-arch`                       \
-                  && tar xJf /tmp/node-v16.17.1-linux-${arch}.tar.xz \
-                  && ln -s node-v16.17.1-linux-${arch} node          \
+                  && tar xJf /tmp/node-v$NODE_VERSION-linux-${arch}.tar.xz \
+                  && ln -s node-v$NODE_VERSION-linux-${arch} node          \
                   && cd bin                                          \
                   && ln -s ../node/bin/node node                     \
                   && ln -s ../node/bin/npm  npm                      \
