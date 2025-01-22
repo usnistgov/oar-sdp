@@ -26,7 +26,7 @@
       <a
         href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= "
         (click)="gaService.gaTrackEvent('Email', $event, 'Contact')"
-        >datasupport@nist.gov</a
+        >datasupport&#64;nist.gov</a
       >.
     </div>
     <div class="EmptyBox80" style="background-color: #ffffff"></div>
@@ -106,6 +106,8 @@
         <app-pagination
           [totalItems]="totalItems"
           [currentPage]="currentPage"
+          [pageSize]="pagerConfig.pageSize"
+          (pageChange)="onPageChange($event)"
         ></app-pagination>
       </div>
 
@@ -311,13 +313,6 @@
 
       <!-- Bottom bar -->
       <div style="width: 100%; margin-bottom: 1em">
-        <!-- <div
-          [ngClass]="flexgrow(1)"
-          style="color: #000; font-weight: 800; padding-top: 10px"
-        >
-          &nbsp;&nbsp;{{ totalItems }} records found
-        </div> -->
-
         <!-- Pagination -->
         <div
           [ngClass]="flexgrow(8)"
@@ -331,19 +326,10 @@
           <app-pagination
             [totalItems]="totalItems"
             [currentPage]="currentPage"
+            [pageSize]="pagerConfig.pageSize"
+            (pageChange)="onPageChange($event)"
           ></app-pagination>
         </div>
-
-        <!-- <div [ngClass]="flexgrow(1)" style="padding: 10px 10px 5px 0px">
-          <p-button
-            id="controlBtn"
-            [ngStyle]="{ float: customizeViewPosition() }"
-            label="Customize View"
-            icon="faa faa-cog"
-            iconPos="left"
-            (click)="op1.toggle($event)"
-          ></p-button>
-        </div> -->
       </div>
     </div>
     <ng-template #noresult>
@@ -390,7 +376,10 @@
       >
       </p-checkbox>
     </div>
-    <div class="lbl-display-fields" style="color: black; margin-top: 10px; margin-bottom: 10px;">
+    <div
+      class="lbl-display-fields"
+      style="color: black; margin-top: 10px; margin-bottom: 10px"
+    >
       <b>Sort Results</b> <br />
     </div>
     <div class="pb-4">

@@ -1,22 +1,35 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ContactUsComponent } from './contact-us.component';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ContactUsComponent } from "./contact-us.component";
 import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
 import { GoogleAnalyticsServiceMock } from "../../shared/ga-service/google-analytics.service.mock";
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CommonService } from '../../shared/common/common.service';
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { CommonService } from "../../shared/common/common.service";
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
-describe('ContactUsComponent', () => {
+describe("ContactUsComponent", () => {
   let component: ContactUsComponent;
   let fixture: ComponentFixture<ContactUsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      declarations: [ ContactUsComponent ],
-      providers: [{provide: GoogleAnalyticsService, useClass: GoogleAnalyticsServiceMock}, CommonService]
-    })
-    .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ContactUsComponent],
+      imports: [RouterTestingModule],
+      providers: [
+        {
+          provide: GoogleAnalyticsService,
+          useClass: GoogleAnalyticsServiceMock,
+        },
+        CommonService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -25,7 +38,7 @@ describe('ContactUsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

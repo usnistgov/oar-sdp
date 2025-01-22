@@ -207,9 +207,16 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   toggleMoreOptions() {
     this.MoreOptionsDisplayed = !this.MoreOptionsDisplayed;
-    if (this.MoreOptionsDisplayed)
+    if (this.MoreOptionsDisplayed) {
+      this.moreOptionsText = "Show Less";
+    } else {
       this.moreOptionsText = "Show More Options...";
-    else this.moreOptionsText = "Hide Options...";
+    }
+  }
+
+  toggleExpand(expand: boolean): void {
+    this.showMoreLink = !expand;
+
   }
 
   /**
@@ -225,8 +232,8 @@ export class FiltersComponent implements OnInit, AfterViewInit {
    * Get the filterable fields and then do the search
    */
   getFields() {
-    this.searchFieldsListService.get().subscribe(
-      (fields) => {
+    this.searchFieldsListService.getSearchFields().subscribe({
+      next: (fields) => {
         this.toSortItems(fields);
         this.searchService.setQueryValue(this.searchValue, "", "");
         this.queryStringErrorMessage =
@@ -246,10 +253,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
           )
         );
       },
-      (error) => {
+      error: (error) => {
         this.errorMessage = <any>error;
       }
-    );
+    });
   }
 
   /**
@@ -363,20 +370,24 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       this.componentsWithCount.push({
         label: "DataFile - 0",
         data: "DataFile",
+        key: "DataFile",
       });
       this.componentsWithCount.push({
         label: "AccessPage - 0",
         data: "AccessPage",
+        key: "AccessPage",
       });
       this.componentsWithCount.push({
         label: "SubCollection - 0",
         data: "Subcollection",
+        key: "SubCollection",
       });
       this.componentsTree = [
         {
           label: "Record has -",
           expanded: true,
           children: this.componentsWithCount,
+          key: "RecordHas",
         },
       ];
 
@@ -391,6 +402,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         label: "Research Topics -",
         expanded: true,
         children: this.themesWithCount,
+        key: "ResearchTopics",
       },
     ];
 
@@ -399,6 +411,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         label: "Type of Resource  -",
         expanded: true,
         children: this.resourceTypesWithCount,
+        key: "ResourceType",
       },
     ];
 
@@ -408,6 +421,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
           label: "Record has -",
           expanded: true,
           children: this.componentsWithCount,
+          key: "RecordHas",
         },
       ];
     }
@@ -738,7 +752,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       {
         label: "NIST Research Topics -",
         expanded: true,
-        children: this.themesWithCount,
+        children: this.themesWithCount
       },
     ];
     this.componentsTree = [
@@ -814,6 +828,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       this.resourceTypesWithCount.push({
         label: res.label + "-" + count,
         data: res.value,
+        key: res.value, // fix unselectable filters in primeng 17
       });
     }
   }
@@ -941,6 +956,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
         this.componentsWithCount.push({
           label: comp.label + "-" + count,
           data: comp.value,
+          key: comp.value, // fix unselectable filters in primeng 17
         });
       }
     }
@@ -1043,6 +1059,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       this.themesWithCount.push({
         label: sortable[key][0] + "-" + sortable[key][1],
         data: sortable[key][0],
+        key: key, // fix unselectable filters in primeng 17
       });
     }
 

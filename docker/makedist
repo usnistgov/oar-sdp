@@ -12,5 +12,5 @@ dodockbuild=
     dodockbuild=-d
 }
 
-echo $DOCKERDIR/run.sh $dodockbuild build "$@"
+echo exec $DOCKERDIR/run.sh $dodockbuild build "$@"
 exec $DOCKERDIR/run.sh $dodockbuild build "$@"

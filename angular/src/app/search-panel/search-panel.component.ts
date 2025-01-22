@@ -189,7 +189,6 @@ export class SearchPanelComponent implements OnInit {
       });
     };
 
-    this.observableFields = this.searchFieldsListService.getSearchFields();
     this.syntaxRules = [
       {
         criteria: "Individual terms",
