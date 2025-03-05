@@ -92,11 +92,11 @@
         </p-autoComplete>
         <span
           class="p-inputgroup-addon"
+          (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
           style="cursor: pointer; color: white; border-color: white"
         >
           <i
             class="pi pi-search"
-            (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
           ></i>
         </span>
         <span
