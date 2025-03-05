@@ -4,7 +4,7 @@
 }
 
 .filter {
-    display: inline-block; 
+    display: inline-block;
     vertical-align: top;
 }
 
@@ -17,7 +17,6 @@ html {
     font-size:x-large;
     cursor: col-resize;
     background-color: var(--background-light-grey);
-    z-index: 99;
 }
 
 #separator {
