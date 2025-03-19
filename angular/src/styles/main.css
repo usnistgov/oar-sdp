@@ -1,0 +1,40 @@
+/* Block Inter variable font loading */
+@font-face {
+    font-family: 'Inter var';
+    src: local('Arial') !important;
+    font-display: swap;
+    font-weight: 100 900;
+    font-style: normal;
+    font-named-instance: 'Regular';
+  }
+  
+  @font-face {
+    font-family: 'Inter var';
+    src: local('Arial Italic') !important;
+    font-display: swap;
+    font-weight: 100 900;
+    font-style: italic;
+    font-named-instance: 'Italic';
+  }
+  
+  /* Existing Inter overrides */
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: local('Arial'), local('Helvetica'), local('sans-serif') !important;
+  }
+  
+  @font-face {
+    font-family: 'Inter';
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+    src: local('Arial Italic'), local('Helvetica Italic'), local('sans-serif') !important;
+  }
+  
+  /* Global font fallback */
+  :root, body, * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  }
