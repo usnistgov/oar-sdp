@@ -3,17 +3,20 @@
   display: flex;
   align-items: center;
   background-color: #000000;
-  margin-left: 10px;
+  margin-left: 1.7em;
   cursor: pointer;
 }
 
 .logo-text {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  line-height: 18px;
+  font-family: sans-serif;
+  font-weight: bolder;
+  font-size: 15px;
+  line-height: 17px;
   color: #ffffff;
-  font-size: 12px;
   white-space: nowrap;
-  margin-right: -10px;
+  margin-left: -.5rem;
+  margin-right: .5rem;
+  display:inline-block;
 }
 
 ::ng-deep .p-menubar {
@@ -78,3 +81,40 @@
   margin-left: auto;
 }
 
+.logo-container {
+  display:inline-block;
+  width: 110px;  /* Width of the container */
+  height: 30px; /* Height of the container */
+  overflow: hidden;
+  margin-right: 5px;
+  margin-bottom: 0em;
+}
+
+.image-container {
+  width: 330px;  /* Width of the container */
+  height: 100px; /* Height of the container */
+  overflow: hidden;
+  position: relative;
+  margin-left: -60px;
+  margin-top: -2.1em;
+}
+
+.scaled-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* Ensures the image scales to cover the container */
+  object-position: left center;  /* Ensures the left part of the image is in view */
+  transform: scale(.8);  /* Scale the image */
+  clip-path: inset(0 10% 0 0);  /* Clips the right half, showing only the left */
+  transition: transform 0.3s ease-in-out; /* Smooth transition for scale */
+}
+
+#appVersion {
+  display:inline-block;
+  border: 1px solid #f0f0f0;
+  margin-left: 2em;
+  /* margin-top: 5px; */
+  margin-right: 18px;
+  color: #f0f0f0;
+  background-color: transparent;
+}

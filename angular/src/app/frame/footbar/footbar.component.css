@@ -6,16 +6,23 @@
 }
 
 .footer__inner {
-  padding-left:20px;
-  padding-top:20px;
-  padding-right:20px;
+  padding-left:2em;
+  padding-right:2em;
   padding-bottom:10px;
 
 }
 
 #footer .footer__logo img {
-  width: 240px;
-  margin-left: 1.2em;
+  width: 386px;
+  margin-top: -1em;
+  margin-left: -20px;
+}
+
+.footer__logo {
+  width: 400px;
+  height: 70px;
+  padding-top: .5em;
+  overflow: hidden;
 }
 
 field-items img
@@ -328,4 +335,25 @@ display: block;
 -webkit-margin-start: 0px;
 -webkit-margin-end: 0px;
 -webkit-padding-start: 40px;
+}
+
+.nist-social--x-white {
+  width: 16px;
+  height: 16px;
+  /* margin-right: .5em; */
+  margin-top: 14px;
+  margin-left: 12px;
+  cursor: pointer;
+  vertical-align: bottom;
+}
+
+.x-icon {
+  display:inline-block;
+  width: 40px;
+  height: 40px;
+  margin-top: -10px;
+  vertical-align: middle;
+}
+.x-icon:hover {
+  background-color: lightgray;
 }

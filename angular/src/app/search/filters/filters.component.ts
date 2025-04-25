@@ -748,28 +748,12 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     this.collectComponentsWithCount();
     this.collectThemes(this.searchResults);
     this.collectThemesWithCount();
-    this.themesTree = [
-      {
-        label: "NIST Research Topics -",
-        expanded: true,
-        children: this.themesWithCount
-      },
-    ];
-    this.componentsTree = [
-      {
-        label: "Record has -",
-        expanded: true,
-        children: this.componentsWithCount,
-      },
-    ];
-
-    this.resourceTypeTree = [
-      {
-        label: "Resource Type -",
-        expanded: true,
-        children: this.resourceTypesWithCount,
-      },
-    ];
+    this.themesTree["expanded"] = true;
+    this.themesTree["children"] = this.themesWithCount;
+    this.componentsTree["expanded"] = true;
+    this.componentsTree["children"] = this.componentsWithCount;
+    this.resourceTypeTree["expanded"] = true;
+    this.resourceTypeTree["children"] = this.resourceTypesWithCount;
 
     this.filterResults();
   }

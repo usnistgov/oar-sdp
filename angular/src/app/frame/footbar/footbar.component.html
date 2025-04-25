@@ -4,22 +4,31 @@
         <div class="social-links" *ngIf="socialMediaList">
             <div class="item-list">
                 <ul>
-                    <li *ngFor="let socialMedia of socialMediaList">
-                        <a [href]="socialMedia.url" target="_blank" rel="noopener noreferrer" class="social-btn social-btn--large extlink ext"><i [class]="socialMedia.icon"><span
-                            class="element-invisible">{{socialMedia.name}}</span></i><span class="ext"><span class="element-invisible"> (link
-                            is external)</span></span></a>
-                    </li>
+                  <li *ngFor="let socialMedia of socialMediaList; let i = index">
+                    <div *ngIf="i==1" class="x-icon">
+                        <a href=" https://x.com/NIST" target="_blank">
+                            <div
+                              class="nist-social nist-social--x-white"
+                              style="background-image:url(/assets/images/x_white.svg)">
+                            </div>
+                        </a>
+                    </div>
+
+                    <a *ngIf="i>1" [href]="socialMedia.url" target="_blank" rel="noopener noreferrer" class="social-btn social-btn--large extlink ext"><i [class]="socialMedia.icon"><span
+                        class="element-invisible">{{socialMedia.name}}</span></i><span class="ext"><span class="element-invisible"> (link
+                        is external)</span></span></a>
+                  </li>
                 </ul>
             </div>
         </div>
 
-        <!-- Footer logo -->
         <div class="footer__logo">
-            <a href="https://www.nist.gov" target="_blank" rel="noopener" title="National Institute of Standards and Technology" class="footer__logo-link" rel="home">
-                <img src="./assets/images/logo_rev.png" alt="National Institute of Standards and Technology" title="National Institute of Standards and Technology">
-            </a>
-        </div>
-
+          <a href="https://nist.gov/" target="_blank" title="National Institute of Standards and Technology"
+              class="footer__logo-link" rel="home noopener">
+              <img src="./assets/images/f_nist-logo-brand-white_nist-logo-brand-white.png" alt="National Institute of Standards and Technology"
+              title="National Institute of Standards and Technology">
+          </a>
+      </div>
 
         <!-- Footer links line #1 -->
         <div id="block-menu-menu-footer-menu" *ngIf="footerLinks01"
