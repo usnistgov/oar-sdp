@@ -5,13 +5,15 @@ import * as rxjsop from 'rxjs/operators';
 import { AppConfig, Config } from '../config-service/config.service';
 import { SelectItem } from 'primeng/api';
 import * as _ from 'lodash-es';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SearchfieldsListService {
   ALL: string = 'ALL FIELDS';
-  fields: SelectItem[] = [];
+  fields: BehaviorSubject<any> =  new BehaviorSubject<any>(null);
+  _fields: SelectItem[] = [];
 
   /**
    * Creates a new FieldsListService with the injected Http.
@@ -26,6 +28,13 @@ export class SearchfieldsListService {
 
   }
 
+  public setFields(val : any) {
+    this.fields.next(val);
+  }
+
+  public watchFields(): Observable<any> {
+    return this.fields.asObservable();
+  }
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
@@ -59,17 +68,29 @@ export class SearchfieldsListService {
    * Since fields do not change very often, once we get them we keep them
    * and reuse them everytime.
    */
+  // getSearchFields() {
+  //   this.get().subscribe({
+  //       next: (res) => {
+  //         this.setFields(this.toFieldItems(res));
+  //       },
+  //       error: (error) => {
+  //           console.error(error);
+  //       }
+  //   });
+  // }
+
   getSearchFields(): Observable<SelectItem[]> {
-    if(this.fields.length > 0) {
+    if(this._fields.length > 0) {
       return new Observable<SelectItem[]>(subscriber => {
-        subscriber.next(this.fields);
+        subscriber.next(this._fields);
       })
     }else{
       return new Observable<SelectItem[]>(subscriber => {
         this.get().subscribe({
             next: (res) => {
-              this.fields = this.toFieldItems(res);
-              subscriber.next(this.fields);
+              this.setFields(res);
+              this._fields = this.toFieldItems(res);
+              subscriber.next(this._fields);
               subscriber.complete();
             },
             error: (error) => {
@@ -82,31 +103,31 @@ export class SearchfieldsListService {
     }
   }
 
-    /**
-     * Advanced Search fields dropdown
-     */
-    toFieldItems(fields: any[]): SelectItem[] {
-        // let items: SelectItem[] = [];
-        // items.push({ label: this.ALL, value: 'searchphrase' });
-        let fieldItems: SelectItem[] = [];
-        for (let field of fields) {
-            if (_.includes(field.tags, 'searchable')) {
-                let dup = false;
-                //For some reason, the filter function does not work for fields. Have to use this loop...
-                for(let item of fieldItems){
-                    if(item.label == field.label && item.value == field.name.replace('component.', 'components.')){
-                        dup = true;
-                        break;
-                    }
-                }
+  /**
+   * Advanced Search fields dropdown
+   */
+  toFieldItems(fields: any[]): SelectItem[] {
+      // let items: SelectItem[] = [];
+      // items.push({ label: this.ALL, value: 'searchphrase' });
+      let fieldItems: SelectItem[] = [];
+      for (let field of fields) {
+          if (_.includes(field.tags, 'searchable')) {
+              let dup = false;
+              //For some reason, the filter function does not work for fields. Have to use this loop...
+              for(let item of fieldItems){
+                  if(item.label == field.label && item.value == field.name.replace('component.', 'components.')){
+                      dup = true;
+                      break;
+                  }
+              }
 
-                if(!dup){
-                    fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
-                }
-            }
-        };
-        fieldItems = _.sortBy(fieldItems, ['label', 'value']);
+              if(!dup){
+                  fieldItems.push({ label: field.label, value: field.name.replace('component.', 'components.') });
+              }
+          }
+      };
+      fieldItems = _.sortBy(fieldItems, ['label', 'value']);
 
-        return fieldItems;
-    }
+      return fieldItems;
+  }
 }

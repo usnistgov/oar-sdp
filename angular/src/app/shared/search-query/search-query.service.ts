@@ -54,7 +54,7 @@ export class SearchQueryService {
 
     /**
      * Build search string from a given query object for backend
-     * @param inputQuery 
+     * @param inputQuery
      */
     buildSearchString(inputQuery: SDPQuery): string {
         let query = JSON.parse(JSON.stringify(inputQuery));
@@ -92,7 +92,7 @@ export class SearchQueryService {
                     count++;
                 }
 
-                lSearchValue += query.queryRows[i].fieldValue + '=' + lFieldText; 
+                lSearchValue += query.queryRows[i].fieldValue + '=' + lFieldText;
             }
         }
 
@@ -101,7 +101,7 @@ export class SearchQueryService {
 
     /**
      * Check if a string object is empty
-     * @param stringValue 
+     * @param stringValue
      */
     isEmpty(stringValue: string){
         return stringValue == null || stringValue == undefined || stringValue.trim() == '';
@@ -174,7 +174,7 @@ export class SearchQueryService {
     }
 
     /**
-     * Get current query from local storage. If nothing in local storage, return an empty query object. 
+     * Get current query from local storage. If nothing in local storage, return an empty query object.
      */
     getCurrentQuery(): SDPQuery {
         let queryAsObject: CurrentQueryInfo = this.getCurrentQueryInfo();
@@ -212,7 +212,7 @@ export class SearchQueryService {
     }
 
     /**
-     * 
+     *
      * @param queryString Query string
      */
     buildQueryFromString(queryString: string, queryName?: string, fields?: SelectItem[]): SDPQuery{
@@ -257,7 +257,7 @@ export class SearchQueryService {
         }
 
         let lFreeTextSearch: string = queryStringObject.freeTextString;
-        let lKeyValuePair: string = queryStringObject.keyValuePairString; 
+        let lKeyValuePair: string = queryStringObject.keyValuePairString;
         let query: SDPQuery = new SDPQuery(this.nextQueryId(), lQueryName);
         query.freeText = lFreeTextSearch.trim();
         if(!this.isEmpty(lKeyValuePair)){
@@ -292,7 +292,7 @@ export class SearchQueryService {
                                 i++;
                                 keyValue = items[i].split("=");
                             }
-                        }                  
+                        }
                     }
 
                     if(keyValue.length == 2){
@@ -309,7 +309,7 @@ export class SearchQueryService {
                                     row.fieldText = row.fieldText.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), '"'+quotes[i].match(/\"(.*?)\"/)[1]+'"');
                                 }
                             }
-                        }  
+                        }
 
                         query.queryRows.push(JSON.parse(JSON.stringify(row)));
                     }
@@ -341,8 +341,8 @@ export class SearchQueryService {
      * Query name field validation
      * 1. This field is required
      * 2. Query name should be unique
-     * @param queryName 
-     * @param prevQueryName previous query if any - for undo purpose 
+     * @param queryName
+     * @param prevQueryName previous query if any - for undo purpose
      * @param remote - if this is a remote save, treat it the same as add
      */
     queryNameValidation(queryName: string, prevQueryName: string, mode: string = "ADD"){
@@ -360,7 +360,7 @@ export class SearchQueryService {
                     }
                 }
             }
-            
+
             if (mode == "ADD"){
                 for(let i = 0; i < currentQueries.length; i++){
                     if(currentQueries[i].queryName == queryName){
@@ -389,7 +389,7 @@ export class SearchQueryService {
         let nextId = 1;
         for(let row of query.queryRows)   {
             if(row.id >= nextId) nextId = row.id + 1;
-        }     
+        }
         // let id = Math.max.apply(Math, query.queryRows.map(function(o) { return o.id; })) + 1;
         // if(id == null) return 1;
         // else return id;
@@ -397,7 +397,7 @@ export class SearchQueryService {
     }
 
     /**
-     * Behavior subject to remotely set the search value. 
+     * Behavior subject to remotely set the search value.
      */
     private _remoteShowExamples : BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public _watchShowExamples(subscriber){
@@ -426,7 +426,7 @@ export class SearchQueryService {
     }
 
     parseQueryString(queryString: string): queryStrings {
-        // All phrases in quotes should have been converted to special strings in the input queryString 
+        // All phrases in quotes should have been converted to special strings in the input queryString
         // so we can treat all items as words or operators. Phrases will be restored later.
 
         let returnObject: queryStrings = new queryStrings();
@@ -443,7 +443,7 @@ export class SearchQueryService {
         // We need to put all free text search phrases together
         let lqStrArray:string[] = queryString.trim().split(" ");
         for(let i = 0; i < lqStrArray.length; i++){
-            //If an item starts with "=" and the phrase before this phrase is not an operator or 
+            //If an item starts with "=" and the phrase before this phrase is not an operator or
             //key value pair, mark the item as illegal and ignore it in the search string.
             if(i == 0 && lqStrArray[i].substr(0,1) == "="){
                 lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
@@ -451,7 +451,7 @@ export class SearchQueryService {
             }else if(lqStrArray[i].substr(lqStrArray[i].length - 1) == "="){
                 //If an item ends with "=" and this is not the last phrase, check next item.
                 //If next word is not "=" or an operator, use next item as the value of the "=" sign.
-                //If this is the last item in the search string, mark it as illegal item and 
+                //If this is the last item in the search string, mark it as illegal item and
                 //ignore it in the search string.
                 if(i < lqStrArray.length - 1){
                     if(lqStrArray[i+1].indexOf("=") < 0 && this.operators.indexOf(lqStrArray[i+1].trim()) < 0){
@@ -466,10 +466,10 @@ export class SearchQueryService {
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                     errorCount++;
                 }
-            // If this is not the last item and not a key/value pair or an operator 
+            // If this is not the last item and not a key/value pair or an operator
             // and next item starts with "=", combine this and next item a key/value pair.
             // e.g., keyword =physics will be converted to keyword=physics.
-            // Else if this is an operator, mark this operator illegal and ignore. 
+            // Else if this is an operator, mark this operator illegal and ignore.
             // e.g., OR =physics will be converted to =physics.
             //Anything else if next item starts with "=", mark next item illegal and ignore.
 
@@ -493,7 +493,7 @@ export class SearchQueryService {
                 lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
                 errorCount++;
             }else if(this.operators.indexOf(lqStrArray[i].trim()) >= 0){
-                // If the item right before the freetext is an operator, or if an operator OR is between 
+                // If the item right before the freetext is an operator, or if an operator OR is between
                 // freetext and key-value pair, or the last item is an operator, mark it as illegal and ignore it
                 if(i == lqStrArray.length-1){
                     lQueryString += ' <mark> ' + lqStrArray[i].trim() + ' </mark> ';
@@ -513,7 +513,7 @@ export class SearchQueryService {
                     lQueryString += lqStrArray[i] + " ";
                     returnObject.keyValuePairString += lqStrArray[i] + " ";
                 }
-            }else{   
+            }else{
                 // If this is not an operator and not a key/value pair, add it to free text string.
                 // If this is a key-value pair and no operator right before this item, add AND operator.
                 // For all other cases add this item to key-value pair string for further processing.
@@ -521,7 +521,7 @@ export class SearchQueryService {
                 if(lqStrArray[i].indexOf("=") < 0){
                     returnObject.freeTextString += lqStrArray[i].trim() + " ";
                 }else{
-                    if(i>0 && lqStrArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStrArray[i-1].trim()) < 0){                        
+                    if(i>0 && lqStrArray[i].indexOf("=")>-1 && this.operators.indexOf(lqStrArray[i-1].trim()) < 0){
                         returnObject.keyValuePairString += "AND " + lqStrArray[i].trim() + " ";
                     }else{
                         returnObject.keyValuePairString += lqStrArray[i].trim() + " ";
@@ -531,7 +531,7 @@ export class SearchQueryService {
                 lQueryString += lqStrArray[i] + " ";
             }
         }
-        
+
         if(errorCount == 1)
             returnObject.parseErrorMessage = 'Operator/phrase has been ignored: <i>'+lQueryString+'</i>. Click on Show Examples for more details.';
 
@@ -550,12 +550,12 @@ export class SearchQueryService {
         let lQueryString: string = "";
         let errorCount: number = 0;
 
-        //Trim spaces
-        queryString = queryString.replace(/\s+/g, ' ');
-
         if(!queryString){
             return "";
         }
+
+        //Trim spaces
+        queryString = queryString.replace(/\s+/g, ' ');
 
         //Reserve everything in quotes
         let quotes = queryString.match(/\"(.*?)\"/g);
@@ -577,14 +577,14 @@ export class SearchQueryService {
                     queryStringObject.parseErrorMessage = queryStringObject.parseErrorMessage.replace(new RegExp('Quooooote'+("000" + i).slice(-3), 'g'), quotes[i].match(/\"(.*?)\"/)[1]);
                 }
             }
-        }      
+        }
 
         return queryStringObject.parseErrorMessage;
     }
 
     /**
      * Return unique query name that's not been used yet. Will return query001 or querry002... query099.
-     * If all 99 query names are taken (which is unlikely), it will just return "Unknown". 
+     * If all 99 query names are taken (which is unlikely), it will just return "Unknown".
      */
     getUniqueQueryName(){
         let uniqueQueryNamefound: boolean = false;
@@ -612,7 +612,7 @@ export class SearchQueryService {
 
         if(!uniqueQueryNamefound)
             return "Unknown";
-        else    
+        else
             return returnQueryName;
     }
 

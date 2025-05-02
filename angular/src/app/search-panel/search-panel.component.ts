@@ -233,14 +233,10 @@ export class SearchPanelComponent implements OnInit {
       this.changeState(showExample);
     });
 
-    this.searchFieldsListService.getSearchFields().subscribe(
-      (fields) => {
-        this.fields = fields as SelectItem[];
-      },
-      (err) => {
-        console.log("Error getting fields.", err);
-      }
-    );
+    //The app.component load the fields in ngOnInit and be catched here:
+    this.searchFieldsListService.watchFields().subscribe((fields) => {
+      this.fields = fields as SelectItem[];
+    })
 
     // Init search box size and breadcrumb position
     this.onWindowResize();
