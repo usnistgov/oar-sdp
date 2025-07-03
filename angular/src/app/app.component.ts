@@ -85,7 +85,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     ngOnInit() {
-      this.searchFieldsListService.getSearchFields();
+        //Load fields so it's avialble for search result page and search panel
+        this.searchFieldsListService.getSearchFields().subscribe((fields) => {
+            // Do nothing. The service set the BehaviorSubject.
+        });
 
         this.appConfig.getConfig().subscribe(
             (conf) => {

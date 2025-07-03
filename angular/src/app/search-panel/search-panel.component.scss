@@ -473,3 +473,15 @@ table tbody tr {
   margin-right: 1em;
   margin-top: 1em;
 }
+
+.p-inputgroup-addon {
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.397);
+  }
+  
+  &:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}

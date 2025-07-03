@@ -4,10 +4,11 @@ import { TreeModule } from 'primeng/tree';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { MockModule } from '../../mock.module';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('FiltersComponent', () => {
     let component: FiltersComponent;
@@ -16,24 +17,24 @@ describe('FiltersComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-        declarations: [ FiltersComponent ],
-        imports: [
-            TreeModule, 
-            AutoCompleteModule, 
-            MockModule, 
-            FormsModule,
-            HttpClientTestingModule,
-            BrowserAnimationsModule,
-            RouterTestingModule,
-            ToastrModule.forRoot()
-            ]
-        })
+    declarations: [FiltersComponent],
+    imports: [TreeModule,
+        AutoCompleteModule,
+        MockModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        RouterTestingModule,
+        ToastrModule.forRoot()],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
         .compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(FiltersComponent);
         component = fixture.componentInstance;
+        component.fields = [];
+        component.searchValue = "";
         fixture.detectChanges();
     });
 

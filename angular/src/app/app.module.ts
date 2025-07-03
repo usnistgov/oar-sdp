@@ -8,6 +8,7 @@ import {
 import { AppComponent } from "./app.component";
 import { HomeModule } from "./home/home.module";
 import { SharedModule } from "./shared/shared.module";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { HttpClientModule } from "@angular/common/http";
 import { routes } from "./app.routes";
 import { Routes, RouterModule } from "@angular/router";
@@ -45,6 +46,8 @@ import { MegaMenuModule } from "primeng/megamenu";
 import { TagModule } from "primeng/tag";
 import { BreadcrumbModule } from "primeng/breadcrumb";
 import { ImageModule } from "primeng/image"
+import { SearchfieldsListService, TaxonomyListService } from "./shared";
+
 /**
  * Initialize the configs for backend services
  */
@@ -66,67 +69,63 @@ const appInitializerFn = (appConfig: AppConfig) => {
 
 enableProdMode();
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    TopBarComponent,
-    AboutComponent,
-    TopMenuBarComponent,
-    HeadbarComponent,
-  ],
-  imports: [
-    RouterModule.forRoot(routes, { useHash: true }),
-    BrowserModule,
-    HttpClientModule,
-    TreeModule,
-    // OverlayPanelModule,
-    // DataListModule,
-    // DataTableModule,
-    SearchModule,
-    BrowserAnimationsModule,
-    TooltipModule,
-    AutoCompleteModule,
-    HelpModule,
-    ApiModule,
-    // MARK: 08/21/2024: Disabled for now until rework
-    // AdvSearchModule,
-    PolicyModule,
-    environment.possiblyMockModule,
-    NgbModule,
-    SearchPanelModule,
-    HomeModule,
-    ToastrModule.forRoot({
-      toastClass: "toast toast-bootstrap-compatibility-fix",
-    }),
-    SharedModule.forRoot(),
-    TopicModule,
-    MenubarModule,
-    MegaMenuModule,
-    TagModule,
-    BreadcrumbModule,
-    ImageModule,
-  ],
-  exports: [AutoCompleteModule],
-  providers: [
-    HttpClientModule,
-    GoogleAnalyticsService,
-    GoogleAnalyticsServiceMock,
-    NotificationService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFn,
-      multi: true,
-      deps: [AppConfig],
-    },
-    {
-      provide: APP_BASE_HREF,
-      useValue: "/",
-    },
-    CanDeactivateGuard,
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-})
+@NgModule({ declarations: [
+        AppComponent,
+        TopBarComponent,
+        AboutComponent,
+        TopMenuBarComponent,
+        HeadbarComponent,
+    ],
+    exports: [AutoCompleteModule],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [RouterModule.forRoot(routes, { useHash: true }),
+        BrowserModule,
+        TreeModule,
+        // OverlayPanelModule,
+        // DataListModule,
+        // DataTableModule,
+        SearchModule,
+        BrowserAnimationsModule,
+        TooltipModule,
+        AutoCompleteModule,
+        HelpModule,
+        ApiModule,
+        // MARK: 08/21/2024: Disabled for now until rework
+        // AdvSearchModule,
+        PolicyModule,
+        environment.possiblyMockModule,
+        NgbModule,
+        SearchPanelModule,
+        HomeModule,
+        ToastrModule.forRoot({
+            toastClass: "toast toast-bootstrap-compatibility-fix",
+        }),
+        SharedModule.forRoot(),
+        TopicModule,
+        MenubarModule,
+        MegaMenuModule,
+        TagModule,
+        BreadcrumbModule,
+        ImageModule], providers: [
+        HttpClientModule,
+        GoogleAnalyticsService,
+        GoogleAnalyticsServiceMock,
+        NotificationService,
+        SearchfieldsListService,
+        TaxonomyListService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: appInitializerFn,
+            multi: true,
+            deps: [AppConfig],
+        },
+        {
+            provide: APP_BASE_HREF,
+            useValue: "/",
+        },
+        CanDeactivateGuard,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {
   constructor(protected _googleAnalyticsService: GoogleAnalyticsService) {} // We inject the service here to keep it alive whole time
 }

@@ -19,7 +19,7 @@
           class="btn-sm collapsed in"
           (click)="setFilterWidth()"
           data-toggle="collapse"
-          style="border-color: #025277; color: #fff; padding: 0em; border: 0em"
+          style="border-color: #025277; color: #fff; padding: 0em; border: 0em; cursor: pointer"
           data-target="#demo"
           ><span *ngIf="filterWidthNum > 170">Filters </span
           ><i
@@ -93,7 +93,9 @@
                     </span>
 
                     <ng-template #header1>
-                      <b style="font-size: 16px;">{{ node.label.split("-")[0] }}&nbsp;</b>
+                      <b style="font-size: 16px"
+                        >{{ node.label.split("-")[0] }}&nbsp;</b
+                      >
                     </ng-template>
                   </div>
                 </ng-template>
@@ -102,22 +104,16 @@
           </div>
           <div
             class="show-more-less"
-            (click)="$event.preventDefault(); showMoreLink = false"
-            *ngIf="
-              nodeExpanded == true &&
-              showMoreLink == true &&
-              themesTree[0]?.children.length > 5
-            "
+            (click)="toggleExpand(true)"
+            *ngIf="nodeExpanded && showMoreLink && themesTree[0]?.children.length > 5"
           >
             Show More...
           </div>
           <div
             class="show-more-less"
-            (click)="$event.preventDefault(); showMoreLink = true"
+            (click)="toggleExpand(false)"
             *ngIf="
-              nodeExpanded == true &&
-              showMoreLink == false &&
-              themesTree[0]?.children.length > 5
+              nodeExpanded && !showMoreLink && themesTree[0]?.children.length > 5
             "
           >
             Show Less
@@ -156,8 +152,8 @@
                     data-toggle="tooltip"
                     [title]="filterTooltip(node)"
                   >
-                    <span *ngIf="node.label.split('-')[1] != ''; else header1">
-                      {{ node.label.split("-")[0] }}&nbsp;
+                    <span *ngIf="node.label.split('-')[1] != ''; else header1"
+                      >{{ node.label.split("-")[0] }}&nbsp;
                       <p-tag severity="success">
                         <span>{{ node.label.split("-")[1] }}</span>
                       </p-tag>

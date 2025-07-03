@@ -62,6 +62,13 @@ export class ResultsComponent implements OnInit {
   inited: boolean = false;
   dataReady: boolean = false;
 
+  pagerConfig = {
+    totalItems: 0,
+    currentPage: 1,
+    pageSize: 10,
+  };
+  private pageSizeSubscription: Subscription = new Subscription();
+
   @Input() searchValue: string;
   @Input() searchTaxonomyKey: string;
   @Input() currentPage: number = 1;
@@ -79,12 +86,18 @@ export class ResultsComponent implements OnInit {
       this.PDRAPIURL = conf.PDRAPI;
     });
 
-    this.searchFieldsListService.watchFields().subscribe((fields) => {
-      this.filterableFields = this.toSortItems(fields);
-
-      //Convert to a query then search
-      this.searchSubscription = this.search(null, 1, this.itemsPerPage);
-    })
+    this.searchFieldsListService.watchFields().subscribe({
+        next: (fields) => {
+          this.fields = fields as SelectItem[];
+          this.filterableFields = this.toSortItems(fields);
+  
+          //Convert to a query then search
+          this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+        },
+        error: (error) => {
+          //Handle error here
+        }
+    });
   }
 
   ngOnInit() {
@@ -97,17 +110,7 @@ export class ResultsComponent implements OnInit {
     }
 
     this.searchSubscription = this.search(null, 1, this.itemsPerPage);
-    // this.searchFieldsListService.getSearchFields().subscribe({
-    //   next: (fields) => {
-    //     this.filterableFields = this.toSortItems(fields);
 
-    //     //Convert to a query then search
-    //     this.searchSubscription = this.search(null, 1, this.itemsPerPage);
-    //   },
-    //   error: (error) => {
-    //     this.errorMessage = <any>error;
-    //   }
-    // });
 
     this.pageSubscription = this.searchService
       .watchCurrentPage()
@@ -131,6 +134,17 @@ export class ResultsComponent implements OnInit {
         this.searchSubscription = this.search(null, null, this.itemsPerPage);
       });
 
+    this.pageSizeSubscription = this.searchService
+      .watchPageSize()
+      .subscribe((pageSize) => {
+        this.itemsPerPage = pageSize;
+        this.search(null, this.currentPage, pageSize);
+      });
+
+    this.searchService.watchPageSize().subscribe((size) => {
+      this.itemsPerPage = size;
+      this.getCurrentPage(this.currentPage);
+    });
     this.inited = true;
   }
 
@@ -368,7 +382,7 @@ export class ResultsComponent implements OnInit {
    * Select all checkboxes
    */
   selectAllFields() {
-    this.selectedFields = ['Subject keywords'];
+    this.selectedFields = ["Subject keywords"];
     if (this.allChecked) {
       for (let field of this.fieldsArray) {
         if (_.includes(field.tags, "filterable")) {
@@ -450,5 +464,18 @@ export class ResultsComponent implements OnInit {
 
   isPdrLink(link: string): boolean {
     return link.includes("data.nist.gov/od/id/");
+  }
+
+  onPageChange(event: { page: number; pageSize: number }): void {
+    this.pagerConfig = {
+      ...this.pagerConfig,
+      currentPage: event.page,
+      pageSize: event.pageSize,
+    };
+
+    this.currentPage = event.page;
+    this.itemsPerPage = event.pageSize;
+    this.searchService.setPageSize(this.itemsPerPage);
+    this.getCurrentPage(this.currentPage);
   }
 }

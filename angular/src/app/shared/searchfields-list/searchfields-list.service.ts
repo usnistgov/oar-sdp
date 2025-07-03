@@ -12,7 +12,8 @@ import * as _ from 'lodash-es';
 export class SearchfieldsListService {
   ALL: string = 'ALL FIELDS';
   fields = new BehaviorSubject<SelectItem[]>([]);
-
+  _fields: SelectItem[] = [];
+    
   /**
    * Creates a new FieldsListService with the injected Http.
    * @param {HttpClient} http - The injected Http.
@@ -76,17 +77,29 @@ export class SearchfieldsListService {
    * Since fields do not change very often, once we get them we keep them
    * and reuse them everytime.
    */
-  getSearchFields() {
-    this.get().subscribe({
-        next: (res) => {
-          this.setFields(this.toFieldItems(res));
-        },
-        error: (error) => {
-          //Need better handling of the error message
-          console.log(error);
+    getSearchFields(): Observable<SelectItem[]> {
+        if(this._fields.length > 0) {
+        return new Observable<SelectItem[]>(subscriber => {
+            subscriber.next(this._fields);
+        })
+        }else{
+        return new Observable<SelectItem[]>(subscriber => {
+            this.get().subscribe({
+                next: (res) => {
+                this.setFields(res);
+                this._fields = this.toFieldItems(res);
+                subscriber.next(this._fields);
+                subscriber.complete();
+                },
+                error: (error) => {
+                    console.log(error);
+                    subscriber.next(error);
+                    subscriber.complete();
+                }
+            });
+        });
         }
-    });
-  }
+    }
 
     /**
      * Advanced Search fields dropdown

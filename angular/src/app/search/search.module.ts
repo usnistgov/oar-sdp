@@ -4,7 +4,7 @@ import { SharedModule } from "../shared/shared.module";
 import { SearchComponent } from "./search.component";
 import { ReadMoreKeywordsComponent } from "./search.readmorekeywords";
 import { ReadMoreDescriptionComponent } from "./search.readmoredescription";
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 import { TaxonomyListService } from "../shared/taxonomy-list/index";
 import { SearchfieldsListService } from "../shared/searchfields-list/index";
@@ -32,41 +32,34 @@ import { TagModule } from "primeng/tag";
 import { DividerModule } from "primeng/divider";
 import { ChipModule } from "primeng/chip";
 import { PaginatorModule } from "primeng/paginator";
-@NgModule({
-  imports: [
-    HttpClientModule,
-    CommonModule,
-    SharedModule,
-    AccordionModule,
-    AutoCompleteModule,
-    MessagesModule,
-    MessageModule,
-    MultiSelectModule,
-    DropdownModule,
-    TreeModule,
-    DialogModule,
-    InputTextModule,
-    PanelMenuModule,
-    OverlayPanelModule,
-    CheckboxModule,
-    TooltipModule,
-    ProgressSpinnerModule,
-    InputTextareaModule,
-    SearchPanelModule,
-    TagModule,
-    DividerModule,
-    ChipModule,
-    PaginatorModule
-  ],
-  declarations: [
-    SearchComponent,
-    ReadMoreDescriptionComponent,
-    ReadMoreKeywordsComponent,
-    FiltersComponent,
-    ResultsComponent,
-    PaginationComponent,
-  ],
-  exports: [SearchComponent, ReadMoreDescriptionComponent, ReadMoreKeywordsComponent],
-  providers: [TaxonomyListService, SearchfieldsListService, SearchQueryService],
-})
+@NgModule({ declarations: [
+        SearchComponent,
+        ReadMoreDescriptionComponent,
+        ReadMoreKeywordsComponent,
+        FiltersComponent,
+        ResultsComponent,
+        PaginationComponent,
+    ],
+    exports: [SearchComponent, ReadMoreDescriptionComponent, ReadMoreKeywordsComponent], imports: [CommonModule,
+        SharedModule,
+        AccordionModule,
+        AutoCompleteModule,
+        MessagesModule,
+        MessageModule,
+        MultiSelectModule,
+        DropdownModule,
+        TreeModule,
+        DialogModule,
+        InputTextModule,
+        PanelMenuModule,
+        OverlayPanelModule,
+        CheckboxModule,
+        TooltipModule,
+        ProgressSpinnerModule,
+        InputTextareaModule,
+        SearchPanelModule,
+        TagModule,
+        DividerModule,
+        ChipModule,
+        PaginatorModule], providers: [TaxonomyListService, SearchfieldsListService, SearchQueryService, provideHttpClient(withInterceptorsFromDi())] })
 export class SearchModule {}

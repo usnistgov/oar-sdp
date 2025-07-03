@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TopicComponent } from './topic.component';
-
-describe('TopicComponent', () => {
+import { TopicComponent } from "./topic.component";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+describe("TopicComponent", () => {
   let component: TopicComponent;
   let fixture: ComponentFixture<TopicComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TopicComponent ]
-    })
-    .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [TopicComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('TopicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,4 +1,12 @@
-import { Component, OnInit, Inject, forwardRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Inject,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  Renderer2,
+} from "@angular/core";
 import { AppComponent } from "../../app.component";
 import { SearchQueryService } from "../../shared/search-query/search-query.service";
 import * as _ from "lodash-es";
@@ -7,6 +15,7 @@ import { SDPQuery } from "../../shared/search-query/query";
 import { SearchService, SEARCH_SERVICE } from "../../shared/search-service";
 import { Router } from "@angular/router";
 import { MenuItem } from "primeng/api";
+import { Menubar } from "primeng/menubar";
 
 @Component({
   selector: "app-headbar",
@@ -14,6 +23,7 @@ import { MenuItem } from "primeng/api";
   styleUrls: ["./headbar.component.css"],
 })
 export class HeadbarComponent implements OnInit {
+  @ViewChild("menubar") menubar: Menubar;
   queryLength: number;
   appVersion: string;
   queries: SDPQuery[] = [];
@@ -24,7 +34,8 @@ export class HeadbarComponent implements OnInit {
     public app: AppComponent,
     public searchQueryService: SearchQueryService,
     private appConfig: AppConfig,
-    public router: Router
+    public router: Router,
+    private renderer: Renderer2
   ) {
     this.searchQueryService.watchQueries().subscribe((value) => {
       this.queries = value as SDPQuery[];
@@ -36,7 +47,7 @@ export class HeadbarComponent implements OnInit {
     this.queryLength = this.searchQueryService.getQueries().length;
     this.queries = this.searchQueryService.getQueries();
     this.appConfig.getConfig().subscribe((conf) => {
-      this.appVersion = conf.APPVERSION
+      this.appVersion = conf.APPVERSION;
     });
 
     this.items = [
@@ -166,6 +177,12 @@ export class HeadbarComponent implements OnInit {
         ],
       },
     ];
+  }
+
+  ngAfterViewInit() {
+    this.renderer.listen(this.menubar.el.nativeElement, "mouseleave", () => {
+      this.menubar.hide();
+    });
   }
 
   hideExamples() {

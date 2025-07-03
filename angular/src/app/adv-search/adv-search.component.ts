@@ -91,6 +91,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.showDropdown = false;
         })
 
+        this.searchFieldsListService.watchFields().subscribe((fields) => {
+            this.fields = fields as SelectItem[];
+            this.doSearch();
+        })
+        
         this.fields = [];
         this.mobHeight = (window.innerHeight);
         this.mobWidth = (window.innerWidth);
@@ -122,6 +127,20 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         });
     }
 
+    doSearch() {
+        this.queries = this.searchQueryService.getQueries();
+        this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
+        this.currentQuery = this.currentQueryInfo.query;
+        this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
+        this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+        if(!this.currentQuery) this.currentQuery = new SDPQuery();
+        if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
+  
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
+    }
+    
     /**
      *  Following functions detect screen size
      */
