@@ -46,6 +46,8 @@ import { MegaMenuModule } from "primeng/megamenu";
 import { TagModule } from "primeng/tag";
 import { BreadcrumbModule } from "primeng/breadcrumb";
 import { ImageModule } from "primeng/image"
+import { SearchfieldsListService, TaxonomyListService } from "./shared";
+
 /**
  * Initialize the configs for backend services
  */
@@ -109,6 +111,8 @@ enableProdMode();
         GoogleAnalyticsService,
         GoogleAnalyticsServiceMock,
         NotificationService,
+        SearchfieldsListService,
+        TaxonomyListService,
         {
             provide: APP_INITIALIZER,
             useFactory: appInitializerFn,

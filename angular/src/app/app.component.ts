@@ -7,6 +7,7 @@ import { concat } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterState } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+import { SearchfieldsListService } from "./shared/searchfields-list/index";
 
 enum MenuOrientation {
   STATIC,
@@ -73,9 +74,10 @@ export class AppComponent implements AfterViewInit {
     private appConfig: AppConfig,
     private gaService: GoogleAnalyticsService,
     public router: Router,
+    public searchFieldsListService: SearchfieldsListService,
     private titleService: Title,
     @Inject(DOCUMENT) private document: Document) {
-        
+
   }
 
     ngAfterViewInit() {
@@ -83,6 +85,11 @@ export class AppComponent implements AfterViewInit {
     }
 
     ngOnInit() {
+        //Load fields so it's avialble for search result page and search panel
+        this.searchFieldsListService.getSearchFields().subscribe((fields) => {
+            // Do nothing. The service set the BehaviorSubject.
+        });
+
         this.appConfig.getConfig().subscribe(
             (conf) => {
                 this.gaCode = conf.GACODE;
@@ -92,12 +99,12 @@ export class AppComponent implements AfterViewInit {
 
                 /**
                  * Added Google Analytics service to html
-                 * 
-                 * Google Analytics service code was removed from index.html because 
-                 * it's not yet calling config service.  While adding Google Analytics 
-                 * service code here, the header menu and footer are all available 
-                 * at this time so we don't need to msnuslly track user events in header 
-                 * menu and footer links.  But we still need to track user event of the 
+                 *
+                 * Google Analytics service code was removed from index.html because
+                 * it's not yet calling config service.  While adding Google Analytics
+                 * service code here, the header menu and footer are all available
+                 * at this time so we don't need to msnuslly track user events in header
+                 * menu and footer links.  But we still need to track user event of the
                  * dynamic content.
                  */
                 this.gaService.appendGaTrackingCode(this.gaCode, this.ga4Code, this.hostName);
@@ -116,23 +123,23 @@ export class AppComponent implements AfterViewInit {
             if (event instanceof NavigationEnd) {
                 const title = this.getTitle(this.router.routerState, this.router.routerState.root).join('-') || 'NIST Data Repository Page';
                 this.titleService.setTitle(title);
-                
+
                 gtag('event', 'page_view', {
                     page_title: title,
                     page_path: event.urlAfterRedirects,
                     page_location: this.document.location.href,
-                    cookie_domain: this.hostName, 
+                    cookie_domain: this.hostName,
                     cookie_flags: 'SameSite=None;Secure'
                 })
             }
         });
     }
-    
+
     /**
      * Get page title if any
      * @param state router state
      * @param parent Activated route
-     * @returns 
+     * @returns
      */
     getTitle(state: RouterState, parent: ActivatedRoute): string[] {
         const data = [];

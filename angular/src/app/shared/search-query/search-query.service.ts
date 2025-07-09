@@ -550,13 +550,13 @@ export class SearchQueryService {
         let lQueryString: string = "";
         let errorCount: number = 0;
 
-        //Trim spaces
-        queryString = queryString.replace(/\s+/g, ' ');
-
         if(!queryString){
             return "";
         }
 
+        //Trim spaces
+        queryString = queryString.replace(/\s+/g, ' ');
+        
         //Reserve everything in quotes
         let quotes = queryString.match(/\"(.*?)\"/g);
         if(quotes){

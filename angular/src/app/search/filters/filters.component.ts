@@ -32,7 +32,6 @@ import {
   selector: "app-filters",
   templateUrl: "./filters.component.html",
   styleUrls: ["./filters.component.css"],
-  providers: [TaxonomyListService, SearchfieldsListService],
   animations: [
     trigger("expand", [
       state("closed", style({ height: "40px" })),
@@ -169,7 +168,11 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     public searchQueryService: SearchQueryService,
     public taxonomyListService: TaxonomyListService,
     public searchFieldsListService: SearchfieldsListService
-  ) {}
+  ) {
+    this.searchFieldsListService.watchFields().subscribe((fields) => {
+      this.toSortItems(fields);
+    })
+  }
 
   /**
    * If search value changed, clear the filters and refresh the search result.
@@ -194,7 +197,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       ) {
         //Clear filters when we conduct a new search
         this.clearFilters();
-        this.getFields();
+        this.onSearchValueChanged();
       }
     }
   }
@@ -228,36 +231,56 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     else this.comwidth = "400px";
   }
 
+  onSearchValueChanged(){
+    this.searchService.setQueryValue(this.searchValue, "", "");
+    this.queryStringErrorMessage =
+      this.searchQueryService.validateQueryString(this.searchValue);
+    if (!this.queryStringErrorMessage) {
+      this.queryStringError = true;
+    }
+
+    let lSearchValue = this.searchValue.replace(/  +/g, " ");
+
+    //Convert to a query then search
+    this.doSearch(
+      this.searchQueryService.buildQueryFromString(
+        lSearchValue,
+        null,
+        this.fields
+      )
+    );
+  }
+
   /**
    * Get the filterable fields and then do the search
    */
-  getFields() {
-    this.searchFieldsListService.getSearchFields().subscribe({
-      next: (fields) => {
-        this.toSortItems(fields);
-        this.searchService.setQueryValue(this.searchValue, "", "");
-        this.queryStringErrorMessage =
-          this.searchQueryService.validateQueryString(this.searchValue);
-        if (!this.queryStringErrorMessage) {
-          this.queryStringError = true;
-        }
+  // getFields() {
+  //   this.searchFieldsListService.getSearchFields().subscribe({
+  //     next: (fields) => {
+  //       this.toSortItems(fields);
+  //       this.searchService.setQueryValue(this.searchValue, "", "");
+  //       this.queryStringErrorMessage =
+  //         this.searchQueryService.validateQueryString(this.searchValue);
+  //       if (!this.queryStringErrorMessage) {
+  //         this.queryStringError = true;
+  //       }
 
-        let lSearchValue = this.searchValue.replace(/  +/g, " ");
+  //       let lSearchValue = this.searchValue.replace(/  +/g, " ");
 
-        //Convert to a query then search
-        this.doSearch(
-          this.searchQueryService.buildQueryFromString(
-            lSearchValue,
-            null,
-            this.fields
-          )
-        );
-      },
-      error: (error) => {
-        this.errorMessage = <any>error;
-      }
-    });
-  }
+  //       //Convert to a query then search
+  //       this.doSearch(
+  //         this.searchQueryService.buildQueryFromString(
+  //           lSearchValue,
+  //           null,
+  //           this.fields
+  //         )
+  //       );
+  //     },
+  //     error: (error) => {
+  //       this.errorMessage = <any>error;
+  //     }
+  //   });
+  // }
 
   /**
    * Do the search
@@ -288,36 +311,38 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     let sortItems: SelectItem[] = [];
     this.fields = [];
     let dupFound: boolean = false;
-
-    for (let field of fields) {
-      if (_.includes(field.tags, "filterable")) {
-        if (field.type !== "object") {
-          if (field.name !== "component.topic.tag") {
-            dupFound = false;
-            for (let item of sortItems) {
-              if (item.label == field.label && item.value == field.name) {
-                dupFound = true;
-                break;
-              }
+      
+    if (fields && fields.length > 0) {
+        for (let field of fields) {
+            if (_.includes(field.tags, "filterable")) {
+                if (field.type !== "object") {
+                    if (field.name !== "component.topic.tag") {
+                        dupFound = false;
+                        for (let item of sortItems) {
+                            if (item.label == field.label && item.value == field.name) {
+                                dupFound = true;
+                                break;
+                            }
+                        }
+                        if (!dupFound)
+                            sortItems.push({ label: field.label, value: field.name });
+                    }
+                }
             }
-            if (!dupFound)
-              sortItems.push({ label: field.label, value: field.name });
-          }
-        }
-      }
 
-      if (_.includes(field.tags, "searchable")) {
-        let lValue = field.name.replace("component.", "components.");
+            if (_.includes(field.tags, "searchable")) {
+                let lValue = field.name.replace("component.", "components.");
 
-        dupFound = false;
-        for (let item of this.fields) {
-          if (item.label == field.label && item.value == lValue) {
-            dupFound = true;
-            break;
-          }
+                dupFound = false;
+                for (let item of this.fields) {
+                    if (item.label == field.label && item.value == lValue) {
+                        dupFound = true;
+                        break;
+                    }
+                }
+                if (!dupFound) this.fields.push({ label: field.label, value: lValue });
+            }
         }
-        if (!dupFound) this.fields.push({ label: field.label, value: lValue });
-      }
     }
 
     this.fields = _.sortBy(this.fields, ["label", "value"]);

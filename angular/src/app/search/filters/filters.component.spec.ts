@@ -33,6 +33,8 @@ describe('FiltersComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(FiltersComponent);
         component = fixture.componentInstance;
+        component.fields = [];
+        component.searchValue = "";
         fixture.detectChanges();
     });
 

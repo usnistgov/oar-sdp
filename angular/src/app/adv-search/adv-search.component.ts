@@ -78,7 +78,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
         super();
 
-        this.renderer.listen('window', 'click',(e:Event)=>{ 
+        this.searchFieldsListService.watchFields().subscribe((fields) => {
+          this.fields = fields;
+        })
+
+        this.renderer.listen('window', 'click',(e:Event)=>{
             // If user clicks on the dropdown button, display the action popup list
             //otherwise hide it.
             if(e.target['name'] == 'dropdownButton')
@@ -87,6 +91,11 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
                 this.showDropdown = false;
         })
 
+        this.searchFieldsListService.watchFields().subscribe((fields) => {
+            this.fields = fields as SelectItem[];
+            this.doSearch();
+        })
+        
         this.fields = [];
         this.mobHeight = (window.innerHeight);
         this.mobWidth = (window.innerWidth);
@@ -100,25 +109,17 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     ngOnInit() {
         var i = 0;
 
-        this.searchFieldsListService.getSearchFields().subscribe(
-            (fields) => {
-                this.fields = (fields as SelectItem[]);
-                this.queries = this.searchQueryService.getQueries();
-                this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
-                this.currentQuery = this.currentQueryInfo.query;
-                this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
-                this.currentQueryIndex = this.currentQueryInfo.queryIndex;
-                if(!this.currentQuery) this.currentQuery = new SDPQuery();
-                if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
+        this.queries = this.searchQueryService.getQueries();
+        this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
+        this.currentQuery = this.currentQueryInfo.query;
+        this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
+        this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+        if(!this.currentQuery) this.currentQuery = new SDPQuery();
+        if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
 
-                this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
-                // Update search box in the top search panel
-                this.searchService.setQueryValue(this.searchValue, '', '');
-            },
-            (err) => {
-                this.errorMessage = <any>err;
-            }
-        );
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
 
         this.searchQueryService.watchQueries().subscribe(value => {
             if(value)
@@ -126,6 +127,20 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         });
     }
 
+    doSearch() {
+        this.queries = this.searchQueryService.getQueries();
+        this.currentQueryInfo = this.searchQueryService.getCurrentQueryInfo();
+        this.currentQuery = this.currentQueryInfo.query;
+        this.dataChanged = this.currentQueryInfo.dataChanged;   //Restore status
+        this.currentQueryIndex = this.currentQueryInfo.queryIndex;
+        if(!this.currentQuery) this.currentQuery = new SDPQuery();
+        if(this.currentQuery.queryRows.length == 0) this.currentQuery.queryRows.push(new QueryRow());
+  
+        this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
+        // Update search box in the top search panel
+        this.searchService.setQueryValue(this.searchValue, '', '');
+    }
+    
     /**
      *  Following functions detect screen size
      */
@@ -175,7 +190,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         if(!_.isEmpty(prevName) && newName == prevName){
             return;
         }
-        
+
         this.queryNameValidateErrorMsg = "";
         this.queryNameValidateError = false;
 
@@ -185,7 +200,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         } else {
             if(this.queries.length > 0){
                 let prevQueryName: string = "";
-                
+
                 if(!this.searchQueryService.queryNameValidation(newName, prevQueryName)){
                     this.queryNameValidateErrorMsg = "Existing query will be overwritten if continue!";
                     this.queryNameValidateError = true;
@@ -357,7 +372,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     /**
-     * Save query 
+     * Save query
      * 1. Filter current query from the list
      * 2. Add the new query to the list
      */
@@ -365,9 +380,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.tempName = this.currentQuery.queryName;
         overlaypanel.toggle(event);
 
-        setTimeout(()=>{ 
+        setTimeout(()=>{
             this.queryName.nativeElement.focus();
-        },0); 
+        },0);
     }
 
     saveAdvQuery(inputQuery: SDPQuery, overlaypanel: OverlayPanel, newName? : string){
@@ -461,9 +476,9 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
         this.searchService.setQueryValue(lQueryValue, '', '');
         this.searchService.search(lQueryValue);
     }
-    
+
     /**
-     * Set the current query, build the search string. 
+     * Set the current query, build the search string.
      * @param index - the index number of the current query
      */
     setCurrentQuery(query: SDPQuery, event?: any, index: number = -1){
@@ -479,19 +494,19 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     setCurrentQueryNoAsk(query: SDPQuery, index: number = -1){
-        this.currentQuery = JSON.parse(JSON.stringify(query));  
+        this.currentQuery = JSON.parse(JSON.stringify(query));
         this.currentQueryIndex = index;
         this.dataChanged = false;
         this.saveCurrentQueryInfo();
 
         this.searchValue = this.searchQueryService.buildSearchString(this.currentQuery);
         // Update search box in the top search panel
-        this.searchService.setQueryValue(this.searchValue, '', ''); 
+        this.searchService.setQueryValue(this.searchValue, '', '');
     }
 
     /**
      * When field type dropdown changed, if not edit/add mode, set to edit mode.
-     * @param event 
+     * @param event
      */
     onDataChange() {
         this.dataChanged = true;
@@ -502,7 +517,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
     onFieldTypeChange(row: QueryRow){
         let field = this.fields.filter(field => field.label == row.fieldType);
-        if(field != null && field.length > 0)   
+        if(field != null && field.length > 0)
             row.fieldValue = field[0].value;
 
         if(!_.isEmpty(row.fieldText)){
@@ -552,7 +567,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
 
     /**
      * Return placeholder text based on query row status
-     * @param queryRow 
+     * @param queryRow
      */
     getFieldTextPlacehoder(queryRow: QueryRow){
         if(!_.isEmpty(queryRow.fieldValue)){
@@ -565,8 +580,8 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     /**
      * Rename a query
      * @param query - query to be renamed
-     * @param event - 
-     * @param index - query index in quert list 
+     * @param event -
+     * @param index - query index in quert list
      */
     renameQuery(query: SDPQuery, event: any, index: number){
         this.tobeRenamedQuery = query;
@@ -575,7 +590,7 @@ export class AdvSearchComponent extends FormCanDeactivate implements OnInit, Aft
     }
 
     saveRenamedQuery(queryName: string, op: OverlayPanel){
-        this.tobeRenamedQuery.queryName=queryName; 
+        this.tobeRenamedQuery.queryName=queryName;
         this.searchQueryService.saveQueries(this.queries);
         op.hide();
     }
