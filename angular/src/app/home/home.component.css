@@ -1,21 +1,117 @@
-
-/* Ensure grid columns stretch to fill available space */
-.container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-left: 3em;
-  margin-right: 2em;
+/* Main container */
+.themes-container {
+  background-color: #f5f5f5;
+  padding: 1.5em 0;
+  margin: 0 -0.5em;
 }
 
-.grid-container {
+/* Row of theme cards */
+.theme-row {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1400px;
+  margin: 0 auto 1.5em auto;
 }
 
-.grid {
+/* Last row needs no bottom margin */
+.theme-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Individual theme item */
+.theme-item {
+  width: 20%; /* Default to 5 cards per row */
+  padding: 0 10px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+}
+
+/* Text styling for descriptions */
+::ng-deep .topic-card p {
+  font-size: 0.8rem !important;
+  line-height: 1.3 !important;
+  height: 12.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Reduce padding in cards */
+::ng-deep .topic-card .p-card-body {
+  padding: 0.6rem !important;
+}
+
+/* Reduce image height */
+::ng-deep .topic-card img {
+  max-height: 110px !important;
+  object-fit: cover;
+}
+
+::ng-deep .topic-card .collection-button {
+  font-size: 0.5rem !important;
+  padding: 0.3rem 0.6rem !important;
+  height: auto !important;
+  min-height: unset !important;
+}
+
+/* Make theme title font smaller */
+::ng-deep .topic-card h3 {
+  font-size: 0.85rem !important;
+  line-height: 1.2 !important;
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Reduce overlay text padding and margin */
+::ng-deep .topic-card .p-card-body {
+  padding: 0.5rem !important;
+}
+
+::ng-deep .topic-card .overlay-content {
+  margin-top: 0.3rem !important;
+  padding: 0.3rem !important;
+}
+
+/* Make the icon button smaller too */
+::ng-deep .topic-card .icon-button {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+::ng-deep .topic-card .icon-button img {
+  max-width: 20px !important;
+  max-height: 20px !important;
+}
+
+/* Tablet breakpoint */
+@media screen and (max-width: 992px) {
+  .theme-item {
+    width: 33.333%;
+  }
+}
+
+/* Mobile breakpoint */
+@media screen and (max-width: 576px) {
+  .theme-item {
+    width: 50%;
+  }
+
+  ::ng-deep .topic-card h3 {
+    min-height: auto;
+  }
+
+  ::ng-deep .topic-card p {
+    height: auto;
+  }
+}
+
+/* Small mobile breakpoint */
+@media screen and (max-width: 400px) {
+  .theme-item {
+    width: 100%;
+  }
 }

@@ -32,17 +32,14 @@
   margin-top: 40px; /* Reserve space for the button */
 }
 
-.flex.align-items-center.justify-content-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 
 button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.5rem;
+  margin-right: -20px;
+  margin-top: -30px;
   color: inherit;
 }
 
@@ -56,17 +53,41 @@ button {
   position: relative; /* Ensure the card container is the reference for absolute positioning */
 }
 
-.subheader {
-  position: absolute;
-  top: 15px;
-  left: 1em;
-  z-index: 1; /* Ensure it stays above other elements if necessary */
-}
 
 .curated-collection-button:hover .curated-collection-label {
   text-decoration: underline;
 }
 .anchor-button {
   text-decoration: none; /* Remove underline */
-  margin-right: 10px;
+  margin-right: 20px;
+}
+
+/* Make curated collection button smaller */
+::ng-deep .topic-card p-button .p-button {
+  padding: 0.3rem 0.5rem !important;
+  font-size: 0.7rem !important;
+}
+
+::ng-deep .topic-card .curated-collection-icon {
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 3px !important;
+}
+
+::ng-deep .topic-card .curated-collection-label {
+  font-size: 0.7rem !important;
+}
+
+/* Reduce title container height */
+::ng-deep .topic-card .p-card-title {
+  padding: 0.3rem 0 !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+
+
+/* Make content area start closer to title */
+::ng-deep .topic-card .p-card-content {
+  margin-top: -15px;
 }
