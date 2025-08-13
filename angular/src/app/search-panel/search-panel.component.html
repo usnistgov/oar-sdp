@@ -80,6 +80,8 @@
           [minLength]="1"
           [maxlength]="2048"
           [style]="{ width: '100%', color: 'white' }"
+          [emptyMessage]="getEmptyMessage()"
+          [showEmptyMessage]="shouldShowEmptyMessage()"
         >
           <ng-template let-taxonomy pTemplate="item">
             <div
@@ -95,9 +97,7 @@
           (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
           style="cursor: pointer; color: white; border-color: white"
         >
-          <i
-            class="pi pi-search"
-          ></i>
+          <i class="pi pi-search"></i>
         </span>
         <span
           class="p-inputgroup-addon"

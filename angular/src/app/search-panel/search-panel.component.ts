@@ -373,6 +373,15 @@ export class SearchPanelComponent implements OnInit {
   filterTaxonomies(event: any) {
     let suggTaxonomy = event.query;
     this.suggestedTaxonomyList = [];
+
+    // Check if the query looks like an advanced query
+    const hasAdvancedSyntax = /[=:]|AND|OR/i.test(suggTaxonomy);
+
+    if (hasAdvancedSyntax) {
+      // Don't show autocomplete for advanced queries
+      return;
+    }
+
     find(suggTaxonomy, this.parsed_data, this.parsed_data_headers).forEach(
       (element) => {
         this.suggestedTaxonomyList.push(element[0]);
@@ -380,6 +389,16 @@ export class SearchPanelComponent implements OnInit {
     );
 
     // this.getTextWidth();
+  }
+
+  getEmptyMessage(): string {
+    const hasAdvancedSyntax = /[=:]|AND|OR/i.test(this.searchValue || "");
+    return hasAdvancedSyntax ? "" : "No suggestions found";
+  }
+
+  shouldShowEmptyMessage(): boolean {
+    const hasAdvancedSyntax = /[=:]|AND|OR/i.test(this.searchValue || "");
+    return !hasAdvancedSyntax && this.suggestedTaxonomyList.length === 0;
   }
 
   onEnter(event: KeyboardEvent) {
