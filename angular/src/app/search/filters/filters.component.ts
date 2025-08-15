@@ -171,7 +171,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   ) {
     this.searchFieldsListService.watchFields().subscribe((fields) => {
       this.toSortItems(fields);
-    })
+    });
   }
 
   /**
@@ -219,7 +219,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
   toggleExpand(expand: boolean): void {
     this.showMoreLink = !expand;
-
   }
 
   /**
@@ -231,10 +230,11 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     else this.comwidth = "400px";
   }
 
-  onSearchValueChanged(){
+  onSearchValueChanged() {
     this.searchService.setQueryValue(this.searchValue, "", "");
-    this.queryStringErrorMessage =
-      this.searchQueryService.validateQueryString(this.searchValue);
+    this.queryStringErrorMessage = this.searchQueryService.validateQueryString(
+      this.searchValue
+    );
     if (!this.queryStringErrorMessage) {
       this.queryStringError = true;
     }
@@ -311,38 +311,39 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     let sortItems: SelectItem[] = [];
     this.fields = [];
     let dupFound: boolean = false;
-      
+
     if (fields && fields.length > 0) {
-        for (let field of fields) {
-            if (_.includes(field.tags, "filterable")) {
-                if (field.type !== "object") {
-                    if (field.name !== "component.topic.tag") {
-                        dupFound = false;
-                        for (let item of sortItems) {
-                            if (item.label == field.label && item.value == field.name) {
-                                dupFound = true;
-                                break;
-                            }
-                        }
-                        if (!dupFound)
-                            sortItems.push({ label: field.label, value: field.name });
-                    }
+      for (let field of fields) {
+        if (_.includes(field.tags, "filterable")) {
+          if (field.type !== "object") {
+            if (field.name !== "component.topic.tag") {
+              dupFound = false;
+              for (let item of sortItems) {
+                if (item.label == field.label && item.value == field.name) {
+                  dupFound = true;
+                  break;
                 }
+              }
+              if (!dupFound)
+                sortItems.push({ label: field.label, value: field.name });
             }
-
-            if (_.includes(field.tags, "searchable")) {
-                let lValue = field.name.replace("component.", "components.");
-
-                dupFound = false;
-                for (let item of this.fields) {
-                    if (item.label == field.label && item.value == lValue) {
-                        dupFound = true;
-                        break;
-                    }
-                }
-                if (!dupFound) this.fields.push({ label: field.label, value: lValue });
-            }
+          }
         }
+
+        if (_.includes(field.tags, "searchable")) {
+          let lValue = field.name.replace("component.", "components.");
+
+          dupFound = false;
+          for (let item of this.fields) {
+            if (item.label == field.label && item.value == lValue) {
+              dupFound = true;
+              break;
+            }
+          }
+          if (!dupFound)
+            this.fields.push({ label: field.label, value: lValue });
+        }
+      }
     }
 
     this.fields = _.sortBy(this.fields, ["label", "value"]);
@@ -803,6 +804,13 @@ export class FiltersComponent implements OnInit, AfterViewInit {
 
       for (var i = 0; i < resTypeArray.length; i++) {
         resType = resTypeArray[i];
+        let resourceTypeLabel = _.startCase(_.split(resType, ":")[1]);
+
+        // Skip "Dataset" resource type
+        if (resourceTypeLabel.toLowerCase() === "dataset") {
+          continue;
+        }
+        
         this.uniqueRes.push(_.startCase(_.split(resType, ":")[1]));
         if (resourceTypesArray.indexOf(resType) < 0) {
           resourceTypes.push({
