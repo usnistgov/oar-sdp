@@ -1,6 +1,6 @@
 # Science Data Portal (oar-sdp)
 
-This repository provides the implementation of the NIST Science Data Portal (SDP) platform, the technology that provides the NIST Science Data Portal (SDP).  One of its main functions is to provide web site for searching for NIST data products.
+This repository provides the primary implementation of the NIST Science Data Portal (SDP) platform.  One of its main functions is to provide a modern web user interface for search and browsing of the NIST data products made available in the NIST Public Data Repository (PDR).
 
 ## Contents
 ```
