@@ -3,10 +3,12 @@ import {
   Inject,
   OnInit,
   Input,
+  Output,
   NgZone,
   ViewChild,
   ElementRef,
   Query,
+  EventEmitter,
 } from "@angular/core";
 import { SelectItem } from "primeng/api";
 import { DropdownModule } from "primeng/dropdown";
@@ -86,6 +88,19 @@ export class SearchPanelComponent implements OnInit {
   set setExampleState(state: string) {
     this.currentState = state;
   }
+
+  // @Mehdi: WORK IN PROGRESS
+
+  // Search modes functionality
+  @Input() showSearchModes: boolean = false;
+  @Input() searchModes: any[] = [
+    { label: "Datasets", value: "datasets", icon: "pi-database" },
+    { label: "Global", value: "global", icon: "pi-globe" },
+  ];
+  @Input() selectedSearchMode: any = this.searchModes[0];
+  @Input() aiSearchEnabled: boolean = false;
+
+  @Output() searchModeChange = new EventEmitter<any>();
 
   _editmode: boolean = false;
   errorMessage: string;
@@ -179,7 +194,7 @@ export class SearchPanelComponent implements OnInit {
     // Watch fields
     this.searchFieldsListService.watchFields().subscribe((fields) => {
       this.fields = fields;
-    })
+    });
   }
 
   /**
@@ -619,26 +634,16 @@ export class SearchPanelComponent implements OnInit {
     this.queryStringError = false;
     this.searchTextWidth = this.DEFAULT_SEARCHBOX_WIDTH;
   }
+
+  showDialog() {
+    this.visible = true;
+  }
+
   /**
    * Toggle the enhanced search by clicking the button
    */
-  toggleEnhancedSearch() {
-    this.enhancedSearchButtonColor =
-      this.enhancedSearchButtonColor === "gray" ? "#2c539e" : "gray";
-
-    const isEnhancedSearch = this.enhancedSearchButtonColor === "#2c539e";
-    const message = isEnhancedSearch
-      ? "You can now search across all NIST data sources."
-      : "Search is now limited to the current data portal.";
-    const severity = isEnhancedSearch ? "success" : "warn";
-
-    this.messageService.add({
-      severity: severity,
-      summary: "Enhanced Search",
-      detail: message,
-    });
-  }
-  showDialog() {
-    this.visible = true;
+  onSearchModeChange(mode: any) {
+    this.selectedSearchMode = mode;
+    this.searchModeChange.emit(mode);
   }
 }

@@ -6,122 +6,190 @@
   [homePage]="true"
   jumbotronHeight="35vh"
   jumbotronPadding="2em 3em 0em 3em"
-></app-search-panel>
-
-<div
-  style="background-color: #f5f5f5; margin-left: -0.5em; margin-right: -0.5em"
+  [showSearchModes]="true"
+  [searchModes]="searchModes"
+  [selectedSearchMode]="selectedSearchMode"
+  [aiSearchEnabled]="aiSearchEnabled"
+  (searchModeChange)="onSearchModeChange($event)"
 >
-  <!-- First row -->
-  <div style="padding-top: 2em" class="container">
-    <div class="grid nogutter grid-container">
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.chips.title"
-            [description]="themes.chips.description"
-            [image]="getImageFullPath(themes.chips.image)"
-            (cardClick)="search('CHIPS')"
-            [icon]="getIconFullPath(themes.forensics.icon)"
-            [showIcon]="true"
-            [link]="chipsURL"
-          ></app-topic>
+</app-search-panel>
+
+<div class="home-content">
+
+  <!-- Research Collections section with horizontal scrolling -->
+  <div class="container">
+    <div class="collections-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="pi pi-folder"></i>
+          Research Collections
+        </h2>
+        <a
+          href="javascript:void(0)"
+          class="view-all"
+          (click)="toggleCollectionsView()"
+        >
+          {{ showAllCollections ? "Show Less" : "View All Collections" }}
+        </a>
+      </div>
+
+      <!-- Horizontal scroll collections (default view) -->
+      <div
+        class="collections-scroll"
+        [style.display]="showAllCollections ? 'none' : 'flex'"
+      >
+        <div
+          class="scroll-arrow left"
+          (click)="scrollCollections('left')"
+          [style.visibility]="collectionsCanScrollLeft ? 'visible' : 'hidden'"
+        >
+          <i class="pi pi-chevron-left"></i>
+        </div>
+
+        <div
+          class="collections-container"
+          #collectionsContainer
+          (scroll)="onCollectionsScroll()"
+        >
+          <div
+            *ngFor="let theme of getThemesList()"
+            class="collection-card"
+            (click)="search(theme.searchTerm)"
+          >
+            <div
+              class="collection-icon"
+              [style.background-image]="
+                'url(' + getImageFullPath(theme.image) + ')'
+              "
+            ></div>
+            <div class="collection-info">
+              <h3>{{ theme.title }}</h3>
+              <div class="collection-count">
+                <i class="pi pi-database"></i> {{ theme.datasetCount }} datasets
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="scroll-arrow right"
+          (click)="scrollCollections('right')"
+          [style.visibility]="collectionsCanScrollRight ? 'visible' : 'hidden'"
+        >
+          <i class="pi pi-chevron-right"></i>
         </div>
       </div>
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.manufacturing.title"
-            [description]="themes.manufacturing.description"
-            [image]="getImageFullPath(themes.manufacturing.image)"
-            (cardClick)="search('Manufacturing')"
-          ></app-topic>
-        </div>
-      </div>
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.forensics.title"
-            [description]="themes.forensics.description"
-            [image]="getImageFullPath(themes.forensics.image)"
-            [icon]="getIconFullPath(themes.forensics.icon)"
-            (cardClick)="search('Forensics')"
-            [showIcon]="true"
-            [link]="forensicsURL"
-          ></app-topic>
+
+      <!-- Grid view when expanded -->
+      <div
+        class="collections-grid"
+        [style.display]="showAllCollections ? 'grid' : 'none'"
+      >
+        <div
+          *ngFor="let theme of getThemesList()"
+          class="collection-card-grid"
+          (click)="search(theme.searchTerm)"
+        >
+          <div
+            class="collection-icon-grid"
+            [style.background-image]="
+              'url(' + getImageFullPath(theme.image) + ')'
+            "
+          ></div>
+          <div class="collection-info-grid">
+            <h3>{{ theme.title }}</h3>
+            <div class="collection-count">
+              <i class="pi pi-database"></i> {{ theme.datasetCount }} datasets
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Second row -->
-  <div style="padding-top: 2em;" class="container">
-    <div class="grid nogutter grid-container">
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.ms.title"
-            [description]="themes.ms.description"
-            [image]="getImageFullPath(themes.ms.image)"
-            (cardClick)="search('MS')"
-          ></app-topic>
-        </div>
+  
+  <!-- Featured datasets section -->
+  <div class="container">
+    <div class="featured-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="pi pi-star"></i>
+          Featured Datasets
+        </h2>
       </div>
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.Materials.title"
-            [description]="themes.Materials.description"
-            [image]="getImageFullPath(themes.Materials.image)"
-            (cardClick)="search('Materials')"
-          ></app-topic>
-        </div>
-      </div>
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.Chemistry.title"
-            [description]="themes.Chemistry.description"
-            [image]="getImageFullPath(themes.Chemistry.image)"
-            (cardClick)="search('Chemistry')"
-          ></app-topic>
+      <div class="featured-datasets">
+        <div *ngFor="let dataset of featuredDatasets" class="featured-card">
+          <div class="card-header">
+            <span class="badge" [ngClass]="dataset.type">{{
+              dataset.type
+            }}</span>
+            <span *ngIf="dataset.isNew" class="badge new-badge">NEW</span>
+          </div>
+          <h3>{{ dataset.title }}</h3>
+          <p>{{ dataset.description }}</p>
+          <a [href]="dataset.url" class="view-link"
+            >View Dataset <i class="pi pi-arrow-right"></i
+          ></a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Third row -->
-  <div style="padding-top: 2em; padding-bottom: 2em;" class="container">
-    <div class="grid nogutter grid-container">
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.it.title"
-            [description]="themes.it.description"
-            [image]="getImageFullPath(themes.it.image)"
-            (cardClick)="search('IT')"
-          ></app-topic>
-        </div>
+
+  <!-- Topics grid with toggle for showing more/less -->
+  <div class="container">
+    <div class="topics-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="pi pi-tags"></i>
+          Browse by Topic
+        </h2>
+        <button class="toggle-view-btn" (click)="toggleTopicsView()">
+          <i class="pi" [ngClass]="expandedTopics ? 'pi-minus' : 'pi-plus'"></i>
+          {{ expandedTopics ? "Show Less" : "Show More" }}
+        </button>
       </div>
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.Physics.title"
-            [description]="themes.Physics.description"
-            [image]="getImageFullPath(themes.Physics.image)"
-            (cardClick)="search('PN')"
-          ></app-topic>
+
+      <div class="topics-scroll" [ngClass]="{ expanded: expandedTopics }">
+        <div
+          class="topics-scroll-arrow left"
+          (click)="scrollTopics('left')"
+          *ngIf="!expandedTopics"
+          [style.visibility]="topicsCanScrollLeft ? 'visible' : 'hidden'"
+        >
+          <i class="pi pi-chevron-left"></i>
         </div>
-      </div>
-      <div class="col-12 md:col-4 lg:col-4" style="display: flex; justify-content: center;">
-        <div class="effect1" style="width: 100%;">
-          <app-topic
-            [title]="themes.Communications.title"
-            [description]="themes.Communications.description"
-            [image]="getImageFullPath(themes.Communications.image)"
-            (cardClick)="search('AC')"
-          ></app-topic>
+
+        <div
+          class="topics-grid"
+          [ngClass]="{ expanded: expandedTopics }"
+          #topicsContainer
+          (scroll)="onTopicsScroll()"
+        >
+          <div
+            *ngFor="let topic of topicsList"
+            class="topic-item"
+            (click)="search(topic.searchTerm)"
+          >
+            <div class="topic-icon">
+              <i class="pi" [ngClass]="'pi-' + topic.icon"></i>
+            </div>
+            <span class="topic-name">{{ topic.name }}</span>
+          </div>
+        </div>
+
+        <div
+          class="topics-scroll-arrow right"
+          (click)="scrollTopics('right')"
+          *ngIf="!expandedTopics"
+          [style.visibility]="topicsCanScrollRight ? 'visible' : 'hidden'"
+        >
+          <i class="pi pi-chevron-right"></i>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Add spacer at the bottom -->
+  <div class="footer-spacer"></div>
 </div>

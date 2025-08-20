@@ -485,3 +485,432 @@ table tbody tr {
     background-color: rgba(255, 255, 255, 0.3);
   }
 }
+
+/* Search Options Styling */
+.search-options {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-label {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.ai-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+}
+
+/* Ensure proper styling for select button in search context */
+:host ::ng-deep .search-options .p-selectbutton {
+  .p-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    &.p-highlight {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+
+/* Examples Toggle Button */
+.examples-toggle-section {
+  margin-top: 1rem;
+}
+
+.examples-toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  &.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  i {
+    margin-right: 0.5rem;
+  }
+}
+
+/* Examples Section - New Design */
+.examples-wrapper {
+  margin: 1rem auto;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.examples-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 1rem;
+}
+
+.examples-header {
+  background: #0071bc;
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px 8px 0 0;
+  
+  h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.close-examples-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.examples-grid {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.example-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #0071bc;
+    box-shadow: 0 2px 8px rgba(0, 113, 188, 0.1);
+  }
+}
+
+.example-header {
+  background: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.example-content {
+  padding: 1rem;
+}
+
+.example-code {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #e0e0e0;
+  
+  code {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    color: #0071bc;
+    font-weight: 500;
+    cursor: pointer;
+    
+    &:hover {
+      background: rgba(0, 113, 188, 0.1);
+      padding: 0.25rem;
+      border-radius: 4px;
+    }
+  }
+}
+
+.copy-btn {
+  background: #0071bc;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: #005293;
+  }
+  
+  i {
+    font-size: 0.8rem;
+  }
+}
+
+.example-description {
+  color: #666;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Search Options Styling */
+.search-options {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-label {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.ai-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+}
+
+/* Ensure proper styling for select button in search context */
+:host ::ng-deep .search-options .p-selectbutton {
+  .p-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    &.p-highlight {
+      background-color: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .examples-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .examples-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* Inline Search Container */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 80%;
+}
+
+.search-mode-inline {
+  flex-shrink: 0;
+  min-width: 180px;
+}
+
+.search-input-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-badge-inline {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 0.4rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Compact Select Button Styling */
+:host ::ng-deep .search-mode-inline .p-selectbutton {
+  .p-button {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.85rem !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+    height: 35px !important;
+    width: auto !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    box-sizing: border-box !important;
+    transition: all 0.2s ease !important;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2) !important;
+      border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    &.p-highlight {
+      background-color: rgba(255, 255, 255, 0.3) !important;
+      border-color: rgba(255, 255, 255, 0.6) !important;
+      color: #ffffff !important;
+      font-weight: 500 !important;
+    }
+    
+    .p-button-label {
+      color: inherit !important;
+      font-weight: inherit !important;
+    }
+  }
+  
+  /* Fix for first and last button borders */
+  .p-button:first-child {
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+  }
+  
+  .p-button:last-child {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+  }
+  
+  .p-button:not(:last-child) {
+    border-right: none !important;
+  }
+}
+
+/* Small Examples Toggle Button */
+.examples-toggle-btn-small {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  &.active {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  i {
+    margin-right: 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .search-mode-inline {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .ai-badge-inline {
+    align-self: center;
+  }
+  
+  :host ::ng-deep .search-mode-inline .p-selectbutton {
+    width: 100%;
+    
+    .p-button {
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .search-container {
+    width: 95%;
+  }
+  
+  .ai-badge-inline {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+/* Override existing search options styling */
+.search-options {
+  display: none !important; /* Hide the old centered version */
+}

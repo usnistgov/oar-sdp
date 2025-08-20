@@ -11,32 +11,7 @@
   <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 1em">
     <div>
       <h3 *ngIf="title" class="heading title has-text-black">{{ title }}</h3>
-      <!-- <p-button
-        *ngIf="title"
-        class="ml-3"
-        style="position: relative; top: 3px"
-        severity="success"
-        [raised]="true"
-        [rounded]="true"
-        size="small"
-        (click)="showDialog()"
-        icon="pi pi-code"
-        label="DEV"
-      ></p-button>
-      <p-dialog
-        header="Work In Progress"
-        [(visible)]="visible"
-        [style]="{ width: '50vw' }"
-      >
-        <p style="text-align: left">
-          This is a development version of the NIST Data Discovery. <br />
-          We are redesigning every aspect of the application to make it more
-          user friendly and to provide a better user experience. As of now, only
-          this home page is available. Other pages and features will be added
-          soon. <br />
-          Please provide your feedback by emailing mehdi[at]nist[dot]gov.
-        </p>
-      </p-dialog> -->
+
       <a *ngIf="helpicon" [routerLink]="['/help']" target="_blank">
         <i
           class="pi pi-question-circle help-icon"
@@ -44,6 +19,7 @@
           title="How to build Advanced Search Queries"
         ></i>
       </a>
+
       <p *ngIf="subtitle" class="TexAlCenter subTitle">
         <i>
           Explore data, tools, and resources for Science, Engineering,
@@ -52,142 +28,162 @@
         </i>
       </p>
 
-      <div class="p-inputgroup" style="margin: auto; width: 80%">
-        <p-autoComplete
-          pInputText
-          p-fluid
-          #audocomp
-          [autoOptionFocus]="false"
-          [inputStyle]="{
-            width: '100%',
-            'padding-left': '2rem',
-            color: 'white',
-            'border-color': 'white'
-          }"
-          (onFocus)="clearText()"
-          (onBlur)="addPlaceholder()"
-          [placeholder]="placeholder"
-          [(ngModel)]="searchValue"
-          inputId="searchinput"
-          name="searchinput"
-          (keyup.enter)="
-            audocomp.handleDropdownClick();
-            search(searchValue, searchTaxonomyKey)
-          "
-          (ngModelChange)="onSearchValueChange()"
-          [suggestions]="suggestedTaxonomyList"
-          (completeMethod)="filterTaxonomies($event)"
-          [minLength]="1"
-          [maxlength]="2048"
-          [style]="{ width: '100%', color: 'white' }"
-        >
-          <ng-template let-taxonomy pTemplate="item">
-            <div
-              class="autoComplete autocompleteItem"
-              style="color: white; text-align: left; margin-left: 40px"
-            >
-              {{ taxonomy }}
-            </div>
-          </ng-template>
-        </p-autoComplete>
-        <span
-          class="p-inputgroup-addon"
-          (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
-          style="cursor: pointer; color: white; border-color: white"
-        >
-          <i
-            class="pi pi-search"
-          ></i>
-        </span>
-        <span
-          class="p-inputgroup-addon"
-          style="cursor: pointer; color: white; border-color: white"
-          (click)="clearSearchBox()"
-        >
-          <i class="pi pi-times"></i>
-        </span>
+      <!-- Search Input with inline mode toggle -->
+      <div class="search-container" style="margin: auto; width: 80%">
+        <!-- Search Mode Toggle (inline with search bar) -->
+        <div *ngIf="showSearchModes" class="search-mode-inline">
+          <p-selectButton
+            [options]="searchModes"
+            [(ngModel)]="selectedSearchMode"
+            (onChange)="onSearchModeChange($event.value)"
+            optionLabel="label"
+            styleClass="compact-select-button"
+          >
+            <ng-template let-item let-i="index" pTemplate>
+              <i class="pi" [ngClass]="item.icon" style="margin-right: 5px;"></i>
+              <span>{{ item.label }}</span>
+            </ng-template></p-selectButton
+          >
+        </div>
+
+        <!-- Search Input Group -->
+        <div class="p-inputgroup search-input-container">
+          <p-autoComplete
+            pInputText
+            p-fluid
+            #audocomp
+            [autoOptionFocus]="false"
+            [inputStyle]="{
+              width: '100%',
+              'padding-left': '2rem',
+              color: 'white',
+              'border-color': 'white'
+            }"
+            (onFocus)="clearText()"
+            (onBlur)="addPlaceholder()"
+            [placeholder]="placeholder"
+            [(ngModel)]="searchValue"
+            inputId="searchinput"
+            name="searchinput"
+            (keyup.enter)="
+              audocomp.handleDropdownClick();
+              search(searchValue, searchTaxonomyKey)
+            "
+            (ngModelChange)="onSearchValueChange()"
+            [suggestions]="suggestedTaxonomyList"
+            (completeMethod)="filterTaxonomies($event)"
+            [minLength]="1"
+            [maxlength]="2048"
+            [style]="{ width: '100%', color: 'white' }"
+          >
+            <ng-template let-taxonomy pTemplate="item">
+              <div
+                class="autoComplete autocompleteItem"
+                style="color: white; text-align: left; margin-left: 40px"
+              >
+                {{ taxonomy }}
+              </div>
+            </ng-template>
+          </p-autoComplete>
+          
+          <span
+            class="p-inputgroup-addon"
+            (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
+            style="cursor: pointer; color: white; border-color: white; margin-left: 10px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: auto;"
+          >
+            <i class="pi pi-search"></i>
+          </span>
+          <span
+            class="p-inputgroup-addon"
+            style="cursor: pointer; color: white; border-color: white; height: auto;"
+            (click)="clearSearchBox()"
+          >
+            <i class="pi pi-times"></i>
+          </span>
+          
+        </div>
+
+        <!-- AI Badge (inline to the right) -->
+        <div *ngIf="aiSearchEnabled && showSearchModes" class="ai-badge-inline">
+          <i class="pi pi-bolt"></i> AI-powered
+        </div>
       </div>
 
+      <!-- Error Messages -->
       <div
         style="width: 100%; text-align: left; color: rgb(255, 162, 162)"
         *ngIf="queryStringError"
         [innerHTML]="queryStringErrorMessage"
       ></div>
 
-      <div class="p-d-flex p-jc-between" style="margin-top: 1em">
-        <span
-          id="example"
+      <!-- Examples Toggle - Moved below search, smaller and less prominent -->
+      <div
+        class="examples-toggle-section"
+        style="margin-top: 0.75rem; text-align: center; margin-bottom: 0.75rem;"
+      >
+        <button
           *ngIf="!showExampleStatus"
+          class="examples-toggle-btn-small"
           (click)="searchQueryService.setShowExamples(true)"
-          style="padding-left: 1em; cursor: pointer; text-decoration: underline"
-          >Show Examples</span
         >
-        <a
+          <i class="pi pi-lightbulb"></i> Show Search Examples
+        </button>
+        <button
           *ngIf="showExampleStatus"
+          class="examples-toggle-btn-small active"
           (click)="searchQueryService.setShowExamples(false)"
-          style="padding-left: 1em; cursor: pointer; text-decoration: underline"
-          >Hide Examples</a
         >
-        <!-- <a
-          *ngIf="advanceLink"
-          [routerLink]="['/advanced']"
-          style="padding-left: 1em"
+          <i class="pi pi-times"></i> Hide Examples
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Examples Section - Improved Design -->
+  <div
+    class="examples-wrapper"
+    [@changeDivSize]="currentState"
+    *ngIf="showExampleStatus"
+  >
+    <div class="examples-container">
+      <div class="examples-header">
+        <h4><i class="pi pi-book"></i> Search Syntax Guide</h4>
+        <button
+          class="close-examples-btn"
           (click)="searchQueryService.setShowExamples(false)"
-          >Advanced Queries</a
-        > -->
+        >
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <div class="examples-grid">
+        <div *ngFor="let rule of syntaxRules" class="example-card">
+          <div class="example-header">
+            <strong>{{ rule.criteria }}</strong>
+          </div>
+          <div class="example-content">
+            <div class="example-code">
+              <code (click)="setSearchValue(rule.example)">{{
+                rule.example
+              }}</code>
+              <button
+                class="copy-btn"
+                (click)="setSearchValue(rule.example)"
+                title="Use this example"
+              >
+                <i class="pi pi-copy"></i>
+              </button>
+            </div>
+            <div class="example-description">
+              {{ rule.description }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="help-wrapper" [@changeDivSize]="currentState">
-    <!--
-    <span class="p-float-right p-m-1" (click)="searchQueryService.setShowExamples(false)">
-      <i class="pi pi-times icon-black" id="btn-close" aria-hidden="true" data-toggle="tooltip" title="Hide Examples"></i>
-    </span> -->
-    <div class="p-card">
-      <div class="p-card-header">
-        <p class="p-card-title">Syntax Rules</p>
-        <p-button
-          class="p-float-right p-m-1 align-right"
-          icon="pi pi-times"
-          (onClick)="searchQueryService.setShowExamples(false)"
-          label="Hide Examples"
-        ></p-button>
-      </div>
-      <div class="p-card-body">
-        <p-table [value]="syntaxRules" class="p-datatable">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Search Criteria</th>
-              <th>Keyword Examples</th>
-              <th>Description</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-rule>
-            <tr>
-              <td>{{ rule.criteria }}</td>
-              <td>
-                <a
-                  class="examples"
-                  (click)="
-                    $event.preventDefault(); setSearchValue(rule.example)
-                  "
-                  style="
-                    padding-left: 1em;
-                    cursor: pointer;
-                    text-decoration: underline;
-                  "
-                  >{{ rule.example }}</a
-                >
-              </td>
-              <td>{{ rule.description }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-    </div>
-  </div>
-
+  <!-- Keep existing overlay panels -->
   <p-overlayPanel #op1 [dismissable]="true" [showCloseIcon]="false">
     <div class="p-grid">
       <div
