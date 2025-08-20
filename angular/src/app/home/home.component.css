@@ -1,21 +1,170 @@
+/* Main Content Layout */
+.home-content {
+  background-color: #ffffff;
+  margin: 0 -0.5em;
+  padding: 0 0 2rem 0;
+}
 
-/* Ensure grid columns stretch to fill available space */
 .container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-left: 3em;
-  margin-right: 2em;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-.grid-container {
+/* Section Headers */
+.section-header {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-top: 1.5rem;
 }
 
-.grid {
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.section-title i {
+  color: #0071bc;
+  font-size: 1.3rem;
+}
+
+/* Research Collections Grid */
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.collection-card-grid {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0; /* Default gray border for non-curated items */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  height: 170px; /* Reduced height */
+  position: relative;
+  box-shadow: none; /* Removed shadow */
+}
+
+/* Blue border only for curated collections */
+.collection-card-grid.curated {
+  border: 1px solid #0071bc;
+}
+
+.collection-card-grid:hover {
+  transform: translateY(-2px);
+}
+
+.collection-icon-grid {
+  height: 120px; /* Reduced height */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f5f5f5;
+}
+
+.collection-info-grid {
+  padding: 0.5rem 0.75rem; /* Reduced padding */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.collection-info-grid h3 {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Single line title */
+}
+
+.collection-count {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem; /* Reduced margin */
+}
+
+.collection-count i {
+  color: #0071bc;
+  margin-right: 0.4rem;
+  font-size: 0.85rem;
+}
+
+/* New curated badge style - white button in top right */
+.curated-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #333;
+  z-index: 2;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.curated-badge:hover {
+  background-color: #f8f8f8;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Topics Section (if needed) */
+.topics-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .collections-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .curated-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .collections-grid {
+    grid-template-columns: 1fr;
+  }
 }
