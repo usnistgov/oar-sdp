@@ -107,6 +107,7 @@ export class SearchPanelComponent implements OnInit {
   searchBottonWith: string = "10%";
   breadcrumb_top: string = "6em";
   placeHolderText: string[] = [
+    "Artificial Intelligence",
     "Kinetics database",
     "Gallium",
     '"SRD 101"',
