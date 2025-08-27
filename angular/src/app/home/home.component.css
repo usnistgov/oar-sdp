@@ -48,19 +48,28 @@
   flex-direction: column;
   background-color: #ffffff;
   border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid #e0e0e0; /* Default gray border for non-curated items */
+  overflow: visible; /* Changed from hidden to visible to prevent cropping the badge */
+  border: 1px solid #e0e0e0;
   cursor: pointer;
   transition: transform 0.2s ease;
-  height: 170px; /* Reduced height */
+  height: 170px;
   position: relative;
-  box-shadow: none; /* Removed shadow */
+  box-shadow: none;
 }
 
-/* Blue border only for curated collections */
+.collection-icon-grid {
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f5f5f5;
+  overflow: hidden; /* Control overflow only for the image part */
+}
+
+/* Blue border only for curated collections
 .collection-card-grid.curated {
   border: 1px solid #0071bc;
-}
+} */
 
 .collection-card-grid:hover {
   transform: translateY(-2px);
@@ -109,22 +118,24 @@
 /* New curated badge style - white button in top right */
 .curated-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #ffffff;
+  top: -15px; /* Slightly adjusted to ensure visibility */
+  right: -10px;
+  background-color: #333;
   border-radius: 20px;
   padding: 0.25rem 0.75rem;
   display: flex;
   align-items: center;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #333;
-  z-index: 2;
+  color: white;
+  z-index: 10; /* Increased z-index to ensure it appears above other elements */
   border: 1px solid #e0e0e0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
   cursor: pointer;
+  overflow: visible; /* Ensure the badge isn't clipped */
 }
+
 
 .curated-badge:hover {
   background-color: #f8f8f8;
