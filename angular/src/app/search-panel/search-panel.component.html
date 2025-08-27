@@ -77,6 +77,8 @@
           (ngModelChange)="onSearchValueChange()"
           [suggestions]="suggestedTaxonomyList"
           (completeMethod)="filterTaxonomies($event)"
+          [emptyMessage]="getEmptyMessage()"
+          [showEmptyMessage]="shouldShowEmptyMessage()"
           [minLength]="1"
           [maxlength]="2048"
           [style]="{ width: '100%', color: 'white' }"
