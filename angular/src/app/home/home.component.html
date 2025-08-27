@@ -26,7 +26,11 @@
           *ngFor="let theme of getThemesList().slice(0, 10)"
           class="collection-card-grid"
           [class.curated]="theme.curated"
-          (click)="search(theme.searchTerm)"
+          (click)="
+            theme.curated
+              ? navigateToCuratedCollection($event, theme)
+              : search(theme.searchTerm)
+          "
         >
           <div
             *ngIf="theme.curated"
@@ -34,7 +38,10 @@
             (click)="navigateToCuratedCollection($event, theme)"
             style="cursor: pointer"
           >
-            <i class="pi pi-star-fill" style="color: gold; margin-right: 5px"></i>
+            <i
+              class="pi pi-star-fill"
+              style="color: gold; margin-right: 5px"
+            ></i>
             Curated Collection
           </div>
 

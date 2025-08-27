@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
         "NIST is advancing the science of artificial intelligence (AI) to improve the quality and reliability of AI systems.",
       image: "assets/images/Theme_AI.png",
       icon: "assets/images/forensics_collection.png",
-      curated: true,
+      // curated: true,
       searchTerm: "Artificial Intelligence",
     },
     chips: {
@@ -183,7 +183,6 @@ export class HomeComponent implements OnInit {
    * @param theme The theme object
    */
   navigateToCuratedCollection(event: Event, theme: any) {
-    event.stopPropagation(); // Prevent triggering the parent card's click event
 
     let url = "";
 
