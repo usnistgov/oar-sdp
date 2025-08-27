@@ -49,7 +49,7 @@
   background-color: #ffffff;
   border-radius: 4px;
   overflow: visible; /* Changed from hidden to visible to prevent cropping the badge */
-  border: 1px solid #e0e0e0;
+  border: 1px solid #333;
   cursor: pointer;
   transition: transform 0.2s ease;
   height: 170px;
