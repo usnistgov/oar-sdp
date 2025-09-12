@@ -169,7 +169,7 @@ export class RealSearchService implements SearchService {
       // Include required fields
       url +=
         "&include=ediid,description,title,keyword,topic.tag,contactPoint," +
-        "components,@type,doi,landingPage&exclude=_id";
+        "components.@type,@type,doi,landingPage&exclude=_id";
     }
 
     return this.appConfig.getConfig().pipe(
