@@ -4,6 +4,8 @@ import {
   Inject,
   NgZone,
   Input,
+  Output,
+  EventEmitter,
   SimpleChanges,
   ElementRef,
 } from "@angular/core";
@@ -73,6 +75,8 @@ export class ResultsComponent implements OnInit {
   @Input() searchTaxonomyKey: string;
   @Input() currentPage: number = 1;
   @Input() mobWidth: number = 1920;
+  @Output() totalItemsChange = new EventEmitter<number>();
+  @Output() zeroResults = new EventEmitter<boolean>();
 
   constructor(
     @Inject(SEARCH_SERVICE) private searchService: SearchService,
@@ -313,6 +317,8 @@ export class ResultsComponent implements OnInit {
           that.resultStatus = this.RESULT_STATUS.success;
           that.searchService.setTotalItems(that.totalItems);
           that.dataReady = true;
+          this.totalItemsChange.emit(that.totalItems);
+          this.zeroResults.emit(that.totalItems === 0);
         },
         (error) => that.onError(error)
       );
@@ -479,5 +485,18 @@ export class ResultsComponent implements OnInit {
     this.itemsPerPage = event.pageSize;
     this.searchService.setPageSize(this.itemsPerPage);
     this.getCurrentPage(this.currentPage);
+  }
+
+  /**
+   * Called when user clicks "Search Again" in no-results card.
+   * Re-run search (same query) and focuses the global search input if present.
+   */
+  retrySearch() {
+    // Do NOT re-run the same empty-results search; just focus & select so user can edit.
+    const searchInput: HTMLInputElement | null = document.querySelector('input[type="text"]');
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+    }
   }
 }

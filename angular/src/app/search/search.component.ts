@@ -51,6 +51,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     prevFilterWidth: number = 0;
     resultWidth: any;
     filterToggler: string = 'expanded';
+    hideFilters: boolean = false; // hide filters when zero results
+    onZeroResults(zero: boolean){
+        this.hideFilters = zero;
+        // Recompute widths so centering applies cleanly
+        if(zero){
+            this.resultWidth = '100%';
+        } else {
+            this.updateWidth();
+        }
+    }
 
     // For error handling
     queryStringErrorMessage: string;

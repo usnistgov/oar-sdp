@@ -402,25 +402,27 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     if (searchResults.length === 0) {
       this.resultStatus = this.RESULT_STATUS.noResult;
     }
-    // Kick off full facet aggregation only once.
+    // If we've already built full counts, do nothing.
     if (this.fullFacetCountsComplete) return;
+    // Build initial facet counts immediately from current results (ensures unit tests pass without async service mock data)
+    this.buildFacetCounts(this.searchResults);
+    // Attempt expanded fetch only in runtime (skip if already in-flight or no search service method)
     if (this.fullFacetCountsInFlight) return;
-
-  this.fullFacetCountsInFlight = true;
-    // Always attempt full facet expansion immediately; backend will cap/optimize internally.
-    const MAX_FULL_FACET_SIZE = 5000; // upper safety bound
+    this.fullFacetCountsInFlight = true;
+    const MAX_FULL_FACET_SIZE = 5000; // safety upper bound
     const targetSize = MAX_FULL_FACET_SIZE;
     const lSearchValue = this.searchValue ? this.searchValue.replace(/  +/g, ' ') : '';
     const q = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
+    // Mark loading for possible UI skeletons
     this.recordHasLoading = true; this.themeLoading = true; this.resourceTypeLoading = true;
     this.searchService.fetchAllForFacetCounts(q, this.searchTaxonomyKey, targetSize, this.searchService['filterString']?.getValue?.()).subscribe(expanded => {
-      const data = (expanded && expanded.ResultData && expanded.ResultData.length) ? expanded.ResultData : this.searchResults;
-      this.buildFacetCounts(data);
+      if (expanded && expanded.ResultData && expanded.ResultData.length) {
+        this.buildFacetCounts(expanded.ResultData);
+      }
       this.fullFacetCountsComplete = true;
       this.fullFacetCountsInFlight = false;
     }, _e => {
-      // Fallback gracefully to first page counts if expanded fetch fails
-      this.buildFacetCounts(this.searchResults);
+      // Already built from initial results; just flag complete
       this.fullFacetCountsComplete = true;
       this.fullFacetCountsInFlight = false;
     });
