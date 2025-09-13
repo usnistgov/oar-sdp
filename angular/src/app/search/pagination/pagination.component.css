@@ -123,38 +123,143 @@
 .hide {
   display: none;
 }
-:host ::ng-deep .p-paginator {
-  background-color: white;
-  color: black;
-  border: none;
+/* Redesigned paginator to match "Show More" (black pill buttons with white text) */
+:host ::ng-deep .p-paginator { 
+  background: transparent; 
+  border: none; 
+  padding: 6px 4px; 
+  font-size: 12px;
+  --pagi-btn-bg: #000; 
+  --pagi-btn-bg-hover: #111; 
+  --pagi-btn-bg-active: #000; 
+  --pagi-btn-color: #fff; 
 }
 
+/* Base button styles (inactive pages now transparent) */
 :host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page,
 :host ::ng-deep .p-paginator .p-paginator-first,
 :host ::ng-deep .p-paginator .p-paginator-prev,
 :host ::ng-deep .p-paginator .p-paginator-next,
-:host ::ng-deep .p-paginator .p-paginator-last {
-  color: black;
-  background-color: white;
-  border: 1px solid #ddd;
+:host ::ng-deep .p-paginator .p-paginator-last { 
+  background: transparent; 
+  color: #000; 
+  border: 1px solid #000; 
+  border-radius: 22px; 
+  padding: 6px 14px; 
+  margin: 0 5px; 
+  font-weight: 600; 
+  line-height: 1.1; 
+  cursor: pointer; 
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .12s ease; 
+  min-width: 36px; 
+  text-align: center; 
+  position: relative; 
 }
 
-:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight,
-:host ::ng-deep .p-paginator .p-paginator-first.p-highlight,
-:host ::ng-deep .p-paginator .p-paginator-prev.p-highlight,
-:host ::ng-deep .p-paginator .p-paginator-next.p-highlight,
-:host ::ng-deep .p-paginator .p-paginator-last.p-highlight {
-  background-color: #337ab7;
-  color: white;
-  border-color: #337ab7;
-}
-
+/* Hover / focus (fill black) */
 :host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:hover,
 :host ::ng-deep .p-paginator .p-paginator-first:hover,
 :host ::ng-deep .p-paginator .p-paginator-prev:hover,
 :host ::ng-deep .p-paginator .p-paginator-next:hover,
-:host ::ng-deep .p-paginator .p-paginator-last:hover {
-  background-color: #f0f0f0;
-  color: black;
-  border-color: #ddd;
+:host ::ng-deep .p-paginator .p-paginator-last:hover,
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:focus,
+:host ::ng-deep .p-paginator .p-paginator-first:focus,
+:host ::ng-deep .p-paginator .p-paginator-prev:focus,
+:host ::ng-deep .p-paginator .p-paginator-next:focus,
+:host ::ng-deep .p-paginator .p-paginator-last:focus { 
+  outline: none; 
+  background: #000; 
+  color: #fff; 
+  box-shadow: 0 0 0 2px #000, 0 0 0 4px rgba(0,0,0,.25); 
+}
+
+/* Active/highlight (current page) */
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight { 
+  background: #000; 
+  color: #fff; 
+  box-shadow: 0 0 0 1px #000; 
+  cursor: default; 
+}
+
+/* Add slight press effect */
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:active,
+:host ::ng-deep .p-paginator .p-paginator-first:active,
+:host ::ng-deep .p-paginator .p-paginator-prev:active,
+:host ::ng-deep .p-paginator .p-paginator-next:active,
+:host ::ng-deep .p-paginator .p-paginator-last:active { 
+  transform: translateY(1px); 
+}
+
+/* Disabled state (keep transparent) */
+:host ::ng-deep .p-paginator .p-paginator-first.p-disabled,
+:host ::ng-deep .p-paginator .p-paginator-prev.p-disabled,
+:host ::ng-deep .p-paginator .p-paginator-next.p-disabled,
+:host ::ng-deep .p-paginator .p-paginator-last.p-disabled { 
+  opacity: .28; 
+  cursor: default; 
+  background: transparent; 
+  color: #000; 
+  box-shadow: none; 
+}
+
+/* Remove default PrimeNG focus outline artifacts if any */
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:focus { 
+  box-shadow: 0 0 0 2px #000, 0 0 0 4px rgba(0,0,0,.25); 
+}
+
+/* Rows-per-page dropdown restyle */
+:host ::ng-deep .p-paginator .p-dropdown { 
+  background: #fff; 
+  border: 1px solid #000; 
+  border-radius: 22px; 
+  height: 34px; 
+  display: inline-flex; 
+  align-items: center; 
+  padding: 0 12px; 
+  font-weight: 600; 
+  margin-left: 14px; 
+  box-shadow: none; 
+  transition: background .18s ease, box-shadow .18s ease; 
+  color: #000; 
+}
+:host ::ng-deep .p-paginator .p-dropdown .p-dropdown-label { 
+  padding: 0; 
+  line-height: 34px; 
+  color: #000; 
+}
+:host ::ng-deep .p-paginator .p-dropdown:not(.p-disabled):hover { 
+  background: #000; 
+  color: #fff; 
+}
+:host ::ng-deep .p-paginator .p-dropdown:not(.p-disabled):hover .p-dropdown-label { 
+  color: #fff; 
+}
+:host ::ng-deep .p-paginator .p-dropdown:focus-within { 
+  box-shadow: 0 0 0 2px #000, 0 0 0 4px rgba(0,0,0,.25); 
+}
+:host ::ng-deep .p-paginator .p-dropdown.p-focus { 
+  box-shadow: 0 0 0 2px #000, 0 0 0 4px rgba(0,0,0,.25); 
+}
+:host ::ng-deep .p-paginator .p-dropdown .p-dropdown-trigger { 
+  color: currentColor; 
+}
+:host ::ng-deep .p-paginator .p-dropdown-panel { 
+  border: 1px solid #000; 
+  border-radius: 12px; 
+  overflow: hidden; 
+  background: #fff; 
+}
+:host ::ng-deep .p-paginator .p-dropdown-panel .p-dropdown-items .p-dropdown-item { 
+  font-weight: 600; 
+  padding: 8px 12px; 
+  transition: background .15s ease, color .15s ease; 
+  color: #000; 
+}
+:host ::ng-deep .p-paginator .p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):hover { 
+  background: #000; 
+  color: #fff; 
+}
+:host ::ng-deep .p-paginator .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight { 
+  background: #000; 
+  color: #fff; 
 }
