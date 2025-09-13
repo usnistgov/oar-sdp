@@ -404,8 +404,9 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     // If we've already built full counts, do nothing.
     if (this.fullFacetCountsComplete) return;
-    // Build initial facet counts immediately from current results (ensures unit tests pass without async service mock data)
-    this.buildFacetCounts(this.searchResults);
+  // Build initial facet counts immediately BUT keep skeletons showing (finalPass = false)
+  // so that we do NOT display partial first-page-only facet counts while expanded fetch runs.
+  this.buildFacetCounts(this.searchResults, false);
     // Attempt expanded fetch only in runtime (skip if already in-flight or no search service method)
     if (this.fullFacetCountsInFlight) return;
     this.fullFacetCountsInFlight = true;
@@ -417,18 +418,22 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.recordHasLoading = true; this.themeLoading = true; this.resourceTypeLoading = true;
     this.searchService.fetchAllForFacetCounts(q, this.searchTaxonomyKey, targetSize, this.searchService['filterString']?.getValue?.()).subscribe(expanded => {
       if (expanded && expanded.ResultData && expanded.ResultData.length) {
-        this.buildFacetCounts(expanded.ResultData);
+        this.buildFacetCounts(expanded.ResultData, true); // final pass
+      } else {
+        // No expanded data; finalize by clearing skeletons while retaining initial counts
+        this.setFacetLoadingComplete();
       }
       this.fullFacetCountsComplete = true;
       this.fullFacetCountsInFlight = false;
     }, _e => {
-      // Already built from initial results; just flag complete
+      // Expanded fetch failed; keep initial counts, just clear skeletons
+      this.setFacetLoadingComplete();
       this.fullFacetCountsComplete = true;
       this.fullFacetCountsInFlight = false;
     });
   }
 
-  private buildFacetCounts(data: any[]) {
+  private buildFacetCounts(data: any[], finalPass: boolean = true) {
     this.themesWithCount = [];
     this.componentsWithCount = [];
     this.keywords = this.collectKeywords(data);
@@ -456,9 +461,16 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
     }
     this.authors = this.collectAuthors(data);
-    // Hide skeletons
-    this.recordHasLoading = false; this.themeLoading = false; this.resourceTypeLoading = false;
+    if (finalPass) {
+      this.setFacetLoadingComplete();
+    }
     this.searching = false;
+  }
+
+  private setFacetLoadingComplete() {
+    this.recordHasLoading = false;
+    this.themeLoading = false;
+    this.resourceTypeLoading = false;
   }
 
   /**

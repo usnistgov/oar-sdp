@@ -54,7 +54,7 @@
         ></i>
       </div>
 
-  <div *ngIf="isActive && !searching && fullFacetCountsComplete">
+  <div *ngIf="isActive && !searching && fullFacetCountsComplete && !recordHasLoading && !themeLoading && !resourceTypeLoading">
         <!-- NIST Research topics with skeleton -->
   <div class="bottom-line compact-filter topics-block">
           <ng-container *ngIf="!themeLoading; else themeSkeleton">
