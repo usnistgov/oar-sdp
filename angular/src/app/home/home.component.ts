@@ -156,11 +156,11 @@ export class HomeComponent implements OnInit {
         break;
       }
       case "Additive Manufacturing": {
-        queryValue = "Additive Manufacturing";
+        queryValue = '"Additive Manufacturing"';
         break;
       }
       case "Artificial Intelligence": {
-        queryValue = "Artificial Intelligence";
+        queryValue = '"Artificial Intelligence"';
         break;
       }
       default: {

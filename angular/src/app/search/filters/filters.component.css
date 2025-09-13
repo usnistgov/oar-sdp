@@ -188,5 +188,84 @@
 ::ng-deep .p-tree {
   overflow-y: auto; /* Add scroll if content exceeds container height */
 }
+/* Facet skeleton styles (improved layout) */
+.facet-skeleton-group { 
+  position: relative; 
+  padding: 10px 12px 14px 24px; /* left gutter so not glued to edge */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.facet-skel { 
+  background: linear-gradient(90deg,#e8e8e8 0%,#f2f2f2 40%,#e8e8e8 80%);
+  background-size: 200% 100%;
+  animation: facetBarPulse 1.35s ease-in-out infinite;
+  border-radius: 4px; 
+  height: 14px; 
+}
+.facet-skel.header { height: 20px; width: 55%; margin-bottom: 4px; }
+.facet-skel.line.w50 { width: 50%; }
+.facet-skel.line.w40 { width: 40%; }
+.facet-skel.line.w30 { width: 30%; }
+@keyframes facetBarPulse { 0% { background-position: 0 0;} 100% { background-position: -200% 0;} }
+
+/* Show more button enhanced */
+.facet-more-btn { 
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #0a3d57;
+  color: #fff;
+  border: 1px solid #0a3d57;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+.facet-more-btn:hover { background:#06415f; }
+.facet-more-btn:disabled { cursor: default; opacity: .45; background:#0a3d57; }
+
+/* Dark variant (requested black) */
+.facet-more-btn.dark { background:#000; border-color:#000; color:#fff; }
+.facet-more-btn.dark:hover { background:#111; }
+.facet-more-btn.dark:disabled { background:#000; }
+.facet-more-btn .chev { display:inline-flex; transition: transform .25s ease; }
+.facet-more-btn .chev.expanded { transform: rotate(180deg); }
+
+/* Restore original topics block (non-header sticky) */
+.topics-block { position: relative; padding-top: 8px; padding-bottom: 12px; }
+/* Center overlay button style (was removed) */
+.facet-more-center { position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:transparent; padding:0 6px; }
+.facet-more-center .facet-more-btn { box-shadow:0 0 0 1px #000; }
+
+/* Make ONLY the root Research Topics node sticky (level 0) */
+:host ::ng-deep #themes.p-tree { max-height: 300px; overflow-y: auto; }
+/* Sticky root 'Research Topics' label inside its own scroll container */
+:host ::ng-deep #themes .p-tree-root-children > .p-treenode > .p-treenode-content,
+:host ::ng-deep #themes > .p-tree-container > ul > li.p-treenode > .p-treenode-content { 
+  position: sticky; 
+  top: 0; 
+  z-index: 2; 
+  background: #fff; 
+  padding: 4px 0 6px 0; 
+  box-shadow: 0 2px 0 -1px #e6e6e6; 
+}
+/* Fallback: make entire first li sticky in case content wrapper specificity fails */
+:host ::ng-deep #themes .p-tree-root-children > li.p-treenode:first-child,
+:host ::ng-deep #themes > .p-tree-container > ul.p-tree-root-children > li.p-treenode:first-child { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1; 
+  background:#fff; 
+}
+/* New explicit scroll wrapper to control sticky context */
+.topics-scroll { max-height: 240px; overflow-y: hidden; position: relative; }
+/* When expanded animation sets container height auto via trigger; allow overflow */
+:host ::ng-deep .p-tree { max-height: none !important; }
+/* Apply sticky to first node inside the new wrapper more reliably */
+:host ::ng-deep .topics-scroll #themes .p-tree-root-children > li.p-treenode:first-child > .p-treenode-content { position: sticky; top:0; z-index:3; background:#fff; }
 
 

@@ -278,6 +278,8 @@ export class ResultsComponent implements OnInit {
     if (this.searchSubscription) this.searchSubscription.unsubscribe();
     // Reset current page every time a new search starts
     this.currentPage = page ? page : 1;
+  // Show skeletons
+  this.dataReady = false;
 
     this.searchService.setQueryValue(this.searchValue, "", "");
     let lSearchValue = this.searchValue

@@ -18,6 +18,7 @@ import { SDPQuery } from "../search-query/query";
 })
 export class RealSearchService implements SearchService {
   private pageSize = new BehaviorSubject<number>(10); // Default to 10 items per page
+  private lastSearchResponse$ = new BehaviorSubject<any>(null); // broadcast unified response
 
   operators = {
     AND: "logicalOp=AND",
@@ -173,9 +174,8 @@ export class RealSearchService implements SearchService {
     }
 
     return this.appConfig.getConfig().pipe(
-      rxjsop.mergeMap((conf) => {
-        return this.http.get(conf.RMMAPI + url);
-      }),
+      rxjsop.mergeMap((conf) => this.http.get(conf.RMMAPI + url)),
+      rxjsop.tap((resp) => this.lastSearchResponse$.next(resp)),
       rxjsop.catchError((err) => {
         console.error("Failed to complete search: " + JSON.stringify(err));
         return throwError(err);
@@ -327,5 +327,45 @@ export class RealSearchService implements SearchService {
 
   setPageSize(size: number) {
     this.pageSize.next(size);
+  }
+
+  watchSearchResponse(): Observable<any> {
+    return this.lastSearchResponse$.asObservable();
+  }
+
+  fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
+    // Build a lightweight include list (only fields needed for facet counting)
+    let clone: SDPQuery = JSON.parse(JSON.stringify(query));
+    // Force first page only
+    let baseUrl = this.buildFacetOnlyUrl(clone, searchTaxonomyKey, filter, maxSize);
+    return this.appConfig.getConfig().pipe(
+      rxjsop.mergeMap(conf => this.http.get(conf.RMMAPI + baseUrl)),
+      rxjsop.catchError(err => throwError(err))
+    );
+  }
+
+  // Helper builds facet-only URL (no export outside service)
+  private buildFacetOnlyUrl(query: SDPQuery, searchTaxonomyKey: string, filter: string, size: number): string {
+    let searchPhraseValue = query.freeText ? 'searchphrase=' + query.freeText.trim() : '';
+    let finalKeyValueStr = '';
+    for (let i=0;i<query.queryRows.length;i++) {
+      let row = query.queryRows[i];
+      if (!row.fieldText || !row.fieldValue) continue;
+      if (finalKeyValueStr && row.operator && row.operator !== 'AND') {
+        finalKeyValueStr += '&' + this.operators[row.operator] + '&';
+      } else if (finalKeyValueStr) {
+        finalKeyValueStr += '&';
+      }
+      finalKeyValueStr += row.fieldValue + '=' + row.fieldText.replace(/"/g,'');
+    }
+    let keyString = searchTaxonomyKey ? '&topic.tag=' + searchTaxonomyKey : '';
+    let url = 'records?';
+    if (searchPhraseValue) url += '&' + searchPhraseValue;
+    if (finalKeyValueStr) url += '&' + finalKeyValueStr;
+    if (keyString) url += keyString;
+    if (filter && filter !== 'NoFilter') url += '&' + filter.trim();
+    url += '&page=1&size=' + size;
+    url += '&include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id';
+    return url;
   }
 }

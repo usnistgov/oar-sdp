@@ -16,7 +16,7 @@ import {
 describe("FiltersComponent", () => {
   let component: FiltersComponent;
   let fixture: ComponentFixture<FiltersComponent>;
-  let searchResult = require("../../../assets/sample02.json").ResultData;
+  let searchResult: any[] = [];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

@@ -365,3 +365,47 @@ a .custom-black-button .p-button .p-button-icon {
   border-color: black; /* Optional: Set border color on hover */
   color: black;
 }
+
+/* Skeleton loading styles */
+.results-skeleton-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.result-card-skeleton {
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  background:#fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card-skeleton:before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.04) 45%, rgba(255,255,255,0) 90%);
+  animation: sheen 1.4s linear infinite;
+}
+
+@keyframes sheen { to { transform:translateX(100%);} }
+
+.skeleton { 
+  display:block;
+  height:14px;
+  background:#f0f0f0;
+  border-radius:4px;
+  margin-bottom:8px;
+}
+
+.skeleton.header { height:32px; width:65%; margin-bottom:14px; }
+.skeleton.line.w80 { width:80%; }
+.skeleton.line.w60 { width:60%; }
+
+.skeleton.tag-row { display:flex; gap:6px; background:transparent; height:auto; }
+.skeleton.chip { height:20px; width:70px; background:#e8e8e8; border-radius:20px; }
+.skeleton.chip.short { width:50px; }

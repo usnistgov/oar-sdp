@@ -44,27 +44,16 @@
   </div>
 
   <!-- Handle Loading -->
-  <div
-    *ngIf="
-      resultStatus != RESULT_STATUS.success &&
-      resultStatus != RESULT_STATUS.userError &&
-      resultStatus != RESULT_STATUS.sysError
-    "
-    style="
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100vh;
-      margin-top: 10px;
-    "
-  >
-    <div>
-      <p-progressSpinner
-        styleClass="w-4rem h-4rem"
-        strokeWidth="8"
-        fill="var(--surface-ground)"
-        animationDuration=".5s"
-      ></p-progressSpinner>
+  <div *ngIf="!dataReady && resultStatus != RESULT_STATUS.userError && resultStatus != RESULT_STATUS.sysError" class="results-skeleton-wrapper">
+    <div class="result-card-skeleton" *ngFor="let i of [1,2,3,4,5]">
+      <div class="skeleton header"></div>
+      <div class="skeleton line w80"></div>
+      <div class="skeleton line w60"></div>
+      <div class="skeleton tag-row">
+        <span class="skeleton chip"></span>
+        <span class="skeleton chip"></span>
+        <span class="skeleton chip short"></span>
+      </div>
     </div>
   </div>
 
@@ -155,12 +144,7 @@
 
     <!-- Search result -->
 
-    <div
-      *ngIf="
-        resultStatus == RESULT_STATUS.success && totalItems > 0;
-        else noresult
-      "
-    >
+  <div *ngIf="dataReady && resultStatus == RESULT_STATUS.success && totalItems > 0; else noresult">
       <div class="mt-4">
         <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
           <p-panel>
