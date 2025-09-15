@@ -184,6 +184,10 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  // Track last outbound filter string to suppress only exact echoes
+  private lastOutboundFilterString: string | null = null;
+  private filterWatcherSub: any = null;
+
   /**
    * If search value changed, clear the filters and refresh the search result.
    * @param changes - changed detected
@@ -229,11 +233,18 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       // Reuse existing success handler; it expects array.
       this.onSuccess(resp.ResultData);
     });
+
+    // Sync external filter string -> selection state (chips / removal / reset)
+    this.filterWatcherSub = this.searchService.watchFilterString().subscribe(str => {
+      if(this.lastOutboundFilterString === str) return; // ignore self echo
+      this.applyFilterStringToSelections(str);
+    });
   }
 
   ngOnDestroy(): void {
     if(this.searchResponseSub) { try { this.searchResponseSub.unsubscribe(); } catch {} }
     if(this.fullFacetCountsSubscription) { try { this.fullFacetCountsSubscription.unsubscribe(); } catch {} }
+    if(this.filterWatcherSub) { try { this.filterWatcherSub.unsubscribe(); } catch {} }
   }
 
   toggleMoreOptions() {
@@ -290,36 +301,6 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  /**
-   * Get the filterable fields and then do the search
-   */
-  // getFields() {
-  //   this.searchFieldsListService.getSearchFields().subscribe({
-  //     next: (fields) => {
-  //       this.toSortItems(fields);
-  //       this.searchService.setQueryValue(this.searchValue, "", "");
-  //       this.queryStringErrorMessage =
-  //         this.searchQueryService.validateQueryString(this.searchValue);
-  //       if (!this.queryStringErrorMessage) {
-  //         this.queryStringError = true;
-  //       }
-
-  //       let lSearchValue = this.searchValue.replace(/  +/g, " ");
-
-  //       //Convert to a query then search
-  //       this.doSearch(
-  //         this.searchQueryService.buildQueryFromString(
-  //           lSearchValue,
-  //           null,
-  //           this.fields
-  //         )
-  //       );
-  //     },
-  //     error: (error) => {
-  //       this.errorMessage = <any>error;
-  //     }
-  //   });
-  // }
 
   /**
    * Do the search
@@ -386,10 +367,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * call the Search service with parameters
    */
-  search(query: SDPQuery, searchTaxonomyKey?: string) {
-  // Deprecated path retained for backward compatibility; no-op.
-  return null;
-  }
+  // Deprecated original search() method removed; ResultsComponent is now the single search initiator.
 
   /**
    * If Search is successful, populate list of keywords themes and authors
@@ -608,7 +586,101 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     lFilterString = this.removeEndingComma(lFilterString);
     if (!lFilterString) lFilterString = "NoFilter";
 
-    this.searchService.setFilterString(lFilterString);
+  this.lastOutboundFilterString = lFilterString;
+  this.searchService.setFilterString(lFilterString);
+  }
+
+  /**
+   * Parse an incoming filter query string (e.g. "@type=Dataset,Software&topic.tag=Fire&components.@type=AccessPage")
+   * and update selection node arrays so UI checkmarks reflect external changes (chip removal/reset).
+   */
+  private applyFilterStringToSelections(filterStr: string){
+    if(!filterStr || filterStr === 'NoFilter'){
+      this.clearSelectionsOnly();
+      return;
+    }
+    // Break into segments by '&'
+    const segs = filterStr.split('&');
+    const typeMap: {[k:string]: string[]} = {};
+    for(const seg of segs){
+      const [k, v] = seg.split('=');
+      if(!k || !v) continue;
+      const values = v.split(',').filter(x=>!!x);
+      if(!typeMap[k]) typeMap[k] = [];
+      typeMap[k].push(...values);
+    }
+    // Clear current selections
+    this.clearSelectionsOnly();
+
+    // Helper: find matching TreeNode(s) by comparing data with optional space-stripped normalization
+    const findNodes = (tree: TreeNode[] | undefined, values: string[], spaceInsensitive: boolean = false): any[] => {
+      if(!tree || !tree.length) return [];
+      const root = tree[0];
+      if(!root || !root.children) return [];
+      const matches: any[] = [];
+      const norm = (s:string) => spaceInsensitive ? s.replace(/\s/g,'').toLowerCase() : s.toLowerCase();
+      const childIndex: {[k:string]: any} = {};
+      root.children.forEach(ch => { if(ch && ch.data) childIndex[norm(String(ch.data))] = ch; });
+      values.forEach(v => {
+        const key = norm(String(v));
+        if(childIndex[key]) matches.push(childIndex[key]);
+      });
+      return matches;
+    };
+
+    // Apply @type
+    if(typeMap['@type']){
+      // Original filter string removed spaces when emitting (@type=DataPublication) whereas tree nodes keep spaces ("Data Publication").
+      // We therefore track both raw (no-space) and display (with-space) forms.
+      const rawTypes = [...new Set(typeMap['@type'])];
+      // Derive display form by reinserting spaces using simple startCase heuristic if tree node not found directly.
+      const toDisplay = (val:string) => {
+        // If an exact (case-insensitive) match exists among tree children (ignoring spaces) we will use that child.data directly later.
+        // For label list we prefer tree node data; keep a fallback transformation.
+        return _.startCase(val); // e.g. DataPublication -> Data Publication
+      };
+      // Map raw values to actual TreeNode references
+      const typeNodes = findNodes(this.resourceTypeTree, rawTypes, true /* space insensitive */);
+      this.selectedResourceTypeNode = typeNodes;
+      this.selectedResourceType = typeNodes.map(n => n.data) || rawTypes.map(toDisplay);
+    }
+    // Apply topic.tag
+    if(typeMap['topic.tag']){
+      const topics = [...new Set(typeMap['topic.tag'])];
+      const topicNodes = findNodes(this.themesTree, topics, false);
+      this.selectedThemesNode = topicNodes;
+      this.selectedThemes = topicNodes.map(n => n.data);
+    }
+    // Apply components.@type
+    if(typeMap['components.@type']){
+      const compsRaw = [...new Set(typeMap['components.@type'])];
+      const compNodes = findNodes(this.componentsTree, compsRaw, true /* space insensitive */);
+      this.selectedComponentsNode = compNodes;
+      this.selectedComponents = compNodes.map(n => n.data);
+    }
+    // Apply authors (contactPoint.fn)
+    if(typeMap['contactPoint.fn']){
+      // Direct value list; maintain selectedAuthor array used by filterResults()
+      this.selectedAuthor = [...new Set(typeMap['contactPoint.fn'])];
+    }
+    // Apply keywords
+    if(typeMap['keyword']){
+      // Keywords are stored in their original form in the filter string; assign directly
+      this.selectedKeywords = [...new Set(typeMap['keyword'])];
+    }
+  }
+
+  /** Clear only selection arrays (do not emit/filter string) */
+  private clearSelectionsOnly(){
+    this.selectedThemes = [];
+    this.selectedThemesNode = [];
+    this.selectedComponents = [];
+    this.selectedComponentsNode = [];
+    this.selectedResourceType = [];
+    this.selectedResourceTypeNode = [];
+    this.selectedAuthor = [];
+    this.selectedKeywords = [];
+    // leave authors/keywords for now; extend as needed
   }
 
   /**
@@ -772,34 +844,25 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
    * clear filters
    */
   clearFilters() {
-    this.suggestedThemes = [];
-    this.suggestedKeywords = [];
-    this.suggestedAuthors = [];
-    // this.selectedAuthor = [];
+    // Clear only selections & suggestion arrays that depend on them.
+    this.selectedAuthor = [];
     this.selectedKeywords = [];
     this.selectedThemes = [];
     this.selectedThemesNode = [];
     this.selectedComponents = [];
     this.selectedComponentsNode = [];
-    this.selectedAuthorDropdown = false;
     this.selectedResourceType = [];
     this.selectedResourceTypeNode = [];
-    this.resourceTypes = this.collectResourceTypes(this.searchResults);
-    this.collectResourceTypesWithCount();
-    this.authors = this.collectAuthors(this.searchResults);
-    this.suggestedKeywords = this.collectKeywords(this.searchResults);
-    this.components = this.collectComponents(this.searchResults);
-    this.collectComponentsWithCount();
-    this.collectThemes(this.searchResults);
-    this.collectThemesWithCount();
-    this.themesTree["expanded"] = true;
-    this.themesTree["children"] = this.themesWithCount;
-    this.componentsTree["expanded"] = true;
-    this.componentsTree["children"] = this.componentsWithCount;
-    this.resourceTypeTree["expanded"] = true;
-    this.resourceTypeTree["children"] = this.resourceTypesWithCount;
+    this.selectedAuthorDropdown = false;
 
-    this.filterResults();
+    // Do not rebuild facet trees here. That caused transient state where counts / ordering changed
+    // and showMoreLink logic flickered (looked like topics disappeared). The next incoming search
+    // response (already triggered by ResultsComponent due to filter string change) will rebuild
+    // via onSuccess -> buildFacetCounts(). We only need to emit a neutral filter string.
+
+    // Emit 'NoFilter' to clear chips; suppress echo loop tracking.
+    this.lastOutboundFilterString = 'NoFilter';
+    this.searchService.setFilterString('NoFilter');
   }
 
   /**

@@ -52,15 +52,31 @@ export class SearchComponent implements OnInit, OnDestroy {
     resultWidth: any;
     filterToggler: string = 'expanded';
     hideFilters: boolean = false; // hide filters when zero results
+    // Distinguish plain zero-results (no matches to query) vs filter-constrained zero.
+    lastZeroResults: boolean = false; // must be public for template binding
+    lastFilterZero: boolean = false;  // must be public for template binding
+    activeFilterTags: string[] = []; // retained only for legacy binding; no longer used after refactor
     onZeroResults(zero: boolean){
-        this.hideFilters = zero;
-        // Recompute widths so centering applies cleanly
-        if(zero){
+        this.lastZeroResults = zero;
+        this.applyZeroResultLayout();
+    }
+    onZeroResultsMeta(meta: { zero: boolean; filterZero: boolean; tags?: string[] }){
+        this.lastZeroResults = meta.zero;
+        this.lastFilterZero = meta.filterZero;
+        this.activeFilterTags = meta.tags || [];
+        this.applyZeroResultLayout();
+    }
+    applyZeroResultLayout(){
+        // Hide filters ONLY for plain query zero, not for filter-derived zero
+        const shouldHide = this.lastZeroResults && !this.lastFilterZero;
+        this.hideFilters = shouldHide;
+        if(shouldHide){
             this.resultWidth = '100%';
         } else {
             this.updateWidth();
         }
     }
+    // (Filter-zero interaction now handled directly in ResultsComponent.)
 
     // For error handling
     queryStringErrorMessage: string;

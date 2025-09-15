@@ -32,8 +32,8 @@
     <div class="EmptyBox80" style="background-color: #ffffff"></div>
   </div>
 
-  <!-- Handle no result -->
-  <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems == 0" class="no-results-wrapper">
+  <!-- Handle no result (plain, no active filters) -->
+  <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems == 0 && !isFilterZero" class="no-results-wrapper">
     <div class="no-results-card">
       <div class="dog-col">
         <img id="dog" src="./assets/images/NothingFound2_s.png" alt="Nothing found" />
@@ -50,6 +50,32 @@
         </ul>
         <div class="quick-actions">
           <button type="button" class="retry-btn" (click)="retrySearch()">Search Again</button>
+          <button type="button" class="examples-btn" (click)="showExamples()">View Examples</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Handle filter-constrained zero result -->
+  <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems == 0 && isFilterZero" class="no-results-wrapper">
+    <div class="no-results-card">
+      <div class="text-col" style="width:100%; padding:2.5em 2em;">
+        <h2 class="no-results-title">No results match your filters</h2>
+        <p class="no-results-subtitle">Your search may have matches, but the current filter combination removed them all.</p>
+        <div *ngIf="activeFilterTags.length > 0" style="margin:1em 0 1.25em 0; display:flex; flex-wrap:wrap; gap:0.5em;">
+          <span *ngFor="let tag of activeFilterTags; let i=index" class="filter-chip">
+            <span class="chip-label" [title]="tag.label">{{ tag.label }}</span>
+            <button class="chip-remove" (click)="removeFilterTag(i)" aria-label="Remove filter">✕</button>
+          </span>
+        </div>
+        <p class="no-results-action" style="margin-top:0; font-weight:500;">Adjust or clear filters to continue:</p>
+        <ul class="suggestions">
+          <li>Remove one or more filters using the ✕ buttons above</li>
+          <li>Broaden selected categories</li>
+          <li>Or reset everything</li>
+        </ul>
+        <div class="quick-actions" style="margin-top:1.25em; display:flex; gap:0.75em; flex-wrap:wrap;">
+          <button type="button" class="retry-btn" (click)="resetAllFilters()">Reset Filters</button>
           <button type="button" class="examples-btn" (click)="showExamples()">View Examples</button>
         </div>
       </div>

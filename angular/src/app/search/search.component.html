@@ -48,7 +48,8 @@
         [searchTaxonomyKey]="searchTaxonomyKey"
         [currentPage]="page"
         [mobWidth]="mobWidth"
-    (zeroResults)="onZeroResults($event)"
+        (zeroResults)="onZeroResults($event)"
+        (zeroResultsMeta)="onZeroResultsMeta($event)"
       ></app-results>
     </div>
   </div>

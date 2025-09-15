@@ -15,7 +15,7 @@ import { SearchfieldsListService } from "../../shared/index";
 import { SelectItem } from "primeng/api";
 import { SearchQueryService } from "../../shared/search-query/search-query.service";
 import { GoogleAnalyticsService } from "../../shared/ga-service/google-analytics.service";
-import { AppConfig, Config } from "../../shared/config-service/config.service";
+import { AppConfig } from "../../shared/config-service/config.service";
 import { Message } from "primeng/api";
 // import { Message } from 'primeng/components/common/api';
 import { Subscription } from "rxjs";
@@ -26,8 +26,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./results.component.css"],
 })
 export class ResultsComponent implements OnInit {
-  mobHeight: number;
-  ngZone: NgZone;
+  // Removed unused mobHeight/ngZone declarations during cleanup
 
   totalItems: number;
   itemsPerPage: number = 10;
@@ -43,8 +42,7 @@ export class ResultsComponent implements OnInit {
   sortItemKey: string;
   currentFilter: string = "NoFilter";
   currentSortOrder: string = "";
-  confValues: Config;
-  PDRAPIURL: string;
+  // Removed unused config value fields (PDRAPIURL, confValues) – config subscription only used for side effects originally
   resultStatus: string;
   RESULT_STATUS = {
     success: "SUCCESS",
@@ -52,9 +50,7 @@ export class ResultsComponent implements OnInit {
     userError: "USER ERROR",
     sysError: "SYS ERROR",
   };
-  exception: string;
-  errorMsg: string;
-  status: string;
+  // Error detail fields streamlined; msgs array still records errors
   msgs: Message[] = [];
   queryStringErrorMessage: string;
   queryStringWarning: boolean;
@@ -63,6 +59,17 @@ export class ResultsComponent implements OnInit {
   searchSubscription: Subscription = new Subscription();
   inited: boolean = false;
   dataReady: boolean = false;
+  // startupGuard ensures that during the initial bootstrap (hard page refresh scenario)
+  // only ONE initial search request is allowed to proceed. Multiple synchronous/near-synchronous
+  // emissions (fields list, filter string, page size, etc.) previously caused a second search
+  // to unsubscribe the first in-flight request, which shows up in the browser network panel
+  // as a "canceled" request. We flip this guard off after the first search (success or error)
+  // to restore normal behavior.
+  private startupGuard: boolean = true;
+  // Tracks whether we've already kicked off the very first search (prevents
+  // duplicate initial requests when the fields BehaviorSubject emits its
+  // initial empty array followed by the real fields list).
+  private initialSearchStarted: boolean = false;
 
   pagerConfig = {
     totalItems: 0,
@@ -77,6 +84,12 @@ export class ResultsComponent implements OnInit {
   @Input() mobWidth: number = 1920;
   @Output() totalItemsChange = new EventEmitter<number>();
   @Output() zeroResults = new EventEmitter<boolean>();
+  // Emits richer context so parent can distinguish true empty query vs filter-constrained empty
+  @Output() zeroResultsMeta = new EventEmitter<{ zero: boolean; filterZero: boolean; tags?: string[] }>();
+  // Track if zero results is specifically due to active filters
+  isFilterZero: boolean = false;
+  // Active filter tokens parsed from currentFilter for UI tag display when filter-zero state occurs
+  activeFilterTags: { raw: string; label: string }[] = [];
 
   constructor(
     @Inject(SEARCH_SERVICE) private searchService: SearchService,
@@ -86,21 +99,36 @@ export class ResultsComponent implements OnInit {
     private appConfig: AppConfig,
     public myElement: ElementRef
   ) {
-    this.appConfig.getConfig().subscribe((conf) => {
-      this.PDRAPIURL = conf.PDRAPI;
-    });
+    // Config subscription removed (values unused after refactor)
 
     this.searchFieldsListService.watchFields().subscribe({
-        next: (fields) => {
-          this.fields = fields as SelectItem[];
-          this.filterableFields = this.toSortItems(fields);
-  
-          //Convert to a query then search
-          this.searchSubscription = this.search(null, 1, this.itemsPerPage);
-        },
-        error: (error) => {
-          //Handle error here
+      next: (fields) => {
+        this.fields = fields as SelectItem[];
+        this.filterableFields = this.toSortItems(fields);
+        // Trigger initial search ONLY once, and only after we have a non-empty
+        // fields array (the BehaviorSubject first emits an empty array, which
+        // previously caused an early search that was immediately canceled by
+        // the real-fields emission). This eliminates the duplicate page=1&size=10 call.
+        if (
+          this.startupGuard &&
+          !this.initialSearchStarted &&
+          fields &&
+          fields.length > 0
+        ) {
+          this.initialSearchStarted = true; // lock before firing to avoid race
+          this.searchSubscription = this.search(
+            null,
+            1,
+            this.itemsPerPage,
+            undefined,
+            undefined,
+            'fields-nonempty'
+          );
         }
+      },
+      error: (error) => {
+  // Swallow field load errors (no behavioral change desired in cleanup pass)
+      },
     });
   }
 
@@ -113,7 +141,8 @@ export class ResultsComponent implements OnInit {
       if (this.queryStringErrorMessage != "") this.queryStringWarning = true;
     }
 
-    this.searchSubscription = this.search(null, 1, this.itemsPerPage);
+  // Initial page-1 search already triggered when fields load in constructor.
+  // If fields not yet loaded (rare timing), we'll start once they arrive.
 
 
     this.pageSubscription = this.searchService
@@ -135,19 +164,25 @@ export class ResultsComponent implements OnInit {
         if (!filter || this.currentFilter == filter) return;
 
         this.currentFilter = filter;
-        this.searchSubscription = this.search(null, null, this.itemsPerPage);
+        // During startupGuard phase we now suppress this trigger entirely to avoid a duplicate
+        // initial search. Only the fields emission is allowed to launch the first request.
+        if (this.startupGuard && !this.searchResults) {
+          return; // defer until initial search completes
+        }
+        this.searchSubscription = this.search(null, null, this.itemsPerPage, undefined, undefined, 'filter-change');
       });
 
-    this.pageSizeSubscription = this.searchService
-      .watchPageSize()
-      .subscribe((pageSize) => {
-        this.itemsPerPage = pageSize;
-        this.search(null, this.currentPage, pageSize);
-      });
-
-    this.searchService.watchPageSize().subscribe((size) => {
+    // Consolidated single pageSize watcher
+    this.pageSizeSubscription = this.searchService.watchPageSize().subscribe((size) => {
+      const initial = !this.inited; // before we flip inited below
+      const changed = size !== this.itemsPerPage;
       this.itemsPerPage = size;
-      this.getCurrentPage(this.currentPage);
+      // Suppress page size as an initial trigger; only fields emission may start the first search.
+      if (this.startupGuard && !this.searchResults) return;
+      // Only trigger a new search if page size truly changed after init (normal behavior)
+      if (!initial && changed) {
+        this.search(null, 1, this.itemsPerPage, undefined, undefined, 'page-size-change');
+      }
     });
     this.inited = true;
   }
@@ -159,6 +194,7 @@ export class ResultsComponent implements OnInit {
     if (this.filterSubscription) this.filterSubscription.unsubscribe();
     if (this.pageSubscription) this.pageSubscription.unsubscribe();
     if (this.searchSubscription) this.searchSubscription.unsubscribe();
+    if (this.pageSizeSubscription) this.pageSizeSubscription.unsubscribe();
   }
 
   /**
@@ -276,7 +312,8 @@ export class ResultsComponent implements OnInit {
     page?: number,
     pageSize?: number,
     sortOrder?: string,
-    filter?: string
+    filter?: string,
+    origin?: string // origin is purely diagnostic to help trace initial trigger source
   ) {
     // Always unsubscribe before conduct a new search
     if (this.searchSubscription) this.searchSubscription.unsubscribe();
@@ -300,7 +337,7 @@ export class ResultsComponent implements OnInit {
     this.currentFilter = filter ? filter : this.currentFilter;
     this.currentSortOrder = sortOrder ? sortOrder : this.currentSortOrder;
 
-    return this.searchService
+    const sub = this.searchService
       .searchPhrase(
         query,
         searchTaxonomyKey,
@@ -314,14 +351,64 @@ export class ResultsComponent implements OnInit {
         (searchResults) => {
           that.searchResults = searchResults.ResultData;
           that.totalItems = searchResults.ResultCount;
-          that.resultStatus = this.RESULT_STATUS.success;
-          that.searchService.setTotalItems(that.totalItems);
-          that.dataReady = true;
-          this.totalItemsChange.emit(that.totalItems);
-          this.zeroResults.emit(that.totalItems === 0);
+            that.resultStatus = this.RESULT_STATUS.success;
+            that.searchService.setTotalItems(that.totalItems);
+            that.dataReady = true;
+            this.totalItemsChange.emit(that.totalItems);
+            const filterActive = this.currentFilter && this.currentFilter !== 'NoFilter';
+            this.isFilterZero = filterActive && that.totalItems === 0;
+            this.activeFilterTags = filterActive ? this.parseFilterTags(this.currentFilter) : [];
+            this.zeroResults.emit(that.totalItems === 0); // legacy boolean event
+            this.zeroResultsMeta.emit({ zero: that.totalItems === 0, filterZero: this.isFilterZero, tags: this.activeFilterTags.map(t => t.label) });
+          // First successful completion clears the startup guard so later triggers behave normally
+          if (this.startupGuard) this.startupGuard = false;
         },
         (error) => that.onError(error)
       );
+  // (diagnostic logging hook retained in history but commented to avoid noise)
+
+    return sub;
+  }
+
+  /**
+   * Reset filters (used when zero results are due only to filtering)
+   */
+  // resetFiltersDueToZero retained earlier for legacy template reference; not used now.
+
+  /**
+   * Convert the flat filter query string into an array of human-readable tokens.
+   * Example: "components.@type=Dataset,Software&topic.tag=Fire" -> ["Record has: Dataset, Software", "Research Topic: Fire"]
+   * For a minimal implementation we'll just split on & and replace '=' with ': '.
+   */
+  private parseFilterTags(filterQuery: string): { raw: string; label: string }[] {
+    if (!filterQuery || filterQuery === 'NoFilter') return [];
+    return filterQuery.split('&').map(seg => {
+      const [key, val] = seg.split('=');
+      if(!val) return { raw: seg, label: seg };
+      // Show only the value(s); for multiple comma-separated values show each separated by comma + space.
+      // Example: "@type=DataPublication,SRD" -> "Data Publication, SRD" (apply startCase to individual tokens when they are condensed)
+      const tokens = val.split(',').filter(v=>!!v).map(v=>{
+        // If token has no space but is CamelCase or PascalCase from our emitted patterns, expand with startCase
+        if(/^[A-Za-z]+$/.test(v) && v.toLowerCase() !== v) {
+          return _.startCase(v); // DataPublication -> Data Publication
+        }
+        return v;
+      });
+      return { raw: seg, label: tokens.join(', ') };
+    });
+  }
+
+  /** Remove a single filter segment and re-run search without full reset */
+  removeFilterTag(index: number) {
+    if (index < 0 || index >= this.activeFilterTags.length) return;
+    const remaining = this.activeFilterTags.filter((_,i)=> i!== index).map(t => t.raw);
+    const newFilter = remaining.length ? remaining.join('&') : 'NoFilter';
+    this.searchService.setFilterString(newFilter);
+  }
+
+  /** Reset all filters from inside the results component */
+  resetAllFilters() {
+    this.searchService.setFilterString('NoFilter');
   }
 
   /**
@@ -337,14 +424,10 @@ export class ResultsComponent implements OnInit {
       this.resultStatus = this.RESULT_STATUS.sysError;
     }
 
-    this.exception = (<any>error).ex;
-    this.errorMsg = (<any>error).message;
-    this.status = (<any>error).httpStatus;
-    this.msgs.push({
-      severity: "error",
-      summary: this.errorMsg + ":",
-      detail: this.status + " - " + this.exception,
-    });
+    const err: any = error || {};
+    this.msgs.push({ severity: "error", summary: err.message || "Search error", detail: err.httpStatus || "" });
+    // Even on error we should drop the startup guard to avoid suppressing retries.
+    if (this.startupGuard) this.startupGuard = false;
   }
 
   /**

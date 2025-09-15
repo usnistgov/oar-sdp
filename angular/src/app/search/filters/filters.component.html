@@ -1,13 +1,13 @@
 <div
-  [@filterExpand]="
-    mobileMode ? 'expanded' : isActive ? 'expanded' : 'collapsed'
-  "
+  [@filterExpand]="mobileMode ? 'expanded' : isActive ? 'expanded' : 'collapsed'"
   [ngStyle]="{ width: mobileMode ? '100%' : filterWidthNum + 'px' }"
-  style="background-color: white"
+  [ngClass]="{'filters-collapsed-root': !isActive && !mobileMode, 'mobile-filters-collapsed': mobileMode && !isActive}"
+  style="background-color: white; position: relative; overflow:hidden;"
 >
+  <!-- Full filter body (hidden when collapsed on mobile & desktop) -->
   <div
     class="normalFilter"
-    [hidden]="!isActive && !mobileMode"
+    [hidden]="!isActive"
     id="activeFilter"
     style="height: auto; padding-bottom: 1em"
   >
@@ -248,6 +248,9 @@
                   <ng-template let-author pTemplate="item">
                     <div style="margin-left: 40px">{{ author }}</div>
                   </ng-template>
+                  <ng-template pTemplate="empty">
+                    <div class="ac-empty" style="margin-left:40px;">No authors found</div>
+                  </ng-template>
                 </p-autoComplete>
               </div>
             </ng-container>
@@ -289,6 +292,9 @@
                       {{ keyword }}
                     </div>
                   </ng-template>
+                  <ng-template pTemplate="empty">
+                    <div class="ac-empty" style="margin-left:40px;">No keywords found</div>
+                  </ng-template>
                 </p-autoComplete>
               </div>
             </ng-container>
@@ -305,9 +311,22 @@
         </div> <!-- /width:100% wrapper -->
       </div> <!-- /padding wrapper -->
     </div> <!-- /normalFilter -->
-  </div> <!-- /root filterExpand container -->
 
-  <!-- Optional placeholder while full facet counts load -->
-  <div *ngIf="isActive && !searching && !fullFacetCountsComplete" class="facet-loading-placeholder" style="padding:1em; font-size:12px; color:#555;">
-    Loading filters…
+    <!-- Collapsed filters (desktop rotated bar) -->
+    <div *ngIf="!searching && !isActive && !mobileMode" class="collapsedFilterBox" (click)="setFilterWidth()" aria-label="Expand filters" role="button" tabindex="0" (keyup.enter)="setFilterWidth()">
+      <div><i class="faa faa-angle-double-right collapsedFilterIcon" aria-hidden="true"></i></div>
+      <div class="rotate rotatedFilterText">Filters</div>
+    </div>
+
+  <!-- Mobile collapsed header toggle (outside normalFilter so it stays visible) -->
+  <div *ngIf="mobileMode && !isActive" class="mobile-collapsed-filter-header" (click)="setFilterWidth()" role="button" aria-label="Expand filters" tabindex="0" (keyup.enter)="setFilterWidth()">
+    <span class="label">Filters</span>
+    <i class="faa faa-angle-double-down" aria-hidden="true"></i>
   </div>
+
+    <!-- Optional placeholder while full facet counts load -->
+    <div *ngIf="isActive && !searching && !fullFacetCountsComplete" class="facet-loading-placeholder">
+      <span class="spinner-dot" aria-hidden="true"></span>
+      <span class="text">Loading filters…</span>
+    </div>
+  </div> <!-- /root filterExpand container -->
