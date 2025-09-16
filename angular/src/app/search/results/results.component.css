@@ -430,6 +430,12 @@ a .custom-black-button .p-button .p-button-icon {
 
 @keyframes sheen { to { transform:translateX(100%);} }
 
+/* Ensure the results component element expands to fill its container */
+:host {
+  display: block;
+  width: 100%;
+}
+
 .skeleton { 
   display:block;
   height:14px;

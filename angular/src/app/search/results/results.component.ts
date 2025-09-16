@@ -146,6 +146,7 @@ export class ResultsComponent implements OnInit {
         // Surface an error card instead of leaving skeletons up forever
         this.resultStatus = this.RESULT_STATUS.sysError;
         this.lastErrorDetail = this.formatHttpError(error);
+        this.dataReady = false;
         this.errorState.emit(true);
       },
     });
