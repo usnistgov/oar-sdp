@@ -406,6 +406,8 @@ a .custom-black-button .p-button .p-button-icon {
   gap: 1rem;
   width: 100%;
   margin-top: 1rem;
+  padding: 16px 10px 40px; /* add spacing top/bottom so it doesn't glue to footer */
+  box-sizing: border-box;
 }
 
 .result-card-skeleton {
@@ -415,6 +417,7 @@ a .custom-black-button .p-button .p-button-icon {
   background:#fff;
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 .result-card-skeleton:before {
@@ -519,6 +522,13 @@ a .custom-black-button .p-button .p-button-icon {
 .examples-btn:hover { background:#000; color:#fff; }
 .retry-btn:hover { background:#111; }
 .retry-btn:focus, .examples-btn:focus { outline:none; box-shadow:0 0 0 2px #000,0 0 0 4px rgba(0,0,0,.25); }
+
+/* Error detail styling */
+.error-detail {
+  font-size: .95rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 
 @media (max-width: 820px) { 
   .no-results-card { flex-direction:column; padding:40px 28px; gap:24px; }

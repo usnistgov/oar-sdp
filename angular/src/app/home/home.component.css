@@ -54,6 +54,8 @@
   transition: transform 0.2s ease;
   height: 170px;
   position: relative;
+  /* Establish a low stacking context so global menus/tooltips can appear above */
+  z-index: 0;
   box-shadow: none;
 }
 
@@ -128,7 +130,8 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: white;
-  z-index: 10; /* Increased z-index to ensure it appears above other elements */
+  /* Keep above the card itself, but below global overlays like nav menus */
+  z-index: 2;
   border: 1px solid #e0e0e0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
@@ -139,6 +142,8 @@
 
 .curated-badge:hover {
   background-color: #f8f8f8;
+  /* Fix contrast: make text black on hover */
+  color: #000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }

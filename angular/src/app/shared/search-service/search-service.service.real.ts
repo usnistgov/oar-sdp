@@ -153,23 +153,22 @@ export class RealSearchService implements SearchService {
         ? "&topic.tag=" + searchTaxonomyKey
         : "";
 
-      // Build URL with all parameters
+      // Build URL with all parameters ensuring searchphrase is first and no leading '&'
       url = "records?";
-      if (searchPhraseValue) url += "&" + searchPhraseValue.trim();
-      if (sortOrder) url += "&sort.asc=" + sortOrder;
-      if (finalKeyValueStr.trim() != "") url += "&" + finalKeyValueStr.trim();
-      if (keyString) url += "&" + keyString.trim();
-      if (filter && filter != "NoFilter") url += "&" + filter.trim();
-
-      // Add pagination parameters
+      const parts: string[] = [];
+      if (searchPhraseValue) parts.push(searchPhraseValue.trim());
+      if (sortOrder) parts.push("sort.asc=" + sortOrder);
+      if (finalKeyValueStr.trim() != "") parts.push(finalKeyValueStr.trim());
+      if (keyString) parts.push(keyString.replace(/^&/, "").trim());
+      if (filter && filter != "NoFilter") parts.push(filter.trim());
       if (page) {
-        url += "&page=" + page;
-        url += "&size=" + itemsPerPage; // Always include itemsPerPage
+        parts.push("page=" + page);
+        parts.push("size=" + itemsPerPage);
       }
-
+      url += parts.join("&");
       // Include required fields
-      url +=
-        "&include=ediid,description,title,keyword,topic.tag,contactPoint," +
+      url += (parts.length ? "&" : "") +
+        "include=ediid,description,title,keyword,topic.tag,contactPoint," +
         "components.@type,@type,doi,landingPage&exclude=_id";
     }
 
@@ -358,14 +357,17 @@ export class RealSearchService implements SearchService {
       }
       finalKeyValueStr += row.fieldValue + '=' + row.fieldText.replace(/"/g,'');
     }
-    let keyString = searchTaxonomyKey ? '&topic.tag=' + searchTaxonomyKey : '';
-    let url = 'records?';
-    if (searchPhraseValue) url += '&' + searchPhraseValue;
-    if (finalKeyValueStr) url += '&' + finalKeyValueStr;
-    if (keyString) url += keyString;
-    if (filter && filter !== 'NoFilter') url += '&' + filter.trim();
-    url += '&page=1&size=' + size;
-    url += '&include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id';
+  let keyString = searchTaxonomyKey ? 'topic.tag=' + searchTaxonomyKey : '';
+  let url = 'records?';
+  const parts: string[] = [];
+  if (searchPhraseValue) parts.push(searchPhraseValue);
+  if (finalKeyValueStr) parts.push(finalKeyValueStr);
+  if (keyString) parts.push(keyString);
+  if (filter && filter !== 'NoFilter') parts.push(filter.trim());
+  parts.push('page=1');
+  parts.push('size=' + size);
+  url += parts.join('&');
+  url += (parts.length ? '&' : '') + 'include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id';
     return url;
   }
 }

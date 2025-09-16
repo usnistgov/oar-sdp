@@ -15,21 +15,22 @@
     <div class="EmptyBox80" style="background-color: #ffffff"></div>
   </div>
 
-  <!-- Handle sys error -->
-  <div *ngIf="resultStatus == RESULT_STATUS.sysError">
-    <div
-      class="col-12"
-      style="background-color: #ffffff; font-size: 2em; line-height: 1.5em"
-    >
-      Oops! It looks like our site had a problem completing your search. If this
-      error persists you may contact
-      <a
-        href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= "
-        (click)="gaService.gaTrackEvent('Email', $event, 'Contact')"
-        >datasupport&#64;nist.gov</a
-      >.
+  <!-- Handle sys error (use a card similar to no-results) -->
+  <div *ngIf="resultStatus == RESULT_STATUS.sysError" class="no-results-wrapper">
+    <div class="no-results-card">
+      <div class="text-col" style="width:100%; padding:2.5em 2em;">
+        <h2 class="no-results-title">We hit a snag</h2>
+        <p class="no-results-subtitle">Your search couldn’t be completed due to a temporary problem.</p>
+        <div class="error-detail" *ngIf="lastErrorDetail" style="margin: 0.5em 0 1em; color:#a00;">
+          {{ lastErrorDetail }}
+        </div>
+        <p class="no-results-action" style="margin-top:0; font-weight:500;">You can try again or contact us:</p>
+        <div class="quick-actions" style="margin-top:1.25em; display:flex; gap:0.75em; flex-wrap:wrap;">
+          <button type="button" class="retry-btn" (click)="retryNow()">Try Again</button>
+          <a class="examples-btn" href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= " (click)="gaService.gaTrackEvent('Email', $event, 'Contact')">Contact Support</a>
+        </div>
+      </div>
     </div>
-    <div class="EmptyBox80" style="background-color: #ffffff"></div>
   </div>
 
   <!-- Handle no result (plain, no active filters) -->

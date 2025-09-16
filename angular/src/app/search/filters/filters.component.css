@@ -281,7 +281,6 @@
 
 .facet-loading-placeholder .text { letter-spacing: .4px; }
 
-/* Reconstruct .facet-more-btn block (was broken by stray declarations) */
 .facet-more-btn {
   margin: 0;
   padding: 4px 10px;
