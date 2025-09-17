@@ -1,5 +1,8 @@
 .search-result {
-    display: inline-block;
+    /* Make the results column stretch to available width in flex layout */
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0; /* prevent flex item from overflowing and allow 100% children to grow */
     vertical-align: top;
 }
 

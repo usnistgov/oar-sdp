@@ -93,8 +93,9 @@ export class SearchfieldsListService {
                 },
                 error: (error) => {
                     console.log(error);
-                    subscriber.next(error);
-                    subscriber.complete();
+                    // Propagate an error so listeners (e.g., results component) can show error UI
+                    try { (this.fields as any).error?.(error); } catch {}
+                    subscriber.error(error);
                 }
             });
         });

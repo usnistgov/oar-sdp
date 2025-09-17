@@ -65,20 +65,47 @@
 }
 
 .collapsedFilterBox {
-  /* text-align:center;
-    padding: 0px 5pxpx 0px 5px; */
-  /* background-color: var(--science-theme-background-default); */
   background-image: linear-gradient(black, white);
   color: #fff;
   width: 40px;
-  height: 400px;
+  min-height: 400px; /* ensure clickable height */
   cursor: pointer;
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
+.collapsedFilterBox:focus { outline: 2px solid #fff; outline-offset:2px; }
 
 .normalFilter {
   /* float: left; */
   width: 100%;
+}
+
+/* Deprecated vertical bar styles removed (using rotated legacy bar instead) */
+
+/* When collapsed, make container minimal width but preserve height for rotated text */
+.filters-collapsed-root { min-height: 430px; }
+
+/* Mobile: when collapsed (width:0) ensure no padding/margin leaks */
+@media (max-width: 640px) {
+  .filters-collapsed-root { min-height: 0 !important; }
+  .collapsedFilterBox { display:none !important; }
+  .mobile-collapsed-filter-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    background:#000;
+    color:#fff;
+    padding:.75rem 1rem;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    border-bottom:1px solid #222;
+  }
+  .mobile-collapsed-filter-header:focus { outline:2px solid #fff; outline-offset:2px; }
+  .mobile-collapsed-filter-header .label { letter-spacing:.5px; }
 }
 
 .lbl-filter {
@@ -188,5 +215,128 @@
 ::ng-deep .p-tree {
   overflow-y: auto; /* Add scroll if content exceeds container height */
 }
+/* Facet skeleton styles (improved layout) */
+.facet-skeleton-group { 
+  position: relative; 
+  padding: 10px 12px 14px 24px; /* left gutter so not glued to edge */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.facet-skel { 
+  background: linear-gradient(90deg,#e8e8e8 0%,#f2f2f2 40%,#e8e8e8 80%);
+  background-size: 200% 100%;
+  animation: facetBarPulse 1.35s ease-in-out infinite;
+  border-radius: 4px; 
+  height: 14px; 
+}
+.facet-skel.header { height: 20px; width: 55%; margin-bottom: 4px; }
+.facet-skel.line.w50 { width: 50%; }
+.facet-skel.line.w40 { width: 40%; }
+.facet-skel.line.w30 { width: 30%; }
+@keyframes facetBarPulse { 0% { background-position: 0 0;} 100% { background-position: -200% 0;} }
+
+/* Autocomplete custom states */
+.ac-empty {
+  padding: 0.4rem 0.75rem 0.4rem 0.75rem;
+  font-size: 12px;
+  color: #555;
+  font-style: italic;
+  margin-left: 40px;
+}
+
+/* Facet loading placeholder styling */
+ .facet-loading-placeholder {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .9rem;
+  margin: 8px 1rem 1.2rem 1rem;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #222;
+  background: linear-gradient(180deg,#ffffff,#f3f5f7);
+  border: 1px solid #d5d9dd;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  border-radius: 8px;
+  width: auto;
+  max-width: 260px;
+  box-sizing: border-box;
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+
+.facet-loading-placeholder .spinner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #222;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: .25; }
+  50% { opacity: 1; }
+}
+
+.facet-loading-placeholder .text { letter-spacing: .4px; }
+
+.facet-more-btn {
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #0a3d57;
+  color: #fff;
+  border: 1px solid #0a3d57;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.facet-more-btn:hover { background:#06415f; }
+.facet-more-btn:disabled { cursor: default; opacity: .45; background:#0a3d57; }
+
+/* Dark variant (requested black) */
+.facet-more-btn.dark { background:#000; border-color:#000; color:#fff; }
+.facet-more-btn.dark:hover { background:#111; }
+.facet-more-btn.dark:disabled { background:#000; }
+.facet-more-btn .chev { display:inline-flex; transition: transform .25s ease; }
+.facet-more-btn .chev.expanded { transform: rotate(180deg); }
+
+/* Restore original topics block (non-header sticky) */
+.topics-block { position: relative; padding-top: 8px; padding-bottom: 12px; }
+/* Center overlay button style (was removed) */
+.facet-more-center { position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:transparent; padding:0 6px; }
+.facet-more-center .facet-more-btn { box-shadow:0 0 0 1px #000; }
+
+/* Make ONLY the root Research Topics node sticky (level 0) */
+:host ::ng-deep #themes.p-tree { max-height: 300px; overflow-y: auto; }
+/* Sticky root 'Research Topics' label inside its own scroll container */
+:host ::ng-deep #themes .p-tree-root-children > .p-treenode > .p-treenode-content,
+:host ::ng-deep #themes > .p-tree-container > ul > li.p-treenode > .p-treenode-content { 
+  position: sticky; 
+  top: 0; 
+  z-index: 2; 
+  background: #fff; 
+  padding: 4px 0 6px 0; 
+  box-shadow: 0 2px 0 -1px #e6e6e6; 
+}
+/* Fallback: make entire first li sticky in case content wrapper specificity fails */
+:host ::ng-deep #themes .p-tree-root-children > li.p-treenode:first-child,
+:host ::ng-deep #themes > .p-tree-container > ul.p-tree-root-children > li.p-treenode:first-child { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1; 
+  background:#fff; 
+}
+/* New explicit scroll wrapper to control sticky context */
+.topics-scroll { max-height: 240px; overflow-y: hidden; position: relative; }
+/* When expanded animation sets container height auto via trigger; allow overflow */
+:host ::ng-deep .p-tree { max-height: none !important; }
+/* Apply sticky to first node inside the new wrapper more reliably */
+:host ::ng-deep .topics-scroll #themes .p-tree-root-children > li.p-treenode:first-child > .p-treenode-content { position: sticky; top:0; z-index:3; background:#fff; }
 
 

@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   Inject,
   Input,
   AfterViewInit,
@@ -27,6 +28,7 @@ import {
   animate,
   transition,
 } from "@angular/animations";
+// (removed take/filter imports after simplifying aggregation logic)
 
 @Component({
   selector: "app-filters",
@@ -35,7 +37,7 @@ import {
   animations: [
     trigger("expand", [
       state("closed", style({ height: "40px" })),
-      state("collapsed", style({ height: "183px" })),
+  state("collapsed", style({ height: "260px" })),
       state("expanded", style({ height: "*" })),
       transition("expanded <=> collapsed", animate("625ms")),
       transition("expanded <=> closed", animate("625ms")),
@@ -53,7 +55,7 @@ import {
     ]),
   ],
 })
-export class FiltersComponent implements OnInit, AfterViewInit {
+export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   searchResults: any[] = [];
   suggestedThemes: string[] = [];
   suggestedKeywords: string[] = [];
@@ -120,6 +122,14 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   comheight: string; // parent div height
   comwidth: string; // parent div width
   dropdownLabelLengthLimit: number = 30;
+  // Loading flags for deferred facets
+  recordHasLoading: boolean = true; // components.@type counts may arrive later
+  themeLoading: boolean = true;
+  resourceTypeLoading: boolean = true;
+  fullFacetCountsInFlight: boolean = false; // made public for template gating
+  fullFacetCountsComplete: boolean = false; // made public for template gating
+  private fullFacetCountsSubscription: any = null;
+  private searchResponseSub: any = null;
 
   filterStyle = {
     width: "100%",
@@ -174,6 +184,10 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Track last outbound filter string to suppress only exact echoes
+  private lastOutboundFilterString: string | null = null;
+  private filterWatcherSub: any = null;
+
   /**
    * If search value changed, clear the filters and refresh the search result.
    * @param changes - changed detected
@@ -197,6 +211,13 @@ export class FiltersComponent implements OnInit, AfterViewInit {
       ) {
         //Clear filters when we conduct a new search
         this.clearFilters();
+  // Reset facet aggregation state so new query can trigger fresh expanded fetch
+  this.fullFacetCountsInFlight = false;
+  this.fullFacetCountsComplete = false;
+  // Show skeletons again for all facet groups until rebuilt
+  this.recordHasLoading = true;
+  this.themeLoading = true;
+  this.resourceTypeLoading = true;
         this.onSearchValueChanged();
       }
     }
@@ -206,6 +227,24 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     this.msgs = [];
     this.searchResultsError = [];
     this.MoreOptionsDisplayed = false;
+    // Subscribe to unified search response stream. When results arrive, build filters.
+    this.searchResponseSub = this.searchService.watchSearchResponse().subscribe((resp:any)=>{
+      if(!resp || !resp.ResultData) return;
+      // Reuse existing success handler; it expects array.
+      this.onSuccess(resp.ResultData);
+    });
+
+    // Sync external filter string -> selection state (chips / removal / reset)
+    this.filterWatcherSub = this.searchService.watchFilterString().subscribe(str => {
+      if(this.lastOutboundFilterString === str) return; // ignore self echo
+      this.applyFilterStringToSelections(str);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if(this.searchResponseSub) { try { this.searchResponseSub.unsubscribe(); } catch {} }
+    if(this.fullFacetCountsSubscription) { try { this.fullFacetCountsSubscription.unsubscribe(); } catch {} }
+    if(this.filterWatcherSub) { try { this.filterWatcherSub.unsubscribe(); } catch {} }
   }
 
   toggleMoreOptions() {
@@ -218,7 +257,18 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   }
 
   toggleExpand(expand: boolean): void {
-    this.showMoreLink = !expand;
+    const prev = this.showMoreLink;
+    this.showMoreLink = !expand; // true means collapsed mode (show more link visible)
+    // If user just requested collapse (transition from expanded -> collapsed), scroll to top of filters area
+    if (this.showMoreLink && !prev) {
+      // Use setTimeout to allow DOM/animation state to apply before scrolling
+      setTimeout(() => {
+        try {
+          // Scroll the window so the top of the filters (left column) is visible
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch {}
+      }, 0);
+    }
   }
 
   /**
@@ -251,36 +301,6 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     );
   }
 
-  /**
-   * Get the filterable fields and then do the search
-   */
-  // getFields() {
-  //   this.searchFieldsListService.getSearchFields().subscribe({
-  //     next: (fields) => {
-  //       this.toSortItems(fields);
-  //       this.searchService.setQueryValue(this.searchValue, "", "");
-  //       this.queryStringErrorMessage =
-  //         this.searchQueryService.validateQueryString(this.searchValue);
-  //       if (!this.queryStringErrorMessage) {
-  //         this.queryStringError = true;
-  //       }
-
-  //       let lSearchValue = this.searchValue.replace(/  +/g, " ");
-
-  //       //Convert to a query then search
-  //       this.doSearch(
-  //         this.searchQueryService.buildQueryFromString(
-  //           lSearchValue,
-  //           null,
-  //           this.fields
-  //         )
-  //       );
-  //     },
-  //     error: (error) => {
-  //       this.errorMessage = <any>error;
-  //     }
-  //   });
-  // }
 
   /**
    * Do the search
@@ -288,18 +308,13 @@ export class FiltersComponent implements OnInit, AfterViewInit {
    * @param searchTaxonomyKey - Taxonomy keys if any
    */
   doSearch(query: SDPQuery, searchTaxonomyKey?: string) {
-    this.msgs = [];
-    this.searchResultsError = [];
-    this.search(query, searchTaxonomyKey);
-
-    this.selectedResourceTypeNode = [];
-    this.selectedThemesNode = [];
-    this.selectedComponentsNode = [];
-
-    // Turn spinner off after 60 seconds (if still waiting for the result)
-    setTimeout(() => {
-      this.searching = false;
-    }, 60000);
+  // Deprecated: Filters no longer trigger their own network search.
+  this.msgs = [];
+  this.searchResultsError = [];
+  this.selectedResourceTypeNode = [];
+  this.selectedThemesNode = [];
+  this.selectedComponentsNode = [];
+  // Leave spinner management to results component / unified stream.
   }
 
   /**
@@ -352,16 +367,7 @@ export class FiltersComponent implements OnInit, AfterViewInit {
   /**
    * call the Search service with parameters
    */
-  search(query: SDPQuery, searchTaxonomyKey?: string) {
-    this.searching = true;
-    let that = this;
-    return this.searchService.searchPhrase(query, searchTaxonomyKey).subscribe(
-      (searchResults) => {
-        that.onSuccess(searchResults.ResultData);
-      },
-      (error) => that.onError(error)
-    );
-  }
+  // Deprecated original search() method removed; ResultsComponent is now the single search initiator.
 
   /**
    * If Search is successful, populate list of keywords themes and authors
@@ -369,90 +375,80 @@ export class FiltersComponent implements OnInit, AfterViewInit {
    */
   onSuccess(searchResults: any[]) {
     this.resultStatus = this.RESULT_STATUS.success;
-    this.themesWithCount = [];
-    this.componentsWithCount = [];
     this.searchResults = searchResults;
-    this.keywords = this.collectKeywords(searchResults);
-    this.collectThemes(searchResults);
-    this.resourceTypes = this.collectResourceTypes(searchResults);
-
-    let compNoData: boolean = false;
     this.searchResultsError = [];
-
     if (searchResults.length === 0) {
       this.resultStatus = this.RESULT_STATUS.noResult;
     }
-    // collect Research topics with count
+    // If we've already built full counts, do nothing.
+    if (this.fullFacetCountsComplete) return;
+  // Build initial facet counts immediately BUT keep skeletons showing (finalPass = false)
+  // so that we do NOT display partial first-page-only facet counts while expanded fetch runs.
+  this.buildFacetCounts(this.searchResults, false);
+    // Attempt expanded fetch only in runtime (skip if already in-flight or no search service method)
+    if (this.fullFacetCountsInFlight) return;
+    this.fullFacetCountsInFlight = true;
+    const MAX_FULL_FACET_SIZE = 5000; // safety upper bound
+    const targetSize = MAX_FULL_FACET_SIZE;
+    const lSearchValue = this.searchValue ? this.searchValue.replace(/  +/g, ' ') : '';
+    const q = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
+    // Mark loading for possible UI skeletons
+    this.recordHasLoading = true; this.themeLoading = true; this.resourceTypeLoading = true;
+    this.searchService.fetchAllForFacetCounts(q, this.searchTaxonomyKey, targetSize, this.searchService['filterString']?.getValue?.()).subscribe(expanded => {
+      if (expanded && expanded.ResultData && expanded.ResultData.length) {
+        this.buildFacetCounts(expanded.ResultData, true); // final pass
+      } else {
+        // No expanded data; finalize by clearing skeletons while retaining initial counts
+        this.setFacetLoadingComplete();
+      }
+      this.fullFacetCountsComplete = true;
+      this.fullFacetCountsInFlight = false;
+    }, _e => {
+      // Expanded fetch failed; keep initial counts, just clear skeletons
+      this.setFacetLoadingComplete();
+      this.fullFacetCountsComplete = true;
+      this.fullFacetCountsInFlight = false;
+    });
+  }
+
+  private buildFacetCounts(data: any[], finalPass: boolean = true) {
+    this.themesWithCount = [];
+    this.componentsWithCount = [];
+    this.keywords = this.collectKeywords(data);
+    this.collectThemes(data);
+    this.resourceTypes = this.collectResourceTypes(data);
     this.collectThemesWithCount();
-
-    this.components = this.collectComponents(searchResults);
-
-    // collect Resource features with count
+    this.components = this.collectComponents(data);
     this.collectComponentsWithCount();
     this.collectResourceTypesWithCount();
+    let compNoData = false;
     if (this.componentsWithCount.length == 0) {
       compNoData = true;
-      this.componentsWithCount = [];
-      this.componentsWithCount.push({
-        label: "DataFile - 0",
-        data: "DataFile",
-        key: "DataFile",
-      });
-      this.componentsWithCount.push({
-        label: "AccessPage - 0",
-        data: "AccessPage",
-        key: "AccessPage",
-      });
-      this.componentsWithCount.push({
-        label: "SubCollection - 0",
-        data: "Subcollection",
-        key: "SubCollection",
-      });
-      this.componentsTree = [
-        {
-          label: "Record has -",
-          expanded: true,
-          children: this.componentsWithCount,
-          key: "RecordHas",
-        },
+      this.componentsWithCount = [
+        { label: 'DataFile - 0', data: 'DataFile', key: 'DataFile' },
+        { label: 'AccessPage - 0', data: 'AccessPage', key: 'AccessPage' },
+        { label: 'SubCollection - 0', data: 'Subcollection', key: 'SubCollection' }
       ];
-
+      this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
       this.componentsTree[0].selectable = false;
-
-      for (var i = 0; i < this.componentsWithCount.length; i++) {
-        this.componentsTree[0].children[i].selectable = false;
-      }
+      for (let i = 0; i < this.componentsWithCount.length; i++) this.componentsTree[0].children[i].selectable = false;
     }
-    this.themesTree = [
-      {
-        label: "Research Topics -",
-        expanded: true,
-        children: this.themesWithCount,
-        key: "ResearchTopics",
-      },
-    ];
-
-    this.resourceTypeTree = [
-      {
-        label: "Type of Resource  -",
-        expanded: true,
-        children: this.resourceTypesWithCount,
-        key: "ResourceType",
-      },
-    ];
-
+    this.themesTree = [{ label: 'Research Topics -', expanded: true, children: this.themesWithCount, key: 'ResearchTopics' }];
+    this.resourceTypeTree = [{ label: 'Type of Resource  -', expanded: true, children: this.resourceTypesWithCount, key: 'ResourceType' }];
     if (!compNoData) {
-      this.componentsTree = [
-        {
-          label: "Record has -",
-          expanded: true,
-          children: this.componentsWithCount,
-          key: "RecordHas",
-        },
-      ];
+      this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
     }
-    this.authors = this.collectAuthors(searchResults);
+    this.authors = this.collectAuthors(data);
+    if (finalPass) {
+      this.setFacetLoadingComplete();
+    }
     this.searching = false;
+  }
+
+  private setFacetLoadingComplete() {
+    this.recordHasLoading = false;
+    this.themeLoading = false;
+    this.resourceTypeLoading = false;
   }
 
   /**
@@ -590,7 +586,101 @@ export class FiltersComponent implements OnInit, AfterViewInit {
     lFilterString = this.removeEndingComma(lFilterString);
     if (!lFilterString) lFilterString = "NoFilter";
 
-    this.searchService.setFilterString(lFilterString);
+  this.lastOutboundFilterString = lFilterString;
+  this.searchService.setFilterString(lFilterString);
+  }
+
+  /**
+   * Parse an incoming filter query string (e.g. "@type=Dataset,Software&topic.tag=Fire&components.@type=AccessPage")
+   * and update selection node arrays so UI checkmarks reflect external changes (chip removal/reset).
+   */
+  private applyFilterStringToSelections(filterStr: string){
+    if(!filterStr || filterStr === 'NoFilter'){
+      this.clearSelectionsOnly();
+      return;
+    }
+    // Break into segments by '&'
+    const segs = filterStr.split('&');
+    const typeMap: {[k:string]: string[]} = {};
+    for(const seg of segs){
+      const [k, v] = seg.split('=');
+      if(!k || !v) continue;
+      const values = v.split(',').filter(x=>!!x);
+      if(!typeMap[k]) typeMap[k] = [];
+      typeMap[k].push(...values);
+    }
+    // Clear current selections
+    this.clearSelectionsOnly();
+
+    // Helper: find matching TreeNode(s) by comparing data with optional space-stripped normalization
+    const findNodes = (tree: TreeNode[] | undefined, values: string[], spaceInsensitive: boolean = false): any[] => {
+      if(!tree || !tree.length) return [];
+      const root = tree[0];
+      if(!root || !root.children) return [];
+      const matches: any[] = [];
+      const norm = (s:string) => spaceInsensitive ? s.replace(/\s/g,'').toLowerCase() : s.toLowerCase();
+      const childIndex: {[k:string]: any} = {};
+      root.children.forEach(ch => { if(ch && ch.data) childIndex[norm(String(ch.data))] = ch; });
+      values.forEach(v => {
+        const key = norm(String(v));
+        if(childIndex[key]) matches.push(childIndex[key]);
+      });
+      return matches;
+    };
+
+    // Apply @type
+    if(typeMap['@type']){
+      // Original filter string removed spaces when emitting (@type=DataPublication) whereas tree nodes keep spaces ("Data Publication").
+      // We therefore track both raw (no-space) and display (with-space) forms.
+      const rawTypes = [...new Set(typeMap['@type'])];
+      // Derive display form by reinserting spaces using simple startCase heuristic if tree node not found directly.
+      const toDisplay = (val:string) => {
+        // If an exact (case-insensitive) match exists among tree children (ignoring spaces) we will use that child.data directly later.
+        // For label list we prefer tree node data; keep a fallback transformation.
+        return _.startCase(val); // e.g. DataPublication -> Data Publication
+      };
+      // Map raw values to actual TreeNode references
+      const typeNodes = findNodes(this.resourceTypeTree, rawTypes, true /* space insensitive */);
+      this.selectedResourceTypeNode = typeNodes;
+      this.selectedResourceType = typeNodes.map(n => n.data) || rawTypes.map(toDisplay);
+    }
+    // Apply topic.tag
+    if(typeMap['topic.tag']){
+      const topics = [...new Set(typeMap['topic.tag'])];
+      const topicNodes = findNodes(this.themesTree, topics, false);
+      this.selectedThemesNode = topicNodes;
+      this.selectedThemes = topicNodes.map(n => n.data);
+    }
+    // Apply components.@type
+    if(typeMap['components.@type']){
+      const compsRaw = [...new Set(typeMap['components.@type'])];
+      const compNodes = findNodes(this.componentsTree, compsRaw, true /* space insensitive */);
+      this.selectedComponentsNode = compNodes;
+      this.selectedComponents = compNodes.map(n => n.data);
+    }
+    // Apply authors (contactPoint.fn)
+    if(typeMap['contactPoint.fn']){
+      // Direct value list; maintain selectedAuthor array used by filterResults()
+      this.selectedAuthor = [...new Set(typeMap['contactPoint.fn'])];
+    }
+    // Apply keywords
+    if(typeMap['keyword']){
+      // Keywords are stored in their original form in the filter string; assign directly
+      this.selectedKeywords = [...new Set(typeMap['keyword'])];
+    }
+  }
+
+  /** Clear only selection arrays (do not emit/filter string) */
+  private clearSelectionsOnly(){
+    this.selectedThemes = [];
+    this.selectedThemesNode = [];
+    this.selectedComponents = [];
+    this.selectedComponentsNode = [];
+    this.selectedResourceType = [];
+    this.selectedResourceTypeNode = [];
+    this.selectedAuthor = [];
+    this.selectedKeywords = [];
+    // leave authors/keywords for now; extend as needed
   }
 
   /**
@@ -754,34 +844,25 @@ export class FiltersComponent implements OnInit, AfterViewInit {
    * clear filters
    */
   clearFilters() {
-    this.suggestedThemes = [];
-    this.suggestedKeywords = [];
-    this.suggestedAuthors = [];
-    // this.selectedAuthor = [];
+    // Clear only selections & suggestion arrays that depend on them.
+    this.selectedAuthor = [];
     this.selectedKeywords = [];
     this.selectedThemes = [];
     this.selectedThemesNode = [];
     this.selectedComponents = [];
     this.selectedComponentsNode = [];
-    this.selectedAuthorDropdown = false;
     this.selectedResourceType = [];
     this.selectedResourceTypeNode = [];
-    this.resourceTypes = this.collectResourceTypes(this.searchResults);
-    this.collectResourceTypesWithCount();
-    this.authors = this.collectAuthors(this.searchResults);
-    this.suggestedKeywords = this.collectKeywords(this.searchResults);
-    this.components = this.collectComponents(this.searchResults);
-    this.collectComponentsWithCount();
-    this.collectThemes(this.searchResults);
-    this.collectThemesWithCount();
-    this.themesTree["expanded"] = true;
-    this.themesTree["children"] = this.themesWithCount;
-    this.componentsTree["expanded"] = true;
-    this.componentsTree["children"] = this.componentsWithCount;
-    this.resourceTypeTree["expanded"] = true;
-    this.resourceTypeTree["children"] = this.resourceTypesWithCount;
+    this.selectedAuthorDropdown = false;
 
-    this.filterResults();
+    // Do not rebuild facet trees here. That caused transient state where counts / ordering changed
+    // and showMoreLink logic flickered (looked like topics disappeared). The next incoming search
+    // response (already triggered by ResultsComponent due to filter string change) will rebuild
+    // via onSuccess -> buildFacetCounts(). We only need to emit a neutral filter string.
+
+    // Emit 'NoFilter' to clear chips; suppress echo loop tracking.
+    this.lastOutboundFilterString = 'NoFilter';
+    this.searchService.setFilterString('NoFilter');
   }
 
   /**

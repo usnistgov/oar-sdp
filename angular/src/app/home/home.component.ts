@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
       description:
         "NIST is advancing the science of additive manufacturing (3D printing) to improve the quality and reliability of 3D printed parts.",
       image: "assets/images/Theme_AdditiveManufacturing.jpg",
-      searchTerm: "Additive Manufacturing",
+      searchTerm: '"Additive Manufacturing"',
     },
     ms: {
       title: "MATHEMATICS AND STATS",
@@ -86,14 +86,14 @@ export class HomeComponent implements OnInit {
       description:
         "NIST provides the measurements, standards, and technical expertise scientists and industries need to push the limits of the fundamental properties of nature.",
       image: "assets/images/Theme_Physics.jpg",
-      searchTerm: "Physics",
+      searchTerm: "PN",
     },
     Communications: {
       title: "ADVANCED COMMUNICATIONS",
       description:
         "NIST promotes the development and deployment of advanced communications technologies by advancing the measurement science underlying wireless technologies.",
       image: "assets/images/Theme_AdvancedCommunications.jpg",
-      searchTerm: "Communications",
+      searchTerm: "AC",
     },
     Chemistry: {
       title: "CHEMISTRY",
@@ -156,11 +156,11 @@ export class HomeComponent implements OnInit {
         break;
       }
       case "Additive Manufacturing": {
-        queryValue = "Additive Manufacturing";
+        queryValue = '"Additive Manufacturing"';
         break;
       }
       case "Artificial Intelligence": {
-        queryValue = "Artificial Intelligence";
+        queryValue = '"Artificial Intelligence"';
         break;
       }
       default: {

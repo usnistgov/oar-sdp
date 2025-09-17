@@ -18,6 +18,7 @@ import { SDPQuery } from "../search-query/query";
 })
 export class RealSearchService implements SearchService {
   private pageSize = new BehaviorSubject<number>(10); // Default to 10 items per page
+  private lastSearchResponse$ = new BehaviorSubject<any>(null); // broadcast unified response
 
   operators = {
     AND: "logicalOp=AND",
@@ -152,30 +153,28 @@ export class RealSearchService implements SearchService {
         ? "&topic.tag=" + searchTaxonomyKey
         : "";
 
-      // Build URL with all parameters
+      // Build URL with all parameters ensuring searchphrase is first and no leading '&'
       url = "records?";
-      if (searchPhraseValue) url += "&" + searchPhraseValue.trim();
-      if (sortOrder) url += "&sort.asc=" + sortOrder;
-      if (finalKeyValueStr.trim() != "") url += "&" + finalKeyValueStr.trim();
-      if (keyString) url += "&" + keyString.trim();
-      if (filter && filter != "NoFilter") url += "&" + filter.trim();
-
-      // Add pagination parameters
+      const parts: string[] = [];
+      if (searchPhraseValue) parts.push(searchPhraseValue.trim());
+      if (sortOrder) parts.push("sort.asc=" + sortOrder);
+      if (finalKeyValueStr.trim() != "") parts.push(finalKeyValueStr.trim());
+      if (keyString) parts.push(keyString.replace(/^&/, "").trim());
+      if (filter && filter != "NoFilter") parts.push(filter.trim());
       if (page) {
-        url += "&page=" + page;
-        url += "&size=" + itemsPerPage; // Always include itemsPerPage
+        parts.push("page=" + page);
+        parts.push("size=" + itemsPerPage);
       }
-
+      url += parts.join("&");
       // Include required fields
-      url +=
-        "&include=ediid,description,title,keyword,topic.tag,contactPoint," +
+      url += (parts.length ? "&" : "") +
+        "include=ediid,description,title,keyword,topic.tag,contactPoint," +
         "components.@type,@type,doi,landingPage&exclude=_id";
     }
 
     return this.appConfig.getConfig().pipe(
-      rxjsop.mergeMap((conf) => {
-        return this.http.get(conf.RMMAPI + url);
-      }),
+      rxjsop.mergeMap((conf) => this.http.get(conf.RMMAPI + url)),
+      rxjsop.tap((resp) => this.lastSearchResponse$.next(resp)),
       rxjsop.catchError((err) => {
         console.error("Failed to complete search: " + JSON.stringify(err));
         return throwError(err);
@@ -327,5 +326,48 @@ export class RealSearchService implements SearchService {
 
   setPageSize(size: number) {
     this.pageSize.next(size);
+  }
+
+  watchSearchResponse(): Observable<any> {
+    return this.lastSearchResponse$.asObservable();
+  }
+
+  fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
+    // Build a lightweight include list (only fields needed for facet counting)
+    let clone: SDPQuery = JSON.parse(JSON.stringify(query));
+    // Force first page only
+    let baseUrl = this.buildFacetOnlyUrl(clone, searchTaxonomyKey, filter, maxSize);
+    return this.appConfig.getConfig().pipe(
+      rxjsop.mergeMap(conf => this.http.get(conf.RMMAPI + baseUrl)),
+      rxjsop.catchError(err => throwError(err))
+    );
+  }
+
+  // Helper builds facet-only URL (no export outside service)
+  private buildFacetOnlyUrl(query: SDPQuery, searchTaxonomyKey: string, filter: string, size: number): string {
+    let searchPhraseValue = query.freeText ? 'searchphrase=' + query.freeText.trim() : '';
+    let finalKeyValueStr = '';
+    for (let i=0;i<query.queryRows.length;i++) {
+      let row = query.queryRows[i];
+      if (!row.fieldText || !row.fieldValue) continue;
+      if (finalKeyValueStr && row.operator && row.operator !== 'AND') {
+        finalKeyValueStr += '&' + this.operators[row.operator] + '&';
+      } else if (finalKeyValueStr) {
+        finalKeyValueStr += '&';
+      }
+      finalKeyValueStr += row.fieldValue + '=' + row.fieldText.replace(/"/g,'');
+    }
+  let keyString = searchTaxonomyKey ? 'topic.tag=' + searchTaxonomyKey : '';
+  let url = 'records?';
+  const parts: string[] = [];
+  if (searchPhraseValue) parts.push(searchPhraseValue);
+  if (finalKeyValueStr) parts.push(finalKeyValueStr);
+  if (keyString) parts.push(keyString);
+  if (filter && filter !== 'NoFilter') parts.push(filter.trim());
+  parts.push('page=1');
+  parts.push('size=' + size);
+  url += parts.join('&');
+  url += (parts.length ? '&' : '') + 'include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id';
+    return url;
   }
 }

@@ -18,6 +18,7 @@ export class MockSearchService implements SearchService {
   filterString = new BehaviorSubject<string>("");
   currentPage = new BehaviorSubject<number>(1);
   totalItems = new BehaviorSubject<number>(1);
+  private lastSearchResponse$ = new BehaviorSubject<any>(null);
 
   /**
    * Creates a new SearchService with the injected Http.
@@ -43,8 +44,9 @@ export class MockSearchService implements SearchService {
     sortOrder?: string,
     filter?: string
   ): Observable<any> {
-    var mockSearchResult = require("../../../assets/sample01.json");
-    return of(mockSearchResult);
+  const empty = { ResultData: [], total: 0 };
+  this.lastSearchResponse$.next(empty);
+  return of(empty);
   }
 
   /**
@@ -90,8 +92,7 @@ export class MockSearchService implements SearchService {
   }
 
   //   simpleSearch(page: number, pageSize: number, sortOrder:string): Observable<any> {
-  //     var mockSearchResult = require('../../../assets/sample01.json');
-  //     return of(mockSearchResult);
+  //     return of({ ResultData: [], total: 0 });
   //   }
   /**
    * Returns an Observable for the HTTP GET request for the JSON resource.
@@ -175,5 +176,14 @@ export class MockSearchService implements SearchService {
    */
   setPageSize(size: number): void {
     this.pageSize.next(size);
+  }
+
+  watchSearchResponse(): Observable<any> {
+    return this.lastSearchResponse$.asObservable();
+  }
+
+  fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
+    // For mock just reuse sample result
+  return of({ ResultData: [], total: 0 });
   }
 }
