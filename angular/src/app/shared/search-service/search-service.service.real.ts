@@ -157,7 +157,16 @@ export class RealSearchService implements SearchService {
       url = "records?";
       const parts: string[] = [];
       if (searchPhraseValue) parts.push(searchPhraseValue.trim());
-      if (sortOrder) parts.push("sort." + sortOrder.split(":")[1] + "=" + sortOrder.split(":")[0]);
+      if (sortOrder) {
+        // Handle case where sortOrder doesn't include direction
+        if (sortOrder.includes(":")) {
+          const [field, direction] = sortOrder.split(":");
+          parts.push("sort." + direction + "=" + field);
+        } else {
+          // Default to ascending sort when no direction specified
+          parts.push("sort.asc=" + sortOrder);
+        }
+      }
       if (finalKeyValueStr.trim() != "") parts.push(finalKeyValueStr.trim());
       if (keyString) parts.push(keyString.replace(/^&/, "").trim());
       if (filter && filter != "NoFilter") parts.push(filter.trim());
@@ -167,7 +176,8 @@ export class RealSearchService implements SearchService {
       }
       url += parts.join("&");
       // Include required fields
-      url += (parts.length ? "&" : "") +
+      url +=
+        (parts.length ? "&" : "") +
         "include=ediid,description,title,keyword,topic.tag,contactPoint,annotated," +
         "components.@type,@type,doi,landingPage&exclude=_id";
     }
@@ -332,42 +342,62 @@ export class RealSearchService implements SearchService {
     return this.lastSearchResponse$.asObservable();
   }
 
-  fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
+  fetchAllForFacetCounts(
+    query: SDPQuery,
+    searchTaxonomyKey: string,
+    maxSize: number,
+    filter?: string
+  ): Observable<any> {
     // Build a lightweight include list (only fields needed for facet counting)
     let clone: SDPQuery = JSON.parse(JSON.stringify(query));
     // Force first page only
-    let baseUrl = this.buildFacetOnlyUrl(clone, searchTaxonomyKey, filter, maxSize);
+    let baseUrl = this.buildFacetOnlyUrl(
+      clone,
+      searchTaxonomyKey,
+      filter,
+      maxSize
+    );
     return this.appConfig.getConfig().pipe(
-      rxjsop.mergeMap(conf => this.http.get(conf.RMMAPI + baseUrl)),
-      rxjsop.catchError(err => throwError(err))
+      rxjsop.mergeMap((conf) => this.http.get(conf.RMMAPI + baseUrl)),
+      rxjsop.catchError((err) => throwError(err))
     );
   }
 
   // Helper builds facet-only URL (no export outside service)
-  private buildFacetOnlyUrl(query: SDPQuery, searchTaxonomyKey: string, filter: string, size: number): string {
-    let searchPhraseValue = query.freeText ? 'searchphrase=' + query.freeText.trim() : '';
-    let finalKeyValueStr = '';
-    for (let i=0;i<query.queryRows.length;i++) {
+  private buildFacetOnlyUrl(
+    query: SDPQuery,
+    searchTaxonomyKey: string,
+    filter: string,
+    size: number
+  ): string {
+    let searchPhraseValue = query.freeText
+      ? "searchphrase=" + query.freeText.trim()
+      : "";
+    let finalKeyValueStr = "";
+    for (let i = 0; i < query.queryRows.length; i++) {
       let row = query.queryRows[i];
       if (!row.fieldText || !row.fieldValue) continue;
-      if (finalKeyValueStr && row.operator && row.operator !== 'AND') {
-        finalKeyValueStr += '&' + this.operators[row.operator] + '&';
+      if (finalKeyValueStr && row.operator && row.operator !== "AND") {
+        finalKeyValueStr += "&" + this.operators[row.operator] + "&";
       } else if (finalKeyValueStr) {
-        finalKeyValueStr += '&';
+        finalKeyValueStr += "&";
       }
-      finalKeyValueStr += row.fieldValue + '=' + row.fieldText.replace(/"/g,'');
+      finalKeyValueStr +=
+        row.fieldValue + "=" + row.fieldText.replace(/"/g, "");
     }
-  let keyString = searchTaxonomyKey ? 'topic.tag=' + searchTaxonomyKey : '';
-  let url = 'records?';
-  const parts: string[] = [];
-  if (searchPhraseValue) parts.push(searchPhraseValue);
-  if (finalKeyValueStr) parts.push(finalKeyValueStr);
-  if (keyString) parts.push(keyString);
-  if (filter && filter !== 'NoFilter') parts.push(filter.trim());
-  parts.push('page=1');
-  parts.push('size=' + size);
-  url += parts.join('&');
-  url += (parts.length ? '&' : '') + 'include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id';
+    let keyString = searchTaxonomyKey ? "topic.tag=" + searchTaxonomyKey : "";
+    let url = "records?";
+    const parts: string[] = [];
+    if (searchPhraseValue) parts.push(searchPhraseValue);
+    if (finalKeyValueStr) parts.push(finalKeyValueStr);
+    if (keyString) parts.push(keyString);
+    if (filter && filter !== "NoFilter") parts.push(filter.trim());
+    parts.push("page=1");
+    parts.push("size=" + size);
+    url += parts.join("&");
+    url +=
+      (parts.length ? "&" : "") +
+      "include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id";
     return url;
   }
 }

@@ -537,7 +537,7 @@ export class ResultsComponent implements OnInit {
     this.selectedFields = ["Resource Description", "Subject keywords"];
     this.allChecked = false;
     // MARK: 10/09/2025 - @Mehdi - set default sort order to annotated:desc so newest records show first
-    this.sortItemKey = "annotated:desc"; 
+    this.sortItemKey = "annotated:desc";
     this.currentSortOrder = "annotated:desc";
 
     this.searchSubscription = this.search(
@@ -571,6 +571,10 @@ export class ResultsComponent implements OnInit {
    * Refresh (reload) the search result based on current sort order (when user set the sort order)
    */
   sortByFields() {
+    // Ensure sortItemKey has a direction (default to desc if missing)
+    if (this.sortItemKey && !this.sortItemKey.includes(":")) {
+      this.sortItemKey = this.sortItemKey + ":desc";
+    }
     this.currentSortOrder = this.sortItemKey;
     this.getCurrentPage();
   }
