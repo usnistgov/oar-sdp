@@ -542,3 +542,15 @@ a .custom-black-button .p-button .p-button-icon {
   .no-results-card #dog { width:120px; }
   .no-results-title { font-size:1.65rem; }
 }
+
+.annotation-date {
+  margin: 0.5rem 0;
+}
+
+:host ::ng-deep .annotation-tag.p-tag {
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .annotation-tag.p-tag:hover {
+  background-color: #e8e8e8 !important;
+}

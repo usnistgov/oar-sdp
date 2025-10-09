@@ -39,9 +39,10 @@ export class ResultsComponent implements OnInit {
   filterableFields: SelectItem[];
   fields: SelectItem[] = [];
   errorMessage: string;
-  sortItemKey: string;
+  sortItemKey: string = "annotated:desc";
   currentFilter: string = "NoFilter";
-  currentSortOrder: string = "";
+  // MARK: 10/09/2025 - @Mehdi - set default sort order to annotated:desc so newest records show first
+  currentSortOrder: string = "annotated:desc";
   PDRAPIURL: string;
   resultStatus: string;
   RESULT_STATUS = {
@@ -109,7 +110,6 @@ export class ResultsComponent implements OnInit {
     private appConfig: AppConfig,
     public myElement: ElementRef
   ) {
-
     this.appConfig.getConfig().subscribe((conf) => {
       this.PDRAPIURL = conf.PDRAPI;
     });
@@ -125,8 +125,12 @@ export class ResultsComponent implements OnInit {
         // the real-fields emission). This eliminates the duplicate page=1&size=10 call.
         this.fieldsReady = !!(fields && fields.length > 0);
         // Important: don't start the first search until Inputs are initialized (searchValue set)
-        if (this.startupGuard && !this.initialSearchStarted && this.fieldsReady) {
-          if (typeof this.searchValue === 'undefined') {
+        if (
+          this.startupGuard &&
+          !this.initialSearchStarted &&
+          this.fieldsReady
+        ) {
+          if (typeof this.searchValue === "undefined") {
             // Wait for Inputs/ngOnInit, we'll kick off there
             return;
           }
@@ -265,7 +269,7 @@ export class ResultsComponent implements OnInit {
         this.queryStringWarning = this.queryStringErrorMessage != "";
 
         this.currentFilter = "NoFilter";
-        this.currentSortOrder = "";
+        this.currentSortOrder = "annotated:desc";
 
         this.searchSubscription = this.search(null, 1, this.itemsPerPage);
       }
@@ -401,7 +405,7 @@ export class ResultsComponent implements OnInit {
           that.searchResults = searchResults.ResultData;
           that.totalItems = searchResults.ResultCount;
           that.resultStatus = this.RESULT_STATUS.success;
-          this.lastErrorDetail = '';
+          this.lastErrorDetail = "";
           that.searchService.setTotalItems(that.totalItems);
           that.dataReady = true;
           this.totalItemsChange.emit(that.totalItems);
@@ -532,8 +536,9 @@ export class ResultsComponent implements OnInit {
     // MARK: 09/04/2024 - took off DOI by default
     this.selectedFields = ["Resource Description", "Subject keywords"];
     this.allChecked = false;
-    this.sortItemKey = null;
-    this.currentSortOrder = "";
+    // MARK: 10/09/2025 - @Mehdi - set default sort order to annotated:desc so newest records show first
+    this.sortItemKey = "annotated:desc"; 
+    this.currentSortOrder = "annotated:desc";
 
     this.searchSubscription = this.search(
       null,
@@ -664,16 +669,42 @@ export class ResultsComponent implements OnInit {
     // Clear previous error to reveal skeleton
     this.resultStatus = null;
     this.dataReady = false;
-    this.search(null, this.currentPage || 1, this.itemsPerPage, this.currentSortOrder, this.currentFilter, "retry");
+    this.search(
+      null,
+      this.currentPage || 1,
+      this.itemsPerPage,
+      this.currentSortOrder,
+      this.currentFilter,
+      "retry"
+    );
   }
 
   // Format various HttpErrorResponse shapes into a concise string
   private formatHttpError(err: any): string {
-    if (!err) return 'Unknown error';
+    if (!err) return "Unknown error";
     const status = err.status || err.statusCode;
-    const text = err.statusText || err.message || '';
-    const url = err.url ? ` – ${err.url}` : '';
+    const text = err.statusText || err.message || "";
+    const url = err.url ? ` – ${err.url}` : "";
     if (status) return `${status} ${text}${url}`.trim();
-    return text || 'Unknown error';
+    return text || "Unknown error";
+  }
+
+  /**
+   * Format the annotation date to a readable format
+   * @param dateString - ISO date string from the annotated field
+   */
+  formatAnnotationDate(dateString: string): string {
+    if (!dateString) return "";
+
+    try {
+      const date = new Date(dateString);
+      // Format as "MM/DD/YYYY"
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      const year = date.getFullYear();
+      return `${month}/${day}/${year}`;
+    } catch (e) {
+      return dateString; // Return original if parsing fails
+    }
   }
 }

@@ -157,7 +157,7 @@ export class RealSearchService implements SearchService {
       url = "records?";
       const parts: string[] = [];
       if (searchPhraseValue) parts.push(searchPhraseValue.trim());
-      if (sortOrder) parts.push("sort.asc=" + sortOrder);
+      if (sortOrder) parts.push("sort." + sortOrder.split(":")[1] + "=" + sortOrder.split(":")[0]);
       if (finalKeyValueStr.trim() != "") parts.push(finalKeyValueStr.trim());
       if (keyString) parts.push(keyString.replace(/^&/, "").trim());
       if (filter && filter != "NoFilter") parts.push(filter.trim());
@@ -168,7 +168,7 @@ export class RealSearchService implements SearchService {
       url += parts.join("&");
       // Include required fields
       url += (parts.length ? "&" : "") +
-        "include=ediid,description,title,keyword,topic.tag,contactPoint," +
+        "include=ediid,description,title,keyword,topic.tag,contactPoint,annotated," +
         "components.@type,@type,doi,landingPage&exclude=_id";
     }
 
