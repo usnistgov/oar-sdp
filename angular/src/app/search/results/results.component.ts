@@ -32,7 +32,11 @@ export class ResultsComponent implements OnInit {
   itemsPerPage: number = 10;
   searchResults: any[];
   // MARK: 09/04/2024 - took off DOI by default
-  selectedFields: string[] = ["Resource Description", "Subject keywords"];
+  selectedFields: string[] = [
+    "Resource Description",
+    "Subject keywords",
+    "Annotated",
+  ];
   allChecked: boolean = false;
   fieldsArray: any[];
   displayFields: string[] = [];
@@ -534,7 +538,11 @@ export class ResultsComponent implements OnInit {
    */
   resetSelectedFields() {
     // MARK: 09/04/2024 - took off DOI by default
-    this.selectedFields = ["Resource Description", "Subject keywords"];
+    this.selectedFields = [
+      "Resource Description",
+      "Subject keywords",
+      "Annotated",
+    ];
     this.allChecked = false;
     // MARK: 10/09/2025 - @Mehdi - set default sort order to annotated:desc so newest records show first
     this.sortItemKey = "annotated:desc";
@@ -599,6 +607,11 @@ export class ResultsComponent implements OnInit {
         }
       }
     }
+    this.searchSubscription = this.search(
+      null,
+      this.currentPage,
+      this.itemsPerPage
+    );
   }
 
   /**

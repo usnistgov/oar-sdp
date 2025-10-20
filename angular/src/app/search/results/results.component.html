@@ -309,28 +309,6 @@
               class="result-details"
               style="margin-top: -10px !important; margin-bottom: 10px"
             >
-              <div *ngIf="resultItem.annotated" class="annotation-date">
-                <p-tag
-                  severity="info"
-                  [rounded]="true"
-                  styleClass="annotation-tag"
-                  [style]="{
-                    'background-color': '#f2f2f2',
-                    color: '#555',
-                    border: 'none',
-                    'font-size': '0.8rem',
-                    padding: '0.3rem 0.8rem'
-                  }"
-                >
-                  <i
-                    class="pi pi-calendar"
-                    style="margin-right: 5px; opacity: 0.7"
-                  ></i>
-                  Last annotated on
-                  {{ formatAnnotationDate(resultItem.annotated) }}
-                </p-tag>
-              </div>
-
               <div
                 class="result-description"
                 *ngIf="selectedFields.indexOf('Resource Description') !== -1"
@@ -407,6 +385,30 @@
                 <span style="color: #000" *ngIf="resultItem.doi == null">
                   None
                 </span>
+              </div>
+              <div
+                *ngIf="selectedFields.indexOf('Annotated') !== -1"
+                class="ui-grid-row details annotation-date"
+              >
+                <p-tag
+                  severity="info"
+                  [rounded]="true"
+                  styleClass="annotation-tag"
+                  [style]="{
+                    'background-color': '#f2f2f2',
+                    color: '#555',
+                    border: 'none',
+                    'font-size': '0.8rem',
+                    padding: '0.3rem 0.8rem'
+                  }"
+                >
+                  <i
+                    class="pi pi-calendar"
+                    style="margin-right: 5px; opacity: 0.7"
+                  ></i>
+                  Updated on
+                  {{ formatAnnotationDate(resultItem.annotated) }}
+                </p-tag>
               </div>
               <div class="header-container" style="margin-top: -20px">
                 <div
