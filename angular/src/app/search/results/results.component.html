@@ -387,27 +387,41 @@
                 </span>
               </div>
               <div
-                *ngIf="selectedFields.indexOf('Annotated') !== -1"
-                class="ui-grid-row details annotation-date"
+                class="dates-container"
+                *ngIf="
+                  selectedFields.indexOf('Annotated') !== -1 ||
+                  (selectedFields.indexOf('First Issued') !== -1 &&
+                    resultItem.firstIssued)
+                "
               >
                 <p-tag
+                  *ngIf="
+                    selectedFields.indexOf('First Issued') !== -1 &&
+                    resultItem.firstIssued
+                  "
+                  severity="info"
+                  [rounded]="true"
+                  styleClass="first-issued-tag"
+                >
+                  <i
+                    class="pi pi-clock"
+                    style="margin-right: 5px; opacity: 0.7"
+                  ></i>
+                  Released on
+                  {{ formatAnnotationDate(resultItem.firstIssued) }}
+                </p-tag>
+
+                <p-tag
+                  *ngIf="selectedFields.indexOf('Annotated') !== -1"
                   severity="info"
                   [rounded]="true"
                   styleClass="annotation-tag"
-                  [style]="{
-                    'background-color': '#f2f2f2',
-                    color: '#555',
-                    border: 'none',
-                    'font-size': '0.8rem',
-                    padding: '0.3rem 0.8rem'
-                  }"
                 >
                   <i
                     class="pi pi-calendar"
                     style="margin-right: 5px; opacity: 0.7"
                   ></i>
-                  Updated on
-                  {{ formatAnnotationDate(resultItem.annotated) }}
+                  Updated on {{ formatAnnotationDate(resultItem.annotated) }}
                 </p-tag>
               </div>
               <div class="header-container" style="margin-top: -20px">

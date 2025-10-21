@@ -620,16 +620,27 @@ a .custom-black-button .p-button .p-button-icon {
   }
 }
 
-.annotation-date {
-  margin-bottom: -20px;
-  margin-left: -2px;
-  margin-top: 20px;
+.dates-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  margin-left: -3px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+:host ::ng-deep .first-issued-tag.p-tag {
+  background-color: #e8f4ff;
+  color: #0d3a5c;
+  border: none;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.8rem;
 }
 
 :host ::ng-deep .annotation-tag.p-tag {
-  transition: all 0.2s ease;
-}
-
-:host ::ng-deep .annotation-tag.p-tag:hover {
-  background-color: #e8e8e8 !important;
+  background-color: #f2f2f2;
+  color: #555;
+  border: none;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.8rem;
 }
