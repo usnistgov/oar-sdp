@@ -35,8 +35,9 @@ export class ResultsComponent implements OnInit {
   selectedFields: string[] = [
     "Resource Description",
     "Subject keywords",
-    "Annotated",
-    "First Issued"
+    // Hide released (firtIssued) by default
+    "Modified",
+    // "Released"
   ];
   allChecked: boolean = false;
   fieldsArray: any[];
@@ -542,8 +543,8 @@ export class ResultsComponent implements OnInit {
     this.selectedFields = [
       "Resource Description",
       "Subject keywords",
-      "Annotated",
-      "First Issued"
+      "Modified",
+      "Released"
     ];
     this.allChecked = false;
     // MARK: 10/09/2025 - @Mehdi - set default sort order to annotated:desc so newest records show first
