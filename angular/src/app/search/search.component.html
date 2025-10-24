@@ -17,7 +17,7 @@
   >
     <div
       class="filter"
-      *ngIf="!hideFilters"
+      *ngIf="!hideFilters && !mobileMode"
       [@filterStatus]="filterToggler"
       [ngStyle]="{ width: filterWidthStr }"
       (window:resize)="onResize($event)"
@@ -52,6 +52,99 @@
         (zeroResultsMeta)="onZeroResultsMeta($event)"
         (errorState)="onErrorState($event)"
       ></app-results>
+    </div>
+  </div>
+
+  <ng-container *ngIf="mobileMode && !hideFilters">
+    <div
+      class="mobile-filters-backdrop"
+      *ngIf="mobileFiltersOpen"
+      (click)="toggleMobileFilters()"
+      role="presentation"
+    ></div>
+    <div
+      class="mobile-filters-drawer"
+      [class.open]="mobileFiltersOpen"
+      [attr.aria-hidden]="!mobileFiltersOpen"
+      id="mobileFiltersDrawer"
+      role="dialog"
+      aria-label="Filters"
+    >
+      <div class="mobile-filters-header">
+        <span>Filters</span>
+        <button
+          type="button"
+          class="mobile-close-btn"
+          (click)="toggleMobileFilters()"
+          aria-label="Close filters"
+        >
+          Close
+        </button>
+      </div>
+      <div class="mobile-filters-content">
+        <app-filters
+          [searchValue]="searchValue"
+          [searchTaxonomyKey]="searchTaxonomyKey"
+          [parent]="parentDiv"
+          [filterWidthNum]="filterWidth"
+          [mobileMode]="mobileMode"
+          (filterMode)="updateWidth($event)"
+        ></app-filters>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="mobile-bottom-bar" *ngIf="mobileMode">
+    <div class="mobile-actions">
+      <button
+        type="button"
+        class="mobile-filter-toggle"
+        (click)="toggleMobileFilters()"
+        [disabled]="hideFilters"
+        [attr.aria-expanded]="mobileFiltersOpen"
+        aria-controls="mobileFiltersDrawer"
+      >
+        Filters
+        <span
+          class="mobile-filter-count"
+          *ngIf="activeFilterCount > 0"
+          [attr.aria-label]="activeFilterCount + ' active filters'"
+        >
+          ({{ activeFilterCount }})
+        </span>
+      </button>
+      <button
+        type="button"
+        class="mobile-clear-toggle"
+        *ngIf="!hideFilters && activeFilterCount > 0"
+        (click)="clearAllFilters()"
+        aria-label="Clear all filters"
+      >
+        Clear All
+      </button>
+    </div>
+    <div class="mobile-pagination">
+      <button
+        type="button"
+        class="mobile-page-btn"
+        (click)="goToPreviousPage()"
+        [disabled]="!canGoPrevious()"
+        aria-label="Previous page"
+      >
+        Prev
+      </button>
+      <span class="mobile-page-indicator">
+        {{ totalPages > 0 ? page : 0 }} / {{ totalPages > 0 ? totalPages : 0 }}
+      </span>
+      <button
+        type="button"
+        class="mobile-page-btn"
+        (click)="goToNextPage()"
+        [disabled]="!canGoNext()"
+        aria-label="Next page"
+      >
+        Next
+      </button>
     </div>
   </div>
 </div>

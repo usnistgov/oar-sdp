@@ -106,6 +106,7 @@
   }
   .mobile-collapsed-filter-header:focus { outline:2px solid #fff; outline-offset:2px; }
   .mobile-collapsed-filter-header .label { letter-spacing:.5px; }
+
 }
 
 .lbl-filter {
@@ -338,5 +339,3 @@
 :host ::ng-deep .p-tree { max-height: none !important; }
 /* Apply sticky to first node inside the new wrapper more reliably */
 :host ::ng-deep .topics-scroll #themes .p-tree-root-children > li.p-treenode:first-child > .p-treenode-content { position: sticky; top:0; z-index:3; background:#fff; }
-
-

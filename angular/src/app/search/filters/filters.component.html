@@ -18,8 +18,9 @@
   >
     <div style="padding: 0px">
       <!-- Filter header -->
-      <div id="filterHeader" *ngIf="isActive || mobileMode">
+      <div id="filterHeader" *ngIf="!mobileMode && isActive">
         <a
+          *ngIf="!mobileMode"
           id="filtersLabel"
           class="btn-sm collapsed in"
           (click)="setFilterWidth()"
@@ -40,6 +41,7 @@
         ></a>
 
         <a
+          *ngIf="!mobileMode"
           href="#"
           id="clear-all"
           data-toggle="tooltip"
@@ -281,7 +283,7 @@
         <div style="margin-top: -15px">
           <ng-container *ngIf="!themeLoading; else authorsSkeleton">
             <div class="lbl-filter">
-              <label><b>Authors and Contributors</b></label>
+              <label style="color: black"><b>Authors and Contributors</b></label>
             </div>
             <div class="filter-input p-fluid">
               <p-autoComplete
@@ -327,7 +329,7 @@
         <div style="margin-top: -15px; margin-bottom: 30px">
           <ng-container *ngIf="!themeLoading; else keywordSkeleton">
             <div class="lbl-filter">
-              <label><b>Keyword</b></label>
+              <label style="color: black"><b>Keyword</b></label>
             </div>
             <div class="filter-input p-fluid">
               <p-autoComplete

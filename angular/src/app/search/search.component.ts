@@ -6,11 +6,13 @@ import {
   NgZone,
   ViewChild,
   HostListener,
+  Inject,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 import * as _ from "lodash-es";
 import { SearchQueryService } from "../shared/search-query/search-query.service";
+import { SearchService, SEARCH_SERVICE } from "../shared/search-service";
 import {
   trigger,
   state,
@@ -71,6 +73,13 @@ export class SearchComponent implements OnInit, OnDestroy {
   lastZeroResults: boolean = false; // must be public for template binding
   lastFilterZero: boolean = false; // must be public for template binding
   activeFilterTags: string[] = []; // retained only for legacy binding; no longer used after refactor
+  mobileFiltersOpen: boolean = false;
+  activeFilterCount: number = 0;
+  totalItems: number = 0;
+  totalPages: number = 0;
+  pageSize: number = 10;
+
+  private subscriptions: Subscription = new Subscription();
   onZeroResults(zero: boolean) {
     this.lastZeroResults = zero;
     // Defer hide/show decision to zeroResultsMeta so we can distinguish filter-zero
@@ -91,6 +100,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.hideFilters = shouldHide;
     if (shouldHide) {
       this.resultWidth = "100%";
+      this.closeMobileFilters();
     } else {
       this.updateWidth();
     }
@@ -101,6 +111,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.hideFilters = shouldHide;
     if (shouldHide) {
       this.resultWidth = "100%";
+      this.closeMobileFilters();
     } else {
       this.updateWidth();
     }
@@ -122,7 +133,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   constructor(
     public ngZone: NgZone,
     private router: ActivatedRoute,
-    public searchQueryService: SearchQueryService
+    public searchQueryService: SearchQueryService,
+    @Inject(SEARCH_SERVICE) private searchService: SearchService
   ) {
     this.mobHeight = window.innerHeight;
     this.mobWidth = window.innerWidth;
@@ -133,8 +145,18 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.mobWidth = window.innerWidth;
     this.mobileMode = this.mobWidth < 641;
 
+    if (!this.mobileMode) {
+      this.closeMobileFilters();
+      this.unlockBodyScroll();
+    }
+
     // Once the mobile mode changed, reload the page to get search result display correctly.
     if (this.mobileMode != prevMode) {
+      if (this.mobileMode) {
+        // entering mobile mode; keep drawer closed by default
+        this.mobileFiltersOpen = false;
+        this.unlockBodyScroll();
+      }
       window.location.reload();
     }
 
@@ -160,6 +182,38 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.mobileMode = this.mobWidth < 641;
     this.updateWidth();
+
+    this.subscriptions.add(
+      this.searchService.watchCurrentPage().subscribe((page) => {
+        const safePage = page && page > 0 ? page : 1;
+        if (this.page !== safePage) {
+          this.page = safePage;
+        }
+        this.updatePaginationMetrics();
+      })
+    );
+
+    this.subscriptions.add(
+      this.searchService.watchTotalItems().subscribe((total) => {
+        this.totalItems = total ? Number(total) : 0;
+        this.updatePaginationMetrics();
+      })
+    );
+
+    this.subscriptions.add(
+      this.searchService.watchPageSize().subscribe((size) => {
+        if (size && size > 0) {
+          this.pageSize = size;
+          this.updatePaginationMetrics();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.searchService.watchFilterString().subscribe((filter) => {
+        this.activeFilterCount = this.countFilters(filter);
+      })
+    );
 
     // this.getTaxonomySuggestions();
     this._routeParamsSubscription = this.router.queryParams.subscribe(
@@ -211,6 +265,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this._routeParamsSubscription) {
       this._routeParamsSubscription.unsubscribe();
     }
+    this.subscriptions.unsubscribe();
+    this.unlockBodyScroll();
   }
   @ViewChild("results")
   divResult: ElementRef;
@@ -262,6 +318,94 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.resultWidth = "100%";
     } else {
       this.resultWidth = this.mobWidth - this.filterWidth - 25;
+    }
+  }
+
+  @HostListener("window:resize", ["$event"])
+  handleWindowResize(event: Event) {
+    this.onResize(event);
+  }
+
+  toggleMobileFilters() {
+    if (this.hideFilters) {
+      this.closeMobileFilters();
+      return;
+    }
+    this.mobileFiltersOpen = !this.mobileFiltersOpen;
+    if (this.mobileFiltersOpen) {
+      this.lockBodyScroll();
+    } else {
+      this.unlockBodyScroll();
+    }
+  }
+
+  closeMobileFilters() {
+    if (this.mobileFiltersOpen) {
+      this.mobileFiltersOpen = false;
+      this.unlockBodyScroll();
+    }
+  }
+
+  clearAllFilters() {
+    this.searchService.setFilterString("NoFilter");
+  }
+
+  goToPreviousPage() {
+    if (this.page > 1) {
+      this.searchService.setCurrentPage(this.page - 1);
+    }
+  }
+
+  goToNextPage() {
+    if (this.totalPages > 0 && this.page < this.totalPages) {
+      this.searchService.setCurrentPage(this.page + 1);
+    }
+  }
+
+  canGoPrevious(): boolean {
+    return this.page > 1;
+  }
+
+  canGoNext(): boolean {
+    return this.totalPages > 0 && this.page < this.totalPages;
+  }
+
+  private updatePaginationMetrics() {
+    const safePageSize = this.pageSize > 0 ? this.pageSize : 10;
+    const safeTotal = this.totalItems >= 0 ? this.totalItems : 0;
+    this.totalPages = safeTotal > 0 ? Math.ceil(safeTotal / safePageSize) : 0;
+    if (this.totalPages > 0) {
+      if (this.page < 1) {
+        this.page = 1;
+      } else if (this.page > this.totalPages) {
+        this.page = this.totalPages;
+      }
+    } else {
+      this.page = 1;
+    }
+  }
+
+  private countFilters(filter: string): number {
+    if (!filter || filter === "NoFilter") return 0;
+    return filter
+      .split("&")
+      .map((segment) => segment.split("=")[1] || "")
+      .reduce((acc, valueStr) => {
+        if (!valueStr) return acc;
+        const values = valueStr.split(",").filter((value) => value.trim());
+        return acc + values.length;
+      }, 0);
+  }
+
+  private lockBodyScroll() {
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  private unlockBodyScroll() {
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "";
     }
   }
 }
