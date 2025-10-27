@@ -224,7 +224,11 @@
 
       <div
         id="pagination"
-        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0 && mobWidth >= 641"
+        *ngIf="
+          resultStatus == RESULT_STATUS.success &&
+          totalItems > 0 &&
+          mobWidth >= 641
+        "
         style="margin-top: 0px"
       >
         <app-pagination
@@ -296,7 +300,7 @@
                 pButton
                 [label]="resultItem.title"
                 size="small"
-                icon="pi pi-arrow-up-right"
+                icon="pi pi-database"
                 class="anchor-button"
               >
               </a>
@@ -412,8 +416,10 @@
                 </p-tag>
 
                 <p-tag
-                  *ngIf="selectedFields.indexOf('Modified') !== -1 && 
-                  resultItem.annotated"
+                  *ngIf="
+                    selectedFields.indexOf('Modified') !== -1 &&
+                    resultItem.annotated
+                  "
                   severity="info"
                   [rounded]="true"
                   styleClass="annotation-tag"
@@ -450,12 +456,8 @@
                     target="_blank"
                     rel="noopener"
                     [ngStyle]="{ float: customizeViewPosition() }"
-                    label="Visit Homepage"
-                    [icon]="
-                      isPdrLink(resultItem.landingPage)
-                        ? 'pi pi-arrow-up-right'
-                        : 'pi pi-external-link'
-                    "
+                    label="Access Data"
+                    icon="pi pi-database"
                     (click)="
                       gaService.gaTrackEvent(
                         'outbound',
