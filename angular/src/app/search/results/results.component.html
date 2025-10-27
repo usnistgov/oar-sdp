@@ -16,76 +16,171 @@
   </div>
 
   <!-- Handle sys error (use a card similar to no-results) -->
-  <div *ngIf="resultStatus == RESULT_STATUS.sysError" class="no-results-wrapper">
+  <div
+    *ngIf="resultStatus == RESULT_STATUS.sysError"
+    class="no-results-wrapper"
+  >
     <div class="no-results-card">
-      <div class="text-col" style="width:100%; padding:2.5em 2em;">
+      <div class="text-col" style="width: 100%; padding: 2.5em 2em">
         <h2 class="no-results-title">We hit a snag</h2>
-        <p class="no-results-subtitle">Your search couldn’t be completed due to a temporary problem.</p>
-        <div class="error-detail" *ngIf="lastErrorDetail" style="margin: 0.5em 0 1em; color:#a00;">
+        <p class="no-results-subtitle">
+          Your search couldn’t be completed due to a temporary problem.
+        </p>
+        <div
+          class="error-detail"
+          *ngIf="lastErrorDetail"
+          style="margin: 0.5em 0 1em; color: #a00"
+        >
           {{ lastErrorDetail }}
         </div>
-        <p class="no-results-action" style="margin-top:0; font-weight:500;">You can try again or contact us:</p>
-        <div class="quick-actions" style="margin-top:1.25em; display:flex; gap:0.75em; flex-wrap:wrap;">
-          <button type="button" class="retry-btn" (click)="retryNow()">Try Again</button>
-          <a class="examples-btn" href="mailto:datasupport@nist.gov?subject=SDP: {{ searchValue }}&body= " (click)="gaService.gaTrackEvent('Email', $event, 'Contact')">Contact Support</a>
+        <p class="no-results-action" style="margin-top: 0; font-weight: 500">
+          You can try again or contact us:
+        </p>
+        <div
+          class="quick-actions"
+          style="
+            margin-top: 1.25em;
+            display: flex;
+            gap: 0.75em;
+            flex-wrap: wrap;
+          "
+        >
+          <button type="button" class="retry-btn" (click)="retryNow()">
+            Try Again
+          </button>
+          <a
+            class="examples-btn"
+            href="mailto:datasupport@nist.gov?subject=SDP: {{
+              searchValue
+            }}&body= "
+            (click)="gaService.gaTrackEvent('Email', $event, 'Contact')"
+            >Contact Support</a
+          >
         </div>
       </div>
     </div>
   </div>
 
   <!-- Handle no result (plain, no active filters) -->
-  <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems == 0 && !isFilterZero" class="no-results-wrapper">
+  <div
+    *ngIf="
+      resultStatus == RESULT_STATUS.success && totalItems == 0 && !isFilterZero
+    "
+    class="no-results-wrapper"
+  >
     <div class="no-results-card">
       <div class="dog-col">
-        <img id="dog" src="./assets/images/NothingFound2_s.png" alt="Nothing found" />
+        <img
+          id="dog"
+          src="./assets/images/NothingFound2_s.png"
+          alt="Nothing found"
+        />
       </div>
       <div class="text-col">
         <h2 class="no-results-title">No results found</h2>
-        <p class="no-results-subtitle">We couldn't find anything matching <span class="query" *ngIf="searchValue">“{{ searchValue }}”</span>.</p>
+        <p class="no-results-subtitle">
+          We couldn't find anything matching
+          <span class="query" *ngIf="searchValue">“{{ searchValue }}”</span>.
+        </p>
         <p class="no-results-action">Try one of these to get better results:</p>
         <ul class="suggestions">
           <li>Check for spelling errors or typos</li>
           <li>Use fewer or broader keywords</li>
           <li>Remove quotation marks or special operators</li>
-          <li>Browse our <span class="link-text" (click)="showExamples()">search examples</span></li>
+          <li>
+            Browse our
+            <span class="link-text" (click)="showExamples()"
+              >search examples</span
+            >
+          </li>
         </ul>
         <div class="quick-actions">
-          <button type="button" class="retry-btn" (click)="retrySearch()">Search Again</button>
-          <button type="button" class="examples-btn" (click)="showExamples()">View Examples</button>
+          <button type="button" class="retry-btn" (click)="retrySearch()">
+            Search Again
+          </button>
+          <button type="button" class="examples-btn" (click)="showExamples()">
+            View Examples
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Handle filter-constrained zero result -->
-  <div *ngIf="resultStatus == RESULT_STATUS.success && totalItems == 0 && isFilterZero" class="no-results-wrapper">
+  <div
+    *ngIf="
+      resultStatus == RESULT_STATUS.success && totalItems == 0 && isFilterZero
+    "
+    class="no-results-wrapper"
+  >
     <div class="no-results-card">
-      <div class="text-col" style="width:100%; padding:2.5em 2em;">
+      <div class="text-col" style="width: 100%; padding: 2.5em 2em">
         <h2 class="no-results-title">No results match your filters</h2>
-        <p class="no-results-subtitle">Your search may have matches, but the current filter combination removed them all.</p>
-        <div *ngIf="activeFilterTags.length > 0" style="margin:1em 0 1.25em 0; display:flex; flex-wrap:wrap; gap:0.5em;">
-          <span *ngFor="let tag of activeFilterTags; let i=index" class="filter-chip">
+        <p class="no-results-subtitle">
+          Your search may have matches, but the current filter combination
+          removed them all.
+        </p>
+        <div
+          *ngIf="activeFilterTags.length > 0"
+          style="
+            margin: 1em 0 1.25em 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5em;
+          "
+        >
+          <span
+            *ngFor="let tag of activeFilterTags; let i = index"
+            class="filter-chip"
+          >
             <span class="chip-label" [title]="tag.label">{{ tag.label }}</span>
-            <button class="chip-remove" (click)="removeFilterTag(i)" aria-label="Remove filter">✕</button>
+            <button
+              class="chip-remove"
+              (click)="removeFilterTag(i)"
+              aria-label="Remove filter"
+            >
+              ✕
+            </button>
           </span>
         </div>
-        <p class="no-results-action" style="margin-top:0; font-weight:500;">Adjust or clear filters to continue:</p>
+        <p class="no-results-action" style="margin-top: 0; font-weight: 500">
+          Adjust or clear filters to continue:
+        </p>
         <ul class="suggestions">
           <li>Remove one or more filters using the ✕ buttons above</li>
           <li>Broaden selected categories</li>
           <li>Or reset everything</li>
         </ul>
-        <div class="quick-actions" style="margin-top:1.25em; display:flex; gap:0.75em; flex-wrap:wrap;">
-          <button type="button" class="retry-btn" (click)="resetAllFilters()">Reset Filters</button>
-          <button type="button" class="examples-btn" (click)="showExamples()">View Examples</button>
+        <div
+          class="quick-actions"
+          style="
+            margin-top: 1.25em;
+            display: flex;
+            gap: 0.75em;
+            flex-wrap: wrap;
+          "
+        >
+          <button type="button" class="retry-btn" (click)="resetAllFilters()">
+            Reset Filters
+          </button>
+          <button type="button" class="examples-btn" (click)="showExamples()">
+            View Examples
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Handle Loading -->
-  <div *ngIf="!dataReady && resultStatus != RESULT_STATUS.userError && resultStatus != RESULT_STATUS.sysError" class="results-skeleton-wrapper">
-    <div class="result-card-skeleton" *ngFor="let i of [1,2,3,4,5]">
+  <div
+    *ngIf="
+      !dataReady &&
+      resultStatus != RESULT_STATUS.userError &&
+      resultStatus != RESULT_STATUS.sysError
+    "
+    class="results-skeleton-wrapper"
+  >
+    <div class="result-card-skeleton" *ngFor="let i of [1, 2, 3, 4, 5]">
       <div class="skeleton header"></div>
       <div class="skeleton line w80"></div>
       <div class="skeleton line w60"></div>
@@ -184,7 +279,12 @@
 
     <!-- Search result -->
 
-  <div *ngIf="dataReady && resultStatus == RESULT_STATUS.success && totalItems > 0; else noresult">
+    <div
+      *ngIf="
+        dataReady && resultStatus == RESULT_STATUS.success && totalItems > 0;
+        else noresult
+      "
+    >
       <div class="mt-4">
         <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
           <p-panel>
@@ -286,6 +386,45 @@
                   None
                 </span>
               </div>
+              <div
+                class="dates-container"
+                *ngIf="
+                  selectedFields.indexOf('Modified') !== -1 ||
+                  (selectedFields.indexOf('Released') !== -1 &&
+                    resultItem.firstIssued)
+                "
+              >
+                <p-tag
+                  *ngIf="
+                    selectedFields.indexOf('Released') !== -1 &&
+                    resultItem.firstIssued
+                  "
+                  severity="info"
+                  [rounded]="true"
+                  styleClass="first-issued-tag"
+                >
+                  <i
+                    class="pi pi-clock"
+                    style="margin-right: 5px; opacity: 0.7"
+                  ></i>
+                  Released
+                  {{ formatAnnotationDate(resultItem.firstIssued) }}
+                </p-tag>
+
+                <p-tag
+                  *ngIf="selectedFields.indexOf('Modified') !== -1 && 
+                  resultItem.annotated"
+                  severity="info"
+                  [rounded]="true"
+                  styleClass="annotation-tag"
+                >
+                  <i
+                    class="pi pi-calendar"
+                    style="margin-right: 5px; opacity: 0.7"
+                  ></i>
+                  Updated {{ formatAnnotationDate(resultItem.annotated) }}
+                </p-tag>
+              </div>
               <div class="header-container" style="margin-top: -20px">
                 <div
                   class="keywords"
@@ -357,7 +496,7 @@
         </div>
       </div>
     </div>
-  <ng-template #noresult></ng-template>
+    <ng-template #noresult></ng-template>
   </div>
 
   <p-overlayPanel
