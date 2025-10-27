@@ -287,7 +287,7 @@
             </div>
             <div class="filter-input p-fluid">
               <p-autoComplete
-                [appendTo]="'body'"
+                [appendTo]="!mobileMode ? 'body' : null"
                 [autoZIndex]="true"
                 [baseZIndex]="12000"
                 [scrollHeight]="'260px'"
@@ -333,7 +333,7 @@
             </div>
             <div class="filter-input p-fluid">
               <p-autoComplete
-                [appendTo]="'body'"
+                [appendTo]="!mobileMode ? 'body' : null"
                 [autoZIndex]="true"
                 [baseZIndex]="12000"
                 [scrollHeight]="'260px'"
