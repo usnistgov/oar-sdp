@@ -1,7 +1,19 @@
 // import { SwitchView } from '@angular/common/src/directives/ng_switch';
-import { Component, Inject, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
 import { AppConfig, Config } from "../shared/config-service/config.service";
+import { SearchService, SEARCH_SERVICE } from "../shared/search-service";
+import { SDPQuery } from "../shared/search-query/query";
+import { Subscription } from "rxjs";
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -10,13 +22,33 @@ import { AppConfig, Config } from "../shared/config-service/config.service";
   templateUrl: "home.component.html",
   styleUrls: ["home.component.css"],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   confValues: Config;
   PDRAPIURL: string;
   SDPAPIURL: string;
   forensicsURL: string;
   chipsURL: string;
   aiURL: string;
+  recentDatasets: any[] = [];
+  recentDatasetsLoading = false;
+  recentDatasetsError = false;
+  showAllCollections = false;
+  featuredCollections: any[] = [];
+  topics: { label: string; query: string }[] = [
+    { label: "Nanotechnology", query: 'topic.tag="Nanotechnology"' },
+    { label: "Biotechnology", query: 'topic.tag="Biotechnology"' },
+    { label: "Chemistry", query: 'topic.tag="Chemistry"' },
+    { label: "Materials Science", query: 'topic.tag="Materials Science"' },
+    { label: "Engineering", query: 'topic.tag="Engineering"' },
+    { label: "Physics", query: 'topic.tag="Physics"' },
+    { label: "Manufacturing", query: 'topic.tag="Manufacturing"' },
+    { label: "Cybersecurity", query: 'topic.tag="Cybersecurity"' },
+  ];
+  skeletonCards = [0, 1, 2];
+  private recentDatasetsSub?: Subscription;
+  @ViewChild("collectionsRail") collectionsRail?: ElementRef<HTMLDivElement>;
+  showLeftCollectionArrow = false;
+  showRightCollectionArrow = false;
 
   themes: any = {
     ai: {
@@ -104,9 +136,13 @@ export class HomeComponent implements OnInit {
     },
   };
 
-  constructor(private router: Router, private appConfig: AppConfig) {
+  constructor(
+    private router: Router,
+    private appConfig: AppConfig,
+    @Inject(SEARCH_SERVICE) private searchService: SearchService
+  ) {
     this.appConfig.getConfig().subscribe((conf) => {
-      this.PDRAPIURL = conf.SDPAPI;
+      this.PDRAPIURL = conf.PDRAPI ?? conf.SDPAPI;
       this.SDPAPIURL = conf.SDPAPI;
       this.forensicsURL = conf.SERVERBASE + "/forensics";
       this.chipsURL = conf.SERVERBASE + "/chips";
@@ -114,7 +150,20 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.featuredCollections = this.getThemesList();
+    this.loadRecentDatasets();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.updateCollectionScrollControls(), 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.recentDatasetsSub) {
+      this.recentDatasetsSub.unsubscribe();
+    }
+  }
 
   /**
    * Set the search parameters and redirect to search page
@@ -183,6 +232,10 @@ export class HomeComponent implements OnInit {
    * @param theme The theme object
    */
   navigateToCuratedCollection(event: Event, theme: any) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
     let url = "";
 
@@ -232,5 +285,141 @@ export class HomeComponent implements OnInit {
    */
   getThemesList() {
     return Object.values(this.themes);
+  }
+
+  handleCollectionClick(event: Event, theme: any) {
+    if (!theme) return;
+    if (theme.curated) {
+      this.navigateToCuratedCollection(event, theme);
+    } else {
+      this.search(theme.searchTerm);
+    }
+  }
+
+  toggleCollectionsView() {
+    this.showAllCollections = !this.showAllCollections;
+    if (!this.showAllCollections) {
+      setTimeout(() => this.updateCollectionScrollControls(), 0);
+    } else {
+      this.showLeftCollectionArrow = false;
+      this.showRightCollectionArrow = false;
+    }
+  }
+
+  viewAllRecentDatasets() {
+    this.search("");
+  }
+
+  openDataset(dataset: any, event: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (!dataset) return;
+
+    const landingPage =
+      dataset.landingPage && dataset.landingPage.trim().length > 0
+        ? dataset.landingPage
+        : this.PDRAPIURL && dataset.ediid
+        ? `${this.PDRAPIURL}${dataset.ediid}`
+        : "";
+
+    if (landingPage) {
+      window.open(landingPage, "_blank");
+    } else if (dataset.title) {
+      this.search(dataset.title);
+    }
+  }
+
+  trackByDataset(index: number, dataset: any) {
+    return dataset?.ediid || dataset?.title || index;
+  }
+
+  trackByTheme(index: number, theme: any) {
+    return theme?.searchTerm || theme?.title || index;
+  }
+
+  trackByTopic(index: number, topic: { label: string }) {
+    return topic?.label || index;
+  }
+
+  trackBySkeleton(index: number, value: number) {
+    return value ?? index;
+  }
+
+  onCollectionsScroll() {
+    this.updateCollectionScrollControls();
+  }
+
+  scrollCollections(direction: "left" | "right") {
+    if (!this.collectionsRail) return;
+    const container = this.collectionsRail.nativeElement;
+    const scrollAmount =
+      direction === "left" ? -container.clientWidth : container.clientWidth;
+    container.scrollBy({
+      left: scrollAmount,
+      behavior: "smooth",
+    });
+    setTimeout(() => this.updateCollectionScrollControls(), 300);
+  }
+
+  @HostListener("window:resize")
+  onWindowResize() {
+    setTimeout(() => this.updateCollectionScrollControls(), 50);
+  }
+
+  private updateCollectionScrollControls() {
+    if (!this.collectionsRail || this.showAllCollections) {
+      this.showLeftCollectionArrow = false;
+      this.showRightCollectionArrow = false;
+      return;
+    }
+
+    const container = this.collectionsRail.nativeElement;
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+    if (maxScrollLeft <= 0) {
+      this.showLeftCollectionArrow = false;
+      this.showRightCollectionArrow = false;
+      return;
+    }
+
+    this.showLeftCollectionArrow = container.scrollLeft > 4;
+    this.showRightCollectionArrow =
+      container.scrollLeft < maxScrollLeft - 4;
+  }
+
+  private loadRecentDatasets() {
+    this.recentDatasetsLoading = true;
+    this.recentDatasetsError = false;
+
+    if (this.recentDatasetsSub) {
+      this.recentDatasetsSub.unsubscribe();
+    }
+
+    const query = new SDPQuery();
+
+    this.recentDatasetsSub = this.searchService
+      .searchPhrase(
+        query,
+        "",
+        undefined,
+        1,
+        3,
+        "annotated:desc",
+        "@type=Dataset"
+      )
+      .subscribe({
+        next: (response) => {
+          this.recentDatasets = response?.ResultData || [];
+          this.recentDatasetsLoading = false;
+          this.recentDatasetsError = false;
+        },
+        error: () => {
+          this.recentDatasets = [];
+          this.recentDatasetsLoading = false;
+          this.recentDatasetsError = true;
+        },
+      });
   }
 }

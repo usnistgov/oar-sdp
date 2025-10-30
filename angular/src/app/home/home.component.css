@@ -11,19 +11,33 @@
   padding: 0 1.5rem;
 }
 
-/* Section Headers */
+/* Section Layout */
+.section {
+  margin-top: 3rem;
+}
+
+.section:first-of-type {
+  margin-top: 2rem;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.25rem;
   margin-bottom: 1.5rem;
   padding-top: 1.5rem;
 }
 
+.section-text {
+  max-width: 720px;
+}
+
 .section-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 600;
-  color: #333;
+  color: #1b1b1b;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -35,12 +49,268 @@
   font-size: 1.3rem;
 }
 
-/* Research Collections Grid */
+.section-subtitle {
+  margin: 0.35rem 0 0;
+  color: #4e5968;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  color: #005ea2;
+  border: 1px solid #005ea2;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.section-link:hover,
+.section-link:focus {
+  color: #ffffff;
+  background-color: #005ea2;
+  box-shadow: 0 8px 20px rgba(0, 94, 162, 0.18);
+}
+
+.section-link:focus {
+  outline: 3px solid rgba(0, 94, 162, 0.35);
+  outline-offset: 2px;
+}
+
+/* Recently Updated Datasets */
+.recent-grid,
+.recent-loading {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+  grid-auto-rows: 1fr;
+}
+
+.dataset-card {
+  background: #ffffff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  min-height: auto;
+  box-shadow: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.dataset-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.dataset-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.dataset-pill {
+  background: rgba(0, 113, 188, 0.12);
+  color: #005ea2;
+  border-radius: 999px;
+  padding: 0.22rem 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.dataset-pill--type {
+  background: rgba(0, 80, 66, 0.12);
+  color: #0b412f;
+}
+
+.dataset-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.35rem;
+  line-height: 1.28;
+}
+
+.dataset-description {
+  color: #4f5b67;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  margin: 0 0 0.45rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dataset-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.45rem;
+}
+
+.dataset-tag {
+  background: #e7f1fb;
+  color: #005ea2;
+  border-radius: 999px;
+  padding: 0.24rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.dataset-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.2rem;
+}
+
+.dataset-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #005ea2;
+  color: #ffffff;
+  border: 1px solid #005ea2;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dataset-action:hover,
+.dataset-action:focus {
+  background-color: #0b3d91;
+  transform: translateX(2px);
+}
+
+.recent-empty {
+  background: #f6f9fc;
+  border: 1px dashed #bfd0e3;
+  border-radius: 4px;
+  padding: 1.35rem;
+  color: #4f5b67;
+  font-size: 0.95rem;
+}
+
+.skeleton-card {
+  min-height: 200px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    #f0f3f8 25%,
+    #e2e6ed 37%,
+    #f0f3f8 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border: 1px solid #e0e7ef;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* Research Collections */
+.collections-rail {
+  display: flex;
+  gap: 0.95rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 1rem 0.5rem 0.35rem;
+  margin-top: -0.7rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.collections-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.collections-rail-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.collections-rail:focus-visible {
+  outline: 3px solid rgba(0, 113, 188, 0.3);
+  outline-offset: 4px;
+}
+
+.collection-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #333;
+  box-shadow: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.collection-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+}
+
+.collection-card-rail {
+  flex: 0 0 180px;
+  scroll-snap-align: start;
+}
+
+.collection-image {
+  height: 100px;
+  border-radius: 4px 4px 0 0;
+  background-size: cover;
+  background-position: center;
+  background-color: #f5f5f5;
+}
+
+.collection-details {
+  padding: 0.65rem 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.collection-details h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: center;
+  line-height: 1.3;
+}
+
 .collections-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
+  overflow: visible;
 }
 
 .collection-card-grid {
@@ -48,37 +318,21 @@
   flex-direction: column;
   background-color: #ffffff;
   border-radius: 4px;
-  overflow: visible; /* Changed from hidden to visible to prevent cropping the badge */
+  overflow: visible;
   border: 1px solid #333;
   cursor: pointer;
-  transition: transform 0.2s ease;
-  height: 170px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
-  /* Establish a low stacking context so global menus/tooltips can appear above */
-  z-index: 0;
-  box-shadow: none;
+  min-height: 170px;
 }
-
-.collection-icon-grid {
-  height: 120px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #f5f5f5;
-  overflow: hidden; /* Control overflow only for the image part */
-}
-
-/* Blue border only for curated collections
-.collection-card-grid.curated {
-  border: 1px solid #0071bc;
-} */
 
 .collection-card-grid:hover {
   transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
 }
 
 .collection-icon-grid {
-  height: 120px; /* Reduced height */
+  height: 100px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -86,101 +340,179 @@
 }
 
 .collection-info-grid {
-  padding: 0.5rem 0.75rem; /* Reduced padding */
+  padding: 0.55rem 0.75rem 0.85rem;
   flex: 1;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .collection-info-grid h3 {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #333;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
   margin: 0;
-  line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; /* Single line title */
+  line-height: 1.3;
 }
 
-.collection-count {
-  display: flex;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 0.25rem; /* Reduced margin */
-}
-
-.collection-count i {
-  color: #0071bc;
-  margin-right: 0.4rem;
-  font-size: 0.85rem;
-}
-
-/* New curated badge style - white button in top right */
 .curated-badge {
   position: absolute;
-  top: -15px; /* Slightly adjusted to ensure visibility */
-  right: -10px;
-  background-color: #333;
-  border-radius: 20px;
+  top: 0.35rem;
+  right: 0.6rem;
+  background-color: rgba(27, 43, 65, 0.92);
+  border-radius: 999px;
   padding: 0.25rem 0.75rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
   font-size: 0.75rem;
-  font-weight: 500;
-  color: white;
-  /* Keep above the card itself, but below global overlays like nav menus */
+  font-weight: 600;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transform: none;
   z-index: 2;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  overflow: visible; /* Ensure the badge isn't clipped */
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-
 .curated-badge:hover {
-  background-color: #f8f8f8;
-  /* Fix contrast: make text black on hover */
-  color: #000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
   transform: translateY(-1px);
 }
 
-/* Topics Section (if needed) */
-.topics-section {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #f0f0f0;
+.curated-badge i {
+  color: #f7c948;
+}
+
+.curated-badge:hover i {
+  color: #f7c948;
+}
+
+.collections-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #333;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collections-nav:hover {
+  transform: translateY(-50%) translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.collections-nav--left {
+  left: -16px;
+}
+
+.collections-nav--right {
+  right: -16px;
+}
+
+/* Topics */
+.topics-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.topic-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid #c8d4e1;
+  background-color: #ffffff;
+  color: #0b3d91;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topic-chip:hover,
+.topic-chip:focus {
+  background-color: #e7f1fb;
+  border-color: #005ea2;
+  color: #005ea2;
+}
+
+.topic-chip:focus {
+  outline: 3px solid rgba(0, 94, 162, 0.3);
+  outline-offset: 2px;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 1200px) {
-  .collections-grid {
-    grid-template-columns: repeat(4, 1fr);
+  .section-title {
+    font-size: 1.6rem;
   }
 }
 
 @media (max-width: 992px) {
-  .collections-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .section-title {
+    font-size: 1.45rem;
+  }
+
+  .collection-card-rail {
+    flex: 0 0 170px;
   }
 }
 
 @media (max-width: 768px) {
-  .collections-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .home-content {
+    margin: 0;
+    padding-bottom: 1.5rem;
   }
 
-  .curated-badge {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
+  .section {
+    margin-top: 2.5rem;
+  }
+
+  .section-header {
+    align-items: stretch;
+  }
+
+  .section-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .collection-card-grid {
+    min-height: 160px;
   }
 }
 
 @media (max-width: 576px) {
+  .recent-grid,
+  .recent-loading {
+    grid-template-columns: 1fr;
+  }
+
   .collections-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dataset-card {
+    padding: 1rem;
+  }
+
+  .collection-card-rail {
+    flex: 0 0 160px;
   }
 }

@@ -9,53 +9,230 @@
 ></app-search-panel>
 
 <div class="home-content">
-  <!-- Research Collections section -->
   <div class="container">
-    <div class="collections-section">
-      <!-- MARK: @Mehdi Hiding header for now -->
+    <section class="section recent-section">
       <div class="section-header">
-        <!-- <h2 class="section-title">
-          <i class="pi pi-folder"></i>
-          Research Collections
-        </h2> -->
+        <div class="section-text">
+          <h2 class="section-title">
+            <i class="pi pi-clock"></i>
+            Recently Updated Datasets
+          </h2>
+          <p class="section-subtitle">
+            Explore fresh releases and newly curated resources from across the catalog.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="section-link"
+          (click)="viewAllRecentDatasets()"
+        >
+          View All
+          <i class="pi pi-arrow-right"></i>
+        </button>
       </div>
 
-      <!-- Fixed 5x2 grid view -->
-      <div class="collections-grid">
+      <div class="recent-loading" *ngIf="recentDatasetsLoading">
         <div
-          *ngFor="let theme of getThemesList().slice(0, 10)"
-          class="collection-card-grid"
-          [class.curated]="theme.curated"
-          (click)="
-            theme.curated
-              ? navigateToCuratedCollection($event, theme)
-              : search(theme.searchTerm)
-          "
+          class="dataset-card skeleton-card"
+          *ngFor="let item of skeletonCards; trackBy: trackBySkeleton"
+        ></div>
+      </div>
+
+      <div
+        class="recent-grid"
+        *ngIf="!recentDatasetsLoading && recentDatasets.length"
+      >
+        <article
+          class="dataset-card"
+          *ngFor="let dataset of recentDatasets; trackBy: trackByDataset"
         >
-          <div
-            *ngIf="theme.curated"
-            class="curated-badge"
-            (click)="navigateToCuratedCollection($event, theme)"
-            style="cursor: pointer"
-          >
-            <i
-              class="pi pi-star-fill"
-              style="color: gold; margin-right: 5px"
-            ></i>
-            Curated Collection
+          <div class="dataset-meta">
+            <span class="dataset-pill" *ngIf="dataset.annotated">
+              Updated {{ dataset.annotated | date: 'mediumDate' }}
+            </span>
+            <span
+              class="dataset-pill dataset-pill--type"
+              *ngIf="dataset['@type']?.length"
+            >
+              {{ dataset['@type'][0] }}
+            </span>
           </div>
+          <h3 class="dataset-title">{{ dataset.title }}</h3>
+          <p class="dataset-description">
+            {{
+              dataset.description ||
+                'Explore the latest insights from this dataset.'
+            }}
+          </p>
+          <div class="dataset-tags" *ngIf="dataset.keyword?.length">
+            <span
+              class="dataset-tag"
+              *ngFor="let keyword of dataset.keyword | slice: 0:3"
+            >
+              {{ keyword }}
+            </span>
+          </div>
+          <div class="dataset-footer">
+            <button
+              type="button"
+              class="dataset-action"
+              (click)="openDataset(dataset, $event)"
+            >
+              View Dataset
+              <i class="pi pi-arrow-up-right"></i>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <div
+        class="recent-empty"
+        *ngIf="!recentDatasetsLoading && recentDatasetsError"
+      >
+        <p>
+          We couldn't load dataset updates right now. Please try again later.
+        </p>
+      </div>
+
+      <div
+        class="recent-empty"
+        *ngIf="!recentDatasetsLoading && !recentDatasetsError && !recentDatasets.length"
+      >
+        <p>
+          No recent updates are available right now. Check back soon or explore
+          our research collections below.
+        </p>
+      </div>
+    </section>
+
+    <section class="section collections-section">
+      <div class="section-header">
+        <div class="section-text">
+          <h2 class="section-title">
+            <i class="pi pi-folder"></i>
+            Research Collections
+          </h2>
+          <p class="section-subtitle">
+            Browse curated themes spanning priority research areas.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="section-link"
+          (click)="toggleCollectionsView()"
+        >
+          {{ showAllCollections ? 'Show Featured' : 'View All Collections' }}
+          <i
+            class="pi"
+            [ngClass]="showAllCollections ? 'pi-minus' : 'pi-plus'"
+          ></i>
+        </button>
+      </div>
+
+      <ng-container *ngIf="!showAllCollections; else fullCollections">
+        <div class="collections-rail-wrapper" *ngIf="featuredCollections.length">
+          <button
+            type="button"
+            class="collections-nav collections-nav--left"
+            (click)="scrollCollections('left')"
+            *ngIf="showLeftCollectionArrow"
+            aria-label="Scroll collections left"
+          >
+            <i class="pi pi-arrow-left" style="color: black;"></i>
+          </button>
 
           <div
-            class="collection-icon-grid"
-            [style.background-image]="
-              'url(' + getImageFullPath(theme.image) + ')'
-            "
-          ></div>
-          <div class="collection-info-grid">
-            <h3>{{ theme.title }}</h3>
+            #collectionsRail
+            class="collections-rail"
+            tabindex="0"
+            (scroll)="onCollectionsScroll()"
+          >
+            <article
+              class="collection-card collection-card-rail"
+              *ngFor="let theme of featuredCollections; trackBy: trackByTheme"
+              [class.curated]="theme.curated"
+              (click)="handleCollectionClick($event, theme)"
+              (keyup.enter)="handleCollectionClick($event, theme)"
+              role="button"
+            >
+              <div
+                class="collection-image"
+                [style.background-image]="
+                  'url(' + getImageFullPath(theme.image) + ')'
+                "
+              ></div>
+              <div class="collection-details">
+                <h3>{{ theme.title }}</h3>
+              </div>
+              <span class="curated-badge" *ngIf="theme.curated">
+                <i class="pi pi-star-fill"></i>
+                Curated
+              </span>
+            </article>
           </div>
+
+          <button
+            type="button"
+            class="collections-nav collections-nav--right"
+            (click)="scrollCollections('right')"
+            *ngIf="showRightCollectionArrow"
+            aria-label="Scroll collections right"
+          >
+            <i class="pi pi-arrow-right" style="color: black;"></i>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #fullCollections>
+        <div class="collections-grid">
+          <article
+            class="collection-card-grid"
+            *ngFor="let theme of getThemesList(); trackBy: trackByTheme"
+            [class.curated]="theme.curated"
+            (click)="handleCollectionClick($event, theme)"
+          >
+            <div
+              class="collection-icon-grid"
+              [style.background-image]="
+                'url(' + getImageFullPath(theme.image) + ')'
+              "
+            ></div>
+            <div class="collection-info-grid">
+              <h3>{{ theme.title }}</h3>
+            </div>
+            <span class="curated-badge" *ngIf="theme.curated">
+              <i class="pi pi-star-fill"></i>
+              Curated
+            </span>
+          </article>
+        </div>
+      </ng-template>
+    </section>
+
+    <section class="section topics-section">
+      <div class="section-header">
+        <div class="section-text">
+          <h2 class="section-title">
+            <i class="pi pi-tags"></i>
+            Browse By Topic
+          </h2>
+          <p class="section-subtitle">
+            Jump into the scientific domains that matter to your work.
+          </p>
         </div>
       </div>
-    </div>
+
+      <div class="topics-grid">
+        <button
+          type="button"
+          class="topic-chip"
+          *ngFor="let topic of topics; trackBy: trackByTopic"
+          (click)="search(topic.query)"
+        >
+          <i class="pi pi-hashtag"></i>
+          {{ topic.label }}
+        </button>
+      </div>
+    </section>
   </div>
 </div>
