@@ -544,7 +544,7 @@ export class ResultsComponent implements OnInit {
       "Resource Description",
       "Subject keywords",
       "Modified",
-      "Released"
+      "Released",
     ];
     this.allChecked = false;
     // MARK: 10/09/2025 - @Mehdi - set default sort order to annotated:desc so newest records show first
@@ -579,13 +579,19 @@ export class ResultsComponent implements OnInit {
   }
 
   /**
-   * Refresh (reload) the search result based on current sort order (when user set the sort order)
+   * Refresh search results based on current sort order
+   * Date fields (annotated, firstIssued) sort desc by default,
+   * all other fields sort asc by default
    */
   sortByFields() {
-    // Ensure sortItemKey has a direction (default to desc if missing)
     if (this.sortItemKey && !this.sortItemKey.includes(":")) {
-      this.sortItemKey = this.sortItemKey + ":desc";
+      const DATE_FIELDS = ["annotated", "firstIssued"];
+      const defaultDirection = DATE_FIELDS.includes(this.sortItemKey)
+        ? "desc"
+        : "asc";
+      this.sortItemKey = `${this.sortItemKey}:${defaultDirection}`;
     }
+
     this.currentSortOrder = this.sortItemKey;
     this.getCurrentPage();
   }
