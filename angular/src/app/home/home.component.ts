@@ -84,12 +84,32 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     //     "NIST advances the state-of-the-art in IT in such applications as cybersecurity and biometrics.",
     //   image: "assets/images/Theme_InformationTechnology.png",
     // },
+
+    bioscience: {
+      title: "BIOSCIENCE",
+      description: "TO DO",
+      image: "assets/images/Theme_Bioscience.png",
+      searchTerm: "Bioscience",
+    },
+    quantum: {
+      title: "QUANTUM SCIENCE",
+      description: "TO DO",
+      image: "assets/images/Theme_Quantum.png",
+      searchTerm: "Quantum",
+    },
     additiveManufacturing: {
       title: "ADDITIVE MANUFACTURING",
       description:
         "NIST is advancing the science of additive manufacturing (3D printing) to improve the quality and reliability of 3D printed parts.",
       image: "assets/images/Theme_AdditiveManufacturing.jpg",
       searchTerm: '"Additive Manufacturing"',
+    },
+    Materials: {
+      title: "MATERIALS",
+      description:
+        "NIST develops testbeds, defines benchmarks and develops formability measurements and models for a variety of emerging materials.",
+      image: "assets/images/Theme_Materials.jpg",
+      searchTerm: "Materials",
     },
     ms: {
       title: "MATHEMATICS AND STATS",
@@ -106,13 +126,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       searchTerm: "Manufacturing",
     },
 
-    Materials: {
-      title: "MATERIALS",
-      description:
-        "NIST develops testbeds, defines benchmarks and develops formability measurements and models for a variety of emerging materials.",
-      image: "assets/images/Theme_Materials.jpg",
-      searchTerm: "Materials",
-    },
     Physics: {
       title: "PHYSICS AND NEUTRON",
       description:
@@ -210,6 +223,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       case "Artificial Intelligence": {
         queryValue = '"Artificial Intelligence"';
+        break;
+      }
+      case "Quantum": {
+        // MARK: TO DO (10/30/2025 - discussion in progress about what search to perform based on taxonomy)
+        // queryValue = "topic.tag=Quantum communications,Atomic Molecular and Quantum, Quantum Information Science"; // quantum information science &&
+        queryValue = "topic.tag=Quantum"; // change to keyword search on quantum
+        break;
+      }
+      case "Bioscience": {
+        queryValue = "topic.tag=Bioscience";
         break;
       }
       default: {
@@ -385,8 +408,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.showLeftCollectionArrow = container.scrollLeft > 4;
-    this.showRightCollectionArrow =
-      container.scrollLeft < maxScrollLeft - 4;
+    this.showRightCollectionArrow = container.scrollLeft < maxScrollLeft - 4;
   }
 
   private loadRecentDatasets() {

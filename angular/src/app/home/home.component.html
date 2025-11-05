@@ -15,10 +15,11 @@
         <div class="section-text">
           <h2 class="section-title">
             <i class="pi pi-clock"></i>
-            Recently Updated Datasets
+            New Resources
           </h2>
           <p class="section-subtitle">
-            Explore fresh releases and newly curated resources from across the catalog.
+            Explore fresh releases and newly curated resources from across the
+            catalog.
           </p>
         </div>
         <button
@@ -45,43 +46,44 @@
         <article
           class="dataset-card"
           *ngFor="let dataset of recentDatasets; trackBy: trackByDataset"
+          (click)="openDataset(dataset, $event)"
         >
           <div class="dataset-meta">
             <span class="dataset-pill" *ngIf="dataset.annotated">
-              Updated {{ dataset.annotated | date: 'mediumDate' }}
+              Updated {{ dataset.annotated | date : "mediumDate" }}
             </span>
             <span
               class="dataset-pill dataset-pill--type"
               *ngIf="dataset['@type']?.length"
             >
-              {{ dataset['@type'][0] }}
+              {{ dataset["@type"][0] }}
             </span>
           </div>
           <h3 class="dataset-title">{{ dataset.title }}</h3>
           <p class="dataset-description">
             {{
               dataset.description ||
-                'Explore the latest insights from this dataset.'
+                "Explore the latest insights from this dataset."
             }}
           </p>
           <div class="dataset-tags" *ngIf="dataset.keyword?.length">
             <span
               class="dataset-tag"
-              *ngFor="let keyword of dataset.keyword | slice: 0:3"
+              *ngFor="let keyword of dataset.keyword | slice : 0 : 3"
             >
               {{ keyword }}
             </span>
           </div>
-          <div class="dataset-footer">
+          <!-- <div class="dataset-footer">
             <button
               type="button"
               class="dataset-action"
-              (click)="openDataset(dataset, $event)"
+              
             >
               View Dataset
               <i class="pi pi-arrow-up-right"></i>
             </button>
-          </div>
+          </div> -->
         </article>
       </div>
 
@@ -96,7 +98,11 @@
 
       <div
         class="recent-empty"
-        *ngIf="!recentDatasetsLoading && !recentDatasetsError && !recentDatasets.length"
+        *ngIf="
+          !recentDatasetsLoading &&
+          !recentDatasetsError &&
+          !recentDatasets.length
+        "
       >
         <p>
           No recent updates are available right now. Check back soon or explore
@@ -105,7 +111,7 @@
       </div>
     </section>
 
-    <section class="section collections-section">
+    <section class="section collections-section" style="margin-top: 10px">
       <div class="section-header">
         <div class="section-text">
           <h2 class="section-title">
@@ -121,7 +127,7 @@
           class="section-link"
           (click)="toggleCollectionsView()"
         >
-          {{ showAllCollections ? 'Show Featured' : 'View All Collections' }}
+          {{ showAllCollections ? "Show Featured" : "View All Collections" }}
           <i
             class="pi"
             [ngClass]="showAllCollections ? 'pi-minus' : 'pi-plus'"
@@ -130,7 +136,10 @@
       </div>
 
       <ng-container *ngIf="!showAllCollections; else fullCollections">
-        <div class="collections-rail-wrapper" *ngIf="featuredCollections.length">
+        <div
+          class="collections-rail-wrapper"
+          *ngIf="featuredCollections.length"
+        >
           <button
             type="button"
             class="collections-nav collections-nav--left"
@@ -138,7 +147,7 @@
             *ngIf="showLeftCollectionArrow"
             aria-label="Scroll collections left"
           >
-            <i class="pi pi-arrow-left" style="color: black;"></i>
+            <i class="pi pi-arrow-left" style="color: black"></i>
           </button>
 
           <div
@@ -178,7 +187,7 @@
             *ngIf="showRightCollectionArrow"
             aria-label="Scroll collections right"
           >
-            <i class="pi pi-arrow-right" style="color: black;"></i>
+            <i class="pi pi-arrow-right" style="color: black"></i>
           </button>
         </div>
       </ng-container>
@@ -209,7 +218,7 @@
       </ng-template>
     </section>
 
-    <section class="section topics-section">
+    <section class="section topics-section" style="margin-top: 10px">
       <div class="section-header">
         <div class="section-text">
           <h2 class="section-title">

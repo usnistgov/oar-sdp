@@ -107,6 +107,7 @@
 
 .dataset-card:hover {
   transform: translateY(-2px);
+  cursor: pointer;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
@@ -358,8 +359,8 @@
 
 .curated-badge {
   position: absolute;
-  top: 0.35rem;
-  right: 0.6rem;
+  top: -0.85rem;
+  right: 0.3rem;
   background-color: rgba(27, 43, 65, 0.92);
   border-radius: 999px;
   padding: 0.25rem 0.75rem;

@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Date: Tue, 23 Sep 2025 19:21:22 GMT
+Content-Type: application/json
+Content-Length: 5108078
+Connection: keep-alive
+vary: Accept-Encoding
+content-encoding: gzip
+Access-Control-Allow-Credentials: false
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Strict-Transport-Security: max-age=31536000; includeSubdomains;
+Content-Security-Policy: default-src 'self'; object-src 'none'; script-src-elem 'self' 'unsafe-inline' https://unpkg.com/@stoplight/ https://cdn.jsdelivr.net/npm/; style-src-elem 'self' 'unsafe-inline' https://unpkg.com/@stoplight/ https://cdn.jsdelivr.net/npm/
+
