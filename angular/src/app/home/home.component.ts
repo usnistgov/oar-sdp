@@ -1,4 +1,5 @@
 // import { SwitchView } from '@angular/common/src/directives/ng_switch';
+import { HttpClient } from "@angular/common/http";
 import {
   AfterViewInit,
   Component,
@@ -14,6 +15,25 @@ import { AppConfig, Config } from "../shared/config-service/config.service";
 import { SearchService, SEARCH_SERVICE } from "../shared/search-service";
 import { SDPQuery } from "../shared/search-query/query";
 import { Subscription } from "rxjs";
+import { startCase } from "lodash";
+
+interface TaxonomyNode {
+  _id?: string;
+  term?: string;
+  label?: string;
+  level?: number;
+  parent?: string;
+  [key: string]: any;
+}
+
+interface TopicTreeNode {
+  id: string;
+  label: string;
+  query: string;
+  level: number;
+  parentLabel?: string;
+  children: TopicTreeNode[];
+}
 /**
  * This class represents the lazy loaded HomeComponent.
  */
@@ -26,6 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   confValues: Config;
   PDRAPIURL: string;
   SDPAPIURL: string;
+  RMMAPIURL: string;
   forensicsURL: string;
   chipsURL: string;
   aiURL: string;
@@ -34,7 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   recentDatasetsError = false;
   showAllCollections = false;
   featuredCollections: any[] = [];
-  topics: { label: string; query: string }[] = [
+  staticTopics: { label: string; query: string }[] = [
     { label: "Nanotechnology", query: 'topic.tag="Nanotechnology"' },
     { label: "Biotechnology", query: 'topic.tag="Biotechnology"' },
     { label: "Chemistry", query: 'topic.tag="Chemistry"' },
@@ -44,8 +65,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     { label: "Manufacturing", query: 'topic.tag="Manufacturing"' },
     { label: "Cybersecurity", query: 'topic.tag="Cybersecurity"' },
   ];
-  skeletonCards = [0, 1, 2];
+  topicRoots: TopicTreeNode[] = [];
+  topicPath: TopicTreeNode[] = [];
+  currentTopics: TopicTreeNode[] = [];
+  topicsLoading = true;
+  topicsError = false;
+  skeletonCards = [0, 1, 2, 3, 4, 5];
   private recentDatasetsSub?: Subscription;
+  private taxonomySub?: Subscription;
   @ViewChild("collectionsRail") collectionsRail?: ElementRef<HTMLDivElement>;
   showLeftCollectionArrow = false;
   showRightCollectionArrow = false;
@@ -152,6 +179,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private router: Router,
     private appConfig: AppConfig,
+    private http: HttpClient,
     @Inject(SEARCH_SERVICE) private searchService: SearchService
   ) {
     this.appConfig.getConfig().subscribe((conf) => {
@@ -160,6 +188,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.forensicsURL = conf.SERVERBASE + "/forensics";
       this.chipsURL = conf.SERVERBASE + "/chips";
       this.aiURL = conf.SERVERBASE + "/ai";
+      const nextRMM = conf.RMMAPI;
+      const shouldLoadTopics = !!nextRMM && nextRMM !== this.RMMAPIURL;
+      this.RMMAPIURL = nextRMM;
+      if (shouldLoadTopics) {
+        this.loadTopicTree();
+      } else if (!nextRMM) {
+        this.topicsLoading = false;
+      }
     });
   }
 
@@ -175,6 +211,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     if (this.recentDatasetsSub) {
       this.recentDatasetsSub.unsubscribe();
+    }
+    if (this.taxonomySub) {
+      this.taxonomySub.unsubscribe();
     }
   }
 
@@ -366,8 +405,238 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     return topic?.label || index;
   }
 
+  trackByTopicNode(index: number, topic: TopicTreeNode) {
+    return topic?.id || topic?.label || index;
+  }
+
+  formatResourceType(
+    types: string[] | string | undefined | null
+  ): string | null {
+    if (typeof types === "string") {
+      types = [types];
+    }
+
+    if (!Array.isArray(types) || !types.length) {
+      return null;
+    }
+
+    let fallback: string | null = null;
+
+    for (const rawType of types) {
+      if (!rawType) continue;
+
+      const labelToken = rawType.includes(":")
+        ? rawType.split(":").pop()
+        : rawType;
+
+      if (!labelToken) continue;
+
+      const formatted = startCase(labelToken.replace(/[_-]+/g, " "));
+
+      if (!fallback) {
+        fallback = formatted;
+      }
+
+      if (formatted.toLowerCase() === "dataset") {
+        continue;
+      }
+
+      return formatted;
+    }
+
+    return fallback;
+  }
+
   trackBySkeleton(index: number, value: number) {
     return value ?? index;
+  }
+
+  hasActivePath() {
+    return this.topicPath.length > 0;
+  }
+
+  getPathLabel() {
+    if (!this.topicPath.length) return "";
+    return this.topicPath[this.topicPath.length - 1].label;
+  }
+
+  getBackLabel() {
+    if (this.topicPath.length <= 1) {
+      return "All Topics";
+    }
+    return this.topicPath[this.topicPath.length - 2]?.label || "Back";
+  }
+
+  drillInto(topic: TopicTreeNode) {
+    if (!topic?.children?.length) return;
+    this.topicPath = [...this.topicPath, topic];
+    this.updateCurrentTopics();
+  }
+
+  openTopicBranch(event: Event, topic: TopicTreeNode) {
+    event.stopPropagation();
+    this.drillInto(topic);
+  }
+
+  onDisclosureKeydown(event: KeyboardEvent, topic: TopicTreeNode) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.openTopicBranch(event, topic);
+    }
+  }
+
+  isTopicInPath(topic: TopicTreeNode): boolean {
+    return this.topicPath.some((node) => node.id === topic.id);
+  }
+
+  goBackOneLevel() {
+    if (!this.topicPath.length) return;
+    this.topicPath = this.topicPath.slice(0, -1);
+    this.updateCurrentTopics();
+  }
+
+  resetTopicNavigation() {
+    if (!this.topicPath.length) return;
+    this.topicPath = [];
+    this.updateCurrentTopics();
+  }
+
+  getTopicDepthClass(topic: TopicTreeNode) {
+    const level = topic?.level ?? (this.topicPath.length + 1);
+    if (level <= 1) return "topic-chip--depth-root";
+    if (level === 2) return "topic-chip--depth-child";
+    return "topic-chip--depth-grandchild";
+  }
+
+  private updateCurrentTopics() {
+    if (this.topicPath.length) {
+      const last = this.topicPath[this.topicPath.length - 1];
+      this.currentTopics = last?.children || [];
+    } else {
+      this.currentTopics = this.topicRoots;
+    }
+  }
+
+  private loadTopicTree() {
+    if (!this.RMMAPIURL) {
+      this.topicsLoading = false;
+      return;
+    }
+
+    const base = this.RMMAPIURL.endsWith("/")
+      ? this.RMMAPIURL
+      : `${this.RMMAPIURL}/`;
+
+    this.topicsLoading = true;
+    this.topicsError = false;
+
+    if (this.taxonomySub) {
+      this.taxonomySub.unsubscribe();
+    }
+
+    this.taxonomySub = this.http
+      .get<TaxonomyNode[]>(`${base}taxonomy`)
+      .subscribe({
+        next: (nodes) => {
+          this.topicRoots = this.buildTopicTree(nodes);
+          this.topicPath = [];
+          this.updateCurrentTopics();
+          this.topicsLoading = false;
+          this.topicsError = false;
+        },
+        error: () => {
+          this.topicRoots = [];
+          this.topicPath = [];
+          this.currentTopics = [];
+          this.topicsLoading = false;
+          this.topicsError = true;
+        },
+      });
+  }
+
+  private buildTopicTree(nodes: TaxonomyNode[] = []): TopicTreeNode[] {
+    if (!Array.isArray(nodes) || !nodes.length) {
+      return [];
+    }
+
+    const nodeMap = new Map<string, TopicTreeNode>();
+    const roots: TopicTreeNode[] = [];
+
+    nodes.forEach((node) => {
+      const label = this.getNodeLabel(node);
+      if (!label) return;
+      const key = this.normalizeLabel(label);
+      if (!key) return;
+      if (nodeMap.has(key)) return;
+      const parentLabel =
+        typeof node.parent === "string" ? node.parent.trim() : "";
+      nodeMap.set(key, {
+        id: node._id || label,
+        label,
+        level: Number(node.level) || 1,
+        parentLabel: parentLabel || undefined,
+        children: [],
+        query: this.buildTopicQuery(label),
+      });
+    });
+
+    const orphans: TopicTreeNode[] = [];
+
+    nodeMap.forEach((topicNode) => {
+      const parentKey = topicNode.parentLabel
+        ? this.normalizeLabel(topicNode.parentLabel)
+        : "";
+      const hasParent = parentKey && nodeMap.has(parentKey);
+
+      if (!hasParent) {
+        if (topicNode.level && topicNode.level > 1) {
+          orphans.push(topicNode);
+        } else {
+          roots.push(topicNode);
+        }
+        return;
+      }
+      nodeMap.get(parentKey)?.children.push(topicNode);
+    });
+
+    const sortNodes = (items: TopicTreeNode[]) => {
+      items.sort((a, b) => a.label.localeCompare(b.label));
+      items.forEach((child) => {
+        if (child.children?.length) {
+          sortNodes(child.children);
+        }
+      });
+    };
+
+    sortNodes(roots);
+    // Only surface level-1 roots by default; attach otherwise orphaned nodes as root-only fallbacks.
+    if (!roots.length && orphans.length) {
+      sortNodes(orphans);
+      return orphans.sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    return roots.sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  private getNodeLabel(node: TaxonomyNode | undefined): string {
+    if (!node) return "";
+    if (typeof node.label === "string" && node.label.trim().length) {
+      return node.label.trim();
+    }
+    if (typeof node.term === "string" && node.term.trim().length) {
+      return node.term.trim();
+    }
+    return "";
+  }
+
+  private normalizeLabel(value: string | undefined | null): string {
+    return (value ?? "").trim().toLowerCase();
+  }
+
+  private buildTopicQuery(label: string): string {
+    if (!label) return "";
+    const sanitized = label.replace(/"/g, '\\"');
+    return `topic.tag="${sanitized}"`;
   }
 
   onCollectionsScroll() {

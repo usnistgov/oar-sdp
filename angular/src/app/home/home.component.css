@@ -430,32 +430,208 @@
   gap: 0.75rem;
 }
 
+.topics-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.topics-panel {
+  background: #f9f9f9;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.topics-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.topics-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  color: #1b1b1b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.topics-breadcrumb__item {
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.topics-breadcrumb__item--current {
+  background: #111111;
+  color: #ffffff;
+}
+
+.topics-reset {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #1b1b1b;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.topics-reset:hover,
+.topics-reset:focus {
+  text-decoration: none;
+}
+
+.topics-grid {
+  display: grid;
+  gap: 0.8rem 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.topics-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem 1rem;
+}
+
 .topic-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.5rem 1.1rem;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
   border-radius: 999px;
-  border: 1px solid #c8d4e1;
+  border: 1px solid rgba(0, 0, 0, 0.45);
   background-color: #ffffff;
-  color: #0b3d91;
-  font-size: 0.9rem;
+  color: #1b1b1b;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  width: 100%;
+}
+
+.topic-chip--action {
+  min-width: 0;
+}
+
+.topic-chip--back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 14px;
+  padding: 0.4rem 0.9rem;
+  width: auto;
+  border: 1px solid rgba(0, 0, 0, 0.65);
+}
+
+.topic-chip__content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.topic-chip--depth-root {
+  background: #ffffff;
+}
+
+.topic-chip--depth-child {
+  background: #f7f7f7;
+}
+
+.topic-chip--depth-grandchild {
+  background: #ededed;
+}
+
+.topic-chip__hash {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.topic-chip__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topic-chip--skeleton {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: linear-gradient(
+    90deg,
+    #f5f5f5 25%,
+    #e8e8e8 37%,
+    #f5f5f5 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  min-height: 40px;
 }
 
 .topic-chip:hover,
 .topic-chip:focus {
-  background-color: #e7f1fb;
-  border-color: #005ea2;
-  color: #005ea2;
+  background-color: #ffffff;
+  color: #111111;
+  border-color: #111111;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6);
 }
 
 .topic-chip:focus {
-  outline: 3px solid rgba(0, 94, 162, 0.3);
+  outline: 3px solid rgba(17, 17, 17, 0.25);
   outline-offset: 2px;
+}
+
+.topic-chip__disclosure {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.75rem;
+  margin-left: 0.4rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.topic-chip__disclosure:focus {
+  outline: 2px solid rgba(17, 17, 17, 0.25);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+.topic-chip__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.topic-chip__chevron--active {
+  transform: rotate(90deg);
+}
+
+.topics-empty {
+  border: 1px dashed rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  color: #2f2f2f;
+  font-size: 0.9rem;
 }
 
 /* Responsive Adjustments */

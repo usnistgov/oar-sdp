@@ -54,9 +54,9 @@
             </span>
             <span
               class="dataset-pill dataset-pill--type"
-              *ngIf="dataset['@type']?.length"
+              *ngIf="formatResourceType(dataset['@type']) as resourceType"
             >
-              {{ dataset["@type"][0] }}
+              {{ resourceType }}
             </span>
           </div>
           <h3 class="dataset-title">{{ dataset.title }}</h3>
@@ -231,16 +231,105 @@
         </div>
       </div>
 
-      <div class="topics-grid">
-        <button
-          type="button"
-          class="topic-chip"
-          *ngFor="let topic of topics; trackBy: trackByTopic"
-          (click)="search(topic.query)"
-        >
-          <i class="pi pi-hashtag"></i>
-          {{ topic.label }}
-        </button>
+      <div class="topics-body">
+        <div class="topics-panel">
+          <div class="topics-toolbar" *ngIf="hasActivePath()">
+            <button
+              type="button"
+              class="topic-chip topic-chip--back"
+              (click)="goBackOneLevel()"
+              aria-label="Go back to {{ getBackLabel() }}"
+            >
+              <i class="pi pi-arrow-left"></i>
+              {{ getBackLabel() }}
+            </button>
+            <div class="topics-breadcrumb">
+              <button
+                type="button"
+                class="topics-reset"
+                (click)="resetTopicNavigation()"
+                aria-label="Reset topic selection"
+              >
+                All Topics
+              </button>
+              <i class="pi pi-angle-right"></i>
+              <ng-container
+                *ngFor="let crumb of topicPath; let last = last; trackBy: trackByTopicNode"
+              >
+                <span
+                  class="topics-breadcrumb__item"
+                  [class.topics-breadcrumb__item--current]="last"
+                >
+                  {{ crumb.label }}
+                </span>
+                <i class="pi pi-angle-right" *ngIf="!last"></i>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="topics-skeleton" *ngIf="topicsLoading">
+            <div class="topic-chip topic-chip--skeleton" *ngFor="let skeleton of skeletonCards"></div>
+          </div>
+
+          <div class="topics-grid" *ngIf="!topicsLoading && currentTopics.length">
+            <button
+              type="button"
+              class="topic-chip topic-chip--action"
+              *ngFor="let topic of currentTopics; trackBy: trackByTopicNode"
+              [ngClass]="getTopicDepthClass(topic)"
+              (click)="search(topic.query)"
+            >
+              <span class="topic-chip__content">
+                <span class="topic-chip__hash">#</span>
+                <span class="topic-chip__label">{{ topic.label }}</span>
+              </span>
+              <span
+                class="topic-chip__disclosure"
+                *ngIf="topic.children.length"
+                (click)="openTopicBranch($event, topic)"
+                (keydown)="onDisclosureKeydown($event, topic)"
+                [attr.aria-label]="'Explore ' + topic.label"
+                role="button"
+                tabindex="0"
+              >
+                <span class="topic-chip__badge">+</span>
+                <i
+                  class="pi pi-angle-right"
+                  [class.topic-chip__chevron--active]="isTopicInPath(topic)"
+                ></i>
+              </span>
+            </button>
+          </div>
+
+          <div
+            class="topics-grid"
+            *ngIf="
+              !topicsLoading && !currentTopics.length && !topicsError && !hasActivePath()
+            "
+          >
+            <button
+              type="button"
+              class="topic-chip topic-chip--action topic-chip--depth-root"
+              *ngFor="let topic of staticTopics; trackBy: trackByTopic"
+              (click)="search(topic.query)"
+            >
+              <span class="topic-chip__content">
+                <span class="topic-chip__hash">#</span>
+                <span class="topic-chip__label">{{ topic.label }}</span>
+              </span>
+            </button>
+          </div>
+
+          <div
+            class="topics-empty"
+            *ngIf="!topicsLoading && topicsError"
+          >
+            <p>
+              We couldn't load the topic taxonomy right now. Try again later or
+              start with a keyword search above.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   </div>
