@@ -52,18 +52,13 @@
         </i>
       </p>
 
-      <div class="p-inputgroup" style="margin: auto; width: 80%">
+      <div class="p-inputgroup search-input-group">
         <p-autoComplete
           pInputText
           p-fluid
           #audocomp
           [autoOptionFocus]="false"
-          [inputStyle]="{
-            width: '100%',
-            'padding-left': '2rem',
-            color: 'white',
-            'border-color': 'white'
-          }"
+          inputStyleClass="search-input"
           (onFocus)="clearText()"
           (onBlur)="addPlaceholder()"
           [placeholder]="placeholder"
@@ -81,7 +76,7 @@
           [showEmptyMessage]="shouldShowEmptyMessage()"
           [minLength]="1"
           [maxlength]="2048"
-          [style]="{ width: '100%', color: 'white' }"
+          [style]="{ width: '100%' }"
         >
           <ng-template let-taxonomy pTemplate="item">
             <div
@@ -93,22 +88,23 @@
           </ng-template>
         </p-autoComplete>
         <span
-          class="p-inputgroup-addon"
+          class="p-inputgroup-addon search-addon"
           (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
-          style="cursor: pointer; color: white; border-color: white"
         >
           <i class="pi pi-search"></i>
         </span>
         <span
-          class="p-inputgroup-addon"
-          style="cursor: pointer; color: white; border-color: white"
+          class="p-inputgroup-addon search-addon"
           (click)="clearSearchBox()"
         >
           <i class="pi pi-times"></i>
         </span>
         <span
-          class="p-inputgroup-addon"
-          style="cursor: pointer; color: white; border-color: white"
+          class="p-inputgroup-addon search-addon search-addon--info"
+          (click)="showExamplesPanel()"
+          tabindex="0"
+          role="button"
+          (keydown)="onInfoKeydown($event)"
         >
           <i class="pi pi-info-circle"></i>
         </span>

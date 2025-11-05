@@ -303,6 +303,18 @@ export class SearchPanelComponent implements OnInit {
     this.searchQueryService.setShowExamples(false);
   }
 
+  showExamplesPanel() {
+    this.searchQueryService.setShowExamples(true);
+    this.currentState = "final";
+  }
+
+  onInfoKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.showExamplesPanel();
+    }
+  }
+
   /**
    * When window resized, we need to resize the search text box and reposition breadcrumb accordingly
    * When top menu bar collapse, we want to place breadcrumb inside the top menu bar
