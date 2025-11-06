@@ -18,8 +18,7 @@
             New Resources
           </h2>
           <p class="section-subtitle">
-            Explore fresh releases and newly curated resources from across the
-            catalog.
+            Stay on top of the newest datasets, publications, and tools coming out of NIST.
           </p>
         </div>
         <button
@@ -29,6 +28,29 @@
         >
           View All
           <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+      <div
+        class="recent-tabs"
+        role="tablist"
+        aria-label="New resource feeds"
+        *ngIf="recentFeeds?.length"
+      >
+        <button
+          type="button"
+          class="recent-tab"
+          *ngFor="let feed of recentFeeds; trackBy: trackByRecentFeed"
+          [class.recent-tab--active]="isRecentFeedActive(feed.id)"
+          (click)="switchRecentFeed(feed.id)"
+          role="tab"
+          [attr.aria-selected]="isRecentFeedActive(feed.id)"
+        >
+          <span class="recent-tab__icon" *ngIf="feed.icon">
+            <i [ngClass]="feed.icon" aria-hidden="true"></i>
+          </span>
+          <span class="recent-tab__label">
+            {{ feed.label }}
+          </span>
         </button>
       </div>
 
@@ -48,42 +70,46 @@
           *ngFor="let dataset of recentDatasets; trackBy: trackByDataset"
           (click)="openDataset(dataset, $event)"
         >
-          <div class="dataset-meta">
-            <span class="dataset-pill" *ngIf="dataset.annotated">
-              Updated {{ dataset.annotated | date : "mediumDate" }}
-            </span>
-            <span
-              class="dataset-pill dataset-pill--type"
-              *ngIf="formatResourceType(dataset['@type']) as resourceType"
+          <header class="dataset-card__header">
+            <div class="dataset-meta">
+              <ng-container
+                *ngIf="getDatasetPrimaryDate(dataset) as primaryDate"
+              >
+                <span class="dataset-pill dataset-pill--date">
+                  {{ primaryDate.label }}
+                  {{ primaryDate.value | date : "mediumDate" }}
+                </span>
+              </ng-container>
+            </div>
+            <ng-container
+              *ngIf="formatResourceTypes(dataset['@type']) as resourceTypes"
             >
-              {{ resourceType }}
-            </span>
-          </div>
+              <span
+                class="dataset-pill dataset-pill--type"
+                *ngIf="resourceTypes.length"
+              >
+                {{ resourceTypes[0] }}
+              </span>
+            </ng-container>
+          </header>
           <h3 class="dataset-title">{{ dataset.title }}</h3>
           <p class="dataset-description">
             {{
-              dataset.description ||
-                "Explore the latest insights from this dataset."
+              getDatasetDescription(dataset) ||
+                "Discover the latest insights from this resource."
             }}
           </p>
-          <div class="dataset-tags" *ngIf="dataset.keyword?.length">
+          <div
+            class="dataset-tags"
+            *ngIf="getDatasetKeywords(dataset, activeRecentFeed?.keywordsLimit || 2) as keywords"
+          >
             <span
               class="dataset-tag"
-              *ngFor="let keyword of dataset.keyword | slice : 0 : 3"
+              *ngFor="let keyword of keywords; trackBy: trackByString"
             >
               {{ keyword }}
             </span>
           </div>
-          <!-- <div class="dataset-footer">
-            <button
-              type="button"
-              class="dataset-action"
-              
-            >
-              View Dataset
-              <i class="pi pi-arrow-up-right"></i>
-            </button>
-          </div> -->
         </article>
       </div>
 
@@ -92,7 +118,9 @@
         *ngIf="!recentDatasetsLoading && recentDatasetsError"
       >
         <p>
-          We couldn't load dataset updates right now. Please try again later.
+          We couldn't load
+          {{ activeRecentFeed?.label || "dataset updates" }}
+          right now. Please try again later.
         </p>
       </div>
 
@@ -104,10 +132,7 @@
           !recentDatasets.length
         "
       >
-        <p>
-          No recent updates are available right now. Check back soon or explore
-          our research collections below.
-        </p>
+        <p>{{ getActiveFeedEmptyMessage() }}</p>
       </div>
     </section>
 
@@ -119,7 +144,7 @@
             Research Collections
           </h2>
           <p class="section-subtitle">
-            Browse curated themes spanning priority research areas.
+            Curated themes that spotlight priority programs and signature initiatives.
           </p>
         </div>
         <button
@@ -226,7 +251,7 @@
             Browse By Topic
           </h2>
           <p class="section-subtitle">
-            Jump into the scientific domains that matter to your work.
+            Dive directly into domains aligned with your research interests.
           </p>
         </div>
       </div>
