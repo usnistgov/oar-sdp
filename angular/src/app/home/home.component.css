@@ -141,6 +141,10 @@
   color: #1a1a1a;
   margin: 0 0 0.35rem;
   line-height: 1.28;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .dataset-description {

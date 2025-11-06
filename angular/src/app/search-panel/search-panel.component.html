@@ -101,7 +101,7 @@
         </span>
         <span
           class="p-inputgroup-addon search-addon search-addon--info"
-          (click)="showExamplesPanel()"
+          (click)="toggleExamplesPanel()"
           tabindex="0"
           role="button"
           (keydown)="onInfoKeydown($event)"
@@ -143,22 +143,21 @@
     </div>
   </div>
 
-  <div class="help-wrapper" [@changeDivSize]="currentState">
-    <!--
-    <span class="p-float-right p-m-1" (click)="searchQueryService.setShowExamples(false)">
-      <i class="pi pi-times icon-black" id="btn-close" aria-hidden="true" data-toggle="tooltip" title="Hide Examples"></i>
-    </span> -->
-    <div class="p-card">
-      <div class="p-card-header">
-        <p class="p-card-title">Syntax Rules</p>
-        <p-button
-          class="p-float-right p-m-1 align-right"
-          icon="pi pi-times"
-          (onClick)="searchQueryService.setShowExamples(false)"
-          label="Hide Examples"
-        ></p-button>
-      </div>
-      <div class="p-card-body">
+  <p-dialog
+    class="examples-dialog"
+    header="Search Examples"
+    [(visible)]="examplesDialogVisible"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: 'min(760px, 92vw)' }"
+    (onHide)="closeExamples()"
+  >
+    <div class="examples-dialog__body">
+      <p class="examples-dialog__hint">
+        Click any example to prefill the search bar. Use logical operators and
+        field qualifiers to craft precise queries tailored to the NIST catalog.
+      </p>
+      <div class="examples-dialog__table">
         <p-table [value]="syntaxRules" class="p-datatable">
           <ng-template pTemplate="header">
             <tr>
@@ -176,11 +175,6 @@
                   (click)="
                     $event.preventDefault(); setSearchValue(rule.example)
                   "
-                  style="
-                    padding-left: 1em;
-                    cursor: pointer;
-                    text-decoration: underline;
-                  "
                   >{{ rule.example }}</a
                 >
               </td>
@@ -189,8 +183,18 @@
           </ng-template>
         </p-table>
       </div>
+      <div class="examples-dialog__actions">
+        <button
+          pButton
+          type="button"
+          label="Close"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="closeExamples()"
+        ></button>
+      </div>
     </div>
-  </div>
+  </p-dialog>
 
   <p-overlayPanel #op1 [dismissable]="true" [showCloseIcon]="false">
     <div class="p-grid">
