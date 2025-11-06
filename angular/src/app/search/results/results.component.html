@@ -224,7 +224,7 @@
 
       <div
         id="pagination"
-        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
+        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0 && mobWidth >= 641"
         style="margin-top: 0px"
       >
         <app-pagination
@@ -487,6 +487,7 @@
           "
         >
           <app-pagination
+            *ngIf="mobWidth >= 641"
             [totalItems]="totalItems"
             [currentPage]="currentPage"
             [pageSize]="pagerConfig.pageSize"
