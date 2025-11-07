@@ -129,111 +129,111 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         { field: "annotated", label: "Updated" },
       ],
     },
-    {
-      id: "data-publications",
-      label: "Data Publications",
-      description: "Fresh NIST data publications and reports.",
-      icon: "pi pi-book",
-      metricsLabel: "publications",
-      sort: "firstIssued:desc",
-      filter: "@type=nrdp:DataPublication",
-      keywordsLimit: 3,
-      typesLimit: 1,
-      dateFields: [
-        { field: "firstIssued", label: "Published" },
-        { field: "issued", label: "Published" },
-        { field: "annotated", label: "Updated" },
-      ],
-      emptyMessage:
-        "No recent data publications are available right now. Check back soon or explore another feed.",
-    },
-    {
-      id: "ai-spotlight",
-      label: "AI & Data Science",
-      description:
-        "Featured artificial intelligence and machine learning resources.",
-      icon: "pi pi-chart-line",
-      metricsLabel: "AI resources",
-      sort: "annotated:desc",
-      filter: "@type=Dataset",
-      keywordsLimit: 2,
-      typesLimit: 1,
-      queryRows: [{ field: "topic.tag", value: "Artificial Intelligence" }],
-      requests: [
-        {
-          queryRows: [{ field: "keyword", value: "Artificial Intelligence" }],
-        },
-        {
-          filter: null,
-          freeText: "Artificial Intelligence",
-        },
-      ],
-      emptyMessage:
-        "No fresh AI resources are available right now. Try another feed or explore the catalog.",
-    },
-    {
-      id: "srd-updates",
-      label: "Standard Reference Data",
-      description: "New and updated entries from the SRD program.",
-      icon: "pi pi-database",
-      metricsLabel: "SRD releases",
-      sort: "modified:desc",
-      filter: "@type=nrdp:SRD",
-      keywordsLimit: 2,
-      typesLimit: 1,
-      dateFields: [
-        { field: "modified", label: "Updated" },
-        { field: "firstIssued", label: "Released" },
-        { field: "issued", label: "Released" },
-        { field: "annotated", label: "Updated" },
-      ],
-      emptyMessage:
-        "No SRD releases are available right now. Try another feed or explore the catalog.",
-      requests: [
-        { filter: '@type=%22nrdp:SRD%22' },
-        { filter: "@type=nrdp%3ASRD" },
-        {
-          filter: "@type=SRD",
-        },
-        { filter: '@type=%22SRD%22' },
-        {
-          filter: null,
-          queryRows: [{ field: "@type", value: "nrdp:SRD" }],
-        },
-        {
-          filter: null,
-          queryRows: [{ field: "components.@type", value: "nrdp:SRD" }],
-        },
-        {
-          filter: null,
-          freeText: "Standard Reference Data",
-        },
-        {
-          filter: null,
-          freeText: "Standard Reference Data",
-          queryRows: [
-            { field: "topic.tag", value: "Standard Reference Data" },
-          ],
-        },
-      ],
-    },
-    {
-      id: "tools-portals",
-      label: "Tools & Portals",
-      description: "Interactive tools and service portals supporting research.",
-      icon: "pi pi-globe",
-      metricsLabel: "portals",
-      sort: "annotated:desc",
-      filter: "@type=nrd:Portal",
-      keywordsLimit: 2,
-      typesLimit: 1,
-      dateFields: [
-        { field: "annotated", label: "Updated" },
-        { field: "modified", label: "Modified" },
-      ],
-      emptyMessage:
-        "No new tools or portals right now. Explore the catalog for additional services.",
-    },
+    // {
+    //   id: "data-publications",
+    //   label: "Data Publications",
+    //   description: "Fresh NIST data publications and reports.",
+    //   icon: "pi pi-book",
+    //   metricsLabel: "publications",
+    //   sort: "firstIssued:desc",
+    //   filter: "@type=nrdp:DataPublication",
+    //   keywordsLimit: 3,
+    //   typesLimit: 1,
+    //   dateFields: [
+    //     { field: "firstIssued", label: "Published" },
+    //     { field: "issued", label: "Published" },
+    //     { field: "annotated", label: "Updated" },
+    //   ],
+    //   emptyMessage:
+    //     "No recent data publications are available right now. Check back soon or explore another feed.",
+    // },
+    // {
+    //   id: "ai-spotlight",
+    //   label: "AI & Data Science",
+    //   description:
+    //     "Featured artificial intelligence and machine learning resources.",
+    //   icon: "pi pi-chart-line",
+    //   metricsLabel: "AI resources",
+    //   sort: "annotated:desc",
+    //   filter: "@type=Dataset",
+    //   keywordsLimit: 2,
+    //   typesLimit: 1,
+    //   queryRows: [{ field: "topic.tag", value: "Artificial Intelligence" }],
+    //   requests: [
+    //     {
+    //       queryRows: [{ field: "keyword", value: "Artificial Intelligence" }],
+    //     },
+    //     {
+    //       filter: null,
+    //       freeText: "Artificial Intelligence",
+    //     },
+    //   ],
+    //   emptyMessage:
+    //     "No fresh AI resources are available right now. Try another feed or explore the catalog.",
+    // },
+    // {
+    //   id: "srd-updates",
+    //   label: "Standard Reference Data",
+    //   description: "New and updated entries from the SRD program.",
+    //   icon: "pi pi-database",
+    //   metricsLabel: "SRD releases",
+    //   sort: "modified:desc",
+    //   filter: "@type=nrdp:SRD",
+    //   keywordsLimit: 2,
+    //   typesLimit: 1,
+    //   dateFields: [
+    //     { field: "modified", label: "Updated" },
+    //     { field: "firstIssued", label: "Released" },
+    //     { field: "issued", label: "Released" },
+    //     { field: "annotated", label: "Updated" },
+    //   ],
+    //   emptyMessage:
+    //     "No SRD releases are available right now. Try another feed or explore the catalog.",
+    //   requests: [
+    //     { filter: '@type=%22nrdp:SRD%22' },
+    //     { filter: "@type=nrdp%3ASRD" },
+    //     {
+    //       filter: "@type=SRD",
+    //     },
+    //     { filter: '@type=%22SRD%22' },
+    //     {
+    //       filter: null,
+    //       queryRows: [{ field: "@type", value: "nrdp:SRD" }],
+    //     },
+    //     {
+    //       filter: null,
+    //       queryRows: [{ field: "components.@type", value: "nrdp:SRD" }],
+    //     },
+    //     {
+    //       filter: null,
+    //       freeText: "Standard Reference Data",
+    //     },
+    //     {
+    //       filter: null,
+    //       freeText: "Standard Reference Data",
+    //       queryRows: [
+    //         { field: "topic.tag", value: "Standard Reference Data" },
+    //       ],
+    //     },
+    //   ],
+    // },
+    // {
+    //   id: "tools-portals",
+    //   label: "Tools & Portals",
+    //   description: "Interactive tools and service portals supporting research.",
+    //   icon: "pi pi-globe",
+    //   metricsLabel: "portals",
+    //   sort: "annotated:desc",
+    //   filter: "@type=nrd:Portal",
+    //   keywordsLimit: 2,
+    //   typesLimit: 1,
+    //   dateFields: [
+    //     { field: "annotated", label: "Updated" },
+    //     { field: "modified", label: "Modified" },
+    //   ],
+    //   emptyMessage:
+    //     "No new tools or portals right now. Explore the catalog for additional services.",
+    // },
   ];
   activeRecentFeedId = this.recentFeeds[0]?.id ?? "";
   private recentFeedsState: Record<string, RecentFeedState> = {};

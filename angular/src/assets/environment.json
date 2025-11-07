@@ -1,6 +1,6 @@
 {
     "SERVERBASE": "https://data.nist.gov/",
-    "RMMAPI":  "http://localhost:8000/rmm/",
+    "RMMAPI":  "https://data.nist.gov/rmm/",
     "SDPAPI":  "/",
     "PDRAPI":  "https://localhost:4200/od/id/",
     "DISTAPI": "https://data.nist.gov/od/ds/",
