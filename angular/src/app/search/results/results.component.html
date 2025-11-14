@@ -224,11 +224,7 @@
 
       <div
         id="pagination"
-        *ngIf="
-          resultStatus == RESULT_STATUS.success &&
-          totalItems > 0 &&
-          mobWidth >= 641
-        "
+        *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0 && mobWidth >= 641"
         style="margin-top: 0px"
       >
         <app-pagination
@@ -457,7 +453,11 @@
                     rel="noopener"
                     [ngStyle]="{ float: customizeViewPosition() }"
                     label="Access Data"
-                    icon="pi pi-database"
+                    [icon]="
+                      isPdrLink(resultItem.landingPage)
+                        ? 'pi pi-database'
+                        : 'pi pi-external-link'
+                    "
                     (click)="
                       gaService.gaTrackEvent(
                         'outbound',
