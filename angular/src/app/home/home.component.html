@@ -9,53 +9,353 @@
 ></app-search-panel>
 
 <div class="home-content">
-  <!-- Research Collections section -->
   <div class="container">
-    <div class="collections-section">
-      <!-- MARK: @Mehdi Hiding header for now -->
+    <section class="section recent-section">
       <div class="section-header">
-        <!-- <h2 class="section-title">
-          <i class="pi pi-folder"></i>
-          Research Collections
-        </h2> -->
+        <div class="section-text">
+          <h2 class="section-title">
+            <i class="pi pi-clock"></i>
+            New Resources
+          </h2>
+          <p class="section-subtitle">
+            Stay on top of the newest datasets, publications, and tools coming out of NIST.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="section-link"
+          (click)="viewAllRecentDatasets()"
+        >
+          View All
+          <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+      <div
+        class="recent-tabs"
+        role="tablist"
+        aria-label="New resource feeds"
+        *ngIf="recentFeeds?.length"
+      >
+        <button
+          type="button"
+          class="recent-tab"
+          *ngFor="let feed of recentFeeds; trackBy: trackByRecentFeed"
+          [class.recent-tab--active]="isRecentFeedActive(feed.id)"
+          (click)="switchRecentFeed(feed.id)"
+          role="tab"
+          [attr.aria-selected]="isRecentFeedActive(feed.id)"
+        >
+          <span class="recent-tab__icon" *ngIf="feed.icon">
+            <i [ngClass]="feed.icon" aria-hidden="true"></i>
+          </span>
+          <span class="recent-tab__label">
+            {{ feed.label }}
+          </span>
+        </button>
       </div>
 
-      <!-- Fixed 5x2 grid view -->
-      <div class="collections-grid">
+      <div class="recent-loading" *ngIf="recentDatasetsLoading">
         <div
-          *ngFor="let theme of getThemesList().slice(0, 10)"
-          class="collection-card-grid"
-          [class.curated]="theme.curated"
-          (click)="
-            theme.curated
-              ? navigateToCuratedCollection($event, theme)
-              : search(theme.searchTerm)
-          "
+          class="dataset-card skeleton-card"
+          *ngFor="let item of skeletonCards; trackBy: trackBySkeleton"
+        ></div>
+      </div>
+
+      <div
+        class="recent-grid"
+        *ngIf="!recentDatasetsLoading && recentDatasets.length"
+      >
+        <article
+          class="dataset-card"
+          *ngFor="let dataset of recentDatasets; trackBy: trackByDataset"
+          (click)="openDataset(dataset, $event)"
         >
+          <header class="dataset-card__header">
+            <div class="dataset-meta">
+              <ng-container
+                *ngIf="getDatasetPrimaryDate(dataset) as primaryDate"
+              >
+                <span class="dataset-pill dataset-pill--date">
+                  {{ primaryDate.label }}
+                  {{ primaryDate.value | date : "mediumDate" }}
+                </span>
+              </ng-container>
+            </div>
+            <ng-container
+              *ngIf="formatResourceTypes(dataset['@type']) as resourceTypes"
+            >
+              <span
+                class="dataset-pill dataset-pill--type"
+                *ngIf="resourceTypes.length"
+              >
+                {{ resourceTypes[0] }}
+              </span>
+            </ng-container>
+          </header>
+          <h3 class="dataset-title">{{ dataset.title }}</h3>
+          <p class="dataset-description">
+            {{
+              getDatasetDescription(dataset) ||
+                "Discover the latest insights from this resource."
+            }}
+          </p>
           <div
-            *ngIf="theme.curated"
-            class="curated-badge"
-            (click)="navigateToCuratedCollection($event, theme)"
-            style="cursor: pointer"
+            class="dataset-tags"
+            *ngIf="getDatasetKeywords(dataset, activeRecentFeed?.keywordsLimit || 2) as keywords"
           >
-            <i
-              class="pi pi-star-fill"
-              style="color: gold; margin-right: 5px"
-            ></i>
-            Curated Collection
+            <span
+              class="dataset-tag"
+              *ngFor="let keyword of keywords; trackBy: trackByString"
+            >
+              {{ keyword }}
+            </span>
+          </div>
+        </article>
+      </div>
+
+      <div
+        class="recent-empty"
+        *ngIf="!recentDatasetsLoading && recentDatasetsError"
+      >
+        <p>
+          We couldn't load
+          {{ activeRecentFeed?.label || "dataset updates" }}
+          right now. Please try again later.
+        </p>
+      </div>
+
+      <div
+        class="recent-empty"
+        *ngIf="
+          !recentDatasetsLoading &&
+          !recentDatasetsError &&
+          !recentDatasets.length
+        "
+      >
+        <p>{{ getActiveFeedEmptyMessage() }}</p>
+      </div>
+    </section>
+
+    <section class="section collections-section" style="margin-top: 10px">
+      <div class="section-header">
+        <div class="section-text">
+          <h2 class="section-title">
+            <i class="pi pi-folder"></i>
+            Research Collections
+          </h2>
+          <p class="section-subtitle">
+            Curated themes that spotlight priority programs and signature initiatives.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="section-link"
+          (click)="toggleCollectionsView()"
+        >
+          {{ showAllCollections ? "Show Featured" : "View All Collections" }}
+          <i
+            class="pi"
+            [ngClass]="showAllCollections ? 'pi-minus' : 'pi-plus'"
+          ></i>
+        </button>
+      </div>
+
+      <ng-container *ngIf="!showAllCollections; else fullCollections">
+        <div
+          class="collections-rail-wrapper"
+          *ngIf="featuredCollections.length"
+        >
+          <button
+            type="button"
+            class="collections-nav collections-nav--left"
+            (click)="scrollCollections('left')"
+            *ngIf="showLeftCollectionArrow"
+            aria-label="Scroll collections left"
+          >
+            <i class="pi pi-arrow-left" style="color: black"></i>
+          </button>
+
+          <div
+            #collectionsRail
+            class="collections-rail"
+            tabindex="0"
+            (scroll)="onCollectionsScroll()"
+          >
+            <article
+              class="collection-card collection-card-rail"
+              *ngFor="let theme of featuredCollections; trackBy: trackByTheme"
+              [class.curated]="theme.curated"
+              (click)="handleCollectionClick($event, theme)"
+              (keyup.enter)="handleCollectionClick($event, theme)"
+              role="button"
+            >
+              <div
+                class="collection-image"
+                [style.background-image]="
+                  'url(' + getImageFullPath(theme.image) + ')'
+                "
+              ></div>
+              <div class="collection-details">
+                <h3>{{ theme.title }}</h3>
+              </div>
+              <span class="curated-badge" *ngIf="theme.curated">
+                <i class="pi pi-star-fill"></i>
+                Curated
+              </span>
+            </article>
+          </div>
+
+          <button
+            type="button"
+            class="collections-nav collections-nav--right"
+            (click)="scrollCollections('right')"
+            *ngIf="showRightCollectionArrow"
+            aria-label="Scroll collections right"
+          >
+            <i class="pi pi-arrow-right" style="color: black"></i>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #fullCollections>
+        <div class="collections-grid">
+          <article
+            class="collection-card-grid"
+            *ngFor="let theme of getThemesList(); trackBy: trackByTheme"
+            [class.curated]="theme.curated"
+            (click)="handleCollectionClick($event, theme)"
+          >
+            <div
+              class="collection-icon-grid"
+              [style.background-image]="
+                'url(' + getImageFullPath(theme.image) + ')'
+              "
+            ></div>
+            <div class="collection-info-grid">
+              <h3>{{ theme.title }}</h3>
+            </div>
+            <span class="curated-badge" *ngIf="theme.curated">
+              <i class="pi pi-star-fill"></i>
+              Curated
+            </span>
+          </article>
+        </div>
+      </ng-template>
+    </section>
+
+    <section class="section topics-section" style="margin-top: 10px">
+      <div class="section-header">
+        <div class="section-text">
+          <h2 class="section-title">
+            <i class="pi pi-tags"></i>
+            Browse By Topic
+          </h2>
+          <p class="section-subtitle">
+            Dive directly into domains aligned with your research interests.
+          </p>
+        </div>
+      </div>
+
+      <div class="topics-body">
+        <div class="topics-panel">
+          <div class="topics-toolbar" *ngIf="hasActivePath()">
+            <button
+              type="button"
+              class="topic-chip topic-chip--back"
+              (click)="goBackOneLevel()"
+              aria-label="Go back to {{ getBackLabel() }}"
+            >
+              <i class="pi pi-arrow-left"></i>
+              {{ getBackLabel() }}
+            </button>
+            <div class="topics-breadcrumb">
+              <button
+                type="button"
+                class="topics-reset"
+                (click)="resetTopicNavigation()"
+                aria-label="Reset topic selection"
+              >
+                All Topics
+              </button>
+              <i class="pi pi-angle-right"></i>
+              <ng-container
+                *ngFor="let crumb of topicPath; let last = last; trackBy: trackByTopicNode"
+              >
+                <span
+                  class="topics-breadcrumb__item"
+                  [class.topics-breadcrumb__item--current]="last"
+                >
+                  {{ crumb.label }}
+                </span>
+                <i class="pi pi-angle-right" *ngIf="!last"></i>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="topics-skeleton" *ngIf="topicsLoading">
+            <div class="topic-chip topic-chip--skeleton" *ngFor="let skeleton of skeletonCards"></div>
+          </div>
+
+          <div class="topics-grid" *ngIf="!topicsLoading && currentTopics.length">
+            <button
+              type="button"
+              class="topic-chip topic-chip--action"
+              *ngFor="let topic of currentTopics; trackBy: trackByTopicNode"
+              [ngClass]="getTopicDepthClass(topic)"
+              (click)="search(topic.query)"
+            >
+              <span class="topic-chip__content">
+                <span class="topic-chip__hash">#</span>
+                <span class="topic-chip__label">{{ topic.label }}</span>
+              </span>
+              <span
+                class="topic-chip__disclosure"
+                *ngIf="topic.children.length"
+                (click)="openTopicBranch($event, topic)"
+                (keydown)="onDisclosureKeydown($event, topic)"
+                [attr.aria-label]="'Explore ' + topic.label"
+                role="button"
+                tabindex="0"
+              >
+                <span class="topic-chip__badge">+</span>
+                <i
+                  class="pi pi-angle-right"
+                  [class.topic-chip__chevron--active]="isTopicInPath(topic)"
+                ></i>
+              </span>
+            </button>
           </div>
 
           <div
-            class="collection-icon-grid"
-            [style.background-image]="
-              'url(' + getImageFullPath(theme.image) + ')'
+            class="topics-grid"
+            *ngIf="
+              !topicsLoading && !currentTopics.length && !topicsError && !hasActivePath()
             "
-          ></div>
-          <div class="collection-info-grid">
-            <h3>{{ theme.title }}</h3>
+          >
+            <button
+              type="button"
+              class="topic-chip topic-chip--action topic-chip--depth-root"
+              *ngFor="let topic of staticTopics; trackBy: trackByTopic"
+              (click)="search(topic.query)"
+            >
+              <span class="topic-chip__content">
+                <span class="topic-chip__hash">#</span>
+                <span class="topic-chip__label">{{ topic.label }}</span>
+              </span>
+            </button>
+          </div>
+
+          <div
+            class="topics-empty"
+            *ngIf="!topicsLoading && topicsError"
+          >
+            <p>
+              We couldn't load the topic taxonomy right now. Try again later or
+              start with a keyword search above.
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </div>

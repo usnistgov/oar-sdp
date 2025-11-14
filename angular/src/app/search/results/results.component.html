@@ -412,8 +412,10 @@
                 </p-tag>
 
                 <p-tag
-                  *ngIf="selectedFields.indexOf('Modified') !== -1 && 
-                  resultItem.annotated"
+                  *ngIf="
+                    selectedFields.indexOf('Modified') !== -1 &&
+                    resultItem.annotated
+                  "
                   severity="info"
                   [rounded]="true"
                   styleClass="annotation-tag"

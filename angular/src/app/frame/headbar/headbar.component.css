@@ -19,17 +19,28 @@
   display:inline-block;
 }
 
+:host {
+  position: relative;
+  z-index: 1200;
+}
+
 ::ng-deep .p-menubar {
   background-color: #000000;
   margin-left: auto;
   color: #ffffff;
   border: none;
+  position: relative;
+  z-index: 1200;
 }
 
 ::ng-deep .p-menubar .p-menubar-end {
   margin-left: 100px;
   display: flex;
   align-items: center;
+}
+
+::ng-deep .p-menubar .p-submenu-list {
+  z-index: 1210;
 }
 
 ::ng-deep .p-menuitem-text {

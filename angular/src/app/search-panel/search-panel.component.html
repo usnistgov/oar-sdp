@@ -52,18 +52,13 @@
         </i>
       </p>
 
-      <div class="p-inputgroup" style="margin: auto; width: 80%">
+      <div class="p-inputgroup search-input-group">
         <p-autoComplete
           pInputText
           p-fluid
           #audocomp
           [autoOptionFocus]="false"
-          [inputStyle]="{
-            width: '100%',
-            'padding-left': '2rem',
-            color: 'white',
-            'border-color': 'white'
-          }"
+          inputStyleClass="search-input"
           (onFocus)="clearText()"
           (onBlur)="addPlaceholder()"
           [placeholder]="placeholder"
@@ -81,7 +76,7 @@
           [showEmptyMessage]="shouldShowEmptyMessage()"
           [minLength]="1"
           [maxlength]="2048"
-          [style]="{ width: '100%', color: 'white' }"
+          [style]="{ width: '100%' }"
         >
           <ng-template let-taxonomy pTemplate="item">
             <div
@@ -93,20 +88,25 @@
           </ng-template>
         </p-autoComplete>
         <span
-          class="p-inputgroup-addon"
+          class="p-inputgroup-addon search-addon"
           (click)="hideAllHelp(); search(searchValue, searchTaxonomyKey)"
-          style="cursor: pointer; color: white; border-color: white"
         >
-          <i
-            class="pi pi-search"
-          ></i>
+          <i class="pi pi-search"></i>
         </span>
         <span
-          class="p-inputgroup-addon"
-          style="cursor: pointer; color: white; border-color: white"
+          class="p-inputgroup-addon search-addon"
           (click)="clearSearchBox()"
         >
           <i class="pi pi-times"></i>
+        </span>
+        <span
+          class="p-inputgroup-addon search-addon search-addon--info"
+          (click)="toggleExamplesPanel()"
+          tabindex="0"
+          role="button"
+          (keydown)="onInfoKeydown($event)"
+        >
+          <i class="pi pi-info-circle"></i>
         </span>
       </div>
 
@@ -115,7 +115,8 @@
         *ngIf="queryStringError"
         [innerHTML]="queryStringErrorMessage"
       ></div>
-
+    
+      <!-- 
       <div class="p-d-flex p-jc-between" style="margin-top: 1em">
         <span
           id="example"
@@ -130,33 +131,33 @@
           style="padding-left: 1em; cursor: pointer; text-decoration: underline"
           >Hide Examples</a
         >
-        <!-- <a
+         <a
           *ngIf="advanceLink"
           [routerLink]="['/advanced']"
           style="padding-left: 1em"
           (click)="searchQueryService.setShowExamples(false)"
           >Advanced Queries</a
-        > -->
+        > 
       </div>
+      -->
     </div>
   </div>
 
-  <div class="help-wrapper" [@changeDivSize]="currentState">
-    <!--
-    <span class="p-float-right p-m-1" (click)="searchQueryService.setShowExamples(false)">
-      <i class="pi pi-times icon-black" id="btn-close" aria-hidden="true" data-toggle="tooltip" title="Hide Examples"></i>
-    </span> -->
-    <div class="p-card">
-      <div class="p-card-header">
-        <p class="p-card-title">Syntax Rules</p>
-        <p-button
-          class="p-float-right p-m-1 align-right"
-          icon="pi pi-times"
-          (onClick)="searchQueryService.setShowExamples(false)"
-          label="Hide Examples"
-        ></p-button>
-      </div>
-      <div class="p-card-body">
+  <p-dialog
+    class="examples-dialog"
+    header="Search Examples"
+    [(visible)]="examplesDialogVisible"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: 'min(760px, 92vw)' }"
+    (onHide)="closeExamples()"
+  >
+    <div class="examples-dialog__body">
+      <p class="examples-dialog__hint">
+        Click any example to prefill the search bar. Use logical operators and
+        field qualifiers to craft precise queries tailored to the NIST catalog.
+      </p>
+      <div class="examples-dialog__table">
         <p-table [value]="syntaxRules" class="p-datatable">
           <ng-template pTemplate="header">
             <tr>
@@ -174,11 +175,6 @@
                   (click)="
                     $event.preventDefault(); setSearchValue(rule.example)
                   "
-                  style="
-                    padding-left: 1em;
-                    cursor: pointer;
-                    text-decoration: underline;
-                  "
                   >{{ rule.example }}</a
                 >
               </td>
@@ -187,8 +183,18 @@
           </ng-template>
         </p-table>
       </div>
+      <div class="examples-dialog__actions">
+        <button
+          pButton
+          type="button"
+          label="Close"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="closeExamples()"
+        ></button>
+      </div>
     </div>
-  </div>
+  </p-dialog>
 
   <p-overlayPanel #op1 [dismissable]="true" [showCloseIcon]="false">
     <div class="p-grid">

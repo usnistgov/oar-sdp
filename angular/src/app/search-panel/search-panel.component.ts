@@ -106,6 +106,7 @@ export class SearchPanelComponent implements OnInit {
   showExampleStatus: boolean = false;
   searchBottonWith: string = "10%";
   breadcrumb_top: string = "6em";
+  examplesDialogVisible = false;
   placeHolderText: string[] = [
     "Artificial Intelligence",
     "Kinetics database",
@@ -287,17 +288,39 @@ export class SearchPanelComponent implements OnInit {
    */
   changeState(status: boolean) {
     this.showExampleStatus = status;
-    if (this.showExampleStatus) {
-      this.currentState = "final";
-    } else {
-      this.currentState = "initial";
-    }
+    this.examplesDialogVisible = status;
+    this.currentState = this.showExampleStatus ? "final" : "initial";
   }
 
   /**
    * Hide syntax rules and field lookup help
    */
   hideAllHelp() {
+    this.showExampleStatus = false;
+    this.currentState = "initial";
+    this.examplesDialogVisible = false;
+    this.searchQueryService.setShowExamples(false);
+  }
+
+  showExamplesPanel() {
+    this.searchQueryService.setShowExamples(true);
+    this.currentState = "final";
+  }
+
+  toggleExamplesPanel() {
+    const nextState = !this.examplesDialogVisible;
+    this.searchQueryService.setShowExamples(nextState);
+  }
+
+  onInfoKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.toggleExamplesPanel();
+    }
+  }
+
+  closeExamples() {
+    this.examplesDialogVisible = false;
     this.showExampleStatus = false;
     this.currentState = "initial";
     this.searchQueryService.setShowExamples(false);
@@ -439,6 +462,7 @@ export class SearchPanelComponent implements OnInit {
   setSearchValue(popupValue: string) {
     this._searchValue = popupValue;
     this.onSearchValueChange();
+    this.closeExamples();
   }
 
   /**
