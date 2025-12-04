@@ -99,21 +99,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   recentDatasets: any[] = [];
   recentFeeds: RecentFeedConfig[] = [
     {
-      id: "latest-updated",
-      label: "Latest Updates",
-      description: "Resources most recently updated across the catalog.",
-      icon: "pi pi-history",
-      metricsLabel: "updates",
-      sort: "annotated:desc",
-      filter: "@type=Dataset",
-      keywordsLimit: 2,
-      typesLimit: 1,
-      dateFields: [
-        { field: "annotated", label: "Updated" },
-        { field: "modified", label: "Modified" },
-      ],
-    },
-    {
       id: "latest-released",
       label: "Latest Releases",
       description: "Resources newly released to the public.",
@@ -129,6 +114,22 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         { field: "annotated", label: "Updated" },
       ],
     },
+    {
+      id: "latest-updated",
+      label: "Latest Updates",
+      description: "Resources most recently updated across the catalog.",
+      icon: "pi pi-history",
+      metricsLabel: "updates",
+      sort: "annotated:desc",
+      filter: "@type=Dataset",
+      keywordsLimit: 2,
+      typesLimit: 1,
+      dateFields: [
+        { field: "annotated", label: "Updated" },
+        { field: "modified", label: "Modified" },
+      ],
+    },
+
     // {
     //   id: "data-publications",
     //   label: "Data Publications",
@@ -655,10 +656,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           variant,
           "filter"
         );
-        const hasSort = Object.prototype.hasOwnProperty.call(
-          variant,
-          "sort"
-        );
+        const hasSort = Object.prototype.hasOwnProperty.call(variant, "sort");
         const hasFreeText = Object.prototype.hasOwnProperty.call(
           variant,
           "freeText"
@@ -666,9 +664,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         strategies.push({
           filter: hasFilter ? variant.filter ?? undefined : feed.filter,
           sort: hasSort ? variant.sort ?? undefined : feed.sort,
-          freeText: hasFreeText
-            ? variant.freeText ?? ""
-            : feed.freeText ?? "",
+          freeText: hasFreeText ? variant.freeText ?? "" : feed.freeText ?? "",
           queryRows: variant.queryRows ?? feed.queryRows,
         });
       });
@@ -871,7 +867,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!itemsShown) return "";
     const total = state.total;
     const baseLabel =
-      itemsShown === 1 ? "Showing 1 resource" : `Showing ${itemsShown} resources`;
+      itemsShown === 1
+        ? "Showing 1 resource"
+        : `Showing ${itemsShown} resources`;
     const metricsLabel = this.activeRecentFeed?.metricsLabel;
     const suffix =
       typeof total === "number" && total > itemsShown
@@ -991,9 +989,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     return [];
   }
 
-  formatResourceTypes(
-    types: string[] | string | undefined | null
-  ): string[] {
+  formatResourceTypes(types: string[] | string | undefined | null): string[] {
     let normalized: string[] = [];
     if (typeof types === "string") {
       normalized = [types];
@@ -1069,8 +1065,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     const remaining = seconds - minutes * 60;
     if (minutes >= 1) {
       const minLabel = minutes === 1 ? "min" : "mins";
-      const secLabel =
-        remaining >= 1 ? ` ${remaining.toFixed(0)} s` : "";
+      const secLabel = remaining >= 1 ? ` ${remaining.toFixed(0)} s` : "";
       return `${minutes} ${minLabel}${secLabel}`;
     }
     return `${seconds.toFixed(1)} s`;
@@ -1131,7 +1126,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getTopicDepthClass(topic: TopicTreeNode) {
-    const level = topic?.level ?? (this.topicPath.length + 1);
+    const level = topic?.level ?? this.topicPath.length + 1;
     if (level <= 1) return "topic-chip--depth-root";
     if (level === 2) return "topic-chip--depth-child";
     return "topic-chip--depth-grandchild";
