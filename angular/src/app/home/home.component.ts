@@ -948,14 +948,18 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private resolveDatasetLandingPage(dataset: any): string {
     if (!dataset) return "";
+
+    // Prefer PDR landing page (matches search results title behavior)
+    if (this.PDRAPIURL && dataset?.ediid) {
+      return `${this.PDRAPIURL}${dataset.ediid}`;
+    }
+
     const rawLanding =
       typeof dataset.landingPage === "string" ? dataset.landingPage.trim() : "";
     if (rawLanding.length) {
       return rawLanding;
     }
-    if (this.PDRAPIURL && dataset?.ediid) {
-      return `${this.PDRAPIURL}${dataset.ediid}`;
-    }
+
     return "";
   }
 
