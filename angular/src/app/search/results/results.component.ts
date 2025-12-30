@@ -66,6 +66,7 @@ export class ResultsComponent implements OnInit {
   filterSubscription: Subscription = new Subscription();
   pageSubscription: Subscription = new Subscription();
   searchSubscription: Subscription = new Subscription();
+  externalToggleSubscription: Subscription = new Subscription();
   inited: boolean = false;
   dataReady: boolean = false;
   // startupGuard ensures that during the initial bootstrap (hard page refresh scenario)
@@ -244,6 +245,20 @@ export class ResultsComponent implements OnInit {
         "init-after-inputs"
       );
     }
+
+    this.externalToggleSubscription = this.searchService
+      .watchExternalProducts()
+      .subscribe(() => {
+        if (!this.inited || this.startupGuard) return;
+        this.search(
+          null,
+          this.currentPage || 1,
+          this.itemsPerPage,
+          undefined,
+          undefined,
+          "external-toggle"
+        );
+      });
   }
 
   /**
@@ -254,6 +269,8 @@ export class ResultsComponent implements OnInit {
     if (this.pageSubscription) this.pageSubscription.unsubscribe();
     if (this.searchSubscription) this.searchSubscription.unsubscribe();
     if (this.pageSizeSubscription) this.pageSizeSubscription.unsubscribe();
+    if (this.externalToggleSubscription)
+      this.externalToggleSubscription.unsubscribe();
   }
 
   /**
@@ -732,5 +749,57 @@ export class ResultsComponent implements OnInit {
     } catch (e) {
       return dateString; // Return original if parsing fails
     }
+  }
+
+  isExternalResult(resultItem: any): boolean {
+    return !!(resultItem && (resultItem.external || resultItem.source === "code"));
+  }
+
+  getResultTitle(resultItem: any): string {
+    if (!resultItem) return "Untitled resource";
+    return resultItem.title || resultItem.name || "Untitled resource";
+  }
+
+  getResultLink(resultItem: any): string {
+    if (!resultItem) return "";
+    if (this.isExternalResult(resultItem)) {
+      return (
+        resultItem.landingPage ||
+        resultItem.homepageURL ||
+        resultItem.repositoryURL ||
+        resultItem.downloadURL ||
+        ""
+      );
+    }
+    if (resultItem.ediid) {
+      return `${this.PDRAPIURL}${resultItem.ediid}`;
+    }
+    return resultItem.landingPage || "";
+  }
+
+  getResultIcon(resultItem: any): string {
+    return this.isExternalResult(resultItem) ? "pi pi-share-alt" : "pi pi-database";
+  }
+
+  getPrimaryType(resultItem: any): string {
+    if (!resultItem) return "";
+    const typeField = resultItem["@type"];
+    const typeVal = Array.isArray(typeField) ? typeField[0] : typeField;
+    if (!typeVal || typeof typeVal !== "string") {
+      return this.isExternalResult(resultItem) ? "External" : "";
+    }
+    return this.clearResultItemType(typeVal);
+  }
+
+  formatContact(resultItem: any): string {
+    if (!resultItem) return "";
+    if (resultItem.contactPoint && resultItem.contactPoint.fn) {
+      return resultItem.contactPoint.fn;
+    }
+    if (typeof resultItem.contactPoint === "string") {
+      return resultItem.contactPoint;
+    }
+    if (resultItem.organization) return resultItem.organization;
+    return "";
   }
 }

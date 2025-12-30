@@ -53,11 +53,39 @@ describe("FiltersComponent", () => {
   });
 
   it("onSuccess", () => {
-  component.onSuccess(searchResult);
-  // Basic assertions adapted to minimal fixture
-  expect(component.keywords).toContain("Advanced Functional Materials");
-  expect(component.keywords.length).toBeGreaterThanOrEqual(1);
-  expect(component.themesWithCount[0].label.startsWith("Nanotechnology")).toBeTruthy();
-  expect(component.resourceTypesWithCount[0].label.startsWith("Public Data Resource")).toBeTruthy();
+    component.onSuccess(searchResult);
+    // Basic assertions adapted to minimal fixture
+    expect(component.keywords).toContain("Advanced Functional Materials");
+    expect(component.keywords.length).toBeGreaterThanOrEqual(1);
+    expect(component.themesWithCount[0].label.startsWith("Nanotechnology")).toBeTruthy();
+    expect(component.resourceTypesWithCount[0].label.startsWith("Public Data Resource")).toBeTruthy();
+  });
+
+  it("ignores empty @type values when building resource types", () => {
+    const resultsWithEmptyType = [
+      { "@type": ["", "   ", "CodeRepository"], keyword: [], topic: [], components: [] },
+    ];
+    component.onSuccess([...searchResult, ...resultsWithEmptyType]);
+    const emptyLabels = component.resourceTypesWithCount.filter(
+      (r) => !r.data || r.data.trim() === "" || r.label.startsWith("-")
+    );
+    expect(emptyLabels.length).toBe(0);
+    const codeRepo = component.resourceTypesWithCount.find((r) =>
+      r.label.toLowerCase().includes("code repository")
+    );
+    expect(codeRepo).toBeTruthy();
+  });
+
+  it("collects keywords from tags and languages when keyword field is absent", () => {
+    const codeRecord = {
+      "@type": ["CodeRepository"],
+      tags: ["github", "reflectometry"],
+      languages: ["JavaScript", "HTML"],
+      topic: [],
+      components: [],
+    };
+    component.onSuccess([codeRecord]);
+    expect(component.keywords).toContain("github");
+    expect(component.keywords).toContain("javascript");
   });
 });
