@@ -291,18 +291,20 @@
             <ng-template pTemplate="header">
               <!-- Option 2 -->
               <a
-                href="{{ PDRAPIURL }}{{ resultItem.ediid }}"
+                [href]="getResultLink(resultItem)"
                 target="_blank"
+                rel="noopener"
                 pButton
-                [label]="resultItem.title"
+                [label]="getResultTitle(resultItem)"
                 size="small"
-                icon="pi pi-database"
+                [icon]="getResultIcon(resultItem)"
                 class="anchor-button"
+                [ngClass]="{ 'external-link': isExternalResult(resultItem) }"
               >
               </a>
             </ng-template>
             <ng-template pTemplate="icons">
-              <p-tag>{{ clearResultItemType(resultItem["@type"][0]) }}</p-tag>
+              <p-tag>{{ getPrimaryType(resultItem) }}</p-tag>
             </ng-template>
 
             <div
@@ -320,12 +322,15 @@
               </div>
               <div
                 class="ui-grid-row details"
-                *ngIf="selectedFields.indexOf('Point of Contact') !== -1"
+                *ngIf="
+                  selectedFields.indexOf('Point of Contact') !== -1 &&
+                  formatContact(resultItem)
+                "
               >
                 <div class="ui-grid-col-12">
                   <b>Point of Contact: </b>
                   <i style="color: gray">
-                    {{ resultItem.contactPoint }}
+                    {{ formatContact(resultItem) }}
                   </i>
                 </div>
               </div>
@@ -447,14 +452,18 @@
                   <a
                     pButton
                     size="small"
-                    *ngIf="resultItem.landingPage"
-                    href="{{ resultItem.landingPage }}"
+                    *ngIf="getResultLink(resultItem)"
+                    [href]="getResultLink(resultItem)"
                     target="_blank"
                     rel="noopener"
                     [ngStyle]="{ float: customizeViewPosition() }"
-                    label="Access Data"
+                    [label]="
+                      isExternalResult(resultItem) ? 'View Project' : 'Access Data'
+                    "
                     [icon]="
-                      isPdrLink(resultItem.landingPage)
+                      isExternalResult(resultItem)
+                        ? 'pi pi-share-alt'
+                        : isPdrLink(getResultLink(resultItem))
                         ? 'pi pi-database'
                         : 'pi pi-external-link'
                     "
@@ -463,7 +472,7 @@
                         'outbound',
                         $event,
                         'Visit to homepage',
-                        resultItem.landingPage
+                        getResultLink(resultItem)
                       )
                     "
                     class="anchor-button"

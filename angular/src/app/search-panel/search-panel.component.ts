@@ -106,6 +106,10 @@ export class SearchPanelComponent implements OnInit {
   showExampleStatus: boolean = false;
   searchBottonWith: string = "10%";
   breadcrumb_top: string = "6em";
+  includeExternalProducts: boolean = false;
+  externalHelperText: string =
+    "Toggle to include external products like open-source code (patents & papers coming soon). Results and filters will blend with NIST data.";
+  externalInfoVisible: boolean = false;
   examplesDialogVisible = false;
   placeHolderText: string[] = [
     "Artificial Intelligence",
@@ -259,6 +263,10 @@ export class SearchPanelComponent implements OnInit {
       this.imageURL = this.SDPAPI + "assets/images/ngi-background.png";
     });
 
+    this.searchService.watchExternalProducts().subscribe((enabled) => {
+      this.includeExternalProducts = enabled;
+    });
+
     this.getTaxonomySuggestions();
   }
 
@@ -290,6 +298,19 @@ export class SearchPanelComponent implements OnInit {
     this.showExampleStatus = status;
     this.examplesDialogVisible = status;
     this.currentState = this.showExampleStatus ? "final" : "initial";
+  }
+
+  onExternalToggle(enabled: boolean) {
+    this.includeExternalProducts = enabled;
+    this.searchService.setExternalProducts(enabled);
+  }
+
+  openExternalInfo() {
+    this.externalInfoVisible = true;
+  }
+
+  closeExternalInfo() {
+    this.externalInfoVisible = false;
   }
 
   /**

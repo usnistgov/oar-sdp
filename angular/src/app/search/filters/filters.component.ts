@@ -884,19 +884,22 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       let resTypeArray = resultItem["@type"];
 
       for (var i = 0; i < resTypeArray.length; i++) {
-        resType = resTypeArray[i];
-        let resourceTypeLabel = _.startCase(_.split(resType, ":")[1]);
+        resType = (resTypeArray[i] || "").toString().trim();
+        if (!resType) continue;
+        const parts = resType.split(":");
+        const labelSource = parts.length > 1 ? parts[parts.length - 1] : resType;
+        let resourceTypeLabel = _.startCase(labelSource);
 
         // Skip "Dataset" resource type
         if (resourceTypeLabel.toLowerCase() === "dataset") {
           continue;
         }
         
-        this.uniqueRes.push(_.startCase(_.split(resType, ":")[1]));
+        this.uniqueRes.push(resourceTypeLabel);
         if (resourceTypesArray.indexOf(resType) < 0) {
           resourceTypes.push({
-            label: _.startCase(_.split(resType, ":")[1]),
-            value: _.startCase(_.split(resType, ":")[1]),
+            label: resourceTypeLabel,
+            value: resourceTypeLabel,
           });
           resourceTypesArray.push(resType);
         }
@@ -904,9 +907,9 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.uniqueRes = this.uniqueRes.filter(this.onlyUnique);
 
-      for (let res of this.uniqueRes) {
-        this.resourceTypesAllArray.push(res);
-      }
+      this.uniqueRes
+        .filter((res) => res && res.trim())
+        .forEach((res) => this.resourceTypesAllArray.push(res));
     }
 
     return resourceTypes;
@@ -923,6 +926,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resourceTypesAllArray,
         _.partial(_.isEqual, res.value)
       )["true"];
+      if (typeof count !== "number" || count <= 0) continue;
       this.resourceTypesWithCount.push({
         label: res.label + "-" + count,
         data: res.value,
@@ -970,23 +974,36 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     let tempkeywords: string[] = [];
 
     for (let resultItem of searchResults) {
-      if (
-        resultItem.keyword &&
-        resultItem.keyword !== null &&
-        resultItem.keyword.length > 0
-      ) {
-        for (let keyword of resultItem.keyword) {
-          //If keyword value contains semicolons, split them
-          tempkeywords = keyword.split(";");
-          for (let kw of tempkeywords) {
-            if (kwords.indexOf(kw) < 0) {
-              kwords.push(kw);
-            }
-          }
+      const keywords = this.extractKeywordTokens(resultItem);
+      keywords.forEach((kw) => {
+        const normalized = kw.toLowerCase();
+        if (kwords.indexOf(normalized) < 0) {
+          kwords.push(normalized);
         }
-      }
+      });
     }
     return kwords;
+  }
+
+  private extractKeywordTokens(resultItem: any): string[] {
+    if (!resultItem) return [];
+    const tokens: string[] = [];
+    const addToken = (val: any) => {
+      if (!val) return;
+      const str = val.toString().trim();
+      if (str) tokens.push(str);
+    };
+    const candidates = [
+      ...(Array.isArray(resultItem.keyword) ? resultItem.keyword : []),
+      ...(Array.isArray(resultItem.tags) ? resultItem.tags : []),
+      ...(Array.isArray(resultItem.languages) ? resultItem.languages : []),
+    ];
+    candidates.forEach((keyword) => {
+      //If keyword value contains semicolons, split them
+      const parts = keyword.toString().split(";");
+      parts.forEach((part) => addToken(part));
+    });
+    return tokens;
   }
 
   /**

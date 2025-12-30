@@ -55,6 +55,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchRecord: string;
   searchAuthors: string;
   searchKeywords: string;
+  includeExternalProducts: boolean = false;
 
   // For filters
   filterWidth: number;
@@ -227,9 +228,21 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchRecord = params["compType"];
         this.searchAuthors = params["authors"];
         this.searchKeywords = params["keywords"];
+        const externalParam = params["external"];
+        if (typeof externalParam !== "undefined") {
+          this.includeExternalProducts =
+            externalParam === "true" || externalParam === "1";
+          this.searchService.setExternalProducts(this.includeExternalProducts);
+        }
 
         if (!this.page) this.page = 1;
       }
+    );
+
+    this.subscriptions.add(
+      this.searchService.watchExternalProducts().subscribe((enabled) => {
+        this.includeExternalProducts = enabled;
+      })
     );
   }
 

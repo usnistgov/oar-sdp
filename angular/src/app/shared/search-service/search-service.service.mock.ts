@@ -18,6 +18,7 @@ export class MockSearchService implements SearchService {
   filterString = new BehaviorSubject<string>("");
   currentPage = new BehaviorSubject<number>(1);
   totalItems = new BehaviorSubject<number>(1);
+  private externalProducts = new BehaviorSubject<boolean>(false);
   private lastSearchResponse$ = new BehaviorSubject<any>(null);
 
   /**
@@ -185,5 +186,13 @@ export class MockSearchService implements SearchService {
   fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
     // For mock just reuse sample result
   return of({ ResultData: [], total: 0 });
+  }
+
+  setExternalProducts(enabled: boolean): void {
+    this.externalProducts.next(!!enabled);
+  }
+
+  watchExternalProducts(): Observable<boolean> {
+    return this.externalProducts.asObservable();
   }
 }

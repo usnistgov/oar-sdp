@@ -346,6 +346,179 @@ body .p-highlight {
   font-size: 1rem;
 }
 
+.external-toggle-addon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-left: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+  padding-right: 0.6rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.external-toggle-addon:focus,
+.external-toggle-addon:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.external-toggle-help {
+  border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff;
+}
+
+.external-toggle-help i {
+  font-size: 1rem;
+  opacity: 0.75;
+}
+
+.external-toggle-help:hover i,
+.external-toggle-help:focus i {
+  opacity: 1;
+}
+
+.external-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.25rem 0.1rem 0.5rem;
+}
+
+.external-info__lead {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #111111;
+}
+
+.external-info__list {
+  margin: 0.25rem 0 0.5rem 1.1rem;
+  padding: 0;
+  color: #111111;
+  line-height: 1.5;
+}
+
+.external-info__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.external-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  color: #111111;
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  gap: 0.35rem;
+}
+
+.external-pill i {
+  font-size: 0.95rem;
+}
+
+.external-info__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.external-info__cta {
+  border: 1.5px solid #111111;
+  background: #ffffff;
+  color: #111111;
+  border-radius: 999px;
+  padding: 0.45rem 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(17, 17, 17, 0.08);
+}
+
+.external-info__cta:hover,
+.external-info__cta:focus {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+
+/* External info dialog to match the white modal style */
+:host ::ng-deep .external-info-dialog .p-dialog-header {
+  background: #ffffff;
+  color: #111111;
+  font-weight: 700;
+  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+  padding: 1rem 1.3rem;
+}
+
+:host ::ng-deep .external-info-dialog .p-dialog-content {
+  background: #ffffff;
+  color: #111111;
+  border-radius: 0 0 12px 12px;
+  padding: 1.1rem 1.3rem 1rem;
+}
+
+:host ::ng-deep .external-info-dialog .p-dialog-header-icons .p-dialog-header-icon {
+  color: #1f2937;
+}
+
+:host ::ng-deep .external-info-dialog .p-dialog {
+  border: 1.5px solid #111111;
+  border-radius: 16px;
+}
+.external-toggle__icon {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.external-toggle__track {
+  width: 46px;
+  height: 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.08)
+  );
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.external-toggle__track--compact {
+  width: 40px;
+  height: 18px;
+  padding: 2px;
+}
+
+.external-toggle__dot {
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transform: translateX(0);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.external-toggle__track--on {
+  background: linear-gradient(135deg, #8be5ff, #4aa3ff);
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+.external-toggle__track--on .external-toggle__dot {
+  transform: translateX(18px);
+  background: #0f172a;
+}
+
 .examples-dialog ::ng-deep .p-dialog {
   max-height: 85vh;
   border: 1.5px solid #111111;

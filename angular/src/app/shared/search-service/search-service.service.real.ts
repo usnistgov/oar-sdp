@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 // import { URLSearchParams } from '@angular/http';
 import { HttpClient, HttpRequest, HttpParams } from "@angular/common/http";
-import { Observable, throwError, of, BehaviorSubject } from "rxjs";
+import { Observable, throwError, of, BehaviorSubject, forkJoin } from "rxjs";
 import * as rxjsop from "rxjs/operators";
 import { EMPTY } from "rxjs";
 import * as _ from "lodash-es";
@@ -19,6 +19,8 @@ import { SDPQuery } from "../search-query/query";
 export class RealSearchService implements SearchService {
   private pageSize = new BehaviorSubject<number>(10); // Default to 10 items per page
   private lastSearchResponse$ = new BehaviorSubject<any>(null); // broadcast unified response
+  private externalProducts = new BehaviorSubject<boolean>(false);
+  private readonly externalPrefKey = "sdpExternalProducts";
 
   operators = {
     AND: "logicalOp=AND",
@@ -39,7 +41,9 @@ export class RealSearchService implements SearchService {
     private http: HttpClient,
     private router: Router,
     private appConfig: AppConfig
-  ) {}
+  ) {
+    this.externalProducts.next(this.readExternalPref());
+  }
 
   /**
    * Watch total items (search result)
@@ -100,14 +104,17 @@ export class RealSearchService implements SearchService {
     filter?: string
   ): Observable<any> {
     let url: string;
+    let externalUrl: string | null = null;
     const itemsPerPage = pageSize || this.pageSize.getValue();
+    const includeExternal = this.externalProducts.getValue();
+    const rows = Array.isArray(query.queryRows) ? query.queryRows : [];
 
-    if (query.queryRows[0].fieldValue == "isPartOf.@id") {
+    if (rows[0]?.fieldValue == "isPartOf.@id") {
       url =
         "/rmm/records?" +
-        query.queryRows[0].fieldValue +
+        rows[0].fieldValue +
         "=" +
-        query.queryRows[0].fieldText;
+        rows[0].fieldText;
     } else {
       let searchPhraseValue = "";
       let finalKeyValueStr = "";
@@ -121,31 +128,25 @@ export class RealSearchService implements SearchService {
       }
 
       // Processing rows
-      for (let i = 0; i < query.queryRows.length; i++) {
-        if (typeof query.queryRows[i].operator === "undefined") {
-          query.queryRows[i].operator = "AND";
+      for (let i = 0; i < rows.length; i++) {
+        if (typeof rows[i].operator === "undefined") {
+          rows[i].operator = "AND";
         }
 
         if (i > 0) {
-          if (query.queryRows[i].operator.trim() == "AND") {
+          if (rows[i].operator.trim() == "AND") {
             finalKeyValueStr += "&";
           } else {
-            finalKeyValueStr +=
-              "&" + this.operators[query.queryRows[i].operator] + "&";
+            finalKeyValueStr += "&" + this.operators[rows[i].operator] + "&";
           }
         }
 
-        if (
-          !this.isEmpty(query.queryRows[i].fieldText) &&
-          !this.isEmpty(query.queryRows[i].fieldValue)
-        ) {
+        if (!this.isEmpty(rows[i].fieldText) && !this.isEmpty(rows[i].fieldValue)) {
           if (finalKeyValueStr[finalKeyValueStr.length - 1] != "&") {
             finalKeyValueStr = finalKeyValueStr.trim() + " ";
           }
           finalKeyValueStr +=
-            query.queryRows[i].fieldValue +
-            "=" +
-            query.queryRows[i].fieldText.replace(/"/g, "");
+            rows[i].fieldValue + "=" + rows[i].fieldText.replace(/"/g, "");
         }
       }
 
@@ -174,16 +175,39 @@ export class RealSearchService implements SearchService {
         parts.push("page=" + page);
         parts.push("size=" + itemsPerPage);
       }
-      url += parts.join("&");
+      const queryString = parts.join("&");
+      url += queryString;
       // Include required fields
-      url +=
-        (parts.length ? "&" : "") +
+      const includeClause =
         "include=ediid,description,title,keyword,topic.tag,contactPoint,annotated," +
         "components.@type,@type,doi,landingPage,firstIssued,modified&exclude=_id";
+      url += (parts.length ? "&" : "") + includeClause;
+
+      if (includeExternal) {
+        externalUrl =
+          "code?" +
+          queryString +
+          (parts.length ? "&" : "") +
+          "include=_id,name,title,description,organization,repositoryURL,homepageURL,downloadURL,languages,tags,contact,dates,status,vcs,@type";
+      }
     }
 
     return this.appConfig.getConfig().pipe(
-      rxjsop.mergeMap((conf) => this.http.get(conf.RMMAPI + url)),
+      rxjsop.mergeMap((conf) => {
+        const records$ = this.http.get(conf.RMMAPI + url);
+        if (!includeExternal || !externalUrl) {
+          return records$;
+        }
+        const external$ = this.http
+          .get(conf.RMMAPI + externalUrl)
+          .pipe(rxjsop.catchError(() => of({ ResultData: [], total: 0 })));
+
+        return forkJoin({ records: records$, external: external$ }).pipe(
+          rxjsop.map(({ records, external }) =>
+            this.combineResults(records, external)
+          )
+        );
+      }),
       rxjsop.tap((resp) => this.lastSearchResponse$.next(resp)),
       rxjsop.catchError((err) => {
         console.error("Failed to complete search: " + JSON.stringify(err));
@@ -286,8 +310,11 @@ export class RealSearchService implements SearchService {
   /**
    * Behavior subject to remotely set the search value.
    */
-  private _remoteQueryValue: BehaviorSubject<object> =
-    new BehaviorSubject<object>({
+  private _remoteQueryValue: BehaviorSubject<{
+    queryString: string;
+    searchTaxonomyKey: string;
+    queryAdvSearch: string;
+  }> = new BehaviorSubject({
       queryString: "",
       searchTaxonomyKey: "",
       queryAdvSearch: "yes",
@@ -299,14 +326,13 @@ export class RealSearchService implements SearchService {
   public setQueryValue(
     queryString: string = "",
     searchTaxonomyKey: string = "",
-    queryAdvSearch: string = "yes"
+   queryAdvSearch: string = "yes"
   ) {
-    if (queryString == null) queryString = "";
-    let lq = queryString.replace(/searchphrase=/g, "");
+    const cleaned = (queryString || "").replace(/searchphrase=/g, "");
     this._remoteQueryValue.next({
-      queryString: lq,
-      searchTaxonomyKey: searchTaxonomyKey,
-      queryAdvSearch: queryAdvSearch,
+      queryString: cleaned,
+      searchTaxonomyKey,
+      queryAdvSearch,
     });
   }
 
@@ -316,10 +342,16 @@ export class RealSearchService implements SearchService {
    * @param url
    */
   public search(searchValue: string, url?: string): void {
+    const queryParams: any = {
+      q: searchValue,
+    };
+
+    if (this.externalProducts.getValue()) {
+      queryParams.external = "true";
+    }
+
     let params: NavigationExtras = {
-      queryParams: {
-        q: searchValue,
-      },
+      queryParams,
     };
 
     if (url == "/search") {
@@ -355,10 +387,29 @@ export class RealSearchService implements SearchService {
       clone,
       searchTaxonomyKey,
       filter,
-      maxSize
+      maxSize,
+      "records"
     );
+    const includeExternal = this.externalProducts.getValue();
+    const externalUrl = includeExternal
+      ? this.buildFacetOnlyUrl(clone, searchTaxonomyKey, filter, maxSize, "code")
+      : null;
+
     return this.appConfig.getConfig().pipe(
-      rxjsop.mergeMap((conf) => this.http.get(conf.RMMAPI + baseUrl)),
+      rxjsop.mergeMap((conf) => {
+        const records$ = this.http.get(conf.RMMAPI + baseUrl);
+        if (!includeExternal || !externalUrl) {
+          return records$;
+        }
+        const external$ = this.http
+          .get(conf.RMMAPI + externalUrl)
+          .pipe(rxjsop.catchError(() => of({ ResultData: [], total: 0 })));
+        return forkJoin({ records: records$, external: external$ }).pipe(
+          rxjsop.map(({ records, external }) =>
+            this.combineResults(records, external)
+          )
+        );
+      }),
       rxjsop.catchError((err) => throwError(err))
     );
   }
@@ -368,14 +419,16 @@ export class RealSearchService implements SearchService {
     query: SDPQuery,
     searchTaxonomyKey: string,
     filter: string,
-    size: number
+    size: number,
+    base: "records" | "code" = "records"
   ): string {
     let searchPhraseValue = query.freeText
       ? "searchphrase=" + query.freeText.trim()
       : "";
     let finalKeyValueStr = "";
-    for (let i = 0; i < query.queryRows.length; i++) {
-      let row = query.queryRows[i];
+    const rows = Array.isArray(query.queryRows) ? query.queryRows : [];
+    for (let i = 0; i < rows.length; i++) {
+      let row = rows[i];
       if (!row.fieldText || !row.fieldValue) continue;
       if (finalKeyValueStr && row.operator && row.operator !== "AND") {
         finalKeyValueStr += "&" + this.operators[row.operator] + "&";
@@ -386,7 +439,7 @@ export class RealSearchService implements SearchService {
         row.fieldValue + "=" + row.fieldText.replace(/"/g, "");
     }
     let keyString = searchTaxonomyKey ? "topic.tag=" + searchTaxonomyKey : "";
-    let url = "records?";
+    let url = base + "?";
     const parts: string[] = [];
     if (searchPhraseValue) parts.push(searchPhraseValue);
     if (finalKeyValueStr) parts.push(finalKeyValueStr);
@@ -395,9 +448,171 @@ export class RealSearchService implements SearchService {
     parts.push("page=1");
     parts.push("size=" + size);
     url += parts.join("&");
-    url +=
-      (parts.length ? "&" : "") +
+    const codeInclude =
+      "include=@type,keyword,topic.tag,contactPoint,components.@type,languages,tags,contact,organization";
+    const recordInclude =
       "include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id";
+    url += (parts.length ? "&" : "") + (base === "code" ? codeInclude : recordInclude);
     return url;
+  }
+
+  /**
+   * Normalize and merge record + external responses into a single response object.
+   */
+  private combineResults(primary: any, external: any) {
+    const primaryData = this.extractResultData(primary);
+    const externalData = this.normalizeExternalRecords(external);
+    const combinedTotal =
+      this.extractTotalCount(primary, primaryData.length) +
+      externalData.length;
+
+    return {
+      ...(primary && typeof primary === "object" ? primary : {}),
+      ResultData: [...primaryData, ...externalData],
+      ResultCount: combinedTotal,
+      total: combinedTotal,
+    };
+  }
+
+  private extractResultData(resp: any): any[] {
+    if (!resp) return [];
+    if (Array.isArray(resp)) return resp;
+    if (Array.isArray(resp.ResultData)) return resp.ResultData;
+    if (Array.isArray(resp.result)) return resp.result;
+    return [];
+  }
+
+  private extractTotalCount(resp: any, fallback: number = 0): number {
+    if (resp && typeof resp.ResultCount === "number") return resp.ResultCount;
+    if (resp && typeof resp.total === "number") return resp.total;
+    if (resp && typeof resp.totalItems === "number") return resp.totalItems;
+    const data = this.extractResultData(resp);
+    return data.length || fallback;
+  }
+
+  private normalizeExternalRecords(resp: any): any[] {
+    const raw = this.extractResultData(resp);
+    return raw
+      .map((item) => this.normalizeCodeRecord(item))
+      .filter((item) => !!item);
+  }
+
+  private normalizeCodeRecord(item: any): any | null {
+    if (!item) return null;
+    const title = item.title || item.name || "Code resource";
+    const landing =
+      item.landingPage ||
+      item.homepageURL ||
+      item.repositoryURL ||
+      item.downloadURL ||
+      "";
+    const keywords = this.normalizeKeywords(
+      item.keyword,
+      item.tags,
+      item.languages
+    );
+    const contactName =
+      (item.contact && (item.contact.fn || item.contact.name)) ||
+      item.organization ||
+      item.contact?.email ||
+      "";
+    const typeArray = this.normalizeCodeTypes(item["@type"], item.vcs);
+    const topic = Array.isArray(item.topic) ? item.topic : [];
+    return {
+      ...item,
+      external: true,
+      source: "code",
+      ediid: item.ediid || item._id || item.id || title,
+      title,
+      description: Array.isArray(item.description)
+        ? item.description[0]
+        : item.description || "",
+      landingPage: landing,
+      keyword: keywords,
+      topic,
+      components: Array.isArray(item.components) ? item.components : [],
+      ["@type"]: typeArray,
+      annotated:
+        item.annotated ||
+        item.modified ||
+        (item.dates &&
+          (item.dates.modified ||
+            item.dates.updated ||
+            item.dates.lastModified)) ||
+        null,
+      contactPoint:
+        item.contactPoint ||
+        item.contact ||
+        (contactName ? { fn: contactName } : {}),
+    };
+  }
+
+  private normalizeCodeTypes(typeField: any, vcs?: string): string[] {
+    const types = new Set<string>();
+    const add = (val: any) => {
+      const v = typeof val === "string" ? val.trim() : "";
+      if (v) types.add(v);
+    };
+    if (Array.isArray(typeField)) {
+      typeField.forEach(add);
+    } else {
+      add(typeField);
+    }
+    types.add("CodeRepository");
+    if (vcs && typeof vcs === "string" && vcs.trim()) {
+      types.add(`vcs:${vcs.trim()}`);
+    }
+    return Array.from(types);
+  }
+
+  private normalizeKeywords(...sources: any[]): string[] {
+    const tokens = new Set<string>();
+    const add = (val: any) => {
+      const token =
+        typeof val === "string"
+          ? val
+          : val && val.label
+          ? val.label
+          : "";
+      const trimmed = token.trim();
+      if (trimmed) tokens.add(trimmed.toLowerCase());
+    };
+    sources.forEach((src) => {
+      if (!src) return;
+      if (Array.isArray(src)) {
+        src.forEach(add);
+      } else if (typeof src === "string") {
+        src.split(/[;,]/).forEach(add);
+      }
+    });
+    return Array.from(tokens);
+  }
+
+  setExternalProducts(enabled: boolean): void {
+    const normalized = !!enabled;
+    this.externalProducts.next(normalized);
+    this.persistExternalPref(normalized);
+  }
+
+  watchExternalProducts(): Observable<boolean> {
+    return this.externalProducts.asObservable();
+  }
+
+  private readExternalPref(): boolean {
+    try {
+      const raw = localStorage.getItem(this.externalPrefKey);
+      if (raw === null) return false;
+      return raw === "true" || raw === "1";
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  private persistExternalPref(enabled: boolean): void {
+    try {
+      localStorage.setItem(this.externalPrefKey, enabled ? "true" : "false");
+    } catch (_e) {
+      // ignore
+    }
   }
 }

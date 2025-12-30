@@ -43,5 +43,10 @@ export interface SearchService {
    * Implementations should limit size to a safe cap to avoid huge payloads.
    */
   fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any>;
-}
 
+  /**
+   * Toggle and watch whether external products (code, patents, papers) are included in searches.
+   */
+  setExternalProducts(enabled: boolean): void;
+  watchExternalProducts(): Observable<boolean>;
+}

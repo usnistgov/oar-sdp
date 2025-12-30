@@ -53,6 +53,38 @@
       </p>
 
       <div class="p-inputgroup search-input-group">
+        <span
+          class="p-inputgroup-addon search-addon external-toggle-help"
+          role="button"
+          tabindex="0"
+          [attr.title]="externalHelperText"
+          aria-label="What external products do"
+          (click)="openExternalInfo()"
+          (keydown.enter)="openExternalInfo()"
+          (keydown.space)="openExternalInfo()"
+        >
+          <i class="pi pi-question-circle"></i>
+        </span>
+
+        <span
+          class="p-inputgroup-addon search-addon external-toggle-addon"
+          role="button"
+          tabindex="0"
+          aria-label="Include external products"
+          [attr.aria-pressed]="includeExternalProducts"
+          (click)="onExternalToggle(!includeExternalProducts)"
+          (keydown.enter)="onExternalToggle(!includeExternalProducts)"
+          (keydown.space)="onExternalToggle(!includeExternalProducts)"
+        >
+          <i class="pi pi-share-alt external-toggle__icon"></i>
+          <span
+            class="external-toggle__track external-toggle__track--compact"
+            [class.external-toggle__track--on]="includeExternalProducts"
+          >
+            <span class="external-toggle__dot"></span>
+          </span>
+        </span>
+
         <p-autoComplete
           pInputText
           p-fluid
@@ -191,6 +223,53 @@
           icon="pi pi-times"
           class="p-button-text"
           (click)="closeExamples()"
+        ></button>
+      </div>
+    </div>
+  </p-dialog>
+
+  <p-dialog
+    header="External products"
+    [(visible)]="externalInfoVisible"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: 'min(520px, 92vw)' }"
+    styleClass="external-info-dialog"
+    (onHide)="closeExternalInfo()"
+  >
+    <div class="external-info">
+      <p class="external-info__lead">
+        Include open-source projects (and soon patents/papers) alongside NIST resources. Filters and counts will blend them into your results.
+      </p>
+      <div class="external-info__pills">
+        <span class="external-pill">
+          <i class="pi pi-github"></i>
+          NIST GitHub code
+        </span>
+        <span class="external-pill">
+          <i class="pi pi-book"></i>
+          Patents (soon)
+        </span>
+        <span class="external-pill">
+          <i class="pi pi-file"></i>
+          Scholarly papers (soon)
+        </span>
+        <span class="external-pill">
+          <i class="pi pi-filter"></i>
+          Blended filters & counts
+        </span>
+        <span class="external-pill">
+          <i class="pi pi-ban"></i>
+          Toggle off for NIST-only
+        </span>
+      </div>
+      <div class="external-info__actions">
+        <button
+          pButton
+          type="button"
+          label="Got it"
+          class="external-info__cta"
+          (click)="closeExternalInfo()"
         ></button>
       </div>
     </div>
