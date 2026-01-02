@@ -55,7 +55,7 @@ describe("FiltersComponent", () => {
   it("onSuccess", () => {
     component.onSuccess(searchResult);
     // Basic assertions adapted to minimal fixture
-    expect(component.keywords).toContain("Advanced Functional Materials");
+    expect(component.keywords).toContain("advanced functional materials");
     expect(component.keywords.length).toBeGreaterThanOrEqual(1);
     expect(component.themesWithCount[0].label.startsWith("Nanotechnology")).toBeTruthy();
     expect(component.resourceTypesWithCount[0].label.startsWith("Public Data Resource")).toBeTruthy();
