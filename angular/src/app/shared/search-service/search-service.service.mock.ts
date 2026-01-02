@@ -156,6 +156,8 @@ export class MockSearchService implements SearchService {
    * Start search
    */
   public search(searchValue: string, url?: string): void {
+    // Reset filters when starting a new search (avoid stale filters in SPA navigation).
+    this.setFilterString("NoFilter");
     let params: NavigationExtras = {
       queryParams: {
         q: searchValue,

@@ -248,8 +248,15 @@ export class ResultsComponent implements OnInit {
 
     this.externalToggleSubscription = this.searchService
       .watchExternalProducts()
-      .subscribe(() => {
+      .subscribe((enabled) => {
         if (!this.inited || this.startupGuard) return;
+        if (!enabled) {
+          const cleaned = this.stripExternalOnlyTypes(this.currentFilter);
+          if (cleaned.changed) {
+            this.searchService.setFilterString(cleaned.filter);
+            return;
+          }
+        }
         this.search(
           null,
           this.currentPage || 1,
@@ -486,6 +493,57 @@ export class ResultsComponent implements OnInit {
         });
       return { raw: seg, label: tokens.join(", ") };
     });
+  }
+
+  private stripExternalOnlyTypes(filterQuery: string): {
+    filter: string;
+    changed: boolean;
+  } {
+    if (!filterQuery || filterQuery === "NoFilter") {
+      return { filter: filterQuery, changed: false };
+    }
+    const segments = filterQuery.split("&").filter((seg) => !!seg);
+    let changed = false;
+    const nextSegments: string[] = [];
+    segments.forEach((seg) => {
+      const [key, value] = seg.split("=");
+      if (!value) {
+        nextSegments.push(seg);
+        return;
+      }
+      if (key === "@type") {
+        const values = value.split(",").filter((v) => !!v);
+        const kept = values.filter(
+          (v) => !this.isExternalOnlyTypeToken(v)
+        );
+        if (kept.length === values.length) {
+          nextSegments.push(seg);
+          return;
+        }
+        changed = true;
+        if (kept.length) {
+          nextSegments.push(`${key}=${kept.join(",")}`);
+        }
+        return;
+      }
+      nextSegments.push(seg);
+    });
+    if (!changed) {
+      return { filter: filterQuery, changed: false };
+    }
+    return {
+      filter: nextSegments.length ? nextSegments.join("&") : "NoFilter",
+      changed: true,
+    };
+  }
+
+  private isExternalOnlyTypeToken(token: string): boolean {
+    const normalized = String(token || "")
+      .replace(/\s/g, "")
+      .toLowerCase();
+    if (!normalized) return false;
+    if (normalized === "coderepository") return true;
+    return normalized.startsWith("vcs:");
   }
 
   /** Remove a single filter segment and re-run search without full reset */
