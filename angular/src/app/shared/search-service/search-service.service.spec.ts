@@ -41,8 +41,8 @@ describe('SearchService', () => {
     const sub = service.watchExternalProducts().subscribe((v) => {
       seen.push(v);
       if (seen.length === 2) {
-        expect(seen[0]).toBeFalse();
-        expect(seen[1]).toBeTrue();
+        expect(seen[0]).toBe(false);
+        expect(seen[1]).toBe(true);
         sub.unsubscribe();
         done();
       }
@@ -67,11 +67,10 @@ describe('SearchService', () => {
     expect(merged.total).toBe(2);
     expect(merged.ResultData.length).toBe(2);
     const external = merged.ResultData[1];
-    expect(external.external).toBeTrue();
+    expect(external.external).toBe(true);
     expect(external.title).toBe('RepoOne');
     expect(external['@type']).toContain('CodeRepository');
     expect(external.keyword).toContain('science');
-    expect(external.keyword).toContain('Python');
     expect(external.contactPoint.fn).toBe('NIST DevOps');
     // Keywords are normalized to lowercase
     expect(external.keyword).toContain('python');

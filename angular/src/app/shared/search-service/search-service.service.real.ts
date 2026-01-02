@@ -514,10 +514,23 @@ export class RealSearchService implements SearchService {
       item.languages
     );
     const contactName =
+      (item.contactPoint && (item.contactPoint.fn || item.contactPoint.name)) ||
       (item.contact && (item.contact.fn || item.contact.name)) ||
       item.organization ||
       item.contact?.email ||
       "";
+    const rawContactPoint =
+      item.contactPoint ||
+      item.contact ||
+      (contactName ? { fn: contactName } : {});
+    const contactPoint =
+      contactName &&
+      rawContactPoint &&
+      typeof rawContactPoint === "object" &&
+      !Array.isArray(rawContactPoint) &&
+      !rawContactPoint.fn
+        ? { ...rawContactPoint, fn: contactName }
+        : rawContactPoint;
     const typeArray = this.normalizeCodeTypes(item["@type"], item.vcs);
     const topic = Array.isArray(item.topic) ? item.topic : [];
     return {
@@ -542,10 +555,7 @@ export class RealSearchService implements SearchService {
             item.dates.updated ||
             item.dates.lastModified)) ||
         null,
-      contactPoint:
-        item.contactPoint ||
-        item.contact ||
-        (contactName ? { fn: contactName } : {}),
+      contactPoint,
     };
   }
 
