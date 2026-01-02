@@ -130,6 +130,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   fullFacetCountsComplete: boolean = false; // made public for template gating
   private fullFacetCountsSubscription: any = null;
   private searchResponseSub: any = null;
+  private externalToggleSubscription: any = null;
 
   filterStyle = {
     width: "100%",
@@ -211,13 +212,8 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       ) {
         //Clear filters when we conduct a new search
         this.clearFilters();
-  // Reset facet aggregation state so new query can trigger fresh expanded fetch
-  this.fullFacetCountsInFlight = false;
-  this.fullFacetCountsComplete = false;
-  // Show skeletons again for all facet groups until rebuilt
-  this.recordHasLoading = true;
-  this.themeLoading = true;
-  this.resourceTypeLoading = true;
+        // Reset facet aggregation state so new query can trigger fresh expanded fetch
+        this.resetFacetAggregationState();
         this.onSearchValueChanged();
       }
     }
@@ -239,12 +235,20 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       if(this.lastOutboundFilterString === str) return; // ignore self echo
       this.applyFilterStringToSelections(str);
     });
+
+    // External toggle changes should reset facet aggregation to avoid stale filters
+    this.externalToggleSubscription = this.searchService
+      .watchExternalProducts()
+      .subscribe(() => {
+        this.resetFacetAggregationState();
+      });
   }
 
   ngOnDestroy(): void {
     if(this.searchResponseSub) { try { this.searchResponseSub.unsubscribe(); } catch {} }
     if(this.fullFacetCountsSubscription) { try { this.fullFacetCountsSubscription.unsubscribe(); } catch {} }
     if(this.filterWatcherSub) { try { this.filterWatcherSub.unsubscribe(); } catch {} }
+    if(this.externalToggleSubscription) { try { this.externalToggleSubscription.unsubscribe(); } catch {} }
   }
 
   toggleMoreOptions() {
@@ -394,7 +398,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     const q = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
     // Mark loading for possible UI skeletons
     this.recordHasLoading = true; this.themeLoading = true; this.resourceTypeLoading = true;
-    this.searchService.fetchAllForFacetCounts(q, this.searchTaxonomyKey, targetSize, this.searchService['filterString']?.getValue?.()).subscribe(expanded => {
+    this.fullFacetCountsSubscription = this.searchService.fetchAllForFacetCounts(q, this.searchTaxonomyKey, targetSize, this.searchService['filterString']?.getValue?.()).subscribe(expanded => {
       if (expanded && expanded.ResultData && expanded.ResultData.length) {
         this.buildFacetCounts(expanded.ResultData, true); // final pass
       } else {
@@ -409,6 +413,21 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fullFacetCountsComplete = true;
       this.fullFacetCountsInFlight = false;
     });
+  }
+
+  private resetFacetAggregationState() {
+    if (this.fullFacetCountsSubscription) {
+      try {
+        this.fullFacetCountsSubscription.unsubscribe();
+      } catch {}
+      this.fullFacetCountsSubscription = null;
+    }
+    this.fullFacetCountsInFlight = false;
+    this.fullFacetCountsComplete = false;
+    // Show skeletons again for all facet groups until rebuilt
+    this.recordHasLoading = true;
+    this.themeLoading = true;
+    this.resourceTypeLoading = true;
   }
 
   private buildFacetCounts(data: any[], finalPass: boolean = true) {

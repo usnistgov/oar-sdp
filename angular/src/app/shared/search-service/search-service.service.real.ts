@@ -342,6 +342,8 @@ export class RealSearchService implements SearchService {
    * @param url
    */
   public search(searchValue: string, url?: string): void {
+    // Reset filters when starting a new search (avoids stale filters across navigation).
+    this.setFilterString("NoFilter");
     const queryParams: any = {
       q: searchValue,
     };
