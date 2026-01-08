@@ -96,6 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   forensicsURL: string;
   chipsURL: string;
   aiURL: string;
+  additiveManufacturingURL: string;
   recentDatasets: any[] = [];
   recentFeeds: RecentFeedConfig[] = [
     {
@@ -311,6 +312,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     //     "NIST advances the state-of-the-art in IT in such applications as cybersecurity and biometrics.",
     //   image: "assets/images/Theme_InformationTechnology.png",
     // },
+    additiveManufacturing: {
+      title: "ADDITIVE MANUFACTURING",
+      description:
+        "NIST is advancing the science of additive manufacturing (3D printing) to improve the quality and reliability of 3D printed parts.",
+      image: "assets/images/Theme_AdditiveManufacturing.jpg",
+      searchTerm: "Additive Manufacturing",
+      curated: true,
+    },
 
     bioscience: {
       title: "BIOSCIENCE",
@@ -324,13 +333,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       image: "assets/images/Theme_Quantum.png",
       searchTerm: "Quantum",
     },
-    additiveManufacturing: {
-      title: "ADDITIVE MANUFACTURING",
-      description:
-        "NIST is advancing the science of additive manufacturing (3D printing) to improve the quality and reliability of 3D printed parts.",
-      image: "assets/images/Theme_AdditiveManufacturing.jpg",
-      searchTerm: '"Additive Manufacturing"',
-    },
+
     Materials: {
       title: "MATERIALS",
       description:
@@ -388,6 +391,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.forensicsURL = conf.SERVERBASE + "/forensics";
       this.chipsURL = conf.SERVERBASE + "/chips";
       this.aiURL = conf.SERVERBASE + "/ai";
+      this.additiveManufacturingURL = conf.SERVERBASE + "/am";
       const nextRMM = conf.RMMAPI;
       const shouldLoadTopics = !!nextRMM && nextRMM !== this.RMMAPIURL;
       this.RMMAPIURL = nextRMM;
@@ -512,6 +516,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         break;
       case "Artificial Intelligence":
         url = this.aiURL;
+        break;
+      case "Additive Manufacturing":
+        url = this.additiveManufacturingURL;
         break;
       default:
         // If no specific URL, fall back to search
