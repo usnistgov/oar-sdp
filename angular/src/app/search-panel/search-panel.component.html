@@ -8,7 +8,7 @@
 </p-toast>
 
 <div>
-  <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 1em">
+  <div class="content-wrapper p-d-flex p-jc-center" style="margin-top: 1em;">
     <div>
       <h3 *ngIf="title" class="heading title has-text-black">{{ title }}</h3>
       <!-- <p-button
@@ -147,7 +147,37 @@
         *ngIf="queryStringError"
         [innerHTML]="queryStringErrorMessage"
       ></div>
-    
+
+      <div
+        class="product-type-row"
+        *ngIf="visibleProductTypes.length"
+        aria-label="Toggle product categories"
+      >
+        <div class="product-type-label">Products</div>
+        <div class="product-type-buttons">
+          <button
+            type="button"
+            class="product-type-chip"
+            *ngFor="let product of visibleProductTypes"
+            [class.product-type-chip--active]="isProductTypeActive(product.key)"
+            [class.product-type-chip--disabled]="product.comingSoon"
+            (click)="onProductTypeToggle(product)"
+            [attr.aria-pressed]="isProductTypeActive(product.key)"
+            [disabled]="product.comingSoon"
+            [attr.title]="product.comingSoon ? 'Coming soon' : null"
+          >
+            <i [ngClass]="product.icon" aria-hidden="true"></i>
+            <span class="product-type-chip__label">{{ product.label }}</span>
+            <span
+              *ngIf="product.comingSoon"
+              class="product-type-chip__tag"
+              aria-hidden="true"
+              >soon</span
+            >
+          </button>
+        </div>
+      </div>
+
       <!-- 
       <div class="p-d-flex p-jc-between" style="margin-top: 1em">
         <span

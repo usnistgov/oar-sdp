@@ -9,7 +9,11 @@ import {
   SimpleChanges,
   ElementRef,
 } from "@angular/core";
-import { SearchService, SEARCH_SERVICE } from "../../shared/search-service";
+import {
+  SearchService,
+  SEARCH_SERVICE,
+  ProductTypeState,
+} from "../../shared/search-service";
 import * as _ from "lodash-es";
 import { SearchfieldsListService } from "../../shared/index";
 import { SelectItem } from "primeng/api";
@@ -67,6 +71,7 @@ export class ResultsComponent implements OnInit {
   pageSubscription: Subscription = new Subscription();
   searchSubscription: Subscription = new Subscription();
   externalToggleSubscription: Subscription = new Subscription();
+  productTypeSubscription: Subscription = new Subscription();
   inited: boolean = false;
   dataReady: boolean = false;
   // startupGuard ensures that during the initial bootstrap (hard page refresh scenario)
@@ -82,6 +87,8 @@ export class ResultsComponent implements OnInit {
   private initialSearchStarted: boolean = false;
   // Track when fields list is non-empty (ready to search)
   private fieldsReady: boolean = false;
+  private lastProductTypes: ProductTypeState | null = null;
+  private externalProductsEnabled: boolean = false;
 
   pagerConfig = {
     totalItems: 0,
@@ -249,6 +256,7 @@ export class ResultsComponent implements OnInit {
     this.externalToggleSubscription = this.searchService
       .watchExternalProducts()
       .subscribe((enabled) => {
+        this.externalProductsEnabled = !!enabled;
         if (!this.inited || this.startupGuard) return;
         if (!enabled) {
           const cleaned = this.stripExternalOnlyTypes(this.currentFilter);
@@ -266,6 +274,34 @@ export class ResultsComponent implements OnInit {
           "external-toggle"
         );
       });
+
+    this.productTypeSubscription = this.searchService
+      .watchProductTypes()
+      .subscribe((state) => {
+        const changed =
+          !this.lastProductTypes ||
+          !_.isEqual(this.lastProductTypes, state);
+        this.lastProductTypes = state;
+        if (!this.inited || this.startupGuard || !changed) return;
+        // If code (or other external types) are disabled, strip any lingering external-only filters.
+        const externalAllowed =
+          this.externalProductsEnabled && state && state.code !== false;
+        if (!externalAllowed) {
+          const cleaned = this.stripExternalOnlyTypes(this.currentFilter);
+          if (cleaned.changed) {
+            this.searchService.setFilterString(cleaned.filter);
+            return;
+          }
+        }
+        this.search(
+          null,
+          this.currentPage || 1,
+          this.itemsPerPage,
+          undefined,
+          undefined,
+          "product-toggle"
+        );
+      });
   }
 
   /**
@@ -278,6 +314,7 @@ export class ResultsComponent implements OnInit {
     if (this.pageSizeSubscription) this.pageSizeSubscription.unsubscribe();
     if (this.externalToggleSubscription)
       this.externalToggleSubscription.unsubscribe();
+    if (this.productTypeSubscription) this.productTypeSubscription.unsubscribe();
   }
 
   /**

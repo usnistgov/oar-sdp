@@ -6,7 +6,12 @@ import * as rxjsop from "rxjs/operators";
 import { EMPTY } from "rxjs";
 import * as _ from "lodash-es";
 import { AppConfig, Config } from "../config-service/config.service";
-import { SearchService } from "./search-service.service";
+import {
+  SearchService,
+  ProductTypeState,
+  ProductTypeKey,
+  DEFAULT_PRODUCT_TYPES,
+} from "./search-service.service";
 import { Router, NavigationExtras } from "@angular/router";
 import { SDPQuery } from "../search-query/query";
 
@@ -20,6 +25,9 @@ export class MockSearchService implements SearchService {
   totalItems = new BehaviorSubject<number>(1);
   private externalProducts = new BehaviorSubject<boolean>(false);
   private lastSearchResponse$ = new BehaviorSubject<any>(null);
+  private productTypes = new BehaviorSubject<ProductTypeState>({
+    ...DEFAULT_PRODUCT_TYPES,
+  });
 
   /**
    * Creates a new SearchService with the injected Http.
@@ -45,9 +53,9 @@ export class MockSearchService implements SearchService {
     sortOrder?: string,
     filter?: string
   ): Observable<any> {
-  const empty = { ResultData: [], total: 0 };
-  this.lastSearchResponse$.next(empty);
-  return of(empty);
+    const empty = { ResultData: [], ResultCount: 0, total: 0 };
+    this.lastSearchResponse$.next(empty);
+    return of(empty);
   }
 
   /**
@@ -163,6 +171,13 @@ export class MockSearchService implements SearchService {
         q: searchValue,
       },
     };
+    const activeProducts = this.getActiveProductTypes();
+    if (activeProducts.length) {
+      params.queryParams["products"] = activeProducts.join(",");
+    }
+    if (this.externalProducts.getValue()) {
+      params.queryParams["external"] = "true";
+    }
 
     this.router.navigate(["/search"], params);
   }
@@ -187,7 +202,7 @@ export class MockSearchService implements SearchService {
 
   fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
     // For mock just reuse sample result
-  return of({ ResultData: [], total: 0 });
+    return of({ ResultData: [], ResultCount: 0, total: 0 });
   }
 
   setExternalProducts(enabled: boolean): void {
@@ -196,5 +211,32 @@ export class MockSearchService implements SearchService {
 
   watchExternalProducts(): Observable<boolean> {
     return this.externalProducts.asObservable();
+  }
+
+  watchProductTypes(): Observable<ProductTypeState> {
+    return this.productTypes.asObservable();
+  }
+
+  setProductTypes(state: Partial<ProductTypeState>): void {
+    const next = { ...this.productTypes.getValue(), ...state };
+    this.productTypes.next(next);
+  }
+
+  setProductTypeEnabled(type: ProductTypeKey, enabled: boolean): void {
+    const current = this.productTypes.getValue();
+    if (!(type in current)) return;
+    this.productTypes.next({ ...current, [type]: !!enabled });
+  }
+
+  getActiveProductTypes(): ProductTypeKey[] {
+    const state = this.productTypes.getValue();
+    const active: ProductTypeKey[] = [];
+    if (state.data !== false) active.push("data");
+    if (this.externalProducts.getValue()) {
+      if (state.code) active.push("code");
+      if (state.papers) active.push("papers");
+      if (state.patents) active.push("patents");
+    }
+    return active;
   }
 }

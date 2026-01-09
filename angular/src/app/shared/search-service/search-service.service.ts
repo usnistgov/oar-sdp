@@ -1,6 +1,20 @@
 import { Observable } from 'rxjs';
 import { SDPQuery } from '../search-query/query';
 
+export type ProductTypeKey = "data" | "code" | "patents" | "papers";
+export interface ProductTypeState {
+  data: boolean;
+  code: boolean;
+  patents: boolean;
+  papers: boolean;
+}
+export const DEFAULT_PRODUCT_TYPES: ProductTypeState = {
+  data: true,
+  code: true,
+  patents: false,
+  papers: false,
+};
+
 export const SEARCH_SERVICE = 'SEARCH_SERVICE';
 export interface SearchService {
   /**
@@ -49,4 +63,15 @@ export interface SearchService {
    */
   setExternalProducts(enabled: boolean): void;
   watchExternalProducts(): Observable<boolean>;
+
+  /**
+   * Watch and control the active product categories included in search (data/code/papers/patents).
+   */
+  watchProductTypes(): Observable<ProductTypeState>;
+  setProductTypes(state: Partial<ProductTypeState>): void;
+  setProductTypeEnabled(type: ProductTypeKey, enabled: boolean): void;
+  /**
+   * Returns the list of product type keys that will be queried, factoring in the external toggle.
+   */
+  getActiveProductTypes(): ProductTypeKey[];
 }

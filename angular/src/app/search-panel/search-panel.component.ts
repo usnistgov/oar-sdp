@@ -2,21 +2,27 @@ import {
   Component,
   Inject,
   OnInit,
+  OnDestroy,
   Input,
   NgZone,
   ViewChild,
   ElementRef,
-  Query,
 } from "@angular/core";
 import { SelectItem } from "primeng/api";
 import { DropdownModule } from "primeng/dropdown";
 import { TaxonomyListService } from "../shared/taxonomy-list/index";
 import { SearchfieldsListService } from "../shared/searchfields-list/index";
-import { SearchService, SEARCH_SERVICE } from "../shared/search-service";
+import {
+  SearchService,
+  SEARCH_SERVICE,
+  ProductTypeState,
+  ProductTypeKey,
+  DEFAULT_PRODUCT_TYPES,
+} from "../shared/search-service";
 import { Router, NavigationExtras } from "@angular/router";
 import * as _ from "lodash-es";
 import { AppConfig, Config } from "../shared/config-service/config.service";
-import { timer } from "rxjs";
+import { Observable, Subscription, timer } from "rxjs";
 import {
   trigger,
   state,
@@ -28,16 +34,23 @@ import { OverlayPanel } from "primeng/overlaypanel";
 // MARK: 08/21/2024: Disabled for now until rework
 // import { AdvSearchComponent } from "../adv-search/adv-search.component";
 import { SearchQueryService } from "../shared/search-query/search-query.service";
-import { Observable } from "rxjs";
 import {
   SDPQuery,
   QueryRow,
   CurrentQueryInfo,
 } from "../shared/search-query/query";
-import { ReadVarExpr } from "@angular/compiler";
 import { find } from "./autocomplete";
 // import fetch from "cross-fetch";
 import { MessageService } from "primeng/api";
+
+type ProductTypeOption = {
+  key: ProductTypeKey;
+  label: string;
+  icon: string;
+  external?: boolean;
+  comingSoon?: boolean;
+  description?: string;
+};
 
 @Component({
   selector: "app-search-panel",
@@ -67,7 +80,7 @@ import { MessageService } from "primeng/api";
     ]),
   ],
 })
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
   @Input() title: string;
   @Input() subtitle: boolean;
   @Input() helpicon: boolean = false;
@@ -107,6 +120,27 @@ export class SearchPanelComponent implements OnInit {
   searchBottonWith: string = "10%";
   breadcrumb_top: string = "6em";
   includeExternalProducts: boolean = false;
+  productTypes: ProductTypeState = { ...DEFAULT_PRODUCT_TYPES };
+  productTypeOptions: ProductTypeOption[] = [
+    { key: "data", label: "Data", icon: "pi pi-database" },
+    { key: "code", label: "Code", icon: "pi pi-code", external: true },
+    {
+      key: "papers",
+      label: "Papers",
+      icon: "pi pi-book",
+      external: true,
+      comingSoon: true,
+    },
+    {
+      key: "patents",
+      label: "Patents",
+      icon: "pi pi-briefcase",
+      external: true,
+      comingSoon: true,
+    },
+  ];
+  private productTypesSub?: Subscription;
+  private externalToggleSub?: Subscription;
   externalHelperText: string =
     "Toggle to include external products like open-source code (patents & papers coming soon). Results and filters will blend with NIST data.";
   externalInfoVisible: boolean = false;
@@ -263,9 +297,17 @@ export class SearchPanelComponent implements OnInit {
       this.imageURL = this.SDPAPI + "assets/images/ngi-background.png";
     });
 
-    this.searchService.watchExternalProducts().subscribe((enabled) => {
-      this.includeExternalProducts = enabled;
-    });
+    this.productTypesSub = this.searchService
+      .watchProductTypes()
+      .subscribe((state) => {
+        this.productTypes = state;
+      });
+
+    this.externalToggleSub = this.searchService
+      .watchExternalProducts()
+      .subscribe((enabled) => {
+        this.includeExternalProducts = enabled;
+      });
 
     this.getTaxonomySuggestions();
   }
@@ -311,6 +353,23 @@ export class SearchPanelComponent implements OnInit {
 
   closeExternalInfo() {
     this.externalInfoVisible = false;
+  }
+
+  get visibleProductTypes(): ProductTypeOption[] {
+    return this.productTypeOptions.filter(
+      (option) => this.includeExternalProducts || !option.external
+    );
+  }
+
+  isProductTypeActive(key: ProductTypeKey): boolean {
+    return !!this.productTypes && !!this.productTypes[key];
+  }
+
+  onProductTypeToggle(option: ProductTypeOption) {
+    if (option.comingSoon) return;
+    if (option.external && !this.includeExternalProducts) return;
+    const nextState = !this.isProductTypeActive(option.key);
+    this.searchService.setProductTypeEnabled(option.key, nextState);
   }
 
   /**
@@ -709,5 +768,10 @@ export class SearchPanelComponent implements OnInit {
   }
   showDialog() {
     this.visible = true;
+  }
+
+  ngOnDestroy(): void {
+    this.productTypesSub?.unsubscribe();
+    this.externalToggleSub?.unsubscribe();
   }
 }

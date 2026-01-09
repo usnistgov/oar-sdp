@@ -9,6 +9,10 @@ import { AppConfig } from '../config-service/config.service';
 import { of } from 'rxjs';
 
 describe('SearchService', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule],
@@ -74,5 +78,18 @@ describe('SearchService', () => {
     expect(external.contactPoint.fn).toBe('NIST DevOps');
     // Keywords are normalized to lowercase
     expect(external.keyword).toContain('python');
+  });
+
+  it('should honor product type toggles when computing active products', () => {
+    const service = TestBed.inject(RealSearchService);
+    service.setProductTypes({ data: true, code: true });
+    service.setExternalProducts(false);
+    expect(service.getActiveProductTypes()).toEqual(['data']);
+    service.setExternalProducts(true);
+    expect(service.getActiveProductTypes()).toEqual(
+      jasmine.arrayContaining(['data', 'code'])
+    );
+    service.setProductTypeEnabled('code', false);
+    expect(service.getActiveProductTypes()).not.toContain('code');
   });
 });
