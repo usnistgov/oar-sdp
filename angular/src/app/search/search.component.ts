@@ -12,7 +12,11 @@ import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 import * as _ from "lodash-es";
 import { SearchQueryService } from "../shared/search-query/search-query.service";
-import { SearchService, SEARCH_SERVICE } from "../shared/search-service";
+import {
+  SearchService,
+  SEARCH_SERVICE,
+  ProductTypeState,
+} from "../shared/search-service";
 import {
   trigger,
   state,
@@ -105,6 +109,26 @@ export class SearchComponent implements OnInit, OnDestroy {
     } else {
       this.updateWidth();
     }
+  }
+
+  private parseProductsParam(
+    raw: any
+  ): { state: Partial<ProductTypeState>; requestExternal: boolean } | null {
+    if (!raw) return null;
+    const tokens = String(raw)
+      .split(",")
+      .map((v) => v.trim().toLowerCase())
+      .filter((v) => !!v);
+    if (!tokens.length) return null;
+    const state: Partial<ProductTypeState> = {
+      data: tokens.includes("data"),
+      code: tokens.includes("code"),
+      papers: tokens.includes("papers"),
+      patents: tokens.includes("patents"),
+    };
+    const requestExternal =
+      state.code === true || state.papers === true || state.patents === true;
+    return { state, requestExternal };
   }
   onErrorState(err: boolean) {
     // Hide filters on error or true no-match (not filter-constrained zero)
@@ -228,6 +252,15 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchRecord = params["compType"];
         this.searchAuthors = params["authors"];
         this.searchKeywords = params["keywords"];
+        const productsParam = params["products"];
+        const parsedProducts = this.parseProductsParam(productsParam);
+        if (parsedProducts) {
+          this.searchService.setProductTypes(parsedProducts.state);
+          if (parsedProducts.requestExternal) {
+            this.includeExternalProducts = true;
+            this.searchService.setExternalProducts(true);
+          }
+        }
         const externalParam = params["external"];
         if (typeof externalParam !== "undefined") {
           this.includeExternalProducts =

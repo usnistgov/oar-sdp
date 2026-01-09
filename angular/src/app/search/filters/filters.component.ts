@@ -14,7 +14,11 @@ import { TreeNode } from "primeng/api";
 // import { Message } from 'primeng/components/common/api';
 import { Message } from "primeng/api";
 import { SDPQuery } from "../../shared/search-query/query";
-import { SearchService, SEARCH_SERVICE } from "../../shared/search-service";
+import {
+  SearchService,
+  SEARCH_SERVICE,
+  ProductTypeState,
+} from "../../shared/search-service";
 import { SearchQueryService } from "../../shared/search-query/search-query.service";
 import {
   TaxonomyListService,
@@ -131,6 +135,8 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   private fullFacetCountsSubscription: any = null;
   private searchResponseSub: any = null;
   private externalToggleSubscription: any = null;
+  private productTypeSubscription: any = null;
+  private lastProductTypes: ProductTypeState | null = null;
 
   filterStyle = {
     width: "100%",
@@ -242,6 +248,21 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(() => {
         this.resetFacetAggregationState();
       });
+
+    this.productTypeSubscription = this.searchService
+      .watchProductTypes()
+      .subscribe((state) => {
+        if (!state) return;
+        if (this.lastProductTypes && _.isEqual(this.lastProductTypes, state)) {
+          return;
+        }
+        this.lastProductTypes = state;
+        this.resetFacetAggregationState();
+        // Rebuild facet UI from latest results (if available) so filters don't stall when all products were off.
+        if (this.searchResults) {
+          this.onSuccess(this.searchResults);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -249,6 +270,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     if(this.fullFacetCountsSubscription) { try { this.fullFacetCountsSubscription.unsubscribe(); } catch {} }
     if(this.filterWatcherSub) { try { this.filterWatcherSub.unsubscribe(); } catch {} }
     if(this.externalToggleSubscription) { try { this.externalToggleSubscription.unsubscribe(); } catch {} }
+    if(this.productTypeSubscription) { try { this.productTypeSubscription.unsubscribe(); } catch {} }
   }
 
   toggleMoreOptions() {

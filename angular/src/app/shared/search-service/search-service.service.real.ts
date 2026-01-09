@@ -6,7 +6,12 @@ import * as rxjsop from "rxjs/operators";
 import { EMPTY } from "rxjs";
 import * as _ from "lodash-es";
 import { AppConfig, Config } from "../config-service/config.service";
-import { SearchService } from "./search-service.service";
+import {
+  SearchService,
+  ProductTypeState,
+  ProductTypeKey,
+  DEFAULT_PRODUCT_TYPES,
+} from "./search-service.service";
 import { Router, NavigationExtras } from "@angular/router";
 import { SDPQuery } from "../search-query/query";
 
@@ -21,6 +26,10 @@ export class RealSearchService implements SearchService {
   private lastSearchResponse$ = new BehaviorSubject<any>(null); // broadcast unified response
   private externalProducts = new BehaviorSubject<boolean>(false);
   private readonly externalPrefKey = "sdpExternalProducts";
+  private productTypes = new BehaviorSubject<ProductTypeState>({
+    ...DEFAULT_PRODUCT_TYPES,
+  });
+  private readonly productPrefKey = "sdpProductTypes";
 
   operators = {
     AND: "logicalOp=AND",
@@ -42,6 +51,7 @@ export class RealSearchService implements SearchService {
     private router: Router,
     private appConfig: AppConfig
   ) {
+    this.productTypes.next(this.readProductPref());
     this.externalProducts.next(this.readExternalPref());
   }
 
@@ -103,11 +113,20 @@ export class RealSearchService implements SearchService {
     sortOrder?: string,
     filter?: string
   ): Observable<any> {
-    let url: string;
-    let externalUrl: string | null = null;
     const itemsPerPage = pageSize || this.pageSize.getValue();
-    const includeExternal = this.externalProducts.getValue();
+    const activeProducts = this.getActiveProductTypes();
+    const includeData = activeProducts.includes("data");
+    const includeCode = activeProducts.includes("code");
     const rows = Array.isArray(query.queryRows) ? query.queryRows : [];
+
+    if (!includeData && !includeCode) {
+      const empty = this.emptyResult();
+      this.lastSearchResponse$.next(empty);
+      return of(empty);
+    }
+
+    let url: string | null = null;
+    let externalUrl: string | null = null;
 
     if (rows[0]?.fieldValue == "isPartOf.@id") {
       url =
@@ -155,7 +174,7 @@ export class RealSearchService implements SearchService {
         : "";
 
       // Build URL with all parameters ensuring searchphrase is first and no leading '&'
-      url = "records?";
+      let queryStringBase = "records?";
       const parts: string[] = [];
       if (searchPhraseValue) parts.push(searchPhraseValue.trim());
       if (sortOrder) {
@@ -176,14 +195,14 @@ export class RealSearchService implements SearchService {
         parts.push("size=" + itemsPerPage);
       }
       const queryString = parts.join("&");
-      url += queryString;
+      url = queryStringBase + queryString;
       // Include required fields
       const includeClause =
         "include=ediid,description,title,keyword,topic.tag,contactPoint,annotated," +
         "components.@type,@type,doi,landingPage,firstIssued,modified&exclude=_id";
       url += (parts.length ? "&" : "") + includeClause;
 
-      if (includeExternal) {
+      if (includeCode) {
         externalUrl =
           "code?" +
           queryString +
@@ -194,13 +213,16 @@ export class RealSearchService implements SearchService {
 
     return this.appConfig.getConfig().pipe(
       rxjsop.mergeMap((conf) => {
-        const records$ = this.http.get(conf.RMMAPI + url);
-        if (!includeExternal || !externalUrl) {
-          return records$;
-        }
-        const external$ = this.http
-          .get(conf.RMMAPI + externalUrl)
-          .pipe(rxjsop.catchError(() => of({ ResultData: [], total: 0 })));
+        const records$ =
+          includeData && url
+            ? this.http.get(conf.RMMAPI + url)
+            : of(this.emptyResult());
+        const external$ =
+          includeCode && externalUrl
+            ? this.http
+                .get(conf.RMMAPI + externalUrl)
+                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
+            : of(this.emptyResult());
 
         return forkJoin({ records: records$, external: external$ }).pipe(
           rxjsop.map(({ records, external }) =>
@@ -348,6 +370,11 @@ export class RealSearchService implements SearchService {
       q: searchValue,
     };
 
+    const activeProducts = this.getActiveProductTypes();
+    if (activeProducts.length) {
+      queryParams.products = activeProducts.join(",");
+    }
+
     if (this.externalProducts.getValue()) {
       queryParams.external = "true";
     }
@@ -382,30 +409,56 @@ export class RealSearchService implements SearchService {
     maxSize: number,
     filter?: string
   ): Observable<any> {
+    const activeProducts = this.getActiveProductTypes();
+    const includeData = activeProducts.includes("data");
+    const includeCode = activeProducts.includes("code");
+    if (!includeData && !includeCode) {
+      return of(this.emptyResult());
+    }
+
     // Build a lightweight include list (only fields needed for facet counting)
     let clone: SDPQuery = JSON.parse(JSON.stringify(query));
     // Force first page only
-    let baseUrl = this.buildFacetOnlyUrl(
-      clone,
-      searchTaxonomyKey,
-      filter,
-      maxSize,
-      "records"
-    );
-    const includeExternal = this.externalProducts.getValue();
-    const externalUrl = includeExternal
-      ? this.buildFacetOnlyUrl(clone, searchTaxonomyKey, filter, maxSize, "code")
+    let baseUrl = includeData
+      ? this.buildFacetOnlyUrl(
+          clone,
+          searchTaxonomyKey,
+          filter,
+          maxSize,
+          "records"
+        )
       : null;
+    const externalUrl =
+      includeCode && includeData
+        ? this.buildFacetOnlyUrl(
+            clone,
+            searchTaxonomyKey,
+            filter,
+            maxSize,
+            "code"
+          )
+        : includeCode
+        ? this.buildFacetOnlyUrl(
+            clone,
+            searchTaxonomyKey,
+            filter,
+            maxSize,
+            "code"
+          )
+        : null;
 
     return this.appConfig.getConfig().pipe(
       rxjsop.mergeMap((conf) => {
-        const records$ = this.http.get(conf.RMMAPI + baseUrl);
-        if (!includeExternal || !externalUrl) {
-          return records$;
-        }
-        const external$ = this.http
-          .get(conf.RMMAPI + externalUrl)
-          .pipe(rxjsop.catchError(() => of({ ResultData: [], total: 0 })));
+        const records$ =
+          includeData && baseUrl
+            ? this.http.get(conf.RMMAPI + baseUrl)
+            : of(this.emptyResult());
+        const external$ =
+          includeCode && externalUrl
+            ? this.http
+                .get(conf.RMMAPI + externalUrl)
+                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
+            : of(this.emptyResult());
         return forkJoin({ records: records$, external: external$ }).pipe(
           rxjsop.map(({ records, external }) =>
             this.combineResults(records, external)
@@ -466,7 +519,7 @@ export class RealSearchService implements SearchService {
     const externalData = this.normalizeExternalRecords(external);
     const combinedTotal =
       this.extractTotalCount(primary, primaryData.length) +
-      externalData.length;
+      this.extractTotalCount(external, externalData.length);
 
     return {
       ...(primary && typeof primary === "object" ? primary : {}),
@@ -600,6 +653,45 @@ export class RealSearchService implements SearchService {
     return Array.from(tokens);
   }
 
+  watchProductTypes(): Observable<ProductTypeState> {
+    return this.productTypes.asObservable();
+  }
+
+  setProductTypes(state: Partial<ProductTypeState>): void {
+    const next = this.normalizeProductState({
+      ...this.productTypes.getValue(),
+      ...state,
+    });
+    this.productTypes.next(next);
+    this.persistProductPref(next);
+  }
+
+  setProductTypeEnabled(type: ProductTypeKey, enabled: boolean): void {
+    const current = this.productTypes.getValue();
+    if (!(type in current)) {
+      return;
+    }
+    const next = this.normalizeProductState({
+      ...current,
+      [type]: !!enabled,
+    });
+    this.productTypes.next(next);
+    this.persistProductPref(next);
+  }
+
+  getActiveProductTypes(): ProductTypeKey[] {
+    const state = this.productTypes.getValue();
+    const allowExternal = this.externalProducts.getValue();
+    const active: ProductTypeKey[] = [];
+    if (state.data !== false) active.push("data");
+    if (allowExternal) {
+      if (state.code) active.push("code");
+      if (state.papers) active.push("papers");
+      if (state.patents) active.push("patents");
+    }
+    return active;
+  }
+
   setExternalProducts(enabled: boolean): void {
     const normalized = !!enabled;
     this.externalProducts.next(normalized);
@@ -626,5 +718,41 @@ export class RealSearchService implements SearchService {
     } catch (_e) {
       // ignore
     }
+  }
+
+  private normalizeProductState(
+    state: Partial<ProductTypeState> | null | undefined
+  ): ProductTypeState {
+    const base: ProductTypeState = { ...DEFAULT_PRODUCT_TYPES };
+    const incoming = state || {};
+    (Object.keys(base) as ProductTypeKey[]).forEach((key) => {
+      if (typeof incoming[key] === "boolean") {
+        base[key] = incoming[key] as boolean;
+      }
+    });
+    return base;
+  }
+
+  private readProductPref(): ProductTypeState {
+    try {
+      const raw = localStorage.getItem(this.productPrefKey);
+      if (!raw) return { ...DEFAULT_PRODUCT_TYPES };
+      const parsed = JSON.parse(raw);
+      return this.normalizeProductState(parsed);
+    } catch (_e) {
+      return { ...DEFAULT_PRODUCT_TYPES };
+    }
+  }
+
+  private persistProductPref(state: ProductTypeState): void {
+    try {
+      localStorage.setItem(this.productPrefKey, JSON.stringify(state));
+    } catch (_e) {
+      // ignore
+    }
+  }
+
+  private emptyResult() {
+    return { ResultData: [], ResultCount: 0, total: 0 };
   }
 }
