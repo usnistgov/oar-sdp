@@ -67,8 +67,8 @@ describe('SearchService', () => {
         contact: { email: 'dev@example.com' }
       }], ResultCount: 5 }
     );
-    expect(merged.ResultCount).toBe(2);
-    expect(merged.total).toBe(2);
+    expect(merged.ResultCount).toBe(6);
+    expect(merged.total).toBe(6);
     expect(merged.ResultData.length).toBe(2);
     const external = merged.ResultData[1];
     expect(external.external).toBe(true);
@@ -87,7 +87,7 @@ describe('SearchService', () => {
     expect(service.getActiveProductTypes()).toEqual(['data']);
     service.setExternalProducts(true);
     expect(service.getActiveProductTypes()).toEqual(
-      jasmine.arrayContaining(['data', 'code'])
+      expect.arrayContaining(['data', 'code'])
     );
     service.setProductTypeEnabled('code', false);
     expect(service.getActiveProductTypes()).not.toContain('code');

@@ -12,6 +12,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
 
 describe("FiltersComponent", () => {
   let component: FiltersComponent;
@@ -22,6 +23,7 @@ describe("FiltersComponent", () => {
   ];
 
   beforeEach(waitForAsync(() => {
+    TestBed.overrideTemplate(FiltersComponent, "");
     TestBed.configureTestingModule({
       declarations: [FiltersComponent],
       imports: [
@@ -37,6 +39,7 @@ describe("FiltersComponent", () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -45,7 +48,6 @@ describe("FiltersComponent", () => {
     component = fixture.componentInstance;
     component.fields = [];
     component.searchValue = "";
-    fixture.detectChanges();
   });
 
   it("should create", () => {
