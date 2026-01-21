@@ -48,7 +48,6 @@ type ProductTypeOption = {
   label: string;
   icon: string;
   external?: boolean;
-  comingSoon?: boolean;
   description?: string;
 };
 
@@ -129,14 +128,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       label: "Papers",
       icon: "pi pi-book",
       external: true,
-      comingSoon: true,
     },
     {
       key: "patents",
       label: "Patents",
       icon: "pi pi-briefcase",
       external: true,
-      comingSoon: true,
     },
   ];
   private productTypesSub?: Subscription;
@@ -145,6 +142,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     "Toggle to include external products like open-source code (patents & papers coming soon). Results and filters will blend with NIST data.";
   externalInfoVisible: boolean = false;
   examplesDialogVisible = false;
+  toastKey = "productToast";
   placeHolderText: string[] = [
     "Artificial Intelligence",
     "Kinetics database",
@@ -345,6 +343,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   onExternalToggle(enabled: boolean) {
     this.includeExternalProducts = enabled;
     this.searchService.setExternalProducts(enabled);
+    if (enabled) {
+      // Turn on all external products; keep data as-is.
+      this.searchService.setProductTypes({
+        code: true,
+        papers: true,
+        patents: true,
+      });
+    } else {
+      // Disable external products and ensure data stays on.
+      this.searchService.setProductTypes({
+        code: false,
+        papers: false,
+        patents: false,
+        data: true,
+      });
+    }
   }
 
   openExternalInfo() {
@@ -356,9 +370,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   get visibleProductTypes(): ProductTypeOption[] {
-    return this.productTypeOptions.filter(
-      (option) => this.includeExternalProducts || !option.external
-    );
+    return this.productTypeOptions;
   }
 
   isProductTypeActive(key: ProductTypeKey): boolean {
@@ -366,10 +378,29 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   onProductTypeToggle(option: ProductTypeOption) {
-    if (option.comingSoon) return;
-    if (option.external && !this.includeExternalProducts) return;
+    // If external toggle is off and user taps an external product, turn external on first.
+    if (option.external && !this.includeExternalProducts) {
+      this.includeExternalProducts = true;
+      this.searchService.setExternalProducts(true);
+    }
+    // When external is off, data is locked on.
+    if (!this.includeExternalProducts && option.key === "data") {
+      return;
+    }
     const nextState = !this.isProductTypeActive(option.key);
     this.searchService.setProductTypeEnabled(option.key, nextState);
+
+    // If external is on but no external products remain active, switch external off.
+    if (this.includeExternalProducts && !this.hasActiveExternalProducts()) {
+      this.includeExternalProducts = false;
+      this.searchService.setExternalProducts(false);
+    }
+  }
+
+  private hasActiveExternalProducts(): boolean {
+    const state: ProductTypeState =
+      this.productTypes || { ...DEFAULT_PRODUCT_TYPES };
+    return !!(state.code || state.papers || state.patents);
   }
 
   /**
@@ -530,6 +561,17 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
    * @param searchTaxonomyKey
    */
   search(searchValue: string, searchTaxonomyKey: string) {
+    const activeProducts = this.searchService.getActiveProductTypes();
+    if (!activeProducts || activeProducts.length === 0) {
+      this.messageService.add({
+        severity: "warn",
+        summary: "Select a product",
+        detail: "Choose at least one product type before searching.",
+        life: 3500,
+        key: this.toastKey,
+      });
+      return;
+    }
     this.searchTaxonomyKey = searchTaxonomyKey;
 
     this.searchService.search(searchValue, this.router.url);

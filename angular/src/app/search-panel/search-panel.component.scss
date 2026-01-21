@@ -335,24 +335,91 @@ body .p-highlight {
   opacity: 1;
 }
 
-.product-type-chip--disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  border-style: dashed;
-}
-
 .product-type-chip__label {
   white-space: nowrap;
 }
 
-.product-type-chip__tag {
-  background: rgba(15, 23, 42, 0.9);
+/* Toast styling */
+:host ::ng-deep .product-toast.p-toast {
+  width: auto;
+  max-width: none;
+}
+
+:host ::ng-deep .product-toast .p-toast-message {
+  padding: 0;
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+  width: auto;
+  max-width: none;
+}
+
+:host ::ng-deep .product-toast .p-toast-message-warn {
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .product-toast .p-toast-message-content {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+:host ::ng-deep .product-toast .p-toast-icon-close {
+  display: none;
+}
+
+.product-toast__card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  background: #0a0a0a;
   color: #ffffff;
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-  padding: 0.1rem 0.45rem;
+  border-radius: 14px;
+  border: 1px solid #1f1f1f;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  padding: 0.8rem 1rem 0.8rem 0.85rem;
+}
+
+.product-toast__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffcc4d, #ffb200);
+  color: #0a0a0a;
+  font-size: 1.2rem;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.product-toast__text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.45;
+}
+
+.product-toast__close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.2rem;
   border-radius: 999px;
-  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.product-toast__close:hover,
+.product-toast__close:focus {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  outline: none;
 }
 
 

@@ -1,8 +1,25 @@
-<p-toast [baseZIndex]="5000">
+<p-toast
+  [baseZIndex]="5000"
+  [key]="toastKey"
+  position="top-right"
+  styleClass="product-toast"
+>
   <ng-template let-message pTemplate="message">
-    <div style="display: flex; align-items: center; margin: 5px">
-      <i class="pi pi-info-circle" style="font-size: 30px; padding: 0 10px"></i>
-      <div>{{ message.detail }}</div>
+    <div class="product-toast__card">
+      <span class="product-toast__icon">
+        <i class="pi pi-info-circle" aria-hidden="true"></i>
+      </span>
+      <div class="product-toast__text">
+        {{ message.detail }}
+      </div>
+      <button
+        type="button"
+        class="product-toast__close"
+        aria-label="Close notification"
+        (click)="messageService.clear(toastKey)"
+      >
+        <i class="pi pi-times" aria-hidden="true"></i>
+      </button>
     </div>
   </ng-template>
 </p-toast>
@@ -160,20 +177,11 @@
             class="product-type-chip"
             *ngFor="let product of visibleProductTypes"
             [class.product-type-chip--active]="isProductTypeActive(product.key)"
-            [class.product-type-chip--disabled]="product.comingSoon"
             (click)="onProductTypeToggle(product)"
             [attr.aria-pressed]="isProductTypeActive(product.key)"
-            [disabled]="product.comingSoon"
-            [attr.title]="product.comingSoon ? 'Coming soon' : null"
           >
             <i [ngClass]="product.icon" aria-hidden="true"></i>
             <span class="product-type-chip__label">{{ product.label }}</span>
-            <span
-              *ngIf="product.comingSoon"
-              class="product-type-chip__tag"
-              aria-hidden="true"
-              >soon</span
-            >
           </button>
         </div>
       </div>
