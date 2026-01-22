@@ -117,9 +117,10 @@ export class RealSearchService implements SearchService {
     const activeProducts = this.getActiveProductTypes();
     const includeData = activeProducts.includes("data");
     const includeCode = activeProducts.includes("code");
+    const includePatents = activeProducts.includes("patents");
     const rows = Array.isArray(query.queryRows) ? query.queryRows : [];
 
-    if (!includeData && !includeCode) {
+    if (!includeData && !includeCode && !includePatents) {
       const empty = this.emptyResult();
       this.lastSearchResponse$.next(empty);
       return of(empty);
@@ -127,6 +128,7 @@ export class RealSearchService implements SearchService {
 
     let url: string | null = null;
     let externalUrl: string | null = null;
+    let patentsUrl: string | null = null;
 
     if (rows[0]?.fieldValue == "isPartOf.@id") {
       url =
@@ -209,6 +211,13 @@ export class RealSearchService implements SearchService {
           (parts.length ? "&" : "") +
           "include=_id,name,title,description,organization,repositoryURL,homepageURL,downloadURL,languages,tags,contact,dates,status,vcs,@type";
       }
+      if (includePatents) {
+        patentsUrl =
+          "patents?" +
+          queryString +
+          (parts.length ? "&" : "") +
+          "include=_id,title,name,description,abstract,summary,patentNumber,publicationNumber,publicationDate,assignee,assignees,applicant,applicants,organization,owner,inventor,inventors,contact,contactPoint,landingPage,url,keyword,keywords,tags,topic.tag,@type";
+      }
     }
 
     return this.appConfig.getConfig().pipe(
@@ -223,10 +232,20 @@ export class RealSearchService implements SearchService {
                 .get(conf.RMMAPI + externalUrl)
                 .pipe(rxjsop.catchError(() => of(this.emptyResult())))
             : of(this.emptyResult());
+        const patents$ =
+          includePatents && patentsUrl
+            ? this.http
+                .get(conf.RMMAPI + patentsUrl)
+                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
+            : of(this.emptyResult());
 
-        return forkJoin({ records: records$, external: external$ }).pipe(
-          rxjsop.map(({ records, external }) =>
-            this.combineResults(records, external)
+        return forkJoin({
+          records: records$,
+          external: external$,
+          patents: patents$,
+        }).pipe(
+          rxjsop.map(({ records, external, patents }) =>
+            this.combineResults(records, external, patents)
           )
         );
       }),
@@ -412,7 +431,8 @@ export class RealSearchService implements SearchService {
     const activeProducts = this.getActiveProductTypes();
     const includeData = activeProducts.includes("data");
     const includeCode = activeProducts.includes("code");
-    if (!includeData && !includeCode) {
+    const includePatents = activeProducts.includes("patents");
+    if (!includeData && !includeCode && !includePatents) {
       return of(this.emptyResult());
     }
 
@@ -428,24 +448,24 @@ export class RealSearchService implements SearchService {
           "records"
         )
       : null;
-    const externalUrl =
-      includeCode && includeData
-        ? this.buildFacetOnlyUrl(
-            clone,
-            searchTaxonomyKey,
-            filter,
-            maxSize,
-            "code"
-          )
-        : includeCode
-        ? this.buildFacetOnlyUrl(
-            clone,
-            searchTaxonomyKey,
-            filter,
-            maxSize,
-            "code"
-          )
-        : null;
+    const externalUrl = includeCode
+      ? this.buildFacetOnlyUrl(
+          clone,
+          searchTaxonomyKey,
+          filter,
+          maxSize,
+          "code"
+        )
+      : null;
+    const patentsUrl = includePatents
+      ? this.buildFacetOnlyUrl(
+          clone,
+          searchTaxonomyKey,
+          filter,
+          maxSize,
+          "patents"
+        )
+      : null;
 
     return this.appConfig.getConfig().pipe(
       rxjsop.mergeMap((conf) => {
@@ -459,9 +479,19 @@ export class RealSearchService implements SearchService {
                 .get(conf.RMMAPI + externalUrl)
                 .pipe(rxjsop.catchError(() => of(this.emptyResult())))
             : of(this.emptyResult());
-        return forkJoin({ records: records$, external: external$ }).pipe(
-          rxjsop.map(({ records, external }) =>
-            this.combineResults(records, external)
+        const patents$ =
+          includePatents && patentsUrl
+            ? this.http
+                .get(conf.RMMAPI + patentsUrl)
+                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
+            : of(this.emptyResult());
+        return forkJoin({
+          records: records$,
+          external: external$,
+          patents: patents$,
+        }).pipe(
+          rxjsop.map(({ records, external, patents }) =>
+            this.combineResults(records, external, patents)
           )
         );
       }),
@@ -475,7 +505,7 @@ export class RealSearchService implements SearchService {
     searchTaxonomyKey: string,
     filter: string,
     size: number,
-    base: "records" | "code" = "records"
+    base: "records" | "code" | "patents" = "records"
   ): string {
     let searchPhraseValue = query.freeText
       ? "searchphrase=" + query.freeText.trim()
@@ -505,25 +535,35 @@ export class RealSearchService implements SearchService {
     url += parts.join("&");
     const codeInclude =
       "include=@type,keyword,topic.tag,contactPoint,components.@type,languages,tags,contact,organization";
+    const patentInclude =
+      "include=@type,keyword,keywords,topic.tag,contactPoint,assignee,assignees,applicant,applicants,organization,owner,inventor,inventors,tags";
     const recordInclude =
       "include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id";
-    url += (parts.length ? "&" : "") + (base === "code" ? codeInclude : recordInclude);
+    const include =
+      base === "code"
+        ? codeInclude
+        : base === "patents"
+        ? patentInclude
+        : recordInclude;
+    url += (parts.length ? "&" : "") + include;
     return url;
   }
 
   /**
    * Normalize and merge record + external responses into a single response object.
    */
-  private combineResults(primary: any, external: any) {
+  private combineResults(primary: any, external?: any, patents?: any) {
     const primaryData = this.extractResultData(primary);
-    const externalData = this.normalizeExternalRecords(external);
+    const externalData = this.normalizeExternalRecords(external, "code");
+    const patentData = this.normalizeExternalRecords(patents, "patents");
     const combinedTotal =
       this.extractTotalCount(primary, primaryData.length) +
-      this.extractTotalCount(external, externalData.length);
+      this.extractTotalCount(external, externalData.length) +
+      this.extractTotalCount(patents, patentData.length);
 
     return {
       ...(primary && typeof primary === "object" ? primary : {}),
-      ResultData: [...primaryData, ...externalData],
+      ResultData: [...primaryData, ...externalData, ...patentData],
       ResultCount: combinedTotal,
       total: combinedTotal,
     };
@@ -545,11 +585,16 @@ export class RealSearchService implements SearchService {
     return data.length || fallback;
   }
 
-  private normalizeExternalRecords(resp: any): any[] {
+  private normalizeExternalRecords(
+    resp: any,
+    source: "code" | "patents" = "code"
+  ): any[] {
     const raw = this.extractResultData(resp);
-    return raw
-      .map((item) => this.normalizeCodeRecord(item))
-      .filter((item) => !!item);
+    const normalizer =
+      source === "patents"
+        ? (item) => this.normalizePatentRecord(item)
+        : (item) => this.normalizeCodeRecord(item);
+    return raw.map(normalizer).filter((item) => !!item);
   }
 
   private normalizeCodeRecord(item: any): any | null {
@@ -576,14 +621,20 @@ export class RealSearchService implements SearchService {
       item.contactPoint ||
       item.contact ||
       (contactName ? { fn: contactName } : {});
-    const contactPoint =
-      contactName &&
-      rawContactPoint &&
-      typeof rawContactPoint === "object" &&
-      !Array.isArray(rawContactPoint) &&
-      !rawContactPoint.fn
-        ? { ...rawContactPoint, fn: contactName }
-        : rawContactPoint;
+    let contactPoint = rawContactPoint;
+    if (contactName) {
+      if (
+        rawContactPoint &&
+        typeof rawContactPoint === "object" &&
+        !Array.isArray(rawContactPoint)
+      ) {
+        contactPoint = rawContactPoint.fn
+          ? rawContactPoint
+          : { ...rawContactPoint, fn: contactName };
+      } else if (typeof rawContactPoint === "string") {
+        contactPoint = { fn: contactName };
+      }
+    }
     const typeArray = this.normalizeCodeTypes(item["@type"], item.vcs);
     const topic = Array.isArray(item.topic) ? item.topic : [];
     return {
@@ -612,6 +663,113 @@ export class RealSearchService implements SearchService {
     };
   }
 
+  private normalizePatentRecord(item: any): any | null {
+    if (!item) return null;
+    const title =
+      item.title ||
+      item.patentTitle ||
+      item.inventionTitle ||
+      item.name ||
+      "Patent";
+    const description =
+      (Array.isArray(item.description) ? item.description[0] : item.description) ||
+      (Array.isArray(item.abstract) ? item.abstract[0] : item.abstract) ||
+      (Array.isArray(item.summary) ? item.summary[0] : item.summary) ||
+      "";
+    const landing =
+      item.landingPage ||
+      item.url ||
+      item.patentUrl ||
+      item.patentURL ||
+      item.documentUrl ||
+      item.documentURL ||
+      item.link ||
+      item.homepageURL ||
+      item.repositoryURL ||
+      item.downloadURL ||
+      "";
+    const keywords = this.normalizeKeywords(
+      item.keyword,
+      item.keywords,
+      item.tags,
+      item.subject,
+      item.subjects,
+      item.cpc,
+      item.ipc,
+      item.uspc,
+      item.classifications
+    );
+    const contactName =
+      this.extractContactName(item.contactPoint) ||
+      this.extractContactName(item.contact) ||
+      this.extractContactName(item.assignee) ||
+      this.extractContactName(item.assignees) ||
+      this.extractContactName(item.applicant) ||
+      this.extractContactName(item.applicants) ||
+      this.extractContactName(item.organization) ||
+      this.extractContactName(item.owner) ||
+      this.extractContactName(item.inventor) ||
+      this.extractContactName(item.inventors) ||
+      "";
+    const rawContactPoint =
+      item.contactPoint ||
+      item.contact ||
+      (contactName ? { fn: contactName } : {});
+    let contactPoint = rawContactPoint;
+    if (contactName) {
+      if (
+        rawContactPoint &&
+        typeof rawContactPoint === "object" &&
+        !Array.isArray(rawContactPoint)
+      ) {
+        contactPoint = rawContactPoint.fn
+          ? rawContactPoint
+          : { ...rawContactPoint, fn: contactName };
+      } else if (typeof rawContactPoint === "string") {
+        contactPoint = { fn: contactName };
+      }
+    }
+    const typeArray = this.normalizePatentTypes(
+      item["@type"] || item.type || item.docType
+    );
+    const topic = this.normalizeTopicField(
+      item.topic || item.topics || item.subjects || item.subject
+    );
+    return {
+      ...item,
+      external: true,
+      source: "patents",
+      ediid:
+        item.ediid ||
+        item._id ||
+        item.id ||
+        item.patentNumber ||
+        item.publicationNumber ||
+        title,
+      title,
+      description,
+      landingPage: landing,
+      keyword: keywords,
+      topic,
+      components: Array.isArray(item.components) ? item.components : [],
+      ["@type"]: typeArray,
+      annotated:
+        item.annotated ||
+        item.modified ||
+        item.updated ||
+        item.publicationDate ||
+        item.publication_date ||
+        item.issuedDate ||
+        (item.dates &&
+          (item.dates.published ||
+            item.dates.issued ||
+            item.dates.modified ||
+            item.dates.updated)) ||
+        null,
+      contactPoint,
+    };
+  }
+
   private normalizeCodeTypes(typeField: any, vcs?: string): string[] {
     const types = new Set<string>();
     const add = (val: any) => {
@@ -630,16 +788,88 @@ export class RealSearchService implements SearchService {
     return Array.from(types);
   }
 
+  private normalizePatentTypes(typeField: any): string[] {
+    const types = new Set<string>();
+    const add = (val: any) => {
+      const v = typeof val === "string" ? val.trim() : "";
+      if (v) types.add(v);
+    };
+    if (Array.isArray(typeField)) {
+      typeField.forEach(add);
+    } else {
+      add(typeField);
+    }
+    const hasPatent = Array.from(types).some((val) =>
+      val.replace(/\s/g, "").toLowerCase().includes("patent")
+    );
+    if (!hasPatent) {
+      types.add("Patent");
+    }
+    return Array.from(types);
+  }
+
+  private extractContactName(value: any): string {
+    if (!value) return "";
+    if (typeof value === "string") return value;
+    if (Array.isArray(value)) {
+      for (const entry of value) {
+        const name = this.extractContactName(entry);
+        if (name) return name;
+      }
+      return "";
+    }
+    if (typeof value === "object") {
+      return (
+        value.fn ||
+        value.name ||
+        value.label ||
+        value.organization ||
+        value.company ||
+        ""
+      );
+    }
+    return "";
+  }
+
+  private normalizeTopicField(value: any): { tag: string }[] {
+    if (!value) return [];
+    if (Array.isArray(value)) {
+      return value
+        .map((entry) => {
+          if (!entry) return null;
+          if (typeof entry === "string") return { tag: entry };
+          if (entry.tag) return entry;
+          if (entry.label) return { tag: entry.label };
+          if (entry.name) return { tag: entry.name };
+          return null;
+        })
+        .filter((entry) => !!entry);
+    }
+    if (typeof value === "string") {
+      return value
+        .split(/[;,]/)
+        .map((tag) => tag.trim())
+        .filter((tag) => !!tag)
+        .map((tag) => ({ tag }));
+    }
+    if (typeof value === "object") {
+      if (value.tag) return [value];
+      if (value.label) return [{ tag: value.label }];
+      if (value.name) return [{ tag: value.name }];
+    }
+    return [];
+  }
+
   private normalizeKeywords(...sources: any[]): string[] {
     const tokens = new Set<string>();
     const add = (val: any) => {
       const token =
         typeof val === "string"
           ? val
-          : val && val.label
-          ? val.label
+          : val && (val.label || val.name || val.value)
+          ? val.label || val.name || val.value
           : "";
-      const trimmed = token.trim();
+      const trimmed = String(token || "").trim();
       if (trimmed) tokens.add(trimmed.toLowerCase());
     };
     sources.forEach((src) => {

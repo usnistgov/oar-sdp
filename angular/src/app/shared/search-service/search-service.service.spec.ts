@@ -80,6 +80,37 @@ describe('SearchService', () => {
     expect(external.keyword).toContain('python');
   });
 
+  it('should combine primary and patent results with normalized patent entry', () => {
+    const service: any = TestBed.inject(RealSearchService);
+    const merged = service.combineResults(
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [], ResultCount: 0 },
+      {
+        ResultData: [{
+          title: 'Laser Spectrometer',
+          abstract: 'A compact laser',
+          patentNumber: 'US123',
+          assignee: 'NIST',
+          url: 'http://patents.test/US123',
+          keywords: ['laser', 'spectroscopy']
+        }],
+        ResultCount: 1
+      }
+    );
+    expect(merged.ResultCount).toBe(1);
+    expect(merged.total).toBe(1);
+    expect(merged.ResultData.length).toBe(1);
+    const patent = merged.ResultData[0];
+    expect(patent.external).toBe(true);
+    expect(patent.source).toBe('patents');
+    expect(patent.title).toBe('Laser Spectrometer');
+    expect(patent.description).toBe('A compact laser');
+    expect(patent['@type']).toContain('Patent');
+    expect(patent.keyword).toContain('laser');
+    expect(patent.contactPoint.fn).toBe('NIST');
+    expect(patent.landingPage).toBe('http://patents.test/US123');
+  });
+
   it('should honor product type toggles when computing active products', () => {
     const service = TestBed.inject(RealSearchService);
     service.setProductTypes({ data: true, code: true });

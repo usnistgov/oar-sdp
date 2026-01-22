@@ -285,7 +285,9 @@ export class ResultsComponent implements OnInit {
         if (!this.inited || this.startupGuard || !changed) return;
         // If code (or other external types) are disabled, strip any lingering external-only filters.
         const externalAllowed =
-          this.externalProductsEnabled && state && state.code !== false;
+          this.externalProductsEnabled &&
+          state &&
+          !!(state.code || state.papers || state.patents);
         if (!externalAllowed) {
           const cleaned = this.stripExternalOnlyTypes(this.currentFilter);
           if (cleaned.changed) {
@@ -580,6 +582,7 @@ export class ResultsComponent implements OnInit {
       .toLowerCase();
     if (!normalized) return false;
     if (normalized === "coderepository") return true;
+    if (normalized.startsWith("patent")) return true;
     return normalized.startsWith("vcs:");
   }
 
@@ -847,7 +850,12 @@ export class ResultsComponent implements OnInit {
   }
 
   isExternalResult(resultItem: any): boolean {
-    return !!(resultItem && (resultItem.external || resultItem.source === "code"));
+    return !!(
+      resultItem &&
+      (resultItem.external ||
+        resultItem.source === "code" ||
+        resultItem.source === "patents")
+    );
   }
 
   getResultTitle(resultItem: any): string {

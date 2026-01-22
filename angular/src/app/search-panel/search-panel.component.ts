@@ -139,7 +139,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   private productTypesSub?: Subscription;
   private externalToggleSub?: Subscription;
   externalHelperText: string =
-    "Toggle to include external products like open-source code (patents & papers coming soon). Results and filters will blend with NIST data.";
+    "Toggle to include external products like open-source code and patents (papers coming soon). Results and filters will blend with NIST data.";
   externalInfoVisible: boolean = false;
   examplesDialogVisible = false;
   toastKey = "productToast";
