@@ -1,7 +1,14 @@
 import { Injectable } from "@angular/core";
 // import { URLSearchParams } from '@angular/http';
 import { HttpClient, HttpRequest, HttpParams } from "@angular/common/http";
-import { Observable, throwError, of, BehaviorSubject, forkJoin } from "rxjs";
+import {
+  Observable,
+  throwError,
+  of,
+  BehaviorSubject,
+  forkJoin,
+  defer,
+} from "rxjs";
 import * as rxjsop from "rxjs/operators";
 import { EMPTY } from "rxjs";
 import * as _ from "lodash-es";
@@ -10,7 +17,10 @@ import {
   SearchService,
   ProductTypeState,
   ProductTypeKey,
+  ProductProgressState,
+  SearchProgressState,
   DEFAULT_PRODUCT_TYPES,
+  SearchPhraseOptions,
 } from "./search-service.service";
 import { Router, NavigationExtras } from "@angular/router";
 import { SDPQuery } from "../search-query/query";
@@ -30,6 +40,11 @@ export class RealSearchService implements SearchService {
     ...DEFAULT_PRODUCT_TYPES,
   });
   private readonly productPrefKey = "sdpProductTypes";
+  private searchProgress$ = new BehaviorSubject<SearchProgressState>(
+    this.createInitialProgressState()
+  );
+  private progressTimers: Partial<Record<ProductTypeKey, any>> = {};
+  private progressRequestId: number = 0;
 
   operators = {
     AND: "logicalOp=AND",
@@ -111,23 +126,34 @@ export class RealSearchService implements SearchService {
     page?: number,
     pageSize?: number,
     sortOrder?: string,
-    filter?: string
+    filter?: string,
+    options?: SearchPhraseOptions
   ): Observable<any> {
     const itemsPerPage = pageSize || this.pageSize.getValue();
     const activeProducts = this.getActiveProductTypes();
-    const includeData = activeProducts.includes("data");
-    const includeCode = activeProducts.includes("code");
-    const includePatents = activeProducts.includes("patents");
+    const forceData = !!options?.forceData;
+    const includeData = forceData || activeProducts.includes("data");
+    const includeCode = !forceData && activeProducts.includes("code");
+    const includePapers = !forceData && activeProducts.includes("papers");
+    const includePatents = !forceData && activeProducts.includes("patents");
+    const progressProducts: ProductTypeKey[] = [];
+    if (includeData) progressProducts.push("data");
+    if (includeCode) progressProducts.push("code");
+    if (includePapers) progressProducts.push("papers");
+    if (includePatents) progressProducts.push("patents");
     const rows = Array.isArray(query.queryRows) ? query.queryRows : [];
 
-    if (!includeData && !includeCode && !includePatents) {
+    if (!progressProducts.length) {
       const empty = this.emptyResult();
       this.lastSearchResponse$.next(empty);
+      this.resetProgressState();
       return of(empty);
     }
 
+    const requestId = this.beginProgress(progressProducts);
     let url: string | null = null;
     let externalUrl: string | null = null;
+    let papersUrl: string | null = null;
     let patentsUrl: string | null = null;
 
     if (rows[0]?.fieldValue == "isPartOf.@id") {
@@ -211,6 +237,13 @@ export class RealSearchService implements SearchService {
           (parts.length ? "&" : "") +
           "include=_id,name,title,description,organization,repositoryURL,homepageURL,downloadURL,languages,tags,contact,dates,status,vcs,@type";
       }
+      if (includePapers) {
+        papersUrl =
+          "papers?" +
+          queryString +
+          (parts.length ? "&" : "") +
+          "include=_id,title,name,description,abstract,summary,authors,author,organization,doi,publicationDate,publishedDate,contact,contactPoint,landingPage,url,keyword,keywords,tags,subjects,topic.tag,@type";
+      }
       if (includePatents) {
         patentsUrl =
           "patents?" +
@@ -222,36 +255,83 @@ export class RealSearchService implements SearchService {
 
     return this.appConfig.getConfig().pipe(
       rxjsop.mergeMap((conf) => {
+        const empty = this.emptyResult();
         const records$ =
           includeData && url
-            ? this.http.get(conf.RMMAPI + url)
-            : of(this.emptyResult());
+            ? this.http
+                .get(conf.RMMAPI + url)
+                .pipe(this.attachProgress("data", requestId))
+            : includeData
+            ? of(empty).pipe(
+                rxjsop.tap(() =>
+                  this.completeProductProgress("data", "success", requestId)
+                )
+              )
+            : of(empty);
         const external$ =
           includeCode && externalUrl
-            ? this.http
-                .get(conf.RMMAPI + externalUrl)
-                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
-            : of(this.emptyResult());
+            ? this.http.get(conf.RMMAPI + externalUrl).pipe(
+                this.attachProgress("code", requestId, {
+                  swallowError: true,
+                  fallbackValue: empty,
+                })
+              )
+            : includeCode
+            ? of(empty).pipe(
+                rxjsop.tap(() =>
+                  this.completeProductProgress("code", "success", requestId)
+                )
+              )
+            : of(empty);
+        const papers$ =
+          includePapers && papersUrl
+            ? this.http.get(conf.RMMAPI + papersUrl).pipe(
+                this.attachProgress("papers", requestId, {
+                  swallowError: true,
+                  fallbackValue: empty,
+                })
+              )
+            : includePapers
+            ? of(empty).pipe(
+                rxjsop.tap(() =>
+                  this.completeProductProgress("papers", "success", requestId)
+                )
+              )
+            : of(empty);
         const patents$ =
           includePatents && patentsUrl
             ? this.http
                 .get(conf.RMMAPI + patentsUrl)
-                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
-            : of(this.emptyResult());
+                .pipe(
+                  this.attachProgress("patents", requestId, {
+                    swallowError: true,
+                    fallbackValue: empty,
+                  })
+                )
+            : includePatents
+            ? of(empty).pipe(
+                rxjsop.tap(() =>
+                  this.completeProductProgress("patents", "success", requestId)
+                )
+              )
+            : of(empty);
 
         return forkJoin({
           records: records$,
           external: external$,
+          papers: papers$,
           patents: patents$,
         }).pipe(
-          rxjsop.map(({ records, external, patents }) =>
-            this.combineResults(records, external, patents)
+          rxjsop.map(({ records, external, papers, patents }) =>
+            this.combineResults(records, external, patents, papers)
           )
         );
       }),
       rxjsop.tap((resp) => this.lastSearchResponse$.next(resp)),
       rxjsop.catchError((err) => {
         console.error("Failed to complete search: " + JSON.stringify(err));
+        // Ensure progress reflects failure for the active request.
+        this.completeAllInFlightAsError(requestId, err);
         return throwError(err);
       })
     );
@@ -431,8 +511,9 @@ export class RealSearchService implements SearchService {
     const activeProducts = this.getActiveProductTypes();
     const includeData = activeProducts.includes("data");
     const includeCode = activeProducts.includes("code");
+    const includePapers = activeProducts.includes("papers");
     const includePatents = activeProducts.includes("patents");
-    if (!includeData && !includeCode && !includePatents) {
+    if (!includeData && !includeCode && !includePapers && !includePatents) {
       return of(this.emptyResult());
     }
 
@@ -457,6 +538,15 @@ export class RealSearchService implements SearchService {
           "code"
         )
       : null;
+    const papersUrl = includePapers
+      ? this.buildFacetOnlyUrl(
+          clone,
+          searchTaxonomyKey,
+          filter,
+          maxSize,
+          "papers"
+        )
+      : null;
     const patentsUrl = includePatents
       ? this.buildFacetOnlyUrl(
           clone,
@@ -479,6 +569,12 @@ export class RealSearchService implements SearchService {
                 .get(conf.RMMAPI + externalUrl)
                 .pipe(rxjsop.catchError(() => of(this.emptyResult())))
             : of(this.emptyResult());
+        const papers$ =
+          includePapers && papersUrl
+            ? this.http
+                .get(conf.RMMAPI + papersUrl)
+                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
+            : of(this.emptyResult());
         const patents$ =
           includePatents && patentsUrl
             ? this.http
@@ -488,10 +584,11 @@ export class RealSearchService implements SearchService {
         return forkJoin({
           records: records$,
           external: external$,
+          papers: papers$,
           patents: patents$,
         }).pipe(
-          rxjsop.map(({ records, external, patents }) =>
-            this.combineResults(records, external, patents)
+          rxjsop.map(({ records, external, papers, patents }) =>
+            this.combineResults(records, external, patents, papers)
           )
         );
       }),
@@ -505,7 +602,7 @@ export class RealSearchService implements SearchService {
     searchTaxonomyKey: string,
     filter: string,
     size: number,
-    base: "records" | "code" | "patents" = "records"
+    base: "records" | "code" | "papers" | "patents" = "records"
   ): string {
     let searchPhraseValue = query.freeText
       ? "searchphrase=" + query.freeText.trim()
@@ -537,11 +634,15 @@ export class RealSearchService implements SearchService {
       "include=@type,keyword,topic.tag,contactPoint,components.@type,languages,tags,contact,organization";
     const patentInclude =
       "include=@type,keyword,keywords,topic.tag,contactPoint,assignee,assignees,applicant,applicants,organization,owner,inventor,inventors,tags";
+    const papersInclude =
+      "include=@type,keyword,keywords,tags,subjects,topic.tag,contactPoint,authors,author,organization";
     const recordInclude =
       "include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id";
     const include =
       base === "code"
         ? codeInclude
+        : base === "papers"
+        ? papersInclude
         : base === "patents"
         ? patentInclude
         : recordInclude;
@@ -552,18 +653,32 @@ export class RealSearchService implements SearchService {
   /**
    * Normalize and merge record + external responses into a single response object.
    */
-  private combineResults(primary: any, external?: any, patents?: any) {
+  private combineResults(
+    primary: any,
+    external?: any,
+    patents?: any,
+    papers?: any
+  ) {
     const primaryData = this.extractResultData(primary);
     const externalData = this.normalizeExternalRecords(external, "code");
     const patentData = this.normalizeExternalRecords(patents, "patents");
+    const paperData = this.extractResultData(papers)
+      .map((item) => this.normalizePaperRecord(item))
+      .filter((item) => !!item);
     const combinedTotal =
       this.extractTotalCount(primary, primaryData.length) +
       this.extractTotalCount(external, externalData.length) +
-      this.extractTotalCount(patents, patentData.length);
+      this.extractTotalCount(patents, patentData.length) +
+      this.extractTotalCount(papers, paperData.length);
 
     return {
       ...(primary && typeof primary === "object" ? primary : {}),
-      ResultData: [...primaryData, ...externalData, ...patentData],
+      ResultData: [
+        ...primaryData,
+        ...externalData,
+        ...paperData,
+        ...patentData,
+      ],
       ResultCount: combinedTotal,
       total: combinedTotal,
     };
@@ -770,10 +885,22 @@ export class RealSearchService implements SearchService {
     };
   }
 
+  private normalizePaperRecord(item: any): any | null {
+    if (!item) return null;
+    return {
+      ...item,
+      external: true,
+      source: "papers",
+      ["@type"]: ["Paper"],
+    };
+  }
+
+
   private normalizeCodeTypes(typeField: any, vcs?: string): string[] {
     const types = new Set<string>();
     const add = (val: any) => {
       const v = typeof val === "string" ? val.trim() : "";
+      if (v && v.toLowerCase().startsWith("vcs:")) return;
       if (v) types.add(v);
     };
     if (Array.isArray(typeField)) {
@@ -782,9 +909,6 @@ export class RealSearchService implements SearchService {
       add(typeField);
     }
     types.add("CodeRepository");
-    if (vcs && typeof vcs === "string" && vcs.trim()) {
-      types.add(`vcs:${vcs.trim()}`);
-    }
     return Array.from(types);
   }
 
@@ -807,6 +931,7 @@ export class RealSearchService implements SearchService {
     }
     return Array.from(types);
   }
+
 
   private extractContactName(value: any): string {
     if (!value) return "";
@@ -883,6 +1008,280 @@ export class RealSearchService implements SearchService {
     return Array.from(tokens);
   }
 
+  watchSearchProgress(): Observable<SearchProgressState> {
+    return this.searchProgress$.asObservable();
+  }
+
+  private createInitialProductProgress(key: ProductTypeKey): ProductProgressState {
+    return {
+      key,
+      status: "idle",
+      progress: 0,
+      active: false,
+      error: undefined,
+      updatedAt: Date.now(),
+    };
+  }
+
+  private createInitialProgressState(): SearchProgressState {
+    return {
+      requestId: 0,
+      inFlight: false,
+      globalProgress: 0,
+      activeProducts: [],
+      completedProducts: [],
+      failedProducts: [],
+      products: {
+        data: this.createInitialProductProgress("data"),
+        code: this.createInitialProductProgress("code"),
+        papers: this.createInitialProductProgress("papers"),
+        patents: this.createInitialProductProgress("patents"),
+      },
+    };
+  }
+
+  private resetProgressState(): void {
+    this.clearAllProgressTimers();
+    this.progressRequestId += 1;
+    const next = this.createInitialProgressState();
+    next.requestId = this.progressRequestId;
+    this.searchProgress$.next(next);
+  }
+
+  private beginProgress(activeProducts: ProductTypeKey[]): number {
+    this.clearAllProgressTimers();
+    this.progressRequestId += 1;
+    const requestId = this.progressRequestId;
+    const uniqueActive = Array.from(new Set(activeProducts));
+    const base = this.createInitialProgressState();
+    const now = Date.now();
+    const nextProducts = { ...base.products };
+    uniqueActive.forEach((key) => {
+      const existing = nextProducts[key] || this.createInitialProductProgress(key);
+      nextProducts[key] = {
+        ...existing,
+        active: true,
+        status: "loading",
+        progress: Math.max(existing.progress || 0, 4),
+        error: undefined,
+        updatedAt: now,
+      };
+    });
+    const nextState = this.recomputeProgress({
+      ...base,
+      requestId,
+      activeProducts: uniqueActive,
+      products: nextProducts,
+    });
+    this.searchProgress$.next(nextState);
+    return requestId;
+  }
+
+  private attachProgress<T>(
+    key: ProductTypeKey,
+    requestId: number,
+    options?: { swallowError?: boolean; fallbackValue?: T }
+  ): (source: Observable<T>) => Observable<T> {
+    const swallowError = !!options?.swallowError;
+    const fallbackValue = options?.fallbackValue as T;
+    return (source: Observable<T>) =>
+      defer(() => {
+        this.startProductProgress(key, requestId);
+        return source.pipe(
+          rxjsop.tap({
+            next: () => this.completeProductProgress(key, "success", requestId),
+          }),
+          rxjsop.catchError((err) => {
+            this.completeProductProgress(key, "error", requestId, err);
+            if (swallowError) {
+              return of(fallbackValue);
+            }
+            return throwError(err);
+          })
+        );
+      });
+  }
+
+  private startProductProgress(key: ProductTypeKey, requestId: number): void {
+    const state = this.searchProgress$.getValue();
+    if (state.requestId !== requestId) return;
+    this.clearProgressTimer(key);
+    this.updateProductProgress(key, requestId, (current) => ({
+      ...current,
+      active: true,
+      status: "loading",
+      progress: Math.max(current.progress || 0, 6),
+      error: undefined,
+      updatedAt: Date.now(),
+    }));
+    const cap = 92;
+    const tickMs = 320;
+    this.progressTimers[key] = setInterval(() => {
+      const latest = this.searchProgress$.getValue();
+      if (latest.requestId !== requestId) {
+        this.clearProgressTimer(key);
+        return;
+      }
+      const product = latest.products[key];
+      if (!product || product.status !== "loading") {
+        this.clearProgressTimer(key);
+        return;
+      }
+      const remaining = Math.max(0, cap - product.progress);
+      if (remaining <= 0) {
+        return;
+      }
+      const step = Math.max(0.6, remaining * 0.12);
+      const nextProgress = Math.min(cap, product.progress + step);
+      this.updateProductProgress(key, requestId, (current) => ({
+        ...current,
+        progress: nextProgress,
+        updatedAt: Date.now(),
+      }));
+    }, tickMs);
+  }
+
+  private completeProductProgress(
+    key: ProductTypeKey,
+    status: "success" | "error",
+    requestId: number,
+    error?: any
+  ): void {
+    const state = this.searchProgress$.getValue();
+    if (state.requestId !== requestId) return;
+    this.clearProgressTimer(key);
+    const now = Date.now();
+    const errText = status === "error" ? this.formatProgressError(error) : undefined;
+    const updatedProduct: ProductProgressState = {
+      ...(state.products[key] || this.createInitialProductProgress(key)),
+      key,
+      active: true,
+      status,
+      progress: 100,
+      error: errText,
+      updatedAt: now,
+    };
+    const completedProducts = state.completedProducts.includes(key)
+      ? state.completedProducts
+      : [...state.completedProducts, key];
+    const failedProducts =
+      status === "error"
+        ? state.failedProducts.includes(key)
+          ? state.failedProducts
+          : [...state.failedProducts, key]
+        : state.failedProducts.filter((k) => k !== key);
+    const next = this.recomputeProgress({
+      ...state,
+      completedProducts,
+      failedProducts,
+      products: {
+        ...state.products,
+        [key]: updatedProduct,
+      },
+    });
+    this.searchProgress$.next(next);
+  }
+
+  private completeAllInFlightAsError(requestId: number, error: any): void {
+    const state = this.searchProgress$.getValue();
+    if (state.requestId !== requestId) return;
+    state.activeProducts.forEach((key) => {
+      const product = state.products[key];
+      if (!product || product.status === "loading") {
+        this.completeProductProgress(key, "error", requestId, error);
+      }
+    });
+  }
+
+  private updateProductProgress(
+    key: ProductTypeKey,
+    requestId: number,
+    updater: (current: ProductProgressState) => ProductProgressState
+  ): void {
+    const state = this.searchProgress$.getValue();
+    if (state.requestId !== requestId) return;
+    const current = state.products[key] || this.createInitialProductProgress(key);
+    const updated = updater(current);
+    const next = this.recomputeProgress({
+      ...state,
+      products: {
+        ...state.products,
+        [key]: {
+          ...updated,
+          progress: this.clampProgress(updated.progress),
+        },
+      },
+    });
+    this.searchProgress$.next(next);
+  }
+
+  private recomputeProgress(state: SearchProgressState): SearchProgressState {
+    const active = state.activeProducts || [];
+    if (!active.length) {
+      return {
+        ...state,
+        inFlight: false,
+        globalProgress: 0,
+        completedProducts: [],
+        failedProducts: [],
+      };
+    }
+    const loadingCount = active.reduce((acc, key) => {
+      const product = state.products[key];
+      return acc + (product && product.status === "loading" ? 1 : 0);
+    }, 0);
+    const totalProgress = active.reduce((acc, key) => {
+      const product = state.products[key];
+      return acc + this.clampProgress(product?.progress ?? 0);
+    }, 0);
+    const completedProducts = Array.from(
+      new Set(state.completedProducts.filter((key) => active.includes(key)))
+    );
+    const failedProducts = Array.from(
+      new Set(state.failedProducts.filter((key) => active.includes(key)))
+    );
+    const globalProgress = Math.round(totalProgress / active.length);
+    return {
+      ...state,
+      inFlight: loadingCount > 0,
+      globalProgress: this.clampProgress(globalProgress),
+      completedProducts,
+      failedProducts,
+    };
+  }
+
+  private clampProgress(value: number): number {
+    if (!Number.isFinite(value)) return 0;
+    if (value < 0) return 0;
+    if (value > 100) return 100;
+    return value;
+  }
+
+  private clearProgressTimer(key: ProductTypeKey): void {
+    const timerId = this.progressTimers[key];
+    if (timerId) {
+      clearInterval(timerId);
+    }
+    delete this.progressTimers[key];
+  }
+
+  private clearAllProgressTimers(): void {
+    (Object.keys(this.progressTimers) as ProductTypeKey[]).forEach((key) => {
+      this.clearProgressTimer(key);
+    });
+    this.progressTimers = {};
+  }
+
+  private formatProgressError(err: any): string {
+    if (!err) return "Request failed";
+    const status = err.status || err.statusCode;
+    const text = err.statusText || err.message || "";
+    if (status) {
+      return `${status} ${text}`.trim();
+    }
+    return text || "Request failed";
+  }
+
   watchProductTypes(): Observable<ProductTypeState> {
     return this.productTypes.asObservable();
   }
@@ -894,6 +1293,7 @@ export class RealSearchService implements SearchService {
     });
     this.productTypes.next(next);
     this.persistProductPref(next);
+    this.resetProgressState();
   }
 
   setProductTypeEnabled(type: ProductTypeKey, enabled: boolean): void {
@@ -907,6 +1307,7 @@ export class RealSearchService implements SearchService {
     });
     this.productTypes.next(next);
     this.persistProductPref(next);
+    this.resetProgressState();
   }
 
   getActiveProductTypes(): ProductTypeKey[] {
@@ -926,6 +1327,7 @@ export class RealSearchService implements SearchService {
     const normalized = !!enabled;
     this.externalProducts.next(normalized);
     this.persistExternalPref(normalized);
+    this.resetProgressState();
   }
 
   watchExternalProducts(): Observable<boolean> {

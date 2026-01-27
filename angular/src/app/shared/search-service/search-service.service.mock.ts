@@ -10,7 +10,10 @@ import {
   SearchService,
   ProductTypeState,
   ProductTypeKey,
+  ProductProgressState,
+  SearchProgressState,
   DEFAULT_PRODUCT_TYPES,
+  SearchPhraseOptions,
 } from "./search-service.service";
 import { Router, NavigationExtras } from "@angular/router";
 import { SDPQuery } from "../search-query/query";
@@ -28,6 +31,10 @@ export class MockSearchService implements SearchService {
   private productTypes = new BehaviorSubject<ProductTypeState>({
     ...DEFAULT_PRODUCT_TYPES,
   });
+  private searchProgress$ = new BehaviorSubject<SearchProgressState>(
+    this.createInitialProgressState()
+  );
+  private progressRequestId: number = 0;
 
   /**
    * Creates a new SearchService with the injected Http.
@@ -51,9 +58,29 @@ export class MockSearchService implements SearchService {
     page?: number,
     pageSize?: number,
     sortOrder?: string,
-    filter?: string
+    filter?: string,
+    options?: SearchPhraseOptions
   ): Observable<any> {
     const empty = { ResultData: [], ResultCount: 0, total: 0 };
+    const activeProducts = this.getActiveProductTypes();
+    const forceData = !!options?.forceData;
+    const progressProducts: ProductTypeKey[] = [];
+    if (forceData) {
+      progressProducts.push("data");
+    } else {
+      if (activeProducts.includes("data")) progressProducts.push("data");
+      if (activeProducts.includes("code")) progressProducts.push("code");
+      if (activeProducts.includes("papers")) progressProducts.push("papers");
+      if (activeProducts.includes("patents")) progressProducts.push("patents");
+    }
+    if (!progressProducts.length) {
+      this.resetProgressState();
+      this.lastSearchResponse$.next(empty);
+      return of(empty);
+    }
+    const requestId = this.beginProgress(progressProducts);
+    // Mock completes immediately but still emits a full progress state.
+    this.completeProducts(requestId, progressProducts);
     this.lastSearchResponse$.next(empty);
     return of(empty);
   }
@@ -200,6 +227,10 @@ export class MockSearchService implements SearchService {
     return this.lastSearchResponse$.asObservable();
   }
 
+  watchSearchProgress(): Observable<SearchProgressState> {
+    return this.searchProgress$.asObservable();
+  }
+
   fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
     // For mock just reuse sample result
     return of({ ResultData: [], ResultCount: 0, total: 0 });
@@ -207,10 +238,134 @@ export class MockSearchService implements SearchService {
 
   setExternalProducts(enabled: boolean): void {
     this.externalProducts.next(!!enabled);
+    this.resetProgressState();
   }
 
   watchExternalProducts(): Observable<boolean> {
     return this.externalProducts.asObservable();
+  }
+
+  private createInitialProductProgress(key: ProductTypeKey): ProductProgressState {
+    return {
+      key,
+      status: "idle",
+      progress: 0,
+      active: false,
+      error: undefined,
+      updatedAt: Date.now(),
+    };
+  }
+
+  private createInitialProgressState(): SearchProgressState {
+    return {
+      requestId: 0,
+      inFlight: false,
+      globalProgress: 0,
+      activeProducts: [],
+      completedProducts: [],
+      failedProducts: [],
+      products: {
+        data: this.createInitialProductProgress("data"),
+        code: this.createInitialProductProgress("code"),
+        papers: this.createInitialProductProgress("papers"),
+        patents: this.createInitialProductProgress("patents"),
+      },
+    };
+  }
+
+  private resetProgressState(): void {
+    this.progressRequestId += 1;
+    const next = this.createInitialProgressState();
+    next.requestId = this.progressRequestId;
+    this.searchProgress$.next(next);
+  }
+
+  private beginProgress(activeProducts: ProductTypeKey[]): number {
+    this.progressRequestId += 1;
+    const requestId = this.progressRequestId;
+    const uniqueActive = Array.from(new Set(activeProducts));
+    const base = this.createInitialProgressState();
+    const now = Date.now();
+    const nextProducts = { ...base.products };
+    uniqueActive.forEach((key) => {
+      const existing = nextProducts[key] || this.createInitialProductProgress(key);
+      nextProducts[key] = {
+        ...existing,
+        active: true,
+        status: "loading",
+        progress: 12,
+        error: undefined,
+        updatedAt: now,
+      };
+    });
+    const next = this.recomputeProgress({
+      ...base,
+      requestId,
+      activeProducts: uniqueActive,
+      products: nextProducts,
+    });
+    this.searchProgress$.next(next);
+    return requestId;
+  }
+
+  private completeProducts(requestId: number, products: ProductTypeKey[]): void {
+    const state = this.searchProgress$.getValue();
+    if (state.requestId !== requestId) return;
+    const now = Date.now();
+    const unique = Array.from(new Set(products));
+    const nextProducts = { ...state.products };
+    unique.forEach((key) => {
+      const existing = nextProducts[key] || this.createInitialProductProgress(key);
+      nextProducts[key] = {
+        ...existing,
+        active: true,
+        status: "success",
+        progress: 100,
+        error: undefined,
+        updatedAt: now,
+      };
+    });
+    const next = this.recomputeProgress({
+      ...state,
+      completedProducts: unique,
+      failedProducts: [],
+      products: nextProducts,
+    });
+    this.searchProgress$.next(next);
+  }
+
+  private recomputeProgress(state: SearchProgressState): SearchProgressState {
+    const active = state.activeProducts || [];
+    if (!active.length) {
+      return {
+        ...state,
+        inFlight: false,
+        globalProgress: 0,
+        completedProducts: [],
+        failedProducts: [],
+      };
+    }
+    const loadingCount = active.reduce((acc, key) => {
+      const product = state.products[key];
+      return acc + (product && product.status === "loading" ? 1 : 0);
+    }, 0);
+    const totalProgress = active.reduce((acc, key) => {
+      const product = state.products[key];
+      return acc + this.clampProgress(product?.progress ?? 0);
+    }, 0);
+    const globalProgress = Math.round(totalProgress / active.length);
+    return {
+      ...state,
+      inFlight: loadingCount > 0,
+      globalProgress: this.clampProgress(globalProgress),
+    };
+  }
+
+  private clampProgress(value: number): number {
+    if (!Number.isFinite(value)) return 0;
+    if (value < 0) return 0;
+    if (value > 100) return 100;
+    return value;
   }
 
   watchProductTypes(): Observable<ProductTypeState> {
@@ -220,12 +375,14 @@ export class MockSearchService implements SearchService {
   setProductTypes(state: Partial<ProductTypeState>): void {
     const next = { ...this.productTypes.getValue(), ...state };
     this.productTypes.next(next);
+    this.resetProgressState();
   }
 
   setProductTypeEnabled(type: ProductTypeKey, enabled: boolean): void {
     const current = this.productTypes.getValue();
     if (!(type in current)) return;
     this.productTypes.next({ ...current, [type]: !!enabled });
+    this.resetProgressState();
   }
 
   getActiveProductTypes(): ProductTypeKey[] {

@@ -111,6 +111,32 @@ describe('SearchService', () => {
     expect(patent.landingPage).toBe('http://patents.test/US123');
   });
 
+  it('should combine primary and paper results without normalization', () => {
+    const service: any = TestBed.inject(RealSearchService);
+    const paperRecord = {
+      title: 'Quantum Metrology Advances',
+      abstract: 'A review of quantum sensing methods',
+      doi: '10.1234/example.doi',
+      authors: ['NIST Quantum Group'],
+      keywords: ['Quantum', 'Metrology']
+    };
+    const merged = service.combineResults(
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [paperRecord], ResultCount: 1 }
+    );
+    expect(merged.ResultCount).toBe(1);
+    expect(merged.total).toBe(1);
+    expect(merged.ResultData.length).toBe(1);
+    expect(merged.ResultData[0]).toEqual({
+      ...paperRecord,
+      external: true,
+      source: 'papers',
+      '@type': ['Paper'],
+    });
+  });
+
   it('should honor product type toggles when computing active products', () => {
     const service = TestBed.inject(RealSearchService);
     service.setProductTypes({ data: true, code: true });

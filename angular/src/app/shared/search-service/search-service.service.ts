@@ -8,6 +8,31 @@ export interface ProductTypeState {
   patents: boolean;
   papers: boolean;
 }
+export type ProductProgressStatus =
+  | "idle"
+  | "loading"
+  | "success"
+  | "error";
+export interface ProductProgressState {
+  key: ProductTypeKey;
+  status: ProductProgressStatus;
+  progress: number; // 0-100
+  active: boolean;
+  error?: string;
+  updatedAt: number;
+}
+export interface SearchProgressState {
+  requestId: number;
+  inFlight: boolean;
+  globalProgress: number; // 0-100
+  activeProducts: ProductTypeKey[];
+  completedProducts: ProductTypeKey[];
+  failedProducts: ProductTypeKey[];
+  products: Record<ProductTypeKey, ProductProgressState>;
+}
+export interface SearchPhraseOptions {
+  forceData?: boolean;
+}
 export const DEFAULT_PRODUCT_TYPES: ProductTypeState = {
   data: true,
   code: true,
@@ -21,7 +46,16 @@ export interface SearchService {
    * Returns an Observable for the HTTP GET request for the JSON resource.
    * @return {string[]} The Observable for the HTTP request.
    */
-  searchPhrase(query: SDPQuery, searchTaxonomyKey: string, queryAdvSearch?: string, page?: number, pageSize?: number, sortOrder?:string, filter?:string): Observable<any>;
+  searchPhrase(
+    query: SDPQuery,
+    searchTaxonomyKey: string,
+    queryAdvSearch?: string,
+    page?: number,
+    pageSize?: number,
+    sortOrder?:string,
+    filter?:string,
+    options?: SearchPhraseOptions
+  ): Observable<any>;
 //   simpleSearch(page: number, pageSize: number, sortOrder:string): Observable<any>;
 
   /**
@@ -63,6 +97,11 @@ export interface SearchService {
    */
   setExternalProducts(enabled: boolean): void;
   watchExternalProducts(): Observable<boolean>;
+
+  /**
+   * Watch progress for the current search request, including per-product and global status.
+   */
+  watchSearchProgress(): Observable<SearchProgressState>;
 
   /**
    * Watch and control the active product categories included in search (data/code/papers/patents).

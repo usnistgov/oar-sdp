@@ -157,6 +157,22 @@
         >
           <i class="pi pi-info-circle"></i>
         </span>
+
+        <div
+          class="search-progress"
+          [class.search-progress--visible]="globalProgressVisible"
+          [class.search-progress--error]="hasProgressFailures()"
+          role="progressbar"
+          aria-label="Search progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="globalProgress"
+        >
+          <div
+            class="search-progress__fill"
+            [style.width.%]="globalProgress"
+          ></div>
+        </div>
       </div>
 
       <div
@@ -177,11 +193,33 @@
             class="product-type-chip"
             *ngFor="let product of visibleProductTypes"
             [class.product-type-chip--active]="isProductTypeActive(product.key)"
+            [class.product-type-chip--error]="
+              shouldShowProductProgress(product.key) &&
+              getProductProgressStatus(product.key) === 'error'
+            "
             (click)="onProductTypeToggle(product)"
             [attr.aria-pressed]="isProductTypeActive(product.key)"
           >
-            <i [ngClass]="product.icon" aria-hidden="true"></i>
-            <span class="product-type-chip__label">{{ product.label }}</span>
+            <span class="product-type-chip__main">
+              <i [ngClass]="product.icon" aria-hidden="true"></i>
+              <span class="product-type-chip__label">{{ product.label }}</span>
+            </span>
+            <span
+              class="product-type-chip__progress"
+              [class.product-type-chip__progress--visible]="
+                shouldShowProductProgress(product.key)
+              "
+            >
+              <span class="product-type-chip__progress-track">
+                <span
+                  class="product-type-chip__progress-fill"
+                  [class.product-type-chip__progress-fill--error]="
+                    getProductProgressStatus(product.key) === 'error'
+                  "
+                  [style.width.%]="getProductProgress(product.key)"
+                ></span>
+              </span>
+            </span>
           </button>
         </div>
       </div>
@@ -277,7 +315,7 @@
   >
     <div class="external-info">
       <p class="external-info__lead">
-        Include open-source projects and patents alongside NIST resources. Filters and counts will blend them into your results.
+        Include open-source projects, patents, and scholarly papers alongside NIST resources. Filters and counts will blend them into your results.
       </p>
       <div class="external-info__pills">
         <span class="external-pill">
@@ -290,7 +328,7 @@
         </span>
         <span class="external-pill">
           <i class="pi pi-file"></i>
-          Scholarly papers (soon)
+          Scholarly papers
         </span>
         <span class="external-pill">
           <i class="pi pi-filter"></i>

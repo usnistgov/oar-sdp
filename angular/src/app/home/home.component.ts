@@ -757,7 +757,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     const filter = current.filter ?? feed.filter ?? "@type=Dataset";
 
     const sub = this.searchService
-      .searchPhrase(query, "", undefined, 1, pageSize, sortOrder, filter)
+      .searchPhrase(query, "", undefined, 1, pageSize, sortOrder, filter, {
+        forceData: true,
+      })
       .subscribe({
         next: (response) => {
           const items = response?.ResultData || [];

@@ -583,7 +583,7 @@ export class ResultsComponent implements OnInit {
     if (!normalized) return false;
     if (normalized === "coderepository") return true;
     if (normalized.startsWith("patent")) return true;
-    return normalized.startsWith("vcs:");
+    return normalized === "paper";
   }
 
   /** Remove a single filter segment and re-run search without full reset */
@@ -854,6 +854,7 @@ export class ResultsComponent implements OnInit {
       resultItem &&
       (resultItem.external ||
         resultItem.source === "code" ||
+        resultItem.source === "papers" ||
         resultItem.source === "patents")
     );
   }

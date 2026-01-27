@@ -246,7 +246,7 @@ body .p-highlight {
 .search-input-group {
   width: min(1320px, 96vw);
   margin: 2rem auto 0;
-  padding: 0.25rem 0.4rem;
+  padding: 0.35rem 0.4rem;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(0, 0, 0, 0.25);
@@ -255,6 +255,11 @@ body .p-highlight {
   align-items: stretch;
   position: relative;
   z-index: 2;
+}
+
+.search-input-group > :not(.search-progress) {
+  position: relative;
+  z-index: 1;
 }
 
 .search-input-group--external-on {
@@ -295,12 +300,23 @@ body .p-highlight {
   background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
   border-radius: 999px;
-  padding: 0.35rem 0.9rem;
+  padding: 0.4rem 0.95rem;
   font-weight: 700;
   font-size: 0.9rem;
   letter-spacing: 0.01em;
   backdrop-filter: blur(4px);
   transition: all 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-type-chip__main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  position: relative;
+  z-index: 1;
 }
 
 .product-type-chip i {
@@ -335,8 +351,86 @@ body .p-highlight {
   opacity: 1;
 }
 
+.product-type-chip--error {
+  border-color: rgba(248, 113, 113, 0.95);
+  box-shadow: 0 12px 28px rgba(248, 113, 113, 0.28);
+}
+
 .product-type-chip__label {
   white-space: nowrap;
+}
+
+.product-type-chip__progress {
+  position: absolute;
+  inset: 2px;
+  border-radius: 999px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 420ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.product-type-chip__progress--visible {
+  opacity: 0.22;
+}
+
+.product-type-chip__progress-track {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  display: block;
+}
+
+.product-type-chip--active .product-type-chip__progress-track {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.product-type-chip__progress-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #60a5fa);
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.45);
+  transition: width 320ms ease;
+}
+
+.product-type-chip__progress-fill--error {
+  background: linear-gradient(90deg, #f97316, #ef4444);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.55);
+}
+
+.search-progress {
+  position: absolute;
+  inset: 4px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 480ms ease;
+  z-index: 0;
+}
+
+.search-progress--visible {
+  opacity: 0.22;
+}
+
+.search-progress__fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22d3ee, #3b82f6);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.4);
+  transition: width 360ms ease;
+}
+
+.search-progress--error .search-progress__fill {
+  background: linear-gradient(90deg, #fb7185, #ef4444);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
 }
 
 /* Toast styling */

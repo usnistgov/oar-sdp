@@ -17,6 +17,8 @@ import {
   SEARCH_SERVICE,
   ProductTypeState,
   ProductTypeKey,
+  ProductProgressState,
+  SearchProgressState,
   DEFAULT_PRODUCT_TYPES,
 } from "../shared/search-service";
 import { Router, NavigationExtras } from "@angular/router";
@@ -138,11 +140,24 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ];
   private productTypesSub?: Subscription;
   private externalToggleSub?: Subscription;
+  private progressSub?: Subscription;
+  private readonly progressFadeMs = 1800;
+  private progressRequestId: number = 0;
+  private globalProgressTimer: any = null;
+  private productProgressTimers: Partial<Record<ProductTypeKey, any>> = {};
+  globalProgressVisible: boolean = false;
+  productProgressVisibility: Record<ProductTypeKey, boolean> = {
+    data: false,
+    code: false,
+    papers: false,
+    patents: false,
+  };
   externalHelperText: string =
-    "Toggle to include external products like open-source code and patents (papers coming soon). Results and filters will blend with NIST data.";
+    "Toggle to include external products like open-source code, patents, and scholarly papers. Results and filters will blend with NIST data.";
   externalInfoVisible: boolean = false;
   examplesDialogVisible = false;
   toastKey = "productToast";
+  searchProgress: SearchProgressState = this.createInitialProgressState();
   placeHolderText: string[] = [
     "Artificial Intelligence",
     "Kinetics database",
@@ -307,6 +322,13 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         this.includeExternalProducts = enabled;
       });
 
+    this.progressSub = this.searchService
+      .watchSearchProgress()
+      .subscribe((state) => {
+        this.searchProgress = state || this.createInitialProgressState();
+        this.updateProgressVisibility(this.searchProgress);
+      });
+
     this.getTaxonomySuggestions();
   }
 
@@ -373,8 +395,189 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     return this.productTypeOptions;
   }
 
+  private createInitialProductProgress(key: ProductTypeKey): ProductProgressState {
+    return {
+      key,
+      status: "idle",
+      progress: 0,
+      active: false,
+      error: undefined,
+      updatedAt: Date.now(),
+    };
+  }
+
+  private createInitialProgressState(): SearchProgressState {
+    return {
+      requestId: 0,
+      inFlight: false,
+      globalProgress: 0,
+      activeProducts: [],
+      completedProducts: [],
+      failedProducts: [],
+      products: {
+        data: this.createInitialProductProgress("data"),
+        code: this.createInitialProductProgress("code"),
+        papers: this.createInitialProductProgress("papers"),
+        patents: this.createInitialProductProgress("patents"),
+      },
+    };
+  }
+
   isProductTypeActive(key: ProductTypeKey): boolean {
     return !!this.productTypes && !!this.productTypes[key];
+  }
+
+  get globalProgress(): number {
+    return this.searchProgress?.globalProgress ?? 0;
+  }
+
+  hasProgressFailures(): boolean {
+    return (this.searchProgress?.failedProducts?.length ?? 0) > 0;
+  }
+
+  private getProductProgressState(key: ProductTypeKey): ProductProgressState {
+    return (
+      (this.searchProgress?.products && this.searchProgress.products[key]) ||
+      this.createInitialProductProgress(key)
+    );
+  }
+
+  getProductProgress(key: ProductTypeKey): number {
+    return this.getProductProgressState(key).progress;
+  }
+
+  getProductProgressStatus(key: ProductTypeKey): ProductProgressState["status"] {
+    return this.getProductProgressState(key).status;
+  }
+
+  isProductActiveInProgress(key: ProductTypeKey): boolean {
+    return (this.searchProgress?.activeProducts || []).includes(key);
+  }
+
+  shouldShowProductProgress(key: ProductTypeKey): boolean {
+    return !!this.productProgressVisibility[key];
+  }
+
+  private updateProgressVisibility(state: SearchProgressState) {
+    const requestId = state?.requestId ?? 0;
+    const requestChanged = requestId !== this.progressRequestId;
+    if (requestChanged) {
+      this.clearAllProgressTimers();
+      this.progressRequestId = requestId;
+    }
+
+    const activeProducts = state?.activeProducts || [];
+    if (!activeProducts.length) {
+      this.setGlobalProgressVisible(false);
+      this.setAllProductProgressVisible(false);
+      return;
+    }
+
+    if (state?.inFlight) {
+      this.setGlobalProgressVisible(true, requestId, false);
+    } else {
+      this.setGlobalProgressVisible(true, requestId, true);
+    }
+
+    const allKeys: ProductTypeKey[] = ["data", "code", "papers", "patents"];
+    allKeys.forEach((key) => {
+      if (!activeProducts.includes(key)) {
+        this.setProductProgressVisible(key, false);
+        return;
+      }
+      const product = this.getProductProgressState(key);
+      if (product.status === "loading") {
+        this.setProductProgressVisible(key, true, requestId, false);
+        return;
+      }
+      if (product.status === "success" || product.status === "error") {
+        this.setProductProgressVisible(key, true, requestId, true);
+        return;
+      }
+      this.setProductProgressVisible(key, false);
+    });
+  }
+
+  private setGlobalProgressVisible(
+    visible: boolean,
+    requestId?: number,
+    autoHide?: boolean
+  ) {
+    if (!visible) {
+      this.clearGlobalProgressTimer();
+      this.globalProgressVisible = false;
+      return;
+    }
+    this.globalProgressVisible = true;
+    this.clearGlobalProgressTimer();
+    if (autoHide && requestId) {
+      this.globalProgressTimer = setTimeout(() => {
+        if (this.progressRequestId === requestId) {
+          this.globalProgressVisible = false;
+        }
+      }, this.progressFadeMs);
+    }
+  }
+
+  private setProductProgressVisible(
+    key: ProductTypeKey,
+    visible: boolean,
+    requestId?: number,
+    autoHide?: boolean
+  ) {
+    if (!visible) {
+      this.clearProductProgressTimer(key);
+      this.productProgressVisibility[key] = false;
+      return;
+    }
+    this.productProgressVisibility[key] = true;
+    this.clearProductProgressTimer(key);
+    if (autoHide && requestId) {
+      this.productProgressTimers[key] = setTimeout(() => {
+        if (this.progressRequestId === requestId) {
+          this.productProgressVisibility[key] = false;
+        }
+      }, this.progressFadeMs);
+    }
+  }
+
+  private setAllProductProgressVisible(visible: boolean) {
+    (Object.keys(this.productProgressVisibility) as ProductTypeKey[]).forEach(
+      (key) => {
+        this.productProgressVisibility[key] = visible;
+      }
+    );
+    if (!visible) {
+      this.clearAllProductProgressTimers();
+    }
+  }
+
+  private clearGlobalProgressTimer() {
+    if (this.globalProgressTimer) {
+      clearTimeout(this.globalProgressTimer);
+      this.globalProgressTimer = null;
+    }
+  }
+
+  private clearProductProgressTimer(key: ProductTypeKey) {
+    const timerId = this.productProgressTimers[key];
+    if (timerId) {
+      clearTimeout(timerId);
+      delete this.productProgressTimers[key];
+    }
+  }
+
+  private clearAllProductProgressTimers() {
+    (Object.keys(this.productProgressTimers) as ProductTypeKey[]).forEach(
+      (key) => {
+        this.clearProductProgressTimer(key);
+      }
+    );
+  }
+
+  private clearAllProgressTimers() {
+    this.clearGlobalProgressTimer();
+    this.clearAllProductProgressTimers();
   }
 
   onProductTypeToggle(option: ProductTypeOption) {
@@ -815,5 +1018,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.productTypesSub?.unsubscribe();
     this.externalToggleSub?.unsubscribe();
+    this.progressSub?.unsubscribe();
+    this.clearAllProgressTimers();
   }
 }
