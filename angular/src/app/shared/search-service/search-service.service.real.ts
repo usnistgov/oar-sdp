@@ -8,6 +8,7 @@ import {
   BehaviorSubject,
   forkJoin,
   defer,
+  combineLatest,
 } from "rxjs";
 import * as rxjsop from "rxjs/operators";
 import { EMPTY } from "rxjs";
@@ -256,6 +257,10 @@ export class RealSearchService implements SearchService {
     return this.appConfig.getConfig().pipe(
       rxjsop.mergeMap((conf) => {
         const empty = this.emptyResult();
+        const hasRecordsRequest = includeData && !!url;
+        const hasCodeRequest = includeCode && !!externalUrl;
+        const hasPapersRequest = includePapers && !!papersUrl;
+        const hasPatentsRequest = includePatents && !!patentsUrl;
         const records$ =
           includeData && url
             ? this.http
@@ -316,11 +321,25 @@ export class RealSearchService implements SearchService {
               )
             : of(empty);
 
-        return forkJoin({
-          records: records$,
-          external: external$,
-          papers: papers$,
-          patents: patents$,
+        const primaryKey: "records" | "external" | "patents" | "papers" =
+          hasRecordsRequest
+            ? "records"
+            : hasCodeRequest
+            ? "external"
+            : hasPatentsRequest
+            ? "patents"
+            : "papers";
+
+        const wrap = (
+          key: "records" | "external" | "papers" | "patents",
+          source: Observable<any>
+        ) => (key === primaryKey ? source : source.pipe(rxjsop.startWith(empty)));
+
+        return combineLatest({
+          records: wrap("records", records$),
+          external: wrap("external", external$),
+          papers: wrap("papers", papers$),
+          patents: wrap("patents", patents$),
         }).pipe(
           rxjsop.map(({ records, external, papers, patents }) =>
             this.combineResults(records, external, patents, papers)
@@ -1287,13 +1306,18 @@ export class RealSearchService implements SearchService {
   }
 
   setProductTypes(state: Partial<ProductTypeState>): void {
+    const current = this.productTypes.getValue();
     const next = this.normalizeProductState({
-      ...this.productTypes.getValue(),
+      ...current,
       ...state,
     });
+    if (_.isEqual(current, next)) {
+      return;
+    }
     this.productTypes.next(next);
     this.persistProductPref(next);
     this.resetProgressState();
+    this.syncProductQueryParams();
   }
 
   setProductTypeEnabled(type: ProductTypeKey, enabled: boolean): void {
@@ -1305,9 +1329,13 @@ export class RealSearchService implements SearchService {
       ...current,
       [type]: !!enabled,
     });
+    if (_.isEqual(current, next)) {
+      return;
+    }
     this.productTypes.next(next);
     this.persistProductPref(next);
     this.resetProgressState();
+    this.syncProductQueryParams();
   }
 
   getActiveProductTypes(): ProductTypeKey[] {
@@ -1325,9 +1353,13 @@ export class RealSearchService implements SearchService {
 
   setExternalProducts(enabled: boolean): void {
     const normalized = !!enabled;
+    if (this.externalProducts.getValue() === normalized) {
+      return;
+    }
     this.externalProducts.next(normalized);
     this.persistExternalPref(normalized);
     this.resetProgressState();
+    this.syncProductQueryParams();
   }
 
   watchExternalProducts(): Observable<boolean> {
@@ -1350,6 +1382,41 @@ export class RealSearchService implements SearchService {
     } catch (_e) {
       // ignore
     }
+  }
+
+  private syncProductQueryParams(): void {
+    const currentUrl = this.router.url || "";
+    if (!currentUrl.startsWith("/search")) {
+      return;
+    }
+    const tree = this.router.parseUrl(currentUrl);
+    const currentParams = tree.queryParams || {};
+    const activeProducts = this.getActiveProductTypes();
+    const nextParams: Record<string, any> = { ...currentParams };
+
+    if (activeProducts.length) {
+      nextParams.products = activeProducts.join(",");
+    } else {
+      delete nextParams.products;
+    }
+
+    if (this.externalProducts.getValue()) {
+      nextParams.external = "true";
+    } else {
+      delete nextParams.external;
+    }
+
+    const normalize = (value: any) =>
+      typeof value === "undefined" ? "" : String(value);
+    if (
+      normalize(currentParams.products) === normalize(nextParams.products) &&
+      normalize(currentParams.external) === normalize(nextParams.external)
+    ) {
+      return;
+    }
+
+    tree.queryParams = nextParams;
+    this.router.navigateByUrl(tree, { replaceUrl: true });
   }
 
   private normalizeProductState(

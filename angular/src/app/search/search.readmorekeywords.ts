@@ -50,26 +50,47 @@ export class ReadMoreKeywordsComponent implements OnInit {
   }
 
   determineView() {
-    let keywordsArray: string[];
+    let keywordsArray: string[] = [];
+    const raw = this.text;
 
-    if (Array.isArray(this.text) && typeof this.text[0] === "string" && this.text[0].includes(";")) {
-      keywordsArray = this.text[0].split("; ");
-    } else if (typeof this.text === "string") {
-      keywordsArray = this.text.split("; ");
-    } else {
-      keywordsArray = this.text as string[];
+    if (Array.isArray(raw)) {
+      if (
+        raw.length === 1 &&
+        typeof raw[0] === "string" &&
+        raw[0].includes(";")
+      ) {
+        keywordsArray = raw[0]
+          .split(";")
+          .map((value) => value.trim())
+          .filter((value) => !!value);
+      } else {
+        keywordsArray = raw
+          .filter((value) => typeof value === "string")
+          .map((value) => String(value).trim())
+          .filter((value) => !!value);
+      }
+    } else if (typeof raw === "string") {
+      keywordsArray = raw
+        .split(";")
+        .map((value) => value.trim())
+        .filter((value) => !!value);
+    }
+
+    if (!keywordsArray.length) {
+      this.currentKeywords = [];
+      this.hideToggle = true;
+      return;
     }
 
     if (keywordsArray.length <= this.maxKeywords) {
       this.currentKeywords = keywordsArray;
       this.hideToggle = true;
-    } else {
-      this.hideToggle = false;
-      if (this.isCollapsed) {
-        this.currentKeywords = keywordsArray.slice(0, this.maxKeywords);
-      } else {
-        this.currentKeywords = keywordsArray;
-      }
+      return;
     }
+
+    this.hideToggle = false;
+    this.currentKeywords = this.isCollapsed
+      ? keywordsArray.slice(0, this.maxKeywords)
+      : keywordsArray;
   }
 }
