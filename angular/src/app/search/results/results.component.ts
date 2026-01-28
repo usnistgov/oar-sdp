@@ -13,6 +13,7 @@ import {
   SearchService,
   SEARCH_SERVICE,
   ProductTypeState,
+  SearchProgressState,
 } from "../../shared/search-service";
 import * as _ from "lodash-es";
 import { SearchfieldsListService } from "../../shared/index";
@@ -72,6 +73,7 @@ export class ResultsComponent implements OnInit {
   searchSubscription: Subscription = new Subscription();
   externalToggleSubscription: Subscription = new Subscription();
   productTypeSubscription: Subscription = new Subscription();
+  progressSubscription: Subscription = new Subscription();
   inited: boolean = false;
   dataReady: boolean = false;
   // startupGuard ensures that during the initial bootstrap (hard page refresh scenario)
@@ -89,6 +91,7 @@ export class ResultsComponent implements OnInit {
   private fieldsReady: boolean = false;
   private lastProductTypes: ProductTypeState | null = null;
   private externalProductsEnabled: boolean = false;
+  searchInFlight: boolean = false;
 
   pagerConfig = {
     totalItems: 0,
@@ -304,6 +307,12 @@ export class ResultsComponent implements OnInit {
           "product-toggle"
         );
       });
+
+    this.progressSubscription = this.searchService
+      .watchSearchProgress()
+      .subscribe((state: SearchProgressState) => {
+        this.searchInFlight = !!state?.inFlight;
+      });
   }
 
   /**
@@ -317,6 +326,7 @@ export class ResultsComponent implements OnInit {
     if (this.externalToggleSubscription)
       this.externalToggleSubscription.unsubscribe();
     if (this.productTypeSubscription) this.productTypeSubscription.unsubscribe();
+    if (this.progressSubscription) this.progressSubscription.unsubscribe();
   }
 
   /**
@@ -443,6 +453,9 @@ export class ResultsComponent implements OnInit {
     this.currentPage = page ? page : 1;
     // Show skeletons
     this.dataReady = false;
+    // Clear prior zero-result state during loading
+    this.isFilterZero = false;
+    this.activeFilterTags = [];
 
     this.searchService.setQueryValue(this.searchValue, "", "");
     let lSearchValue = this.searchValue

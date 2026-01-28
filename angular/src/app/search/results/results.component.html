@@ -64,7 +64,11 @@
   <!-- Handle no result (plain, no active filters) -->
   <div
     *ngIf="
-      resultStatus == RESULT_STATUS.success && totalItems == 0 && !isFilterZero
+      dataReady &&
+      !searchInFlight &&
+      resultStatus == RESULT_STATUS.success &&
+      totalItems == 0 &&
+      !isFilterZero
     "
     class="no-results-wrapper"
   >
@@ -109,7 +113,11 @@
   <!-- Handle filter-constrained zero result -->
   <div
     *ngIf="
-      resultStatus == RESULT_STATUS.success && totalItems == 0 && isFilterZero
+      dataReady &&
+      !searchInFlight &&
+      resultStatus == RESULT_STATUS.success &&
+      totalItems == 0 &&
+      isFilterZero
     "
     class="no-results-wrapper"
   >
@@ -174,7 +182,7 @@
   <!-- Handle Loading -->
   <div
     *ngIf="
-      !dataReady &&
+      ( !dataReady || (searchInFlight && totalItems === 0) ) &&
       resultStatus != RESULT_STATUS.userError &&
       resultStatus != RESULT_STATUS.sysError
     "

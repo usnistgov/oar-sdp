@@ -193,6 +193,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Track last outbound filter string to suppress only exact echoes
   private lastOutboundFilterString: string | null = null;
+  private lastSeenFilterString: string = "NoFilter";
   private filterWatcherSub: any = null;
 
   /**
@@ -238,8 +239,10 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Sync external filter string -> selection state (chips / removal / reset)
     this.filterWatcherSub = this.searchService.watchFilterString().subscribe(str => {
+      const next = str || "NoFilter";
+      this.lastSeenFilterString = next;
       if(this.lastOutboundFilterString === str) return; // ignore self echo
-      this.applyFilterStringToSelections(str);
+      this.applyFilterStringToSelections(next);
     });
 
     // External toggle changes should reset facet aggregation to avoid stale filters
@@ -480,6 +483,8 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
     }
     this.authors = this.collectAuthors(data);
+    // Re-apply current filter selections after rebuilding trees.
+    this.applyFilterStringToSelections(this.lastSeenFilterString);
     if (finalPass) {
       this.setFacetLoadingComplete();
     }
