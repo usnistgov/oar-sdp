@@ -8,7 +8,7 @@ import {
   BehaviorSubject,
   forkJoin,
   defer,
-  combineLatest,
+  merge,
 } from "rxjs";
 import * as rxjsop from "rxjs/operators";
 import { EMPTY } from "rxjs";
@@ -321,26 +321,60 @@ export class RealSearchService implements SearchService {
               )
             : of(empty);
 
-        const primaryKey: "records" | "external" | "patents" | "papers" =
-          hasRecordsRequest
-            ? "records"
-            : hasCodeRequest
-            ? "external"
-            : hasPatentsRequest
-            ? "patents"
-            : "papers";
+        const streams: Array<
+          Observable<{
+            key: "records" | "external" | "papers" | "patents";
+            value: any;
+          }>
+        > = [];
+        if (hasRecordsRequest) {
+          streams.push(
+            records$.pipe(
+              rxjsop.map((value) => ({ key: "records" as const, value }))
+            )
+          );
+        }
+        if (hasCodeRequest) {
+          streams.push(
+            external$.pipe(
+              rxjsop.map((value) => ({ key: "external" as const, value }))
+            )
+          );
+        }
+        if (hasPapersRequest) {
+          streams.push(
+            papers$.pipe(
+              rxjsop.map((value) => ({ key: "papers" as const, value }))
+            )
+          );
+        }
+        if (hasPatentsRequest) {
+          streams.push(
+            patents$.pipe(
+              rxjsop.map((value) => ({ key: "patents" as const, value }))
+            )
+          );
+        }
 
-        const wrap = (
-          key: "records" | "external" | "papers" | "patents",
-          source: Observable<any>
-        ) => (key === primaryKey ? source : source.pipe(rxjsop.startWith(empty)));
+        if (!streams.length) {
+          return of(empty);
+        }
 
-        return combineLatest({
-          records: wrap("records", records$),
-          external: wrap("external", external$),
-          papers: wrap("papers", papers$),
-          patents: wrap("patents", patents$),
-        }).pipe(
+        const initial = {
+          records: empty,
+          external: empty,
+          papers: empty,
+          patents: empty,
+        };
+
+        return merge(...streams).pipe(
+          rxjsop.scan(
+            (acc, update) => ({
+              ...acc,
+              [update.key]: update.value,
+            }),
+            initial
+          ),
           rxjsop.map(({ records, external, papers, patents }) =>
             this.combineResults(records, external, patents, papers, filter)
           )

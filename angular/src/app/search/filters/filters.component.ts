@@ -137,6 +137,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   private externalToggleSubscription: any = null;
   private productTypeSubscription: any = null;
   private lastProductTypes: ProductTypeState | null = null;
+  private lastResponseTotal: number = 0;
 
   filterStyle = {
     width: "100%",
@@ -233,8 +234,10 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     // Subscribe to unified search response stream. When results arrive, build filters.
     this.searchResponseSub = this.searchService.watchSearchResponse().subscribe((resp:any)=>{
       if(!resp || !resp.ResultData) return;
+      const total = this.extractResponseTotal(resp);
+      this.lastResponseTotal = total;
       // Reuse existing success handler; it expects array.
-      this.onSuccess(resp.ResultData);
+      this.onSuccess(resp.ResultData, total);
     });
 
     // Sync external filter string -> selection state (chips / removal / reset)
@@ -263,7 +266,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resetFacetAggregationState();
         // Rebuild facet UI from latest results (if available) so filters don't stall when all products were off.
         if (this.searchResults) {
-          this.onSuccess(this.searchResults);
+          this.onSuccess(this.searchResults, this.lastResponseTotal);
         }
       });
   }
@@ -402,7 +405,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
    * If Search is successful, populate list of keywords themes and authors
    * @param searchResults
    */
-  onSuccess(searchResults: any[]) {
+  onSuccess(searchResults: any[], totalCount?: number) {
     this.resultStatus = this.RESULT_STATUS.success;
     this.searchResults = searchResults;
     this.searchResultsError = [];
@@ -411,14 +414,26 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     // If we've already built full counts, do nothing.
     if (this.fullFacetCountsComplete) return;
-  // Build initial facet counts immediately BUT keep skeletons showing (finalPass = false)
-  // so that we do NOT display partial first-page-only facet counts while expanded fetch runs.
-  this.buildFacetCounts(this.searchResults, false);
+    const resolvedTotal =
+      typeof totalCount === "number" && totalCount > 0
+        ? totalCount
+        : this.searchResults.length;
+    const needsExpandedFetch = resolvedTotal > this.searchResults.length;
+    if (needsExpandedFetch) {
+      // Build initial facet counts immediately BUT keep skeletons showing (finalPass = false)
+      // so that we do NOT display partial first-page-only facet counts while expanded fetch runs.
+      this.buildFacetCounts(this.searchResults, false);
+    } else {
+      // No expanded fetch needed; finalize immediately.
+      this.buildFacetCounts(this.searchResults, true);
+      this.fullFacetCountsComplete = true;
+      this.fullFacetCountsInFlight = false;
+      return;
+    }
     // Attempt expanded fetch only in runtime (skip if already in-flight or no search service method)
     if (this.fullFacetCountsInFlight) return;
     this.fullFacetCountsInFlight = true;
-    const MAX_FULL_FACET_SIZE = 5000; // safety upper bound
-    const targetSize = MAX_FULL_FACET_SIZE;
+    const targetSize = resolvedTotal;
     const lSearchValue = this.searchValue ? this.searchValue.replace(/  +/g, ' ') : '';
     const q = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
     // Mark loading for possible UI skeletons
@@ -495,6 +510,16 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.recordHasLoading = false;
     this.themeLoading = false;
     this.resourceTypeLoading = false;
+  }
+
+  private extractResponseTotal(resp: any): number {
+    if (!resp || typeof resp !== "object") return 0;
+    const total =
+      resp.ResultCount ??
+      resp.total ??
+      resp.totalItems ??
+      (Array.isArray(resp.ResultData) ? resp.ResultData.length : 0);
+    return typeof total === "number" && total >= 0 ? total : 0;
   }
 
   /**
