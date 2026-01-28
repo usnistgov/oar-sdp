@@ -342,7 +342,7 @@ export class RealSearchService implements SearchService {
           patents: wrap("patents", patents$),
         }).pipe(
           rxjsop.map(({ records, external, papers, patents }) =>
-            this.combineResults(records, external, patents, papers)
+            this.combineResults(records, external, patents, papers, filter)
           )
         );
       }),
@@ -607,7 +607,7 @@ export class RealSearchService implements SearchService {
           patents: patents$,
         }).pipe(
           rxjsop.map(({ records, external, papers, patents }) =>
-            this.combineResults(records, external, patents, papers)
+            this.combineResults(records, external, patents, papers, filter)
           )
         );
       }),
@@ -676,22 +676,40 @@ export class RealSearchService implements SearchService {
     primary: any,
     external?: any,
     patents?: any,
-    papers?: any
+    papers?: any,
+    filter?: string
   ) {
-    const primaryData = this.extractResultData(primary);
-    const externalData = this.normalizeExternalRecords(external, "code");
-    const patentData = this.normalizeExternalRecords(patents, "patents");
-    const paperData = this.extractResultData(papers)
-      .map((item) => this.normalizePaperRecord(item))
-      .filter((item) => !!item);
+    const typeTokens = this.extractTypeFilterTokens(filter);
+    const allowed =
+      typeTokens.length > 0
+        ? this.getAllowedSourcesForTypeTokens(typeTokens)
+        : null;
+
+    const allowData = allowed ? allowed.data : true;
+    const allowCode = allowed ? allowed.code : true;
+    const allowPapers = allowed ? allowed.papers : true;
+    const allowPatents = allowed ? allowed.patents : true;
+
+    const primaryData = allowData ? this.extractResultData(primary) : [];
+    const externalData = allowCode
+      ? this.normalizeExternalRecords(external, "code")
+      : [];
+    const patentData = allowPatents
+      ? this.normalizeExternalRecords(patents, "patents")
+      : [];
+    const paperData = allowPapers
+      ? this.extractResultData(papers)
+          .map((item) => this.normalizePaperRecord(item))
+          .filter((item) => !!item)
+      : [];
     const combinedTotal =
-      this.extractTotalCount(primary, primaryData.length) +
-      this.extractTotalCount(external, externalData.length) +
-      this.extractTotalCount(patents, patentData.length) +
-      this.extractTotalCount(papers, paperData.length);
+      (allowData ? this.extractTotalCount(primary, primaryData.length) : 0) +
+      (allowCode ? this.extractTotalCount(external, externalData.length) : 0) +
+      (allowPatents ? this.extractTotalCount(patents, patentData.length) : 0) +
+      (allowPapers ? this.extractTotalCount(papers, paperData.length) : 0);
 
     return {
-      ...(primary && typeof primary === "object" ? primary : {}),
+      ...(allowData && primary && typeof primary === "object" ? primary : {}),
       ResultData: [
         ...primaryData,
         ...externalData,
@@ -700,6 +718,51 @@ export class RealSearchService implements SearchService {
       ],
       ResultCount: combinedTotal,
       total: combinedTotal,
+    };
+  }
+
+  private extractTypeFilterTokens(filter?: string): string[] {
+    if (!filter || filter === "NoFilter") return [];
+    const segment = filter
+      .split("&")
+      .find((part) => part.trim().startsWith("@type="));
+    if (!segment) return [];
+    const [, raw] = segment.split("=");
+    if (!raw) return [];
+    const tokens = raw
+      .split(",")
+      .map((value) => value.trim())
+      .filter((value) => !!value)
+      .map((value) => value.replace(/\s/g, "").toLowerCase());
+    return Array.from(new Set(tokens));
+  }
+
+  private getAllowedSourcesForTypeTokens(tokens: string[]): ProductTypeState {
+    let allowData = false;
+    let allowCode = false;
+    let allowPapers = false;
+    let allowPatents = false;
+    tokens.forEach((token) => {
+      if (!token) return;
+      if (token === "coderepository") {
+        allowCode = true;
+        return;
+      }
+      if (token === "paper") {
+        allowPapers = true;
+        return;
+      }
+      if (token.startsWith("patent")) {
+        allowPatents = true;
+        return;
+      }
+      allowData = true;
+    });
+    return {
+      data: allowData,
+      code: allowCode,
+      papers: allowPapers,
+      patents: allowPatents,
     };
   }
 
