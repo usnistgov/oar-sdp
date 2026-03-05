@@ -30,24 +30,39 @@
           </a>
       </div>
 
-        <!-- Footer links line #1 -->
-        <div id="block-menu-menu-footer-menu" *ngIf="footerLinks01"
-        class="block menu--footer-menu first even block--menu block--menu-menu-footer-menu" role="navigation">
-            <ul class="menu">
-                <li *ngFor="let link of footerLinks01; let i = index" [ngClass]="getLinkClass(i, footerLinks01)">
-                    <a [href]="link.url" target="_blank" rel="noopener" class="menu__link">{{link.title}} </a>
-                </li>
-            </ul>
-        </div>
+        <div class="footer-links-and-seal">
+            <div class="footer-links">
+                <!-- Footer links line #1 -->
+                <div id="block-menu-menu-footer-menu" *ngIf="footerLinks01"
+                class="block menu--footer-menu first even block--menu block--menu-menu-footer-menu" role="navigation">
+                    <ul class="menu">
+                        <li *ngFor="let link of footerLinks01; let i = index" [ngClass]="getLinkClass(i, footerLinks01)">
+                            <a [href]="link.url" target="_blank" rel="noopener" class="menu__link">{{link.title}} </a>
+                        </li>
+                    </ul>
+                </div>
 
-        <!-- Footer links line #2 -->
-        <div id="block-menu-menu-footer-menu-3" *ngIf="footerLinks02"
-        class="block menu--footer-menu last even block--menu block--menu-menu-footer-menu-3" role="navigation">
-            <ul class="menu">
-                <li *ngFor="let link of footerLinks02; let i = index" [ngClass]="getLinkClass(i, footerLinks02)">
-                    <a [href]="link.url" target="_blank" rel="noopener" class="menu__link">{{link.title}} </a>
-                </li>
-            </ul>
+                <!-- Footer links line #2 -->
+                <div id="block-menu-menu-footer-menu-3" *ngIf="footerLinks02"
+                class="block menu--footer-menu last even block--menu block--menu-menu-footer-menu-3" role="navigation">
+                    <ul class="menu">
+                        <li *ngFor="let link of footerLinks02; let i = index" [ngClass]="getLinkClass(i, footerLinks02)">
+                            <a [href]="link.url" target="_blank" rel="noopener" class="menu__link">{{link.title}} </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="core-trust-seal">
+                <a
+                  href="https://www.coretrustseal.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="CoreTrustSeal">
+                    <img
+                      src="assets/images/core-trust-seal-logo.png"
+                      alt="CoreTrustSeal logo">
+                </a>
+            </div>
         </div>
     </div>
 </div>
