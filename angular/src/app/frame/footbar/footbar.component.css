@@ -420,8 +420,7 @@ display: block;
 
 /* LINKS */
 .footerlinks {
-    grid-column: 2;
-    max-width: calc(100% - 108px);
+    width: 100%;
     margin: 0 auto;
     text-align: center;
     line-height: 1.8;
@@ -459,4 +458,12 @@ display: block;
     max-height: 108px;
     width: auto;
     height: auto;
+}
+
+.spaceholder {
+    grid-column: 1;
+    max-width: 108px;
+    max-height: 108px;
+    width: 108px;
+    height: 108px;
 }
