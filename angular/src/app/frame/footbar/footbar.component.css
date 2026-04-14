@@ -3,6 +3,7 @@
   background: #000;
   color: white;
   position: relative;
+  --footer-right-offset: 1em;
 }
 
 .footer__inner {
@@ -120,7 +121,52 @@ ul, menu, dir {
 
 #footer .social-links {
   float: right;
-  margin-right: 1em;
+  margin-right: var(--footer-right-offset);
+}
+
+.footer-links-and-seal {
+  clear: both;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 1rem;
+}
+
+.footer-links {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.footer-links .menu--footer-menu {
+  clear: none;
+}
+
+.footer-links .menu--footer-menu ul.menu {
+  text-align: left;
+}
+
+.core-trust-seal {
+  flex: 0 0 auto;
+  text-align: right;
+  margin-right: var(--footer-right-offset);
+}
+
+.core-trust-seal a {
+  display: inline-block;
+}
+
+.core-trust-seal img {
+  height: clamp(72px, 6vw, 108px);
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .footer-links-and-seal {
+    align-items: center;
+  }
 }
 
 .social-btn--large {
@@ -356,4 +402,68 @@ display: block;
 }
 .x-icon:hover {
   background-color: lightgray;
+}
+
+.footerlinks {
+    width: 100%;
+    padding: 16px 20px;
+    color: white;
+    background: #000;
+    box-sizing: border-box;
+}
+
+.footerlinks-content {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+/* LINKS */
+.footerlinks {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 1.8;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    /* critical: prevent overlap with logo */
+    padding-right: 20px;
+}
+
+/* Links */
+.footerlinks a {
+    text-decoration: none;
+    /* color: #333; */
+    margin: 0 6px;
+    white-space: nowrap;
+}
+
+.separator {
+    margin: 0 4px;
+    color: #999;
+}
+
+/* LOGO */
+.ctslogo {
+    grid-column: 3;
+    justify-self: end;
+}
+
+/* Dynamic logo sizing */
+.ctslogo img {
+    max-width: 108px;
+    max-height: 108px;
+    width: auto;
+    height: auto;
+}
+
+.spaceholder {
+    grid-column: 1;
+    max-width: 108px;
+    max-height: 108px;
+    width: 108px;
+    height: 108px;
 }

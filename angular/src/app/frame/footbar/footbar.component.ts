@@ -16,9 +16,6 @@ export class FootbarComponent implements OnInit {
     // Footer link line #1
     footerLinks01: any[];
 
-    // Footer link line #2
-    footerLinks02: any[];
-
     constructor(public gaService: GoogleAnalyticsService) { 
         // For some reason, footerlinks does not have "default" field in unit test
         // So we have to use following condition to make both production and unit test work. 
@@ -30,7 +27,6 @@ export class FootbarComponent implements OnInit {
         // Add footerLinks to the condition to avoid unit test error
         this.socialMediaList = this.footerLinks.socialMediaList;
         this.footerLinks01 = this.footerLinks.footerLinks01;
-        this.footerLinks02 = this.footerLinks.footerLinks02;
     }
 
     ngOnInit() {
