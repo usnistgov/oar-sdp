@@ -403,3 +403,60 @@ display: block;
 .x-icon:hover {
   background-color: lightgray;
 }
+
+.footerlinks {
+    width: 100%;
+    padding: 16px 20px;
+    color: white;
+    background: #000;
+    box-sizing: border-box;
+}
+
+.footerlinks-content {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+/* LINKS */
+.footerlinks {
+    grid-column: 2;
+    max-width: calc(100% - 108px);
+    margin: 0 auto;
+    text-align: center;
+    line-height: 1.8;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    /* critical: prevent overlap with logo */
+    padding-right: 20px;
+}
+
+/* Links */
+.footerlinks a {
+    text-decoration: none;
+    /* color: #333; */
+    margin: 0 6px;
+    white-space: nowrap;
+}
+
+.separator {
+    margin: 0 4px;
+    color: #999;
+}
+
+/* LOGO */
+.ctslogo {
+    grid-column: 3;
+    justify-self: end;
+}
+
+/* Dynamic logo sizing */
+.ctslogo img {
+    max-width: 108px;
+    max-height: 108px;
+    width: auto;
+    height: auto;
+}
