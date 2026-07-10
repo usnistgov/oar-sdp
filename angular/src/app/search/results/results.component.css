@@ -302,6 +302,125 @@
   color: black;
 }
 
+/* ── Per-product-type panel colours ───────────────────────────────────── */
+
+/* Code Repositories – deep navy */
+.result-type-code ::ng-deep .p-panel-header {
+  background-color: #1d3a6e;
+  border-color: #1d3a6e;
+}
+.result-type-code ::ng-deep .p-panel-content {
+  border-color: #1d3a6e;
+}
+.result-type-code .anchor-button {
+  background-color: #1d3a6e;
+  border-color: #1d3a6e;
+}
+.result-type-code .anchor-button:hover {
+  background-color: #2a528f;
+  border-color: #2a528f;
+  color: #fff;
+}
+.result-type-code .header-container .anchor-button {
+  border-color: #1d3a6e;
+  color: #1d3a6e;
+  background-color: #fff;
+}
+.result-type-code .header-container .anchor-button:hover {
+  background-color: #e8eef7;
+}
+
+/* Papers – forest green */
+.result-type-papers ::ng-deep .p-panel-header {
+  background-color: #1a5e37;
+  border-color: #1a5e37;
+}
+.result-type-papers ::ng-deep .p-panel-content {
+  border-color: #1a5e37;
+}
+.result-type-papers .anchor-button {
+  background-color: #1a5e37;
+  border-color: #1a5e37;
+}
+.result-type-papers .anchor-button:hover {
+  background-color: #237a49;
+  border-color: #237a49;
+  color: #fff;
+}
+.result-type-papers .header-container .anchor-button {
+  border-color: #1a5e37;
+  color: #1a5e37;
+  background-color: #fff;
+}
+.result-type-papers .header-container .anchor-button:hover {
+  background-color: #e5f2eb;
+}
+
+/* Patents – dark amber / burnt sienna */
+.result-type-patents ::ng-deep .p-panel-header {
+  background-color: #7c2d12;
+  border-color: #7c2d12;
+}
+.result-type-patents ::ng-deep .p-panel-content {
+  border-color: #7c2d12;
+}
+.result-type-patents .anchor-button {
+  background-color: #7c2d12;
+  border-color: #7c2d12;
+}
+.result-type-patents .anchor-button:hover {
+  background-color: #9c3a18;
+  border-color: #9c3a18;
+  color: #fff;
+}
+.result-type-patents .header-container .anchor-button {
+  border-color: #7c2d12;
+  color: #7c2d12;
+  background-color: #fff;
+}
+.result-type-patents .header-container .anchor-button:hover {
+  background-color: #f5e8e4;
+}
+
+/* ── End per-type colours ─────────────────────────────────────────────── */
+
+/* ── Title button: restore white outline in colored-header cards ─────────── */
+.result-type-code ::ng-deep .p-panel-header .anchor-button,
+.result-type-papers ::ng-deep .p-panel-header .anchor-button,
+.result-type-patents ::ng-deep .p-panel-header .anchor-button {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.result-type-code ::ng-deep .p-panel-header .anchor-button:hover,
+.result-type-papers ::ng-deep .p-panel-header .anchor-button:hover,
+.result-type-patents ::ng-deep .p-panel-header .anchor-button:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Type badge (top-right corner of panel header) ─────────────────────── */
+:host ::ng-deep .type-badge.p-tag {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.67rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.22em 0.75em;
+  border-radius: 4px;
+}
+
+/* ── Keyword pills ──────────────────────────────────────────────────────── */
+:host ::ng-deep .keywords .p-tag {
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  padding: 0.25em 0.75em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
 .anchor-button {
   border: 1px solid white; /* Set border color to black */
   color: white; /* Set text color to black */
@@ -390,9 +509,31 @@ a .custom-black-button .p-button .p-button-icon {
   background-color: red !important;
 }
 
-::ng-deep .p-tag.p-tag-custom {
-  background-color: black;
-  color: white;
+/* "N records found" summary pill shown at the top-left of the results toolbar.
+   Black rounded pill with a green accent icon to tie into the filter theme. */
+.records-found {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 18px;
+  background: #000;
+  border-radius: 22px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.records-found__icon {
+  font-size: 15px;
+  color: #4ade80;
+}
+.records-found__count {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.records-found__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d1d5db;
 }
 
 .customize-button {

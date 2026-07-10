@@ -213,18 +213,12 @@
       <!-- Records Found -->
       <div style="flex: 1; display: flex; justify-content: flex-start">
         <span
-          [ngClass]="{ 'p-tag': true, 'p-tag-custom': true }"
-          styleClass="p-tag-custom"
-          style="margin-top: 10px"
+          class="records-found"
           *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0"
-          icon="pi pi-list"
         >
-          <span
-            class="border-circle w-2rem h-2rem flex align-items-center justify-content-center"
-          >
-            {{ totalItems }}
-          </span>
-          <span class="ml-2 font-medium mr-3"> records found </span>
+          <i class="pi pi-list records-found__icon" aria-hidden="true"></i>
+          <span class="records-found__count">{{ totalItems | number }}</span>
+          <span class="records-found__label">records found</span>
         </span>
       </div>
 
@@ -274,6 +268,26 @@
       </div>
     </div>
 
+    <!-- Active filter chips — shown above results when filters are applied -->
+    <div
+      *ngIf="resultStatus == RESULT_STATUS.success && totalItems > 0 && activeFilterTags.length > 0"
+      style="display: flex; flex-wrap: wrap; gap: 0.4em; margin: 0.4em 0 0.1em 0; padding: 0 4px"
+    >
+      <span
+        *ngFor="let tag of activeFilterTags; let i = index"
+        class="filter-chip"
+      >
+        <span class="chip-label" [title]="tag.label">{{ tag.label }}</span>
+        <button
+          class="chip-remove"
+          (click)="removeFilterTag(i)"
+          aria-label="Remove filter"
+        >
+          ✕
+        </button>
+      </span>
+    </div>
+
     <div
       *ngIf="queryStringWarning"
       style="
@@ -294,10 +308,9 @@
       "
     >
       <div class="mt-4">
-        <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4">
+        <div *ngFor="let resultItem of searchResults" class="mb-4 mr-4" [ngClass]="getResultTypeClass(resultItem)">
           <p-panel>
             <ng-template pTemplate="header">
-              <!-- Option 2 -->
               <a
                 [href]="getResultLink(resultItem)"
                 target="_blank"
@@ -307,12 +320,11 @@
                 size="small"
                 [icon]="getResultIcon(resultItem)"
                 class="anchor-button"
-                [ngClass]="{ 'external-link': isExternalResult(resultItem) }"
               >
               </a>
             </ng-template>
             <ng-template pTemplate="icons">
-              <p-tag>{{ getPrimaryType(resultItem) }}</p-tag>
+              <p-tag styleClass="type-badge">{{ getPrimaryType(resultItem) }}</p-tag>
             </ng-template>
 
             <div
@@ -465,16 +477,8 @@
                     target="_blank"
                     rel="noopener"
                     [ngStyle]="{ float: customizeViewPosition() }"
-                    [label]="
-                      isExternalResult(resultItem) ? 'View Project' : 'Access Data'
-                    "
-                    [icon]="
-                      isExternalResult(resultItem)
-                        ? 'pi pi-share-alt'
-                        : isPdrLink(getResultLink(resultItem))
-                        ? 'pi pi-database'
-                        : 'pi pi-external-link'
-                    "
+                    [label]="getResultActionLabel(resultItem)"
+                    [icon]="getResultActionIcon(resultItem)"
                     (click)="
                       gaService.gaTrackEvent(
                         'outbound',

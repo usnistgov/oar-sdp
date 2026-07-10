@@ -77,7 +77,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   // Distinguish plain zero-results (no matches to query) vs filter-constrained zero.
   lastZeroResults: boolean = false; // must be public for template binding
   lastFilterZero: boolean = false; // must be public for template binding
-  activeFilterTags: string[] = []; // retained only for legacy binding; no longer used after refactor
   mobileFiltersOpen: boolean = false;
   activeFilterCount: number = 0;
   totalItems: number = 0;
@@ -92,11 +91,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   onZeroResultsMeta(meta: {
     zero: boolean;
     filterZero: boolean;
-    tags?: string[];
   }) {
     this.lastZeroResults = meta.zero;
     this.lastFilterZero = meta.filterZero;
-    this.activeFilterTags = meta.tags || [];
     this.applyZeroResultLayout();
   }
   applyZeroResultLayout() {
@@ -175,14 +172,12 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.unlockBodyScroll();
     }
 
-    // Once the mobile mode changed, reload the page to get search result display correctly.
     if (this.mobileMode != prevMode) {
       if (this.mobileMode) {
         // entering mobile mode; keep drawer closed by default
         this.mobileFiltersOpen = false;
         this.unlockBodyScroll();
       }
-      window.location.reload();
     }
 
     this.updateWidth();

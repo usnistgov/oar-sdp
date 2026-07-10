@@ -71,62 +71,47 @@
         *ngIf="
           isActive &&
           !searching &&
-          fullFacetCountsComplete &&
           !recordHasLoading &&
           !themeLoading &&
           !resourceTypeLoading
         "
       >
         <!-- NIST Research topics with skeleton -->
-        <div class="bottom-line compact-filter topics-block">
+        <div
+          class="bottom-line compact-filter topics-block"
+          [class.topics-block--with-show-more]="showMoreLink && !themeLoading"
+        >
           <ng-container *ngIf="!themeLoading; else themeSkeleton">
-            <div class="filter-checkbox">
-              <div
-                [@expand]="
-                  nodeExpanded
-                    ? showMoreLink
-                      ? 'collapsed'
-                      : 'expanded'
-                    : 'closed'
-                "
-              >
-                <div [ngClass]="{ 'topics-scroll': showMoreLink }">
-                  <p-tree
-                    id="themes"
-                    [value]="themesTree"
-                    selectionMode="checkbox"
-                    [style]="researchTopicStyle"
-                    [(selection)]="selectedThemesNode"
-                    (onNodeUnselect)="filterResults()"
-                    (onNodeSelect)="filterResults()"
-                    (onNodeExpand)="showMoreLink = true; nodeExpanded = true"
-                    (onNodeCollapse)="nodeExpanded = false"
-                  >
-                    <ng-template let-node pTemplate="default">
-                      <div
-                        class="text-nowrap"
-                        style="color: black"
-                        data-toggle="tooltip"
-                        [title]="filterTooltip(node)"
-                      >
-                        <span
-                          *ngIf="node.label.split('-')[1] != ''; else header1"
-                        >
-                          {{ node.label.split("-")[0] }}&nbsp;
-                          <p-tag severity="success">
-                            <span>{{ node.label.split("-")[1] }}</span>
-                          </p-tag>
-                        </span>
-                        <ng-template #header1>
-                          <b style="font-size: 16px"
-                            >{{ node.label.split("-")[0] }}&nbsp;</b
-                          >
-                        </ng-template>
-                      </div>
-                    </ng-template>
-                  </p-tree>
-                </div>
+            <div class="facet-cards">
+              <!-- Section header -->
+              <div class="facet-cards__header">
+                <i class="pi pi-tags facet-cards__header-icon" aria-hidden="true"></i>
+                <span class="facet-cards__title">Research Topics</span>
               </div>
+
+              <!-- Clickable topic cards (3 per row on desktop, responsive down to 1) -->
+              <div *ngIf="themesWithCount.length > 0; else topicsEmpty" class="facet-card-grid">
+                <button
+                  type="button"
+                  class="facet-card"
+                  *ngFor="let node of visibleTopics; trackBy: trackFacet"
+                  [class.selected]="isFacetSelected(node, selectedThemesNode)"
+                  [attr.aria-pressed]="isFacetSelected(node, selectedThemesNode)"
+                  [title]="node.data"
+                  (click)="toggleFacet(node, selectedThemesNode)"
+                >
+                  <i class="pi facet-card__icon" [ngClass]="topicIcon(node.data)" aria-hidden="true"></i>
+                  <span class="facet-card__name">{{ node.data }}</span>
+                  <span class="facet-card__count">{{ facetCount(node) }}</span>
+                  <i class="pi pi-check-circle facet-card__check" aria-hidden="true"></i>
+                </button>
+              </div>
+              <ng-template #topicsEmpty>
+                <div class="facet-empty" role="status">
+                  <i class="pi pi-inbox facet-empty__icon" aria-hidden="true"></i>
+                  <span class="facet-empty__text">No research topics match the current products and filters.</span>
+                </div>
+              </ng-template>
             </div>
           </ng-container>
           <ng-template #themeSkeleton>
@@ -137,85 +122,51 @@
               <div class="facet-skel line w30"></div>
             </div>
           </ng-template>
-          <div
-            *ngIf="
-              !themeLoading &&
-              themesTree &&
-              themesTree.length &&
-              themesTree[0]?.children.length > 5
-            "
-            class="facet-more-center"
-          >
-            <button
-              class="facet-more-btn dark"
-              (click)="toggleExpand(showMoreLink)"
-              type="button"
-              aria-label="Toggle additional research topics"
-            >
-              <span
-                class="chev"
-                [class.expanded]="!showMoreLink"
-                aria-hidden="true"
-              >
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  focusable="false"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1.2 3.2L5 7l3.8-3.8-.9-.9L5 5.3 2.1 2.3z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </span>
-              <span *ngIf="showMoreLink">Show More</span>
-              <span *ngIf="!showMoreLink">Show Less</span>
+          <!-- Show More / Show Less button — straddles the divider line below -->
+          <div *ngIf="showMoreLink && !themeLoading" class="topics-show-more-wrap">
+            <button class="topics-show-more-btn" (click)="toggleTopicsExpanded()">
+              <i class="pi" [ngClass]="topicsExpanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+              {{ topicsExpanded ? 'Show Less' : 'Show More' }}
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Removed invalid theme check: 'theme' property does not exist. If conditional display needed later, add a proper flag. -->
-      <div style="width: 100%" *ngIf="false"></div>
-
       <div style="width: 100%">
-        <div [@expandOptions]="MoreOptionsDisplayed ? 'collapsed' : 'expanded'">
+        <div>
           <!-- Resource type with skeleton -->
           <div class="bottom-line compact-filter">
             <ng-container
               *ngIf="!resourceTypeLoading; else resourceTypeSkeleton"
             >
-              <p-tree
-                [value]="resourceTypeTree"
-                selectionMode="checkbox"
-                [style]="ResourceTypeStyle"
-                [(selection)]="selectedResourceTypeNode"
-                (onNodeUnselect)="filterResults()"
-                (onNodeSelect)="filterResults()"
-                (onNodeExpand)="showMoreLink = true; nodeExpanded = true"
-                (onNodeCollapse)="nodeExpanded = false"
-              >
-                <ng-template let-node pTemplate="default">
-                  <div
-                    class="text-nowrap"
-                    style="color: black"
-                    data-toggle="tooltip"
-                    [title]="filterTooltip(node)"
+              <div class="facet-cards">
+                <div class="facet-cards__header">
+                  <i class="pi pi-folder-open facet-cards__header-icon" aria-hidden="true"></i>
+                  <span class="facet-cards__title">Type of Resource</span>
+                </div>
+                <div *ngIf="resourceTypesWithCount.length > 0; else resourceTypeEmpty" class="facet-card-grid">
+                  <button
+                    type="button"
+                    class="facet-card"
+                    *ngFor="let node of resourceTypesWithCount; trackBy: trackFacet"
+                    [class.selected]="isFacetSelected(node, selectedResourceTypeNode)"
+                    [attr.aria-pressed]="isFacetSelected(node, selectedResourceTypeNode)"
+                    [title]="node.data"
+                    (click)="toggleFacet(node, selectedResourceTypeNode)"
                   >
-                    <span *ngIf="node.label.split('-')[1] != ''; else header1">
-                      {{ node.label.split("-")[0] }}&nbsp;
-                      <p-tag severity="success">
-                        <span>{{ node.label.split("-")[1] }}</span>
-                      </p-tag>
-                    </span>
-                    <ng-template #header1>
-                      <b>{{ node.label.split("-")[0] }}&nbsp;</b>
-                    </ng-template>
+                    <i class="pi facet-card__icon" [ngClass]="resourceTypeIcon(node.data)" aria-hidden="true"></i>
+                    <span class="facet-card__name">{{ node.data }}</span>
+                    <span class="facet-card__count">{{ facetCount(node) }}</span>
+                    <i class="pi pi-check-circle facet-card__check" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <ng-template #resourceTypeEmpty>
+                  <div class="facet-empty" role="status">
+                    <i class="pi pi-inbox facet-empty__icon" aria-hidden="true"></i>
+                    <span class="facet-empty__text">No resource types match the current products and filters.</span>
                   </div>
                 </ng-template>
-              </p-tree>
+              </div>
             </ng-container>
             <ng-template #resourceTypeSkeleton>
               <div class="facet-skeleton-group">
@@ -235,37 +186,28 @@
                   else recordHasSkeleton
                 "
               >
-                <p-tree
-                  [value]="componentsTree"
-                  selectionMode="checkbox"
-                  [style]="researchTopicStyle"
-                  [(selection)]="selectedComponentsNode"
-                  (onNodeUnselect)="filterResults()"
-                  (onNodeSelect)="filterResults()"
-                  (onNodeExpand)="showMoreLink = true; nodeExpanded = true"
-                  (onNodeCollapse)="nodeExpanded = false"
-                >
-                  <ng-template let-node pTemplate="default">
-                    <div
-                      class="text-nowrap"
-                      style="color: black"
-                      data-toggle="tooltip"
-                      [title]="filterTooltip(node)"
+                <div class="facet-cards">
+                  <div class="facet-cards__header">
+                    <i class="pi pi-list facet-cards__header-icon" aria-hidden="true"></i>
+                    <span class="facet-cards__title">Record Has</span>
+                  </div>
+                  <div class="facet-card-grid">
+                    <button
+                      type="button"
+                      class="facet-card"
+                      *ngFor="let node of componentsWithCount; trackBy: trackFacet"
+                      [class.selected]="isFacetSelected(node, selectedComponentsNode)"
+                      [attr.aria-pressed]="isFacetSelected(node, selectedComponentsNode)"
+                      [title]="node.data"
+                      (click)="toggleFacet(node, selectedComponentsNode)"
                     >
-                      <span
-                        *ngIf="node.label.split('-')[1] != ''; else header1"
-                      >
-                        {{ node.label.split("-")[0] }}&nbsp;
-                        <p-tag severity="success">
-                          <span>{{ node.label.split("-")[1] }}</span>
-                        </p-tag>
-                      </span>
-                      <ng-template #header1>
-                        <b>{{ node.label.split("-")[0] }}&nbsp;</b>
-                      </ng-template>
-                    </div>
-                  </ng-template>
-                </p-tree>
+                      <i class="pi facet-card__icon" [ngClass]="componentIcon(node.data)" aria-hidden="true"></i>
+                      <span class="facet-card__name">{{ node.data }}</span>
+                      <span class="facet-card__count">{{ facetCount(node) }}</span>
+                      <i class="pi pi-check-circle facet-card__check" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
               </ng-container>
               <ng-template #recordHasSkeleton>
                 <div class="facet-skeleton-group">
@@ -280,10 +222,11 @@
         </div>
 
         <!-- Authors and Contributors (with skeleton) -->
-        <div style="margin-top: -15px">
-          <ng-container *ngIf="!themeLoading; else authorsSkeleton">
-            <div class="lbl-filter">
-              <label style="color: black"><b>Authors and Contributors</b></label>
+        <div class="filter-field-block bottom-line">
+          <ng-container *ngIf="authorsReady; else authorsSkeleton">
+            <div class="filter-field-header">
+              <i class="pi pi-users facet-cards__header-icon" aria-hidden="true"></i>
+              <span class="facet-cards__title">Authors and Contributors</span>
             </div>
             <div class="filter-input p-fluid">
               <p-autoComplete
@@ -326,10 +269,11 @@
         </div>
 
         <!-- Keywords (with skeleton) -->
-        <div style="margin-top: -15px; margin-bottom: 30px">
+        <div class="filter-field-block filter-field-block--last">
           <ng-container *ngIf="!themeLoading; else keywordSkeleton">
-            <div class="lbl-filter">
-              <label style="color: black"><b>Keyword</b></label>
+            <div class="filter-field-header">
+              <i class="pi pi-key facet-cards__header-icon" aria-hidden="true"></i>
+              <span class="facet-cards__title">Keyword</span>
             </div>
             <div class="filter-input p-fluid">
               <p-autoComplete
@@ -344,7 +288,7 @@
                 [multiple]="true"
                 (onSelect)="filterResults()"
                 (onUnselect)="filterResults()"
-                [minLength]="1"
+                [minLength]="3"
                 [maxlength]="30"
                 [style]="filterStyle"
                 [inputStyle]="{ width: '100%', color: 'black' }"
@@ -380,6 +324,8 @@
         </div>
       </div>
       <!-- /width:100% wrapper -->
+
+
     </div>
     <!-- /padding wrapper -->
   </div>
@@ -418,13 +364,5 @@
     <i class="faa faa-angle-double-down" aria-hidden="true"></i>
   </div>
 
-  <!-- Optional placeholder while full facet counts load -->
-  <div
-    *ngIf="isActive && !searching && !fullFacetCountsComplete"
-    class="facet-loading-placeholder"
-  >
-    <span class="spinner-dot" aria-hidden="true"></span>
-    <span class="text">Loading filters…</span>
-  </div>
 </div>
 <!-- /root filterExpand container -->

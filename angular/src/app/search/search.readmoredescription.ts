@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from "@angular/core";
 
 @Component({
   selector: "read-more-description",
@@ -17,19 +17,30 @@ import { Component, Input, OnInit } from "@angular/core";
   `,
   styles: [
     `
-      :host ::ng-deep .small-button {
+      :host ::ng-deep .small-button.p-button {
+        background-color: transparent;
+        border: 1px solid #cbd5e1;
+        border-radius: 999px;
+        color: #475569;
+        font-size: 0.72rem;
+        font-weight: 500;
+        height: auto;
+        padding: 0.25em 0.75em;
+        margin-left: 4px;
+        line-height: 1.4;
+        box-shadow: none;
         position: relative;
         top: 3px;
-        right: -5px;
-        font-size: .9em;
-        height: 1.5em;
-        padding: 10px 5px;
-        line-height: 1em;
+      }
+      :host ::ng-deep .small-button.p-button:hover {
+        background-color: #f1f5f9;
+        border-color: #94a3b8;
+        color: #1e293b;
       }
     `,
   ],
 })
-export class ReadMoreDescriptionComponent implements OnInit {
+export class ReadMoreDescriptionComponent implements OnInit, OnChanges {
   @Input() text: string;
   @Input() maxLength: number = 300;
 
@@ -41,13 +52,20 @@ export class ReadMoreDescriptionComponent implements OnInit {
     this.determineView();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.text) {
+      this.isCollapsed = true;
+      this.determineView();
+    }
+  }
+
   toggleView() {
     this.isCollapsed = !this.isCollapsed;
     this.determineView();
   }
 
   determineView() {
-    const textStr = String(this.text); // Ensure text is treated as a string
+    const textStr = String(this.text ?? ''); // Guard against null/undefined
     if (textStr.length <= this.maxLength) {
       this.currentText = textStr;
       this.hideToggle = true;

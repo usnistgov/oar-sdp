@@ -31,8 +31,6 @@ import { Subscription } from "rxjs";
   styleUrls: ["./results.component.css"],
 })
 export class ResultsComponent implements OnInit {
-  // Removed unused mobHeight/ngZone declarations during cleanup
-
   totalItems: number;
   itemsPerPage: number = 10;
   searchResults: any[];
@@ -89,6 +87,7 @@ export class ResultsComponent implements OnInit {
   private initialSearchStarted: boolean = false;
   // Track when fields list is non-empty (ready to search)
   private fieldsReady: boolean = false;
+  private fieldsSubscription: any = null;
   private lastProductTypes: ProductTypeState | null = null;
   private externalProductsEnabled: boolean = false;
   searchInFlight: boolean = false;
@@ -110,7 +109,6 @@ export class ResultsComponent implements OnInit {
   @Output() zeroResultsMeta = new EventEmitter<{
     zero: boolean;
     filterZero: boolean;
-    tags?: string[];
   }>();
   // Surface error state to parent so layout (filters) can react
   @Output() errorState = new EventEmitter<boolean>();
@@ -132,7 +130,7 @@ export class ResultsComponent implements OnInit {
     });
 
     // Watch for field list readiness (drives initial search); also handle failures explicitly
-    this.searchFieldsListService.watchFields().subscribe({
+    this.fieldsSubscription = this.searchFieldsListService.watchFields().subscribe({
       next: (fields) => {
         this.fields = fields as SelectItem[];
         this.filterableFields = this.toSortItems(fields);
@@ -171,8 +169,6 @@ export class ResultsComponent implements OnInit {
         this.errorState.emit(true);
       },
     });
-
-    // Removed extra getSearchFields() subscription to avoid duplicate fields call
   }
 
   ngOnInit() {
@@ -319,6 +315,7 @@ export class ResultsComponent implements OnInit {
    * On destroy, unsubscribe all subscriptions
    */
   ngOnDestroy(): void {
+    if (this.fieldsSubscription) this.fieldsSubscription.unsubscribe();
     if (this.filterSubscription) this.filterSubscription.unsubscribe();
     if (this.pageSubscription) this.pageSubscription.unsubscribe();
     if (this.searchSubscription) this.searchSubscription.unsubscribe();
@@ -501,7 +498,6 @@ export class ResultsComponent implements OnInit {
           this.zeroResultsMeta.emit({
             zero: that.totalItems === 0,
             filterZero: this.isFilterZero,
-            tags: this.activeFilterTags.map((t) => t.label),
           });
           this.errorState.emit(false);
           // First successful completion clears the startup guard so later triggers behave normally
@@ -773,16 +769,11 @@ export class ResultsComponent implements OnInit {
 
   // Function to clear the resultItem type
   clearResultItemType(type: string): string {
-    // Extract the second part after the colon
+    // If there is a colon (e.g. "nrdp:DataPublication"), take the part after it;
+    // otherwise use the whole string. In both cases apply camelCase expansion.
     const typeParts = type.split(":");
-    if (typeParts.length < 2) {
-      return type; // Return the original type if no colon is found
-    }
-    const secondPart = typeParts[1];
-
-    // Add spaces between camel case words
-    const result = secondPart.replace(/([a-z])([A-Z])/g, "$1 $2");
-    return result;
+    const part = typeParts.length >= 2 ? typeParts[1] : typeParts[0];
+    return part.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
 
   isPdrLink(link: string): boolean {
@@ -851,11 +842,17 @@ export class ResultsComponent implements OnInit {
     if (!dateString) return "";
 
     try {
-      const date = new Date(dateString);
-      // Format as "MM/DD/YYYY"
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      const year = date.getFullYear();
+      // Date-only strings (YYYY-MM-DD) are parsed as UTC midnight by spec.
+      // Appending a noon UTC time avoids the off-by-one-day shift in UTC-N zones.
+      const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+        ? dateString + "T12:00:00Z"
+        : dateString;
+      const date = new Date(normalized);
+      if (isNaN(date.getTime())) return dateString;
+      // Format as "MM/DD/YYYY" using UTC accessors so the date never shifts
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+      const day = date.getUTCDate().toString().padStart(2, "0");
+      const year = date.getUTCFullYear();
       return `${month}/${day}/${year}`;
     } catch (e) {
       return dateString; // Return original if parsing fails
@@ -895,7 +892,44 @@ export class ResultsComponent implements OnInit {
   }
 
   getResultIcon(resultItem: any): string {
-    return this.isExternalResult(resultItem) ? "pi pi-share-alt" : "pi pi-database";
+    switch (resultItem?.source) {
+      case "code":    return "pi pi-code";
+      case "papers":  return "pi pi-book";
+      case "patents": return "pi pi-shield";
+      default:        return "pi pi-database";
+    }
+  }
+
+  /** CSS wrapper class applied to each result card for per-type header colouring. */
+  getResultTypeClass(resultItem: any): string {
+    switch (resultItem?.source) {
+      case "code":    return "result-type-code";
+      case "papers":  return "result-type-papers";
+      case "patents": return "result-type-patents";
+      default:        return "result-type-data";
+    }
+  }
+
+  /** Human-readable label for the bottom action button, differentiated by product type. */
+  getResultActionLabel(resultItem: any): string {
+    switch (resultItem?.source) {
+      case "code":    return "View Repository";
+      case "papers":  return "View Paper";
+      case "patents": return "View Patent";
+      default: return this.isPdrLink(this.getResultLink(resultItem))
+                 ? "Access Data" : "Visit Page";
+    }
+  }
+
+  /** Icon for the bottom action button, differentiated by product type. */
+  getResultActionIcon(resultItem: any): string {
+    switch (resultItem?.source) {
+      case "code":    return "pi pi-code";
+      case "papers":  return "pi pi-book";
+      case "patents": return "pi pi-shield";
+      default: return this.isPdrLink(this.getResultLink(resultItem))
+                 ? "pi pi-database" : "pi pi-external-link";
+    }
   }
 
   getPrimaryType(resultItem: any): string {

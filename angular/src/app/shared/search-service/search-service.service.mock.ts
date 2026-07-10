@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpRequest, HttpParams } from "@angular/common/http";
 import { Observable, throwError, of, BehaviorSubject } from "rxjs";
 import * as rxjsop from "rxjs/operators";
-import { EMPTY } from "rxjs";
 import * as _ from "lodash-es";
 import { AppConfig, Config } from "../config-service/config.service";
 import {
@@ -61,7 +60,7 @@ export class MockSearchService implements SearchService {
     filter?: string,
     options?: SearchPhraseOptions
   ): Observable<any> {
-    const empty = { ResultData: [], ResultCount: 0, total: 0 };
+    const empty = { ResultData: [], ResultCount: 0, total: 0, Facets: { topics: [], resourceTypes: [], components: [], authors: [], keywords: [] } };
     const activeProducts = this.getActiveProductTypes();
     const forceData = !!options?.forceData;
     const progressProducts: ProductTypeKey[] = [];
@@ -229,11 +228,6 @@ export class MockSearchService implements SearchService {
 
   watchSearchProgress(): Observable<SearchProgressState> {
     return this.searchProgress$.asObservable();
-  }
-
-  fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any> {
-    // For mock just reuse sample result
-    return of({ ResultData: [], ResultCount: 0, total: 0 });
   }
 
   setExternalProducts(enabled: boolean): void {

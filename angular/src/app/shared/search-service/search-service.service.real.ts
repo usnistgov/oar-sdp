@@ -11,7 +11,6 @@ import {
   merge,
 } from "rxjs";
 import * as rxjsop from "rxjs/operators";
-import { EMPTY } from "rxjs";
 import * as _ from "lodash-es";
 import { AppConfig, Config } from "../config-service/config.service";
 import {
@@ -172,7 +171,7 @@ export class RealSearchService implements SearchService {
         query.freeText != undefined &&
         query.freeText.trim() != ""
       ) {
-        searchPhraseValue = "searchphrase=" + query.freeText.trim();
+        searchPhraseValue = "searchphrase=" + encodeURIComponent(query.freeText.trim());
       }
 
       // Processing rows
@@ -555,154 +554,6 @@ export class RealSearchService implements SearchService {
     return this.lastSearchResponse$.asObservable();
   }
 
-  fetchAllForFacetCounts(
-    query: SDPQuery,
-    searchTaxonomyKey: string,
-    maxSize: number,
-    filter?: string
-  ): Observable<any> {
-    const activeProducts = this.getActiveProductTypes();
-    const includeData = activeProducts.includes("data");
-    const includeCode = activeProducts.includes("code");
-    const includePapers = activeProducts.includes("papers");
-    const includePatents = activeProducts.includes("patents");
-    if (!includeData && !includeCode && !includePapers && !includePatents) {
-      return of(this.emptyResult());
-    }
-
-    // Build a lightweight include list (only fields needed for facet counting)
-    let clone: SDPQuery = JSON.parse(JSON.stringify(query));
-    // Force first page only
-    let baseUrl = includeData
-      ? this.buildFacetOnlyUrl(
-          clone,
-          searchTaxonomyKey,
-          filter,
-          maxSize,
-          "records"
-        )
-      : null;
-    const externalUrl = includeCode
-      ? this.buildFacetOnlyUrl(
-          clone,
-          searchTaxonomyKey,
-          filter,
-          maxSize,
-          "code"
-        )
-      : null;
-    const papersUrl = includePapers
-      ? this.buildFacetOnlyUrl(
-          clone,
-          searchTaxonomyKey,
-          filter,
-          maxSize,
-          "papers"
-        )
-      : null;
-    const patentsUrl = includePatents
-      ? this.buildFacetOnlyUrl(
-          clone,
-          searchTaxonomyKey,
-          filter,
-          maxSize,
-          "patents"
-        )
-      : null;
-
-    return this.appConfig.getConfig().pipe(
-      rxjsop.mergeMap((conf) => {
-        const records$ =
-          includeData && baseUrl
-            ? this.http.get(conf.RMMAPI + baseUrl)
-            : of(this.emptyResult());
-        const external$ =
-          includeCode && externalUrl
-            ? this.http
-                .get(conf.RMMAPI + externalUrl)
-                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
-            : of(this.emptyResult());
-        const papers$ =
-          includePapers && papersUrl
-            ? this.http
-                .get(conf.RMMAPI + papersUrl)
-                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
-            : of(this.emptyResult());
-        const patents$ =
-          includePatents && patentsUrl
-            ? this.http
-                .get(conf.RMMAPI + patentsUrl)
-                .pipe(rxjsop.catchError(() => of(this.emptyResult())))
-            : of(this.emptyResult());
-        return forkJoin({
-          records: records$,
-          external: external$,
-          papers: papers$,
-          patents: patents$,
-        }).pipe(
-          rxjsop.map(({ records, external, papers, patents }) =>
-            this.combineResults(records, external, patents, papers, filter)
-          )
-        );
-      }),
-      rxjsop.catchError((err) => throwError(err))
-    );
-  }
-
-  // Helper builds facet-only URL (no export outside service)
-  private buildFacetOnlyUrl(
-    query: SDPQuery,
-    searchTaxonomyKey: string,
-    filter: string,
-    size: number,
-    base: "records" | "code" | "papers" | "patents" = "records"
-  ): string {
-    let searchPhraseValue = query.freeText
-      ? "searchphrase=" + query.freeText.trim()
-      : "";
-    let finalKeyValueStr = "";
-    const rows = Array.isArray(query.queryRows) ? query.queryRows : [];
-    for (let i = 0; i < rows.length; i++) {
-      let row = rows[i];
-      if (!row.fieldText || !row.fieldValue) continue;
-      if (finalKeyValueStr && row.operator && row.operator !== "AND") {
-        finalKeyValueStr += "&" + this.operators[row.operator] + "&";
-      } else if (finalKeyValueStr) {
-        finalKeyValueStr += "&";
-      }
-      finalKeyValueStr +=
-        row.fieldValue + "=" + row.fieldText.replace(/"/g, "");
-    }
-    let keyString = searchTaxonomyKey ? "topic.tag=" + searchTaxonomyKey : "";
-    let url = base + "?";
-    const parts: string[] = [];
-    if (searchPhraseValue) parts.push(searchPhraseValue);
-    if (finalKeyValueStr) parts.push(finalKeyValueStr);
-    if (keyString) parts.push(keyString);
-    if (filter && filter !== "NoFilter") parts.push(filter.trim());
-    parts.push("page=1");
-    parts.push("size=" + size);
-    url += parts.join("&");
-    const codeInclude =
-      "include=@type,keyword,topic.tag,contactPoint,components.@type,languages,tags,contact,organization";
-    const patentInclude =
-      "include=@type,keyword,keywords,topic.tag,contactPoint,assignee,assignees,applicant,applicants,organization,owner,inventor,inventors,tags";
-    const papersInclude =
-      "include=@type,keyword,keywords,tags,subjects,topic.tag,contactPoint,authors,author,organization";
-    const recordInclude =
-      "include=keyword,topic.tag,contactPoint,components.@type,@type&exclude=_id";
-    const include =
-      base === "code"
-        ? codeInclude
-        : base === "papers"
-        ? papersInclude
-        : base === "patents"
-        ? patentInclude
-        : recordInclude;
-    url += (parts.length ? "&" : "") + include;
-    return url;
-  }
-
   /**
    * Normalize and merge record + external responses into a single response object.
    */
@@ -733,7 +584,14 @@ export class RealSearchService implements SearchService {
       : [];
     const paperData = allowPapers
       ? this.extractResultData(papers)
-          .map((item) => this.normalizePaperRecord(item))
+          .map((item) => {
+            try {
+              return this.normalizePaperRecord(item);
+            } catch (e) {
+              console.warn("normalizePaperRecord failed for item", item, e);
+              return null;
+            }
+          })
           .filter((item) => !!item)
       : [];
     const combinedTotal =
@@ -742,8 +600,14 @@ export class RealSearchService implements SearchService {
       (allowPatents ? this.extractTotalCount(patents, patentData.length) : 0) +
       (allowPapers ? this.extractTotalCount(papers, paperData.length) : 0);
 
+    // Facets are produced by the data backend (/records) and drive the
+    // backend-faceted filter panel. Preserve them (and any other primary
+    // metadata) even when an @type filter narrows the visible results to an
+    // external product, so the filter panel never regresses to the deprecated
+    // client-side page aggregation. ResultData/ResultCount/total are overridden
+    // below, so the unconditional spread cannot leak excluded data results.
     return {
-      ...(allowData && primary && typeof primary === "object" ? primary : {}),
+      ...(primary && typeof primary === "object" ? primary : {}),
       ResultData: [
         ...primaryData,
         ...externalData,
@@ -1003,10 +867,55 @@ export class RealSearchService implements SearchService {
 
   private normalizePaperRecord(item: any): any | null {
     if (!item) return null;
+    const title = item.title || item.name || "Paper";
+    const description =
+      (Array.isArray(item.description) ? item.description[0] : item.description) ||
+      (Array.isArray(item.abstract)     ? item.abstract[0]     : item.abstract)     ||
+      (Array.isArray(item.summary)      ? item.summary[0]      : item.summary)      ||
+      "";
+    // Build a landing URL from the richest available source
+    const doiUrl = item.doi ? `https://doi.org/${item.doi}` : "";
+    const landing =
+      item.landingPage || item.url || doiUrl ||
+      item.homepageURL || item.repositoryURL || item.downloadURL || "";
+    const keywords = this.normalizeKeywords(
+      item.keyword, item.keywords, item.tags, item.subjects
+    );
+    const topic = this.normalizeTopicField(
+      item.topic || item.topics || item.subjects || item.subject
+    );
+    const contactName =
+      this.extractContactName(item.contactPoint) ||
+      this.extractContactName(item.contact)      ||
+      this.extractContactName(item.authors)      ||
+      this.extractContactName(item.author)        ||
+      this.extractContactName(item.organization)  ||
+      "";
+    const rawContact =
+      item.contactPoint || item.contact || (contactName ? { fn: contactName } : {});
+    let contactPoint = rawContact;
+    if (contactName && rawContact && typeof rawContact === "object" && !Array.isArray(rawContact)) {
+      contactPoint = rawContact.fn ? rawContact : { ...rawContact, fn: contactName };
+    }
     return {
       ...item,
       external: true,
       source: "papers",
+      ediid: item.ediid || item._id || item.id || title,
+      title,
+      description,
+      landingPage: landing,
+      keyword: keywords,
+      topic,
+      components: Array.isArray(item.components) ? item.components : [],
+      contactPoint,
+      annotated:
+        item.annotated     ||
+        item.modified      ||
+        item.publicationDate ||
+        item.publishedDate   ||
+        (item.dates && (item.dates.published || item.dates.issued || item.dates.modified)) ||
+        null,
       ["@type"]: ["Paper"],
     };
   }

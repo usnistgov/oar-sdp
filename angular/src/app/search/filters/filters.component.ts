@@ -13,7 +13,6 @@ import { SelectItem } from "primeng/api";
 import { TreeNode } from "primeng/api";
 // import { Message } from 'primeng/components/common/api';
 import { Message } from "primeng/api";
-import { SDPQuery } from "../../shared/search-query/query";
 import {
   SearchService,
   SEARCH_SERVICE,
@@ -32,26 +31,13 @@ import {
   animate,
   transition,
 } from "@angular/animations";
-// (removed take/filter imports after simplifying aggregation logic)
+import { skip } from "rxjs/operators";
 
 @Component({
   selector: "app-filters",
   templateUrl: "./filters.component.html",
   styleUrls: ["./filters.component.css"],
   animations: [
-    trigger("expand", [
-      state("closed", style({ height: "40px" })),
-  state("collapsed", style({ height: "260px" })),
-      state("expanded", style({ height: "*" })),
-      transition("expanded <=> collapsed", animate("625ms")),
-      transition("expanded <=> closed", animate("625ms")),
-      transition("closed <=> collapsed", animate("625ms")),
-    ]),
-    trigger("expandOptions", [
-      state("collapsed", style({ height: "0px" })),
-      state("expanded", style({ height: "*" })),
-      transition("expanded <=> collapsed", animate("625ms")),
-    ]),
     trigger("filterExpand", [
       state("collapsed", style({ width: "40px" })),
       state("expanded", style({ width: "*" })),
@@ -73,26 +59,18 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedResourceType: any[] = [];
   selectedResourceTypeNode: any[] = [];
   selectedAuthorDropdown: boolean = false;
-  resourceTypes: SelectItem[] = [];
-  resourceTypesAllArray: string[] = [];
-  uniqueRes: string[] = [];
   resourceTypesWithCount: TreeNode[] = [];
   authors: string[] = [];
-  components: SelectItem[] = [];
-  componentsAllArray: string[] = [];
   componentsWithCount: TreeNode[] = [];
   showComponents: string[] = ["Data File", "Access Page", "Subcollection"];
   MoreOptionsDisplayed: boolean = false;
   moreOptionsText: string = "Show More Options...";
 
   //  NIST theme
-  themes: SelectItem[] = [];
-  themesAllArray: string[] = [];
-  unspecifiedCount: number = 0;
-  uniqueThemes: string[] = [];
   themesWithCount: TreeNode[] = [];
   themesTree: TreeNode[] = [];
   showMoreLink: boolean = false;
+  topicsExpanded: boolean = false;
   selectedThemesNode: any[] = [];
 
   componentsTree: TreeNode[] = [];
@@ -122,17 +100,14 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   isActive: boolean = true;
   filterClass: string;
   resultsClass: string;
-  nodeExpanded: boolean = true;
   comheight: string; // parent div height
   comwidth: string; // parent div width
   dropdownLabelLengthLimit: number = 30;
-  // Loading flags for deferred facets
-  recordHasLoading: boolean = true; // components.@type counts may arrive later
+  // Loading flags — reset to true on new search, cleared to false when Facets arrive
+  recordHasLoading: boolean = true;
   themeLoading: boolean = true;
   resourceTypeLoading: boolean = true;
-  fullFacetCountsInFlight: boolean = false; // made public for template gating
-  fullFacetCountsComplete: boolean = false; // made public for template gating
-  private fullFacetCountsSubscription: any = null;
+  authorsReady: boolean = false;
   private searchResponseSub: any = null;
   private externalToggleSubscription: any = null;
   private productTypeSubscription: any = null;
@@ -144,26 +119,6 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     "background-color": "white",
     "font-weight": "400",
     "font-style": "italic",
-    "font-family": "sans-serif",
-  };
-
-  ResourceTypeStyle = {
-    width: "auto",
-    "background-color": "white",
-    "border-width": "0",
-    "font-family": "sans-serif",
-  };
-
-  recordHasStyle = {
-    width: "auto",
-    "background-color": "white",
-    "border-width": "0",
-    "font-family": "sans-serif",
-  };
-  researchTopicStyle = {
-    width: "100%",
-    "background-color": "white",
-    "border-width": "0",
     "font-family": "sans-serif",
   };
 
@@ -231,13 +186,12 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.msgs = [];
     this.searchResultsError = [];
     this.MoreOptionsDisplayed = false;
-    // Subscribe to unified search response stream. When results arrive, build filters.
+    // Subscribe to unified search response stream. Facets arrive with every response.
     this.searchResponseSub = this.searchService.watchSearchResponse().subscribe((resp:any)=>{
       if(!resp || !resp.ResultData) return;
       const total = this.extractResponseTotal(resp);
       this.lastResponseTotal = total;
-      // Reuse existing success handler; it expects array.
-      this.onSuccess(resp.ResultData, total);
+      this.onSuccess(resp.ResultData, total, resp.Facets);
     });
 
     // Sync external filter string -> selection state (chips / removal / reset)
@@ -248,15 +202,20 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.applyFilterStringToSelections(next);
     });
 
-    // External toggle changes should reset facet aggregation to avoid stale filters
+    // External toggle changes should reset facet aggregation to avoid stale filters.
+    // skip(1) ignores the BehaviorSubject's initial replay so a freshly created panel
+    // (e.g. when the layout switches to mobile) does not re-show skeletons for a search
+    // that already completed; only genuine toggles after init reset the facet state.
     this.externalToggleSubscription = this.searchService
       .watchExternalProducts()
+      .pipe(skip(1))
       .subscribe(() => {
         this.resetFacetAggregationState();
       });
 
     this.productTypeSubscription = this.searchService
       .watchProductTypes()
+      .pipe(skip(1))
       .subscribe((state) => {
         if (!state) return;
         if (this.lastProductTypes && _.isEqual(this.lastProductTypes, state)) {
@@ -264,16 +223,12 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.lastProductTypes = state;
         this.resetFacetAggregationState();
-        // Rebuild facet UI from latest results (if available) so filters don't stall when all products were off.
-        if (this.searchResults) {
-          this.onSuccess(this.searchResults, this.lastResponseTotal);
-        }
+        // A new search will fire automatically; wait for it to arrive via watchSearchResponse.
       });
   }
 
   ngOnDestroy(): void {
     if(this.searchResponseSub) { try { this.searchResponseSub.unsubscribe(); } catch {} }
-    if(this.fullFacetCountsSubscription) { try { this.fullFacetCountsSubscription.unsubscribe(); } catch {} }
     if(this.filterWatcherSub) { try { this.filterWatcherSub.unsubscribe(); } catch {} }
     if(this.externalToggleSubscription) { try { this.externalToggleSubscription.unsubscribe(); } catch {} }
     if(this.productTypeSubscription) { try { this.productTypeSubscription.unsubscribe(); } catch {} }
@@ -288,19 +243,136 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  toggleExpand(expand: boolean): void {
-    const prev = this.showMoreLink;
-    this.showMoreLink = !expand; // true means collapsed mode (show more link visible)
-    // If user just requested collapse (transition from expanded -> collapsed), scroll to top of filters area
-    if (this.showMoreLink && !prev) {
-      // Use setTimeout to allow DOM/animation state to apply before scrolling
-      setTimeout(() => {
-        try {
-          // Scroll the window so the top of the filters (left column) is visible
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch {}
-      }, 0);
-    }
+  /** Number of topic cards shown before the user clicks "Show More" (multiple of 3 for a clean grid). */
+  private readonly TOPICS_COLLAPSED_COUNT = 9;
+
+  /** PrimeNG icon class for each research topic (fallback used for anything unmapped). */
+  private static readonly TOPIC_ICONS: { [topic: string]: string } = {
+    "Information Technology": "pi-desktop",
+    "Materials": "pi-box",
+    "Standards": "pi-check-circle",
+    "Physics": "pi-bolt",
+    "Manufacturing": "pi-cog",
+    "Chemistry": "pi-filter",
+    "Mathematics and Statistics": "pi-chart-bar",
+    "Advanced Communications": "pi-wifi",
+    "Metrology": "pi-compass",
+    "Bioscience": "pi-heart",
+    "Electronics": "pi-mobile",
+    "Environment": "pi-globe",
+    "Forensics": "pi-search",
+    "Public Safety": "pi-shield",
+    "Fire": "pi-exclamation-triangle",
+    "Health": "pi-heart-fill",
+    "Energy": "pi-sun",
+    "Buildings and Construction": "pi-building",
+    "Nanotechnology": "pi-th-large",
+    "Biometrics": "pi-id-card",
+    "Neutron Research": "pi-prime",
+    "Resilience": "pi-refresh",
+    "Drugs and toxicology": "pi-ban",
+    "DNA and biological evidence": "pi-share-alt",
+    "Digital and multimedia evidence": "pi-video",
+    "Infrastructure": "pi-sitemap",
+    "Performance Excellence": "pi-star",
+    "Trace evidence": "pi-search-plus",
+    "Ballistics": "pi-send",
+    "Information Processing Systems": "pi-server",
+    "Heating and cooling equipment": "pi-sliders-h",
+    "Greenhouse gases": "pi-cloud",
+    "Fingerprints and pattern evidence": "pi-clone",
+  };
+
+  /**
+   * PrimeNG icon class for each resource type. Keys are normalised (lower-cased,
+   * whitespace removed) so both the backend facet labels ("Public Data Resource")
+   * and the space-free placeholder values ("PublicDataResource") resolve.
+   */
+  private static readonly RESOURCE_TYPE_ICONS: { [key: string]: string } = {
+    publicdataresource: "pi-database",
+    datapublication: "pi-file-pdf",
+    srd: "pi-bookmark",
+    coderepository: "pi-code",
+    paper: "pi-book",
+    patent: "pi-briefcase",
+    dataset: "pi-table",
+  };
+
+  /**
+   * PrimeNG icon class for each "Record has" component. Keys are normalised so the
+   * facet labels ("Data File") and placeholder values ("DataFile") both resolve.
+   */
+  private static readonly COMPONENT_ICONS: { [key: string]: string } = {
+    datafile: "pi-file",
+    accesspage: "pi-link",
+    subcollection: "pi-folder",
+  };
+
+  /** Topic cards to render: all when expanded, otherwise the first TOPICS_COLLAPSED_COUNT. */
+  get visibleTopics(): TreeNode[] {
+    if (this.topicsExpanded) return this.themesWithCount;
+    return this.themesWithCount.slice(0, this.TOPICS_COLLAPSED_COUNT);
+  }
+
+  /** Shared trackBy for every facet card grid (topics, resource types, record-has). */
+  trackFacet = (_: number, node: any): string => (node && (node.key || node.data)) || '';
+
+  /** Normalise a facet label to an icon-map key (case- and whitespace-insensitive). */
+  private static iconKey(value: string): string {
+    return String(value || '').replace(/\s+/g, '').toLowerCase();
+  }
+
+  /** PrimeNG icon class for a research topic, with a neutral fallback. */
+  topicIcon(topic: string): string {
+    return FiltersComponent.TOPIC_ICONS[topic] || 'pi-tag';
+  }
+
+  /** PrimeNG icon class for a resource type, with a neutral fallback. */
+  resourceTypeIcon(label: string): string {
+    return FiltersComponent.RESOURCE_TYPE_ICONS[FiltersComponent.iconKey(label)] || 'pi-tag';
+  }
+
+  /** PrimeNG icon class for a "Record has" component, with a neutral fallback. */
+  componentIcon(label: string): string {
+    return FiltersComponent.COMPONENT_ICONS[FiltersComponent.iconKey(label)] || 'pi-tag';
+  }
+
+  /** Count badge value for a facet card (label is "Name-count"; split on the last hyphen). */
+  facetCount(node: any): string {
+    if (!node || !node.label) return '';
+    const label = String(node.label);
+    const idx = label.lastIndexOf('-');
+    return idx > -1 ? label.slice(idx + 1) : '';
+  }
+
+  /**
+   * Whether `node` is present in the given facet selection array (matched by value).
+   * @param node facet card node
+   * @param selection one of the selectedThemesNode / selectedResourceTypeNode /
+   *   selectedComponentsNode arrays
+   */
+  isFacetSelected(node: any, selection: any[]): boolean {
+    return !!node && selection.some(n => n && n.data === node.data);
+  }
+
+  /**
+   * Toggle a facet card's membership in its selection array and re-run the search.
+   * The array is mutated in place so the existing filterResults() wiring (which reads
+   * the component's selection fields) keeps working unchanged.
+   * @param node facet card node to toggle
+   * @param selection the backing selection array for that facet
+   */
+  toggleFacet(node: any, selection: any[]): void {
+    if (!node) return;
+    const idx = selection.findIndex(n => n && n.data === node.data);
+    if (idx > -1) selection.splice(idx, 1);
+    else selection.push(node);
+    this.filterResults();
+  }
+
+  /** Expand/collapse the research topic card grid (no height animation — cards reflow naturally). */
+  toggleTopicsExpanded(): void {
+    this.topicsExpanded = !this.topicsExpanded;
   }
 
   /**
@@ -321,32 +393,6 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       this.queryStringError = true;
     }
 
-    let lSearchValue = this.searchValue.replace(/  +/g, " ");
-
-    //Convert to a query then search
-    this.doSearch(
-      this.searchQueryService.buildQueryFromString(
-        lSearchValue,
-        null,
-        this.fields
-      )
-    );
-  }
-
-
-  /**
-   * Do the search
-   * @param query - search query
-   * @param searchTaxonomyKey - Taxonomy keys if any
-   */
-  doSearch(query: SDPQuery, searchTaxonomyKey?: string) {
-  // Deprecated: Filters no longer trigger their own network search.
-  this.msgs = [];
-  this.searchResultsError = [];
-  this.selectedResourceTypeNode = [];
-  this.selectedThemesNode = [];
-  this.selectedComponentsNode = [];
-  // Leave spinner management to results component / unified stream.
   }
 
   /**
@@ -397,113 +443,122 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * call the Search service with parameters
+   * Called when a search response arrives. Facets from the backend are used directly
+   * for counts — no secondary fetch required.
    */
-  // Deprecated original search() method removed; ResultsComponent is now the single search initiator.
-
-  /**
-   * If Search is successful, populate list of keywords themes and authors
-   * @param searchResults
-   */
-  onSuccess(searchResults: any[], totalCount?: number) {
+  onSuccess(searchResults: any[], totalCount?: number, facets?: any) {
     this.resultStatus = this.RESULT_STATUS.success;
     this.searchResults = searchResults;
     this.searchResultsError = [];
     if (searchResults.length === 0) {
       this.resultStatus = this.RESULT_STATUS.noResult;
     }
-    // If we've already built full counts, do nothing.
-    if (this.fullFacetCountsComplete) return;
-    const resolvedTotal =
-      typeof totalCount === "number" && totalCount > 0
-        ? totalCount
-        : this.searchResults.length;
-    const needsExpandedFetch = resolvedTotal > this.searchResults.length;
-    if (needsExpandedFetch) {
-      // Build initial facet counts immediately BUT keep skeletons showing (finalPass = false)
-      // so that we do NOT display partial first-page-only facet counts while expanded fetch runs.
-      this.buildFacetCounts(this.searchResults, false);
-    } else {
-      // No expanded fetch needed; finalize immediately.
-      this.buildFacetCounts(this.searchResults, true);
-      this.fullFacetCountsComplete = true;
-      this.fullFacetCountsInFlight = false;
-      return;
-    }
-    // Attempt expanded fetch only in runtime (skip if already in-flight or no search service method)
-    if (this.fullFacetCountsInFlight) return;
-    this.fullFacetCountsInFlight = true;
-    const targetSize = resolvedTotal;
-    const lSearchValue = this.searchValue ? this.searchValue.replace(/  +/g, ' ') : '';
-    const q = this.searchQueryService.buildQueryFromString(lSearchValue, null, this.fields);
-    // Mark loading for possible UI skeletons
-    this.recordHasLoading = true; this.themeLoading = true; this.resourceTypeLoading = true;
-    this.fullFacetCountsSubscription = this.searchService.fetchAllForFacetCounts(q, this.searchTaxonomyKey, targetSize, this.searchService['filterString']?.getValue?.()).subscribe(expanded => {
-      if (expanded && expanded.ResultData && expanded.ResultData.length) {
-        this.buildFacetCounts(expanded.ResultData, true); // final pass
-      } else {
-        // No expanded data; finalize by clearing skeletons while retaining initial counts
-        this.setFacetLoadingComplete();
-      }
-      this.fullFacetCountsComplete = true;
-      this.fullFacetCountsInFlight = false;
-    }, _e => {
-      // Expanded fetch failed; keep initial counts, just clear skeletons
-      this.setFacetLoadingComplete();
-      this.fullFacetCountsComplete = true;
-      this.fullFacetCountsInFlight = false;
-    });
+    this.buildFacetCounts(facets);
   }
 
   private resetFacetAggregationState() {
-    if (this.fullFacetCountsSubscription) {
-      try {
-        this.fullFacetCountsSubscription.unsubscribe();
-      } catch {}
-      this.fullFacetCountsSubscription = null;
-    }
-    this.fullFacetCountsInFlight = false;
-    this.fullFacetCountsComplete = false;
-    // Show skeletons again for all facet groups until rebuilt
+    // Show skeletons again until new Facets arrive with the next search response
     this.recordHasLoading = true;
     this.themeLoading = true;
     this.resourceTypeLoading = true;
+    this.authorsReady = false;
   }
 
-  private buildFacetCounts(data: any[], finalPass: boolean = true) {
-    this.themesWithCount = [];
-    this.componentsWithCount = [];
-    this.keywords = this.collectKeywords(data);
-    this.collectThemes(data);
-    this.resourceTypes = this.collectResourceTypes(data);
-    this.collectThemesWithCount();
-    this.components = this.collectComponents(data);
-    this.collectComponentsWithCount();
-    this.collectResourceTypesWithCount();
-    let compNoData = false;
-    if (this.componentsWithCount.length == 0) {
-      compNoData = true;
+  /**
+   * Build all facet trees and autocomplete lists from the backend Facets object.
+   * Backend Facets are the single source of truth for the filter panel. When a
+   * response carries no Facets (e.g. external-product-only results), render empty
+   * facet lists instead of running the deprecated client-side page aggregation,
+   * which produced misleading "Unspecified" topics and page-limited counts.
+   */
+  private buildFacetCounts(facets?: any) {
+    this.buildFromFacets(facets || {});
+
+    // Ensure Record Has always shows its three options, even when the backend
+    // returned no component facets for the current query.
+    if (this.componentsWithCount.length === 0) {
       this.componentsWithCount = [
-        { label: 'DataFile - 0', data: 'DataFile', key: 'DataFile' },
-        { label: 'AccessPage - 0', data: 'AccessPage', key: 'AccessPage' },
-        { label: 'SubCollection - 0', data: 'Subcollection', key: 'SubCollection' }
+        { label: 'Data File-0', data: 'Data File', key: 'DataFile' },
+        { label: 'Access Page-0', data: 'Access Page', key: 'AccessPage' },
+        { label: 'Subcollection-0', data: 'Subcollection', key: 'SubCollection' }
       ];
-      this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
-      this.componentsTree[0].selectable = false;
-      for (let i = 0; i < this.componentsWithCount.length; i++) this.componentsTree[0].children[i].selectable = false;
     }
+
     this.themesTree = [{ label: 'Research Topics -', expanded: true, children: this.themesWithCount, key: 'ResearchTopics' }];
     this.resourceTypeTree = [{ label: 'Type of Resource  -', expanded: true, children: this.resourceTypesWithCount, key: 'ResourceType' }];
-    if (!compNoData) {
-      this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
-    }
-    this.authors = this.collectAuthors(data);
-    // Re-apply current filter selections after rebuilding trees.
+    this.componentsTree = [{ label: 'Record has -', expanded: true, children: this.componentsWithCount, key: 'RecordHas' }];
+    this.componentsTree[0].selectable = false;
+    for (let i = 0; i < this.componentsWithCount.length; i++) this.componentsTree[0].children[i].selectable = false;
+
+    this.authorsReady = true;
+    this.topicsExpanded = false;
     this.applyFilterStringToSelections(this.lastSeenFilterString);
-    if (finalPass) {
-      this.setFacetLoadingComplete();
-    }
+    this.setFacetLoadingComplete();
     this.searching = false;
+  }
+
+  /**
+   * Populate facet arrays directly from the backend Facets object.
+   * Shape: { topics: [{tag, count}], resourceTypes: [{type, count}],
+   *          components: [{type, count}], authors: [{name}], keywords: [{keyword}] }
+   */
+  private buildFromFacets(facets: any) {
+    // Topics → themesWithCount (sorted by count desc, backend may already sort)
+    const topics: any[] = Array.isArray(facets.topics) ? facets.topics : [];
+    this.themesWithCount = topics
+      .filter(t => t && t.tag)
+      .map(t => ({
+        label: `${t.tag}-${t.count ?? 0}`,
+        data: t.tag,
+        key: t.tag,
+      }));
+    this.showMoreLink = this.themesWithCount.length > this.TOPICS_COLLAPSED_COUNT;
+
+    // Resource types → resourceTypesWithCount
+    const resourceTypes: any[] = Array.isArray(facets.resourceTypes) ? facets.resourceTypes : [];
+    this.resourceTypesWithCount = resourceTypes
+      .filter(rt => {
+        if (!rt || !rt.type) return false;
+        const parts = (rt.type as string).split(':');
+        const label = _.startCase(parts.length > 1 ? parts[parts.length - 1] : parts[0]);
+        return label.toLowerCase() !== 'dataset';
+      })
+      .map(rt => {
+        const parts = (rt.type as string).split(':');
+        const label = _.startCase(parts.length > 1 ? parts[parts.length - 1] : parts[0]);
+        return {
+          label: `${label}-${rt.count ?? 0}`,
+          data: label,
+          key: label,
+        };
+      });
+
+    // Components → componentsWithCount (only the three shown in the UI)
+    const components: any[] = Array.isArray(facets.components) ? facets.components : [];
+    this.componentsWithCount = components
+      .filter(c => {
+        if (!c || !c.type) return false;
+        const parts = (c.type as string).split(':');
+        const label = _.startCase(parts.length > 1 ? parts[parts.length - 1] : parts[0]);
+        return this.showComponents.includes(label);
+      })
+      .map(c => {
+        const parts = (c.type as string).split(':');
+        const label = _.startCase(parts.length > 1 ? parts[parts.length - 1] : parts[0]);
+        return {
+          label: `${label}-${c.count ?? 0}`,
+          data: label,
+          key: label,
+        };
+      });
+
+    // Authors autocomplete
+    const authors: any[] = Array.isArray(facets.authors) ? facets.authors : [];
+    this.authors = authors.map(a => a.name).filter(n => !!n);
+
+    // Keywords autocomplete
+    const keywords: any[] = Array.isArray(facets.keywords) ? facets.keywords : [];
+    this.keywords = keywords.map(k => k.keyword).filter(k => !!k);
   }
 
   private setFacetLoadingComplete() {
@@ -528,7 +583,6 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   onError(error: any[]) {
     this.searchResults = [];
     this.keywords = [];
-    this.themes = [];
     this.msgs = [];
 
     if ((<any>error).status == 400) {
@@ -751,7 +805,6 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedResourceTypeNode = [];
     this.selectedAuthor = [];
     this.selectedKeywords = [];
-    // leave authors/keywords for now; extend as needed
   }
 
   /**
@@ -937,326 +990,6 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Get resource type from search result
-   * @param searchResults search result
-   */
-  collectResourceTypes(searchResults: any[]) {
-    let resourceTypes: SelectItem[] = [];
-    let resourceTypesArray: string[] = [];
-    let resourceTypesAllArray: string[] = [];
-    let resultItemResourceType: string[] = [];
-    let res: any[] = [];
-    let resType: string;
-    let tempType: any;
-    this.resourceTypesAllArray = [];
-
-    for (let resultItem of searchResults) {
-      this.uniqueRes = [];
-      let resTypeArray = resultItem["@type"];
-
-      for (var i = 0; i < resTypeArray.length; i++) {
-        resType = (resTypeArray[i] || "").toString().trim();
-        if (!resType) continue;
-        const parts = resType.split(":");
-        const labelSource = parts.length > 1 ? parts[parts.length - 1] : resType;
-        let resourceTypeLabel = _.startCase(labelSource);
-
-        // Skip "Dataset" resource type
-        if (resourceTypeLabel.toLowerCase() === "dataset") {
-          continue;
-        }
-        
-        this.uniqueRes.push(resourceTypeLabel);
-        if (resourceTypesArray.indexOf(resType) < 0) {
-          resourceTypes.push({
-            label: resourceTypeLabel,
-            value: resourceTypeLabel,
-          });
-          resourceTypesArray.push(resType);
-        }
-      }
-
-      this.uniqueRes = this.uniqueRes.filter(this.onlyUnique);
-
-      this.uniqueRes
-        .filter((res) => res && res.trim())
-        .forEach((res) => this.resourceTypesAllArray.push(res));
-    }
-
-    return resourceTypes;
-  }
-
-  /**
-   * Collect resource type + count
-   */
-  collectResourceTypesWithCount() {
-    this.resourceTypesWithCount = [];
-    for (let res of this.resourceTypes) {
-      let count: any;
-      count = _.countBy(
-        this.resourceTypesAllArray,
-        _.partial(_.isEqual, res.value)
-      )["true"];
-      if (typeof count !== "number" || count <= 0) continue;
-      this.resourceTypesWithCount.push({
-        label: res.label + "-" + count,
-        data: res.value,
-        key: res.value, // fix unselectable filters in primeng 17
-      });
-    }
-  }
-
-  /**
-   * For unique filter
-   * @param value
-   * @param index
-   * @param self
-   */
-  onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
-  /**
-   * Get authors from search result
-   * @param searchResults search result
-   */
-  collectAuthors(searchResults: any[]) {
-    let authors: string[] = [];
-    for (let resultItem of searchResults) {
-      if (
-        resultItem.contactPoint &&
-        resultItem.contactPoint !== null &&
-        resultItem.contactPoint.fn !== null
-      ) {
-        if (authors.indexOf(resultItem.contactPoint.fn) < 0) {
-          authors.push(resultItem.contactPoint.fn);
-        }
-      }
-    }
-    return authors;
-  }
-
-  /**
-   * Get keywords from search result
-   * @param searchResults search result
-   */
-  collectKeywords(searchResults: any[]) {
-    let kwords: string[] = [];
-    let tempkeywords: string[] = [];
-
-    for (let resultItem of searchResults) {
-      const keywords = this.extractKeywordTokens(resultItem);
-      keywords.forEach((kw) => {
-        const normalized = kw.toLowerCase();
-        if (kwords.indexOf(normalized) < 0) {
-          kwords.push(normalized);
-        }
-      });
-    }
-    return kwords;
-  }
-
-  private extractKeywordTokens(resultItem: any): string[] {
-    if (!resultItem) return [];
-    const tokens: string[] = [];
-    const addToken = (val: any) => {
-      if (!val) return;
-      const str = val.toString().trim();
-      if (str) tokens.push(str);
-    };
-    const candidates = [
-      ...(Array.isArray(resultItem.keyword) ? resultItem.keyword : []),
-      ...(Array.isArray(resultItem.tags) ? resultItem.tags : []),
-      ...(Array.isArray(resultItem.languages) ? resultItem.languages : []),
-    ];
-    candidates.forEach((keyword) => {
-      //If keyword value contains semicolons, split them
-      const parts = keyword.toString().split(";");
-      parts.forEach((part) => addToken(part));
-    });
-    return tokens;
-  }
-
-  /**
-   * Collect components from search results
-   * @param searchResults - search results
-   */
-  collectComponents(searchResults: any[]) {
-    let components: SelectItem[] = [];
-    let componentsArray: string[] = [];
-    let compType: string;
-    let uniqueComp: string[] = [];
-
-    this.componentsAllArray = [];
-
-    for (let resultItem of searchResults) {
-      if (
-        resultItem["components"] != null &&
-        resultItem["components"] != undefined &&
-        resultItem["components"].length > 0
-      ) {
-        uniqueComp = [];
-        let allcomponents = resultItem["components"];
-        for (let component of allcomponents) {
-          let resTypeArray = component["@type"];
-          for (var i = 0; i < resTypeArray.length; i++) {
-            compType = _.startCase(_.split(resTypeArray[i], ":")[1]);
-            if (uniqueComp.indexOf(compType) < 0) uniqueComp.push(compType);
-
-            if (
-              compType != null &&
-              compType != undefined &&
-              _.includes(resTypeArray[i], "nrdp")
-            ) {
-              if (componentsArray.indexOf(resTypeArray[i]) < 0) {
-                components.push({
-                  label: compType,
-                  value: compType,
-                });
-                componentsArray.push(resTypeArray[i]);
-              }
-            }
-          }
-        }
-
-        for (let comp of uniqueComp) {
-          this.componentsAllArray.push(comp);
-        }
-      }
-    }
-    return components;
-  }
-
-  /**
-   * Collect components + count
-   */
-  collectComponentsWithCount() {
-    this.componentsWithCount = [];
-    for (let comp of this.components) {
-      let count: any;
-      if (this.showComponents.includes(comp.label)) {
-        count = _.countBy(
-          this.componentsAllArray,
-          _.partial(_.isEqual, comp.value)
-        )["true"];
-        this.componentsWithCount.push({
-          label: comp.label + "-" + count,
-          data: comp.value,
-          key: comp.value, // fix unselectable filters in primeng 17
-        });
-      }
-    }
-  }
-
-  /**
-   * Collect themes from Search results
-   * @param searchResults - search results
-   */
-  collectThemes(searchResults: any[]) {
-    let themes: SelectItem[] = [];
-    let themesArray: string[] = [];
-
-    let topicLabel: string;
-    let data: string;
-    this.themesAllArray = [];
-    this.unspecifiedCount = 0;
-
-    for (let resultItem of searchResults) {
-      if (
-        typeof resultItem.topic !== "undefined" &&
-        resultItem.topic.length > 0
-      ) {
-        for (let topic of resultItem.topic) {
-          topicLabel = _.split(topic.tag, ":")[0];
-          topic = topic.tag;
-
-          if (themesArray.indexOf(topicLabel) < 0) {
-            themes.push({ label: topicLabel, value: topic });
-            themesArray.push(topicLabel);
-          }
-        }
-      } else {
-        this.unspecifiedCount += 1;
-      }
-    }
-
-    for (let resultItem of searchResults) {
-      this.uniqueThemes = [];
-
-      if (
-        typeof resultItem.topic !== "undefined" &&
-        resultItem.topic.length > 0
-      ) {
-        for (let topic of resultItem.topic) {
-          topic = topic.tag;
-
-          for (let theme of themes) {
-            if (topic.toLowerCase().indexOf(theme.label.toLowerCase()) > -1) {
-              this.uniqueThemes.push(theme.label);
-            }
-          }
-        }
-
-        this.themesAllArray = this.themesAllArray.concat(
-          this.uniqueThemes.filter(this.onlyUnique)
-        );
-      }
-    }
-
-    this.themes = themes;
-  }
-
-  /**
-   * Find the location of nth character in a string
-   * @param string - string to search from
-   * @param nth - occuence
-   * @param char - character to search for
-   * @returns position of the character
-   */
-  findNthOccurence(string, nth, char) {
-    let index = 0;
-    for (let i = 0; i < nth; i += 1) {
-      if (index !== -1) index = string.indexOf(char, index + 1);
-    }
-    return index;
-  }
-
-  /**
-   * Collect NIST themes + count
-   */
-  collectThemesWithCount() {
-    let sortable: any[] = [];
-
-    sortable = [];
-    this.themesWithCount = [];
-    for (let theme in _.countBy(this.themesAllArray)) {
-      sortable.push([theme, _.countBy(this.themesAllArray)[theme]]);
-    }
-
-    sortable.sort(function (a, b) {
-      return b[1] - a[1];
-    });
-
-    if (this.unspecifiedCount > 0) {
-      sortable.push(["Unspecified", this.unspecifiedCount]);
-    }
-
-    for (var key in sortable) {
-      this.themesWithCount.push({
-        label: sortable[key][0] + "-" + sortable[key][1],
-        data: sortable[key][0],
-        key: key, // fix unselectable filters in primeng 17
-      });
-    }
-
-    if (sortable.length > 5) {
-      this.showMoreLink = true;
-    } else {
-      this.showMoreLink = false;
-    }
-  }
-
-  /**
    * Set the width of the filter column. If the filter is active, set the width to 25%.
    * If the filter is collapsed, set the width to 40px.
    */
@@ -1267,18 +1000,5 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.filterMode.emit("normal");
     }
-  }
-
-  /**
-   * Return tooltip text for given filter tree node.
-   * @param filternode tree node of a filter
-   * @returns tooltip text
-   */
-  filterTooltip(filternode: any) {
-    if (filternode && filternode.label)
-      return (
-        filternode.label.split("-")[0] + "-" + filternode.label.split("-")[1]
-      );
-    else return "";
   }
 }

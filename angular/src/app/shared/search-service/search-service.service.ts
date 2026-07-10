@@ -81,16 +81,10 @@ export interface SearchService {
   setPageSize(pageSize: number);
 
   /**
-   * Watch the most recent full search response (results + facets if provided by backend).
-   * Implementations should emit after every successful searchPhrase() call.
+   * Watch the most recent full search response (results + Facets from backend).
+   * Emits after every successful searchPhrase() call.
    */
   watchSearchResponse(): Observable<any>;
-
-  /**
-   * Fetch a larger (capped) result set with only minimal fields to compute global facet counts.
-   * Implementations should limit size to a safe cap to avoid huge payloads.
-   */
-  fetchAllForFacetCounts(query: SDPQuery, searchTaxonomyKey: string, maxSize: number, filter?: string): Observable<any>;
 
   /**
    * Toggle and watch whether external products (code, patents, papers) are included in searches.
