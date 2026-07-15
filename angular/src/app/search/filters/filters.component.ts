@@ -518,10 +518,10 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     const resourceTypes: any[] = Array.isArray(facets.resourceTypes) ? facets.resourceTypes : [];
     this.resourceTypesWithCount = resourceTypes
       .filter(rt => {
-        if (!rt || !rt.type) return false;
+        if (!rt || !rt.type || !String(rt.type).trim()) return false;
         const parts = (rt.type as string).split(':');
         const label = _.startCase(parts.length > 1 ? parts[parts.length - 1] : parts[0]);
-        return label.toLowerCase() !== 'dataset';
+        return !!label && label.toLowerCase() !== 'dataset';
       })
       .map(rt => {
         const parts = (rt.type as string).split(':');

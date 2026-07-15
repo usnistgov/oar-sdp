@@ -54,20 +54,28 @@ describe("FiltersComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("onSuccess", () => {
-    component.onSuccess(searchResult);
-    // Basic assertions adapted to minimal fixture
+  it("onSuccess builds facets from the backend Facets object", () => {
+    const facets = {
+      topics: [{ tag: "Nanotechnology", count: 5 }],
+      resourceTypes: [{ type: "nrdp:PublicDataResource", count: 3 }],
+      keywords: [{ keyword: "advanced functional materials" }],
+    };
+    component.onSuccess(searchResult, searchResult.length, facets);
     expect(component.keywords).toContain("advanced functional materials");
     expect(component.keywords.length).toBeGreaterThanOrEqual(1);
     expect(component.themesWithCount[0].label.startsWith("Nanotechnology")).toBeTruthy();
     expect(component.resourceTypesWithCount[0].label.startsWith("Public Data Resource")).toBeTruthy();
   });
 
-  it("ignores empty @type values when building resource types", () => {
-    const resultsWithEmptyType = [
-      { "@type": ["", "   ", "CodeRepository"], keyword: [], topic: [], components: [] },
-    ];
-    component.onSuccess([...searchResult, ...resultsWithEmptyType]);
+  it("ignores empty resource type values when building resource types", () => {
+    const facets = {
+      resourceTypes: [
+        { type: "", count: 0 },
+        { type: "   ", count: 0 },
+        { type: "CodeRepository", count: 4 },
+      ],
+    };
+    component.onSuccess(searchResult, searchResult.length, facets);
     const emptyLabels = component.resourceTypesWithCount.filter(
       (r) => !r.data || r.data.trim() === "" || r.label.startsWith("-")
     );
@@ -78,15 +86,11 @@ describe("FiltersComponent", () => {
     expect(codeRepo).toBeTruthy();
   });
 
-  it("collects keywords from tags and languages when keyword field is absent", () => {
-    const codeRecord = {
-      "@type": ["CodeRepository"],
-      tags: ["github", "reflectometry"],
-      languages: ["JavaScript", "HTML"],
-      topic: [],
-      components: [],
+  it("collects keywords from the backend keyword facets", () => {
+    const facets = {
+      keywords: [{ keyword: "github" }, { keyword: "javascript" }],
     };
-    component.onSuccess([codeRecord]);
+    component.onSuccess([], 0, facets);
     expect(component.keywords).toContain("github");
     expect(component.keywords).toContain("javascript");
   });
