@@ -1,0 +1,10 @@
+<div class="announce-bar" role="region" aria-label="Announcement" *ngIf="current">
+  <span class="announce-badge" *ngIf="current.badge">{{ current.badge }}</span>
+  <span class="announce-msg">
+    {{ current.message }}
+    <a class="announce-cta" *ngIf="current.cta?.href" [href]="current.cta?.href"
+       [attr.target]="current.cta?.target || null"
+       [attr.rel]="current.cta?.target === '_blank' ? 'noopener' : null"><span class="announce-cta-text">{{ current.cta?.text }}</span><i class="pi pi-external-link announce-cta-icon" *ngIf="current.cta?.target === '_blank'" aria-hidden="true"></i></a>
+  </span>
+  <button type="button" class="announce-dismiss" *ngIf="current.dismissible !== false" (click)="dismiss()">Dismiss</button>
+</div>
