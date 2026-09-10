@@ -1,19 +1,29 @@
 <p-menubar #menubar [model]="items">
   <ng-template pTemplate="start">
-    <div
-      id="logo"
-      (click)="goHome()"
-      style="display: flex; align-items: center; margin-right: 10px"
-    >
-      <div class="logo-container">
-        <div class="image-container">
-            <img src="assets/images/f_nist-logo-brand-white_nist-logo-brand-white.png" alt="Your Image" class="scaled-image" />
-        </div>
-      </div>
+    <div id="logo">
+      <!-- Full NIST logo -> nist.gov landing page -->
+      <a
+        href="https://www.nist.gov"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="nist-logo-link"
+        title="National Institute of Standards and Technology (nist.gov)"
+        aria-label="National Institute of Standards and Technology home page"
+      >
+        <img
+          src="assets/images/f_nist-logo-brand-white_nist-logo-brand-white.png"
+          alt="National Institute of Standards and Technology"
+          class="nist-logo-img"
+        />
+      </a>
 
+      <!-- Vertical divider between the NIST logo and the app title -->
+      <span class="logo-divider" aria-hidden="true"></span>
+
+      <!-- Science Data Portal title (plain text; Home is reached via the home icon) -->
       <div class="logo-text">
-        <div class="ml-2">SCIENCE</div>
-        <div class="ml-2">DATA PORTAL</div>
+        <span class="logo-text-line">SCIENCE</span>
+        <span class="logo-text-line">DATA PORTAL</span>
       </div>
 
       <span

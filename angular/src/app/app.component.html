@@ -16,9 +16,12 @@
       'layout-menu-static-active': staticMenuMobileActive
     }"
   >
+    <a class="skip-link" href="#main-content" (click)="skipToMain($event)"
+      >Skip to main content</a
+    >
     <app-headbar></app-headbar>
     <!-- <app-top-menu-bar></app-top-menu-bar> -->
-    <div class="content">
+    <div id="main-content" class="content" tabindex="-1">
       <router-outlet></router-outlet>
     </div>
 

@@ -84,6 +84,16 @@ export class AppComponent implements AfterViewInit {
         this.layoutContainer = <HTMLDivElement>this.layourContainerViewChild.nativeElement;
     }
 
+    // Skip link: move focus to the main content without changing the hash route.
+    skipToMain(event: Event) {
+        event.preventDefault();
+        const el = this.document.getElementById('main-content');
+        if (el) {
+            el.focus();
+            el.scrollIntoView();
+        }
+    }
+
     ngOnInit() {
         //Load fields so it's avialble for search result page and search panel
         this.searchFieldsListService.getSearchFields().subscribe((fields) => {
