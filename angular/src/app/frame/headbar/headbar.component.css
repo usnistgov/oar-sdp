@@ -1,27 +1,59 @@
 /* headbar.component.css */
+/* Full NIST logo (matches the footer lockup). The PNG (1500x357) has transparent
+   padding; visible art is x122-1275, y92-253. --logo-img-h drives the crop math
+   below so the divider sits tight to the logo. */
 #logo {
   display: flex;
   align-items: center;
   background-color: #000000;
   margin-left: 1.7em;
+  --logo-img-h: clamp(44px, 4.6vw, 76px);
+}
+
+.nist-logo-link {
+  display: block;
+  overflow: hidden;
+  height: calc(var(--logo-img-h) * 161 / 357);
+  width: calc(var(--logo-img-h) * 1153 / 357);
   cursor: pointer;
+}
+
+.nist-logo-img {
+  height: var(--logo-img-h);
+  width: auto;
+  display: block;
+  margin-top: calc(var(--logo-img-h) * -92 / 357);
+  margin-left: calc(var(--logo-img-h) * -122 / 357);
+}
+
+/* Vertical white divider between the NIST logo and the app title */
+.logo-divider {
+  display: inline-block;
+  width: 1px;
+  height: clamp(34px, 3.5vw, 58px);
+  background-color: #ffffff;
+  margin: 0 14px;
+  flex: 0 0 auto;
 }
 
 .logo-text {
   font-family: sans-serif;
   font-weight: bolder;
-  font-size: 15px;
-  line-height: 17px;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1.15;
   color: #ffffff;
   white-space: nowrap;
-  margin-left: -.5rem;
   margin-right: .5rem;
-  display:inline-block;
+  display: inline-flex;
+  flex-direction: column;
 }
 
 :host {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 1200;
+  display: block;
+  background: #000000;
 }
 
 ::ng-deep .p-menubar {
@@ -33,12 +65,6 @@
   z-index: 1200;
 }
 
-::ng-deep .p-menubar .p-menubar-end {
-  margin-left: 100px;
-  display: flex;
-  align-items: center;
-}
-
 ::ng-deep .p-menubar .p-submenu-list {
   z-index: 1210;
 }
@@ -47,85 +73,329 @@
   font-size: 14px;
 }
 
-@media (max-width: 1200px) {
-  ::ng-deep .p-menuitem-text {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 992px) {
-  ::ng-deep .p-menuitem-text {
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 768px) {
-  ::ng-deep .p-menuitem-text {
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 576px) {
-  ::ng-deep .p-menuitem-text {
-    font-size: 10px;
-  }
-}
-
-
 ::ng-deep .p-menuitem-link:hover {
-  background-color: #444444;
+  background-color: transparent;
 }
 
 ::ng-deep .p-menuitem-icon {
   margin-right: .5rem;
 }
 
-.layout-wrapper,
-.layout-container,
-.grid {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 ::ng-deep .p-menubar .p-menubar-end {
   margin-left: auto;
-}
-
-.logo-container {
-  display:inline-block;
-  width: 110px;  /* Width of the container */
-  height: 30px; /* Height of the container */
-  overflow: hidden;
-  margin-right: 5px;
-  margin-bottom: 0em;
-}
-
-.image-container {
-  width: 330px;  /* Width of the container */
-  height: 100px; /* Height of the container */
-  overflow: hidden;
-  position: relative;
-  margin-left: -60px;
-  margin-top: -2.1em;
-}
-
-.scaled-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;    /* Ensures the image scales to cover the container */
-  object-position: left center;  /* Ensures the left part of the image is in view */
-  transform: scale(.8);  /* Scale the image */
-  clip-path: inset(0 10% 0 0);  /* Clips the right half, showing only the left */
-  transition: transform 0.3s ease-in-out; /* Smooth transition for scale */
 }
 
 #appVersion {
   display:inline-block;
   border: 1px solid #f0f0f0;
   margin-left: 2em;
-  /* margin-top: 5px; */
   margin-right: 18px;
   color: #f0f0f0;
   background-color: transparent;
+}
+
+/* ===================== Menu redesign ===================== */
+/* Root list layout */
+:host ::ng-deep .p-menubar .p-menubar-root-list {
+  gap: clamp(6px, 0.7vw, 16px);
+  align-items: center;
+}
+
+/* Root-level items: pill hover/active, tighter padding, cleaner type */
+:host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content {
+  border-radius: 8px;
+  transition: background-color .15s ease;
+}
+
+:host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content .p-menuitem-link {
+  padding: .5rem .85rem;
+  border-radius: 8px;
+}
+
+:host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content:hover,
+:host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem.p-menuitem-active > .p-menuitem-content {
+  background: rgba(255, 255, 255, .14);
+}
+
+/* Text + icons */
+:host ::ng-deep .p-menubar .p-menuitem-text {
+  font-weight: 600;
+  letter-spacing: .2px;
+  color: #ffffff;
+}
+
+:host ::ng-deep .p-menubar .p-menuitem-icon {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+/* Home is icon-only: drop the label gap so the icon centers inside its pill */
+:host ::ng-deep .p-menubar .menu-item-home .p-menuitem-icon {
+  margin-right: 0;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-icon {
+  color: #c9c9c9;
+  font-size: .7rem;
+}
+
+/* Dropdown panels: dark, rounded, matching the black bar */
+:host ::ng-deep .p-menubar .p-submenu-list {
+  background: #161616;
+  border: 1px solid #2f2f2f;
+  border-radius: 10px;
+  padding: .35rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .5);
+  width: max-content;
+  min-width: 16rem;
+  max-width: 26rem;
+  white-space: normal;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-text {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+  color: #ececec;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-content {
+  border-radius: 6px;
+  transition: background-color .12s ease;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-link {
+  padding: .55rem .7rem;
+  border-radius: 6px;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-content:hover {
+  background: rgba(255, 255, 255, .1);
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-content:hover .p-menuitem-text,
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-content:hover .p-menuitem-icon {
+  color: #ffffff;
+}
+
+/* Subtle "new" dot on the Metrics item — present, not shouty, retires on first click */
+:host ::ng-deep .p-menubar .menu-item-metrics .p-menuitem-link {
+  position: relative;
+}
+
+:host ::ng-deep .p-menubar .menu-item-metrics.has-new-dot .p-menuitem-link::after {
+  content: "";
+  position: absolute;
+  top: .4rem;
+  right: .3rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8ac34e;
+  box-shadow: 0 0 0 2px #000000, 0 0 6px rgba(138, 195, 78, .9);
+}
+
+/* ============ Anti-wrap layout (horizontal nav, never two rows) ============ */
+/* Header is a single flex row: logo never shrinks, nav never wraps. */
+:host ::ng-deep .p-menubar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: .35rem 1.25rem .35rem 0;
+}
+
+:host ::ng-deep .p-menubar .p-menubar-start {
+  flex: 0 0 auto;
+}
+
+:host ::ng-deep .p-menubar .p-menubar-root-list {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* Tighten the nav progressively instead of letting it wrap */
+@media (max-width: 1400px) {
+  :host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content .p-menuitem-link {
+    padding: .5rem .6rem;
+  }
+  :host ::ng-deep .p-menubar .p-menuitem-icon {
+    margin-right: .35rem;
+  }
+  #appVersion {
+    margin-left: 1rem;
+    margin-right: 10px;
+  }
+}
+
+/* Below this, collapse to a hamburger (PrimeNG mobile mode), styled to match */
+@media (max-width: 1180px) {
+  :host ::ng-deep .p-menubar {
+    position: relative;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: auto;
+    border-radius: 8px;
+    color: #ffffff;
+    transition: background-color .15s ease;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-button:hover,
+  :host ::ng-deep .p-menubar.p-menubar-mobile-active .p-menubar-button {
+    background: rgba(255, 255, 255, .14);
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-button:focus {
+    outline: 0 none;
+    box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .25);
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-root-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: auto;
+    margin-left: 0;
+    padding: .4rem;
+    background: #161616;
+    border: 1px solid #2f2f2f;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .5);
+    z-index: 1210;
+  }
+
+  :host ::ng-deep .p-menubar.p-menubar-mobile-active .p-menubar-root-list {
+    display: flex;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem {
+    width: 100%;
+    position: static;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content .p-menuitem-link {
+    padding: .6rem .7rem;
+    border-radius: 6px;
+  }
+
+  /* Submenus render inline (accordion) within the panel */
+  :host ::ng-deep .p-menubar .p-menubar-root-list .p-submenu-list {
+    position: static;
+    width: 100%;
+    border: 0 none;
+    box-shadow: none;
+    background: transparent;
+    padding: 0 0 .25rem 0;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-root-list .p-submenu-list .p-menuitem-link {
+    padding-left: 2.1rem;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-root-list .p-menuitem .p-submenu-icon {
+    margin-left: auto;
+  }
+
+  /* Metrics dot: right-of-row when the panel is vertical */
+  :host ::ng-deep .p-menubar .menu-item-metrics.has-new-dot .p-menuitem-link::after {
+    top: 50%;
+    right: .6rem;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 2px #161616, 0 0 6px rgba(138, 195, 78, .9);
+  }
+}
+
+/* Small phones: keep the NIST logo prioritized, shed secondary chrome to avoid overflow */
+@media (max-width: 600px) {
+  #logo {
+    margin-left: .75em;
+  }
+  #appVersion {
+    display: none;
+  }
+}
+
+@media (max-width: 440px) {
+  .logo-divider,
+  .logo-text {
+    display: none;
+  }
+}
+
+/* ============ Sticky header polish: shrink + elevation on scroll ============ */
+#logo,
+.nist-logo-link,
+.logo-divider {
+  transition: height .2s ease;
+}
+
+:host ::ng-deep .p-menubar {
+  border-bottom: 1px solid #1c1c1c;
+  transition: padding .2s ease, box-shadow .2s ease;
+}
+
+:host.is-scrolled #logo {
+  --logo-img-h: clamp(38px, 3.4vw, 54px);
+}
+
+:host.is-scrolled .logo-divider {
+  height: clamp(26px, 2.6vw, 40px);
+}
+
+:host.is-scrolled ::ng-deep .p-menubar {
+  padding-top: .1rem;
+  padding-bottom: .1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+}
+
+/* ============ Active-route indicator ============ */
+:host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem.menu-active > .p-menuitem-content {
+  background: rgba(255, 255, 255, .10);
+  box-shadow: inset 0 -2px 0 0 #ffffff;
+}
+
+/* ============ External-link (opens in new tab) cue ============ */
+:host ::ng-deep .p-menubar .ext-link .p-menuitem-text::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: .35em;
+  font-size: .72em;
+  font-weight: 700;
+  opacity: .6;
+  vertical-align: middle;
+}
+
+/* ============ Key Datasets mega-menu (multi-column dropdown) ============ */
+/* Gate to the active/open state so PrimeNG's display:none still hides it when closed. */
+:host ::ng-deep .p-menubar .mega-datasets.p-menuitem-active .p-submenu-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(13rem, 1fr));
+  width: max-content;
+  max-width: min(92vw, 40rem);
+  column-gap: .25rem;
+}
+
+/* In the collapsed panel, keep everything single-column */
+@media (max-width: 1180px) {
+  :host ::ng-deep .p-menubar .mega-datasets.p-menuitem-active .p-submenu-list {
+    display: block;
+    width: 100%;
+    max-width: none;
+  }
+
+  :host ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem.menu-active > .p-menuitem-content {
+    box-shadow: inset 3px 0 0 0 #ffffff;
+  }
 }
