@@ -17,6 +17,23 @@ change. The entry below is only an example (the Metrics launch); replace it with
 `href` may be absolute (another app). `target: "_blank"` opens a new tab and shows an external-link
 icon. Bump `id` to re-show after a dismiss.
 
+### Colors (optional)
+An entry may carry a `colors` object to re-theme the bar. Every field is optional and falls back to
+the default amber theme, so an entry with no `colors` looks exactly as before.
+
+```json
+"colors": { "bar": "transparent", "wash": "#FFB020", "badge": "#FFB020", "link": "#FFC862" }
+```
+
+- `bar` - solid base background of the whole bar.
+- `wash` - color that fades in and out across the center gradient (also the bottom border and the
+  dismiss focus ring). Applied at low opacity via `color-mix`, so pass a solid color.
+- `badge` - badge background.
+- `link` - call-to-action link color (hover is a lighter tint of it).
+
+Under the hood the component sets these as inline CSS variables (`--ann-bar`, `--ann-wash`,
+`--ann-badge`, `--ann-link`) on the bar; the stylesheet reads them with the amber values as fallback.
+
 At deploy time the built-in config above is overridden by the oar-docker bind mount
 `apps/sdp/announcements.json` (read-only, from apps/docker-compose.yml), so the banner can be changed
 without rebuilding the app. Keep both files in the same schema.

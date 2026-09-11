@@ -10,6 +10,10 @@ export interface Announcement {
   badge?: string;
   message?: string;
   cta?: { text?: string; href?: string; target?: string };
+  /** Optional per-announcement colors. Any omitted field falls back to the default amber theme.
+   *  `bar` is the solid base background; `wash` is the color that fades across the center gradient
+   *  (and the bottom border); `badge` is the badge background; `link` is the call-to-action color. */
+  colors?: { bar?: string; wash?: string; badge?: string; link?: string };
 }
 
 /** Config-driven announcement bar: shows the first eligible entry (enabled, before endDate, not

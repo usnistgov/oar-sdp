@@ -1,4 +1,8 @@
-<div class="announce-bar" role="region" aria-label="Announcement" *ngIf="current">
+<div class="announce-bar" role="region" aria-label="Announcement" *ngIf="current"
+     [style.--ann-bar]="current.colors?.bar || null"
+     [style.--ann-wash]="current.colors?.wash || null"
+     [style.--ann-badge]="current.colors?.badge || null"
+     [style.--ann-link]="current.colors?.link || null">
   <span class="announce-badge" *ngIf="current.badge">{{ current.badge }}</span>
   <span class="announce-msg">
     {{ current.message }}
