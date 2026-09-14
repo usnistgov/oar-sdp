@@ -55,7 +55,7 @@ export class HeadbarComponent implements OnInit {
     this.appConfig.getConfig().subscribe((conf) => {
       this.appVersion = conf.APPVERSION;
       // Same pattern as the featured collections: base server URL + path.
-      this.metricsURL = conf.SERVERBASE + "/metrics";
+      this.metricsURL = conf.SERVERBASE + "/metrics-dashboard";
     });
 
     this.metricsDotVisible = !this.getMetricsSeen();
@@ -235,7 +235,7 @@ export class HeadbarComponent implements OnInit {
     this.router.navigate([""]);
   }
 
-  // Open the Metrics page (SERVERBASE + /metrics) in a new tab, like featured collections.
+  // Open the Metrics page (SERVERBASE + /metrics-dashboard) in a new tab, like featured collections.
   private openMetrics() {
     this.dismissMetricsDot();
     if (this.metricsURL) {
