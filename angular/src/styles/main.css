@@ -1,3 +1,36 @@
+/* Full-bleed layout: remove the default 8px body margin (matches app intent) */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Accessible skip-to-content link: hidden until keyboard-focused */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 2000;
+  padding: 10px 16px;
+  background: #ffffff;
+  color: #0a3d57;
+  font-weight: 700;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+  text-decoration: none;
+  transition: top .15s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #205493;
+  outline-offset: 2px;
+}
+
+#main-content:focus {
+  outline: none;
+}
+
 /* Block Inter variable font loading */
 @font-face {
     font-family: 'Inter var';
@@ -6,8 +39,7 @@
     font-weight: 100 900;
     font-style: normal;
     font-named-instance: 'Regular';
-  }
-  
+  }  
   @font-face {
     font-family: 'Inter var';
     src: local('Arial Italic') !important;
