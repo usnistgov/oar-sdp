@@ -140,6 +140,82 @@ describe('SearchService', () => {
     expect(paper.contactPoint.fn).toBe('NIST Quantum Group');
   });
 
+  it('should merge external /facets into the combined response Facets', () => {
+    const service: any = TestBed.inject(RealSearchService);
+    const merged = service.combineResults(
+      {
+        ResultData: [{ ediid: '123', title: 'Primary' }],
+        ResultCount: 1,
+        Facets: {
+          topics: [{ tag: 'Physics', count: 4 }],
+          resourceTypes: [
+            { type: 'nrdp:PublicDataResource', count: 1 },
+            { type: 'Paper', count: 200 },
+          ],
+          components: [{ type: 'nrdp:DataFile', count: 1 }],
+          authors: [{ name: 'Zed Author', count: 1 }],
+          keywords: [{ keyword: 'optics', count: 2 }],
+        },
+      },
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [], ResultCount: 0 },
+      undefined,
+      {
+        Facets: {
+          topics: [
+            { tag: 'Physics', count: 30 },
+            { tag: 'Polymers', count: 23 },
+          ],
+          resourceTypes: [{ type: 'Paper', count: 230 }],
+          components: [],
+          authors: [{ name: 'Ann Author', count: 2 }],
+          keywords: [{ keyword: 'star polymers', count: 9 }],
+        },
+      }
+    );
+    const facets = merged.Facets;
+    // Topics from disjoint corpora are summed and sorted by count desc
+    expect(facets.topics[0]).toEqual({ tag: 'Physics', count: 34 });
+    expect(facets.topics[1]).toEqual({ tag: 'Polymers', count: 23 });
+    // Duplicate resourceTypes keep the larger count instead of double-counting
+    expect(facets.resourceTypes).toEqual(
+      expect.arrayContaining([
+        { type: 'Paper', count: 230 },
+        { type: 'nrdp:PublicDataResource', count: 1 },
+      ])
+    );
+    expect(facets.resourceTypes.filter((rt: any) => rt.type === 'Paper').length).toBe(1);
+    // Keywords merged and sorted by count desc; authors alphabetical
+    expect(facets.keywords[0]).toEqual({ keyword: 'star polymers', count: 9 });
+    expect(facets.authors.map((a: any) => a.name)).toEqual(['Ann Author', 'Zed Author']);
+    // Components preserved from the data backend
+    expect(facets.components).toEqual([{ type: 'nrdp:DataFile', count: 1 }]);
+  });
+
+  it('should surface external facets when no data facets are present (papers-only)', () => {
+    const service: any = TestBed.inject(RealSearchService);
+    const merged = service.combineResults(
+      { ResultData: [], ResultCount: 0, total: 0 },
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [], ResultCount: 0 },
+      { ResultData: [{ title: 'A Paper' }], ResultCount: 1 },
+      undefined,
+      {
+        Facets: {
+          topics: [{ tag: 'Materials', count: 14 }],
+          resourceTypes: [{ type: 'Paper', count: 230 }],
+          components: [],
+          authors: [],
+          keywords: [{ keyword: 'star polymers', count: 9 }],
+        },
+      }
+    );
+    expect(merged.Facets.topics).toEqual([{ tag: 'Materials', count: 14 }]);
+    expect(merged.Facets.resourceTypes).toEqual([{ type: 'Paper', count: 230 }]);
+    expect(merged.Facets.keywords).toEqual([{ keyword: 'star polymers', count: 9 }]);
+  });
+
   it('should honor product type toggles when computing active products', () => {
     const service = TestBed.inject(RealSearchService);
     service.setProductTypes({ data: true, code: true });

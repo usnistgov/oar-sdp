@@ -155,6 +155,7 @@ export class RealSearchService implements SearchService {
     let externalUrl: string | null = null;
     let papersUrl: string | null = null;
     let patentsUrl: string | null = null;
+    let facetsUrl: string | null = null;
 
     if (rows[0]?.fieldValue == "isPartOf.@id") {
       url =
@@ -251,6 +252,20 @@ export class RealSearchService implements SearchService {
           (parts.length ? "&" : "") +
           "include=_id,title,name,description,abstract,summary,patentNumber,publicationNumber,publicationDate,assignee,assignees,applicant,applicants,organization,owner,inventor,inventors,contact,contactPoint,landingPage,url,keyword,keywords,tags,topic.tag,@type";
       }
+
+      // Full-corpus facets for external products (papers/code/patents). The
+      // data backend embeds its own Facets in the /records response, so only
+      // the external corpora are requested here and merged client-side.
+      const externalProductKeys: string[] = [];
+      if (includeCode) externalProductKeys.push("code");
+      if (includePapers) externalProductKeys.push("papers");
+      if (includePatents) externalProductKeys.push("patents");
+      if (externalProductKeys.length) {
+        const facetParts: string[] = [];
+        if (searchPhraseValue) facetParts.push(searchPhraseValue.trim());
+        facetParts.push("products=" + externalProductKeys.join(","));
+        facetsUrl = "facets?" + facetParts.join("&");
+      }
     }
 
     return this.appConfig.getConfig().pipe(
@@ -319,10 +334,16 @@ export class RealSearchService implements SearchService {
                 )
               )
             : of(empty);
+        // Full-corpus external facets; failures must never break the search.
+        const facets$ = facetsUrl
+          ? this.http
+              .get(conf.RMMAPI + facetsUrl)
+              .pipe(rxjsop.catchError(() => of(null)))
+          : of(null);
 
         const streams: Array<
           Observable<{
-            key: "records" | "external" | "papers" | "patents";
+            key: "records" | "external" | "papers" | "patents" | "facets";
             value: any;
           }>
         > = [];
@@ -354,6 +375,13 @@ export class RealSearchService implements SearchService {
             )
           );
         }
+        if (facetsUrl) {
+          streams.push(
+            facets$.pipe(
+              rxjsop.map((value) => ({ key: "facets" as const, value }))
+            )
+          );
+        }
 
         if (!streams.length) {
           return of(empty);
@@ -364,6 +392,7 @@ export class RealSearchService implements SearchService {
           external: empty,
           papers: empty,
           patents: empty,
+          facets: null,
         };
 
         return merge(...streams).pipe(
@@ -374,8 +403,8 @@ export class RealSearchService implements SearchService {
             }),
             initial
           ),
-          rxjsop.map(({ records, external, papers, patents }) =>
-            this.combineResults(records, external, patents, papers, filter)
+          rxjsop.map(({ records, external, papers, patents, facets }) =>
+            this.combineResults(records, external, patents, papers, filter, facets)
           )
         );
       }),
@@ -562,7 +591,8 @@ export class RealSearchService implements SearchService {
     external?: any,
     patents?: any,
     papers?: any,
-    filter?: string
+    filter?: string,
+    externalFacetsResp?: any
   ) {
     const typeTokens = this.extractTypeFilterTokens(filter);
     const allowed =
@@ -606,8 +636,16 @@ export class RealSearchService implements SearchService {
     // external product, so the filter panel never regresses to the deprecated
     // client-side page aggregation. ResultData/ResultCount/total are overridden
     // below, so the unconditional spread cannot leak excluded data results.
+    // Facets for external products (papers/code/patents) come from the
+    // standalone /facets endpoint and are merged on top.
+    const base = primary && typeof primary === "object" ? primary : {};
+    const mergedFacets = this.mergeFacets(
+      (base as any).Facets,
+      externalFacetsResp && externalFacetsResp.Facets
+    );
     return {
-      ...(primary && typeof primary === "object" ? primary : {}),
+      ...base,
+      ...(mergedFacets ? { Facets: mergedFacets } : {}),
       ResultData: [
         ...primaryData,
         ...externalData,
@@ -617,6 +655,67 @@ export class RealSearchService implements SearchService {
       ResultCount: combinedTotal,
       total: combinedTotal,
     };
+  }
+
+  /**
+   * Merge the data-backend Facets (embedded in the /records response) with the
+   * external-corpus Facets from the /facets endpoint. Topics/keywords/authors
+   * come from disjoint corpora, so counts for identical labels are summed;
+   * resourceTypes may be reported by both sources (e.g. the external "Paper"
+   * count the /records backend appends), so duplicates keep the larger count
+   * instead of double-counting.
+   */
+  private mergeFacets(primaryFacets: any, externalFacets: any): any {
+    if (!externalFacets) return primaryFacets;
+    const asArray = (value: any) => (Array.isArray(value) ? value : []);
+    const mergeBucket = (
+      a: any[],
+      b: any[],
+      key: string,
+      dedupe: "sum" | "max"
+    ) => {
+      const out = a.map((item) => ({ ...item }));
+      const index = new Map(out.map((item) => [item[key], item]));
+      b.forEach((item) => {
+        if (!item || item[key] === undefined || item[key] === null) return;
+        const existing = index.get(item[key]);
+        if (existing) {
+          existing.count =
+            dedupe === "sum"
+              ? (existing.count ?? 0) + (item.count ?? 0)
+              : Math.max(existing.count ?? 0, item.count ?? 0);
+        } else {
+          const copy = { ...item };
+          out.push(copy);
+          index.set(copy[key], copy);
+        }
+      });
+      return out;
+    };
+
+    const basis = primaryFacets || {};
+    const buckets: Array<[string, string, "sum" | "max"]> = [
+      ["topics", "tag", "sum"],
+      ["resourceTypes", "type", "max"],
+      ["components", "type", "sum"],
+      ["authors", "name", "sum"],
+      ["keywords", "keyword", "sum"],
+    ];
+    const merged: any = { ...basis };
+    for (const [bucket, key, dedupe] of buckets) {
+      merged[bucket] = mergeBucket(
+        asArray(basis[bucket]),
+        asArray(externalFacets[bucket]),
+        key,
+        dedupe
+      );
+    }
+    merged.topics.sort((x, y) => (y.count ?? 0) - (x.count ?? 0));
+    merged.keywords.sort((x, y) => (y.count ?? 0) - (x.count ?? 0));
+    merged.authors.sort((x, y) =>
+      String(x.name ?? "").localeCompare(String(y.name ?? ""))
+    );
+    return merged;
   }
 
   private extractTypeFilterTokens(filter?: string): string[] {
