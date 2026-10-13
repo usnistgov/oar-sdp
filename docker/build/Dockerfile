@@ -11,7 +11,7 @@
 
 # The parent should be an ancestor image of the operational container
 # 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # RUN sed -e '/stretch-updates/ s/^deb/#deb/' /etc/apt/sources.list \
 #    > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
