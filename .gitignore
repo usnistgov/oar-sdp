@@ -27,6 +27,9 @@ angular/node_modules/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# docs
+angular/docs/
+
 # misc
 /.sass-cache
 /connect.lock
