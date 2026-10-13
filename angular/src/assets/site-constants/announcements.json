@@ -1,0 +1,14 @@
+{
+  "announcements": [
+    {
+      "id": "metrics-launch",
+      "enabled": true,
+      "endDate": "2026-09-19",
+      "dismissible": true,
+      "badge": "NEW",
+      "message": "Metrics: downloads, data volume, and user reach for PDR datasets and collections.",
+      "cta": { "text": "Explore Metrics", "href": "/metrics/", "target": "_blank" },
+      "colors": { "bar": "transparent", "wash": "#FFB020", "badge": "#FFB020", "link": "#FFC862" }
+    }
+  ]
+}
