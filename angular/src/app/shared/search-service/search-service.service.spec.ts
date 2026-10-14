@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { RealSearchService } from './search-service.service.real';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AppConfig } from '../config-service/config.service';
+import { SDPQuery } from '../search-query/query';
 import { of } from 'rxjs';
 
 describe('SearchService', () => {
@@ -214,6 +215,35 @@ describe('SearchService', () => {
     expect(merged.Facets.topics).toEqual([{ tag: 'Materials', count: 14 }]);
     expect(merged.Facets.resourceTypes).toEqual([{ type: 'Paper', count: 230 }]);
     expect(merged.Facets.keywords).toEqual([{ keyword: 'star polymers', count: 9 }]);
+  });
+
+  it('should flag FacetsPending until every expected facet source arrives', () => {
+    const service: any = TestBed.inject(RealSearchService);
+    const httpMock = TestBed.inject(HttpTestingController);
+    service.setExternalProducts(true);
+    service.setProductTypes({ data: false, code: false, papers: true, patents: false });
+
+    const query = new SDPQuery();
+    query.freeText = 'star';
+
+    const emissions: any[] = [];
+    service.searchPhrase(query, '', 'no', 1, 10).subscribe((r: any) => emissions.push(r));
+
+    const papersReq = httpMock.expectOne((req) => req.url.includes('papers?'));
+    const facetsReq = httpMock.expectOne((req) => req.url.includes('facets?'));
+
+    // Results arrive before the facet aggregation: panel must stay loading
+    papersReq.flush({ ResultData: [{ title: 'A Paper' }], ResultCount: 1 });
+    expect(emissions.length).toBeGreaterThan(0);
+    expect(emissions[emissions.length - 1].FacetsPending).toBe(true);
+
+    facetsReq.flush({
+      Facets: { topics: [{ tag: 'Materials', count: 14 }], resourceTypes: [], components: [], authors: [], keywords: [] },
+    });
+    const last = emissions[emissions.length - 1];
+    expect(last.FacetsPending).toBe(false);
+    expect(last.Facets.topics).toEqual([{ tag: 'Materials', count: 14 }]);
+    httpMock.verify();
   });
 
   it('should honor product type toggles when computing active products', () => {

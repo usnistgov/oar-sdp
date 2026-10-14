@@ -191,7 +191,7 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       if(!resp || !resp.ResultData) return;
       const total = this.extractResponseTotal(resp);
       this.lastResponseTotal = total;
-      this.onSuccess(resp.ResultData, total, resp.Facets);
+      this.onSuccess(resp.ResultData, total, resp.Facets, !!resp.FacetsPending);
     });
 
     // Sync external filter string -> selection state (chips / removal / reset)
@@ -446,13 +446,16 @@ export class FiltersComponent implements OnInit, AfterViewInit, OnDestroy {
    * Called when a search response arrives. Facets from the backend are used directly
    * for counts — no secondary fetch required.
    */
-  onSuccess(searchResults: any[], totalCount?: number, facets?: any) {
+  onSuccess(searchResults: any[], totalCount?: number, facets?: any, facetsPending: boolean = false) {
     this.resultStatus = this.RESULT_STATUS.success;
     this.searchResults = searchResults;
     this.searchResultsError = [];
     if (searchResults.length === 0) {
       this.resultStatus = this.RESULT_STATUS.noResult;
     }
+    // While facet sources are still arriving, keep the skeleton loading state;
+    // the final emission rebuilds the panel with the complete Facets.
+    if (facetsPending) return;
     this.buildFacetCounts(facets);
   }
 

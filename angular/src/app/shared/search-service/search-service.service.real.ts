@@ -387,12 +387,21 @@ export class RealSearchService implements SearchService {
           return of(empty);
         }
 
+        // Facet sources expected for this request: /records embeds the data
+        // facets, /facets carries the external-product facets. Responses are
+        // flagged FacetsPending until every expected source has arrived, so
+        // the filter panel can hold its loading state.
+        const expectedFacetKeys: string[] = [];
+        if (hasRecordsRequest) expectedFacetKeys.push("records");
+        if (facetsUrl) expectedFacetKeys.push("facets");
+
         const initial = {
           records: empty,
           external: empty,
           papers: empty,
           patents: empty,
           facets: null,
+          arrived: [] as string[],
         };
 
         return merge(...streams).pipe(
@@ -400,12 +409,16 @@ export class RealSearchService implements SearchService {
             (acc, update) => ({
               ...acc,
               [update.key]: update.value,
+              arrived: acc.arrived.includes(update.key)
+                ? acc.arrived
+                : [...acc.arrived, update.key],
             }),
             initial
           ),
-          rxjsop.map(({ records, external, papers, patents, facets }) =>
-            this.combineResults(records, external, patents, papers, filter, facets)
-          )
+          rxjsop.map(({ records, external, papers, patents, facets, arrived }) => ({
+            ...this.combineResults(records, external, patents, papers, filter, facets),
+            FacetsPending: expectedFacetKeys.some((key) => !arrived.includes(key)),
+          }))
         );
       }),
       rxjsop.tap((resp) => this.lastSearchResponse$.next(resp)),
