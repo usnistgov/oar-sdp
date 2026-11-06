@@ -409,6 +409,40 @@ export class SearchQueryService {
     }
 
     /**
+     * AI (natural language) search mode. Shared so every search panel instance
+     * (home, results) stays in sync, and remembered for the browser session.
+     */
+    private readonly AI_MODE_KEY = "sdp.aiSearchMode.v1";
+    private _aiMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        this.readStoredAiMode()
+    );
+
+    public _watchAiMode(subscriber) {
+        return this._aiMode.subscribe(subscriber);
+    }
+
+    public getAiMode(): boolean {
+        return this._aiMode.value;
+    }
+
+    public setAiMode(enabled: boolean) {
+        try {
+            sessionStorage.setItem(this.AI_MODE_KEY, enabled ? "1" : "0");
+        } catch (e) {
+            // Storage can be unavailable (private mode); the in-memory state still works.
+        }
+        this._aiMode.next(enabled);
+    }
+
+    private readStoredAiMode(): boolean {
+        try {
+            return sessionStorage.getItem(this.AI_MODE_KEY) === "1";
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
      * Look up field type
      * @param fieldValue - input field value
      */

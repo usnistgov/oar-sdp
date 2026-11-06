@@ -53,7 +53,10 @@
         </i>
       </p>
 
-      <div class="p-inputgroup search-input-group">
+      <div
+        class="p-inputgroup search-input-group"
+        [class.search-input-group--ai]="aiMode"
+      >
         <p-autoComplete
           pInputText
           p-fluid
@@ -109,6 +112,54 @@
         >
           <i class="pi pi-info-circle"></i>
         </span>
+        <span
+          class="p-inputgroup-addon search-addon search-addon--ai"
+          [class.is-active]="aiMode"
+          (click)="toggleAiMode()"
+          tabindex="0"
+          role="switch"
+          [attr.aria-checked]="aiMode"
+          aria-label="SI search"
+          [title]="
+            aiMode
+              ? 'SI search is on. Click to switch back to keyword search'
+              : 'Turn on SI search: describe what you need in plain English'
+          "
+          (keydown)="onAiToggleKeydown($event)"
+        >
+          <svg
+            class="ai-icon"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="M9.5 3l1.7 4.8L16 9.5l-4.8 1.7L9.5 16l-1.7-4.8L3 9.5l4.8-1.7L9.5 3zm8 8l1 2.9 2.9 1-2.9 1-1 2.9-1-2.9-2.9-1 2.9-1 1-2.9zM17 2l.7 1.8L19.5 4.5l-1.8.7L17 7l-.7-1.8-1.8-.7 1.8-.7L17 2z"
+            />
+          </svg>
+          <span class="ai-label">SI</span>
+        </span>
+      </div>
+
+      <div class="ai-banner" *ngIf="aiMode" role="status">
+        <div class="ai-banner__body">
+          <strong>SI search is on.</strong>
+          <span>Describe what you're looking for in plain English.</span>
+          <button
+            type="button"
+            class="ai-banner__example"
+            title="Use this example"
+            (click)="setSearchValue(aiPlaceHolderText[0])"
+          >
+            <span class="ai-banner__example-label">Try</span>
+            <em>{{ aiPlaceHolderText[0] }}</em>
+          </button>
+        </div>
+        <button type="button" class="ai-banner__off" (click)="toggleAiMode()">
+          Turn off
+        </button>
       </div>
 
       <div
@@ -146,14 +197,60 @@
 
   <p-dialog
     class="examples-dialog"
-    header="Search Examples"
+    [header]="aiMode ? 'SI Search Examples' : 'Search Examples'"
     [(visible)]="examplesDialogVisible"
     [modal]="true"
     [dismissableMask]="true"
     [style]="{ width: 'min(760px, 92vw)' }"
     (onHide)="closeExamples()"
   >
-    <div class="examples-dialog__body">
+    <div class="examples-dialog__body" *ngIf="aiMode">
+      <p class="examples-dialog__hint">
+        Just write what you want in plain English. SI search turns your request
+        into filters for the NIST catalog. Click any example to prefill the
+        search bar.
+      </p>
+      <div class="examples-dialog__table">
+        <p-table [value]="aiExamples" class="p-datatable">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Ask like this</th>
+              <th>What SI search will look for</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-ex>
+            <tr>
+              <td>
+                <a
+                  class="examples"
+                  (click)="$event.preventDefault(); setSearchValue(ex.query)"
+                  >{{ ex.query }}</a
+                >
+              </td>
+              <td>{{ facetsText(ex) }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="examples-dialog__actions">
+        <button
+          pButton
+          type="button"
+          label="Use keyword search"
+          class="p-button-text"
+          (click)="toggleAiMode()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Close"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="closeExamples()"
+        ></button>
+      </div>
+    </div>
+    <div class="examples-dialog__body" *ngIf="!aiMode">
       <p class="examples-dialog__hint">
         Click any example to prefill the search bar. Use logical operators and
         field qualifiers to craft precise queries tailored to the NIST catalog.

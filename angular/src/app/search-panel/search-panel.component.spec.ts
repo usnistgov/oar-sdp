@@ -30,7 +30,7 @@ global.fetch = jest.fn(() =>
     arrayBuffer: jest.fn(),
     blob: jest.fn(),
     formData: jest.fn(),
-    text: jest.fn(),
+    text: () => Promise.resolve("term\r\n"),
   })
 );
 
@@ -66,5 +66,52 @@ describe("SearchPanelComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  describe("SI search mode", () => {
+    afterEach(() => component.searchQueryService.setAiMode(false));
+
+    it("is off by default and toggles the glow class and banner", () => {
+      const group = fixture.nativeElement.querySelector(".search-input-group");
+      expect(component.aiMode).toBe(false);
+      expect(group.classList).not.toContain("search-input-group--ai");
+      expect(fixture.nativeElement.querySelector(".ai-banner")).toBeNull();
+
+      component.toggleAiMode();
+      fixture.detectChanges();
+      expect(component.aiMode).toBe(true);
+      expect(group.classList).toContain("search-input-group--ai");
+      expect(fixture.nativeElement.querySelector(".ai-banner")).not.toBeNull();
+
+      component.toggleAiMode();
+      fixture.detectChanges();
+      expect(component.aiMode).toBe(false);
+      expect(fixture.nativeElement.querySelector(".ai-banner")).toBeNull();
+    });
+
+    it("prefills the search bar from the TRY example", () => {
+      component.toggleAiMode();
+      fixture.detectChanges();
+      fixture.nativeElement.querySelector(".ai-banner__example").click();
+      expect(component.searchValue).toBe(component.aiExamples[0].query);
+    });
+
+    it("exposes the switch state for assistive tech", () => {
+      const btn = fixture.nativeElement.querySelector(".search-addon--ai");
+      expect(btn.getAttribute("aria-checked")).toBe("false");
+      btn.click();
+      fixture.detectChanges();
+      expect(btn.getAttribute("aria-checked")).toBe("true");
+    });
+
+    it("uses natural language placeholders and skips keyword suggestions", () => {
+      component.toggleAiMode();
+      expect(component.currentPlaceholders).toBe(component.aiPlaceHolderText);
+      component.parsed_data = [["gallium"]];
+      component.parsed_data_headers = ["term"];
+      component.filterTaxonomies({ query: "gal" });
+      expect(component.suggestedTaxonomyList).toEqual([]);
+      expect(component.shouldShowEmptyMessage()).toBe(false);
+    });
   });
 });

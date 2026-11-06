@@ -2,6 +2,7 @@ import {
   Component,
   Inject,
   OnInit,
+  OnDestroy,
   Input,
   NgZone,
   ViewChild,
@@ -16,7 +17,7 @@ import { SearchService, SEARCH_SERVICE } from "../shared/search-service";
 import { Router, NavigationExtras } from "@angular/router";
 import * as _ from "lodash-es";
 import { AppConfig, Config } from "../shared/config-service/config.service";
-import { timer } from "rxjs";
+import { timer, Subscription } from "rxjs";
 import {
   trigger,
   state,
@@ -67,7 +68,7 @@ import { MessageService } from "primeng/api";
     ]),
   ],
 })
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
   @Input() title: string;
   @Input() subtitle: boolean;
   @Input() helpicon: boolean = false;
@@ -115,6 +116,55 @@ export class SearchPanelComponent implements OnInit {
     "XPDB",
     "Interatomic Potentials",
   ];
+  // SI search mode: users type plain English instead of keyword syntax.
+  aiMode: boolean = false;
+  aiExamples: { query: string; facets: { label: string; value: string }[] }[] =
+    [
+      {
+        query:
+          "Entropy datasets and code, 2019 to 2023, by Jack Smith or Jane Doe",
+        facets: [
+          { label: "Topic", value: "entropy" },
+          { label: "Type", value: "Datasets, Software" },
+          { label: "Years", value: "2019 – 2023" },
+          { label: "Author", value: "Jack Smith, Jane Doe" },
+        ],
+      },
+      {
+        query: "Reference data for gallium",
+        facets: [
+          { label: "Topic", value: "gallium" },
+          { label: "Type", value: "Reference data" },
+        ],
+      },
+      {
+        query: "Recent publications on machine learning in materials science",
+        facets: [
+          { label: "Topic", value: "machine learning, materials science" },
+          { label: "Type", value: "Publications" },
+          { label: "Sorted by", value: "Most recent" },
+        ],
+      },
+      {
+        query: "Software for analyzing X-ray diffraction data",
+        facets: [
+          { label: "Topic", value: "X-ray diffraction" },
+          { label: "Type", value: "Software" },
+        ],
+      },
+      {
+        query: "Standard reference materials for steel published since 2022",
+        facets: [
+          { label: "Topic", value: "steel" },
+          { label: "Type", value: "Reference materials" },
+          { label: "Years", value: "2022 onward" },
+        ],
+      },
+    ];
+
+  aiPlaceHolderText: string[] = this.aiExamples.map((e) => e.query);
+  private aiModeSub: Subscription;
+  private placeholderSub: Subscription;
   inputStyle = {};
   fields: SelectItem[];
   currentState = "initial";
@@ -243,15 +293,16 @@ export class SearchPanelComponent implements OnInit {
     // Init search box size and breadcrumb position
     this.onWindowResize();
     var i = 0;
+    this.aiModeSub = this.searchQueryService._watchAiMode((enabled: boolean) => {
+      this.aiMode = enabled;
+      i = 0;
+      this.placeholder = this.currentPlaceholders[0];
+    });
     const source = timer(1000, 2000);
-    source.subscribe((val) => {
-      if (i < this.placeHolderText.length) {
-        i++;
-        this.placeholder = this.placeHolderText[i];
-      } else {
-        this.placeholder = this.placeHolderText[0];
-        i = 0;
-      }
+    this.placeholderSub = source.subscribe(() => {
+      const list = this.currentPlaceholders;
+      i = (i + 1) % list.length;
+      this.placeholder = list[i];
     });
 
     this.appConfig.getConfig().subscribe((conf) => {
@@ -260,6 +311,32 @@ export class SearchPanelComponent implements OnInit {
     });
 
     this.getTaxonomySuggestions();
+  }
+
+  ngOnDestroy() {
+    this.aiModeSub?.unsubscribe();
+    this.placeholderSub?.unsubscribe();
+  }
+
+  facetsText(example: { facets: { label: string; value: string }[] }): string {
+    return example.facets.map((f) => `${f.label}: ${f.value}`).join(" · ");
+  }
+
+  get currentPlaceholders(): string[] {
+    return this.aiMode ? this.aiPlaceHolderText : this.placeHolderText;
+  }
+
+  toggleAiMode() {
+    this.searchQueryService.setAiMode(!this.aiMode);
+    this.closeExamples();
+    document.getElementById("searchinput")?.focus();
+  }
+
+  onAiToggleKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.toggleAiMode();
+    }
   }
 
   /**
@@ -394,6 +471,11 @@ export class SearchPanelComponent implements OnInit {
     let suggTaxonomy = event.query;
     this.suggestedTaxonomyList = [];
 
+    // Plain English queries are not matched against the keyword taxonomy
+    if (this.aiMode) {
+      return;
+    }
+
     // Check if the query looks like an advanced query
     const hasAdvancedSyntax = /[=:]|AND|OR/i.test(suggTaxonomy);
 
@@ -413,6 +495,7 @@ export class SearchPanelComponent implements OnInit {
    * Get the empty message for the suggestive search
    */
   getEmptyMessage(): string {
+    if (this.aiMode) return "";
     const hasAdvancedSyntax = /[=:]|AND|OR/i.test(this.searchValue || "");
     return hasAdvancedSyntax ? "" : "No suggestions found";
   }
@@ -421,6 +504,7 @@ export class SearchPanelComponent implements OnInit {
    * Control whether to show the empty message
    */
   shouldShowEmptyMessage(): boolean {
+    if (this.aiMode) return false;
     const hasAdvancedSyntax = /[=:]|AND|OR/i.test(this.searchValue || "");
     return !hasAdvancedSyntax && this.suggestedTaxonomyList.length === 0;
   }

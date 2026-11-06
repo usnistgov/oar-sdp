@@ -346,6 +346,150 @@ body .p-highlight {
   font-size: 1rem;
 }
 
+/* AI search mode */
+.search-addon--ai {
+  gap: 0.4rem;
+  border-radius: 12px !important;
+  margin-right: 0.2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.search-addon--ai .ai-label {
+  font-size: 0.85rem;
+}
+
+.search-addon--ai .ai-icon {
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.search-addon--ai:hover .ai-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.search-addon--ai.is-active {
+  color: #ffffff;
+  border-left: 2px solid #ffffff !important;
+  border-radius: 0 12px 12px 0 !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+.search-addon--ai.is-active .ai-icon {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+}
+
+.search-addon--ai.is-active:hover,
+.search-addon--ai.is-active:focus {
+  color: #ffffff;
+}
+
+.search-input-group--ai {
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 0 14px rgba(255, 255, 255, 0.45), 0 0 34px rgba(255, 255, 255, 0.22),
+    0 18px 36px rgba(0, 0, 0, 0.28);
+  animation: ai-glow 3s ease-in-out infinite;
+}
+
+@keyframes ai-glow {
+  50% {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 22px rgba(255, 255, 255, 0.65), 0 0 48px rgba(255, 255, 255, 0.3),
+      0 18px 36px rgba(0, 0, 0, 0.28);
+  }
+}
+
+.ai-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(1320px, 96vw);
+  margin: 0.75rem auto 0;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #ffffff;
+  background: rgba(0, 0, 0, 0.25);
+  color: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.ai-banner__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+.ai-banner__example {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.15rem 0.2rem 0.15rem 0.75rem;
+  border: none;
+  border-left: 2px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
+  color: #ffffff;
+  font-size: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.ai-banner__example-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.ai-banner__example:hover,
+.ai-banner__example:focus {
+  border-left-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ai-banner__off {
+  flex: none;
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-left: 2px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ai-banner__off:hover,
+.ai-banner__off:focus {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-input-group--ai {
+    animation: none;
+  }
+
+  .search-addon--ai .ai-icon {
+    transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-banner {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-addon--ai .ai-label {
+    display: none;
+  }
+}
+
 .examples-dialog ::ng-deep .p-dialog {
   max-height: 85vh;
   border: 1.5px solid #111111;
