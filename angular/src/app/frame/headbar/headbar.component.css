@@ -53,7 +53,9 @@
   top: 0;
   z-index: 1200;
   display: block;
-  background: #000000;
+  /* White backing: the body behind is black, so the menubar's rounded top
+     corners need this to reveal the banner color and actually be visible */
+  background: #ffffff;
 }
 
 ::ng-deep .p-menubar {
@@ -81,8 +83,11 @@
   margin-right: .5rem;
 }
 
+/* The end facet is unused in this headbar; PrimeNG still renders the empty
+   div, and an auto margin on it would steal half the free space from the
+   right-aligned nav/burger. Keep it collapsed instead. */
 ::ng-deep .p-menubar .p-menubar-end {
-  margin-left: auto;
+  margin-left: 0;
 }
 
 #appVersion {
@@ -343,7 +348,14 @@
 
 :host ::ng-deep .p-menubar {
   border-bottom: 1px solid #1c1c1c;
-  transition: padding .2s ease, box-shadow .2s ease;
+  /* Rounded top corners so the black bar flows out of the white gov banner */
+  border-radius: 32px 32px 0 0;
+  transition: padding .2s ease, box-shadow .2s ease, border-radius .2s ease;
+}
+
+/* Square the corners once the sticky header detaches from the banner */
+:host.is-scrolled ::ng-deep .p-menubar {
+  border-radius: 0;
 }
 
 :host.is-scrolled #logo {

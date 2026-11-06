@@ -1,0 +1,218 @@
+:host {
+  display: block;
+  width: 100%;
+  background: #fff;
+  font-family: "Helvetica Now Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Keep content clear of device notches / rounded screen corners */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  box-sizing: border-box;
+}
+
+.gov-banner-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+}
+
+.gov-banner-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  color: rgba(0, 12, 31, 0.65);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.gov-banner-flag {
+  flex: none;
+  border-radius: 1px;
+  /* Hairline so the white stripes don't bleed into the white banner */
+  box-shadow: 0 0 0 0.5px rgba(0, 12, 31, 0.15);
+}
+
+.gov-banner-text {
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.gov-banner-icon {
+  flex: none;
+  color: rgba(0, 12, 31, 0.45);
+  transition: color 0.2s;
+}
+
+.gov-banner-trigger:hover,
+.gov-banner-trigger:hover .gov-banner-icon {
+  color: #000c1f;
+}
+
+.gov-banner-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000c1f;
+}
+
+/* ===================== Details popup ===================== */
+.gov-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0, 12, 31, 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  animation: gov-fade-in 0.2s ease-out;
+}
+
+.gov-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 5001;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 432px;
+  max-width: calc(100vw - 32px);
+  max-height: min(calc(100vh - 112px), calc(100dvh - 32px));
+  overflow: hidden;
+  border-radius: 40px;
+  background: #fff;
+  color: #000c1f;
+  box-shadow: 0 0 0 1px rgba(0, 12, 31, 0.05), 0 10px 40px rgba(1, 14, 36, 0.08);
+  animation: gov-pop-in 0.2s ease-out;
+}
+
+.gov-modal-header {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  flex: none;
+  gap: 12px;
+  padding: 16px;
+}
+
+.gov-modal-title {
+  grid-column: 2;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: #000c1f;
+}
+
+.gov-modal-close {
+  grid-column: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #eef0f4;
+  color: #000c1f;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.gov-modal-close:hover {
+  background: #e3e6ec;
+}
+
+.gov-modal-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000c1f;
+}
+
+.gov-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 24px 32px;
+}
+
+.gov-modal-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.gov-modal-icon {
+  flex: none;
+  color: #000c1f;
+}
+
+.gov-modal-heading {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #000c1f;
+}
+
+.gov-modal-text {
+  margin: 0;
+  padding-right: 16px;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  color: rgba(0, 12, 31, 0.65);
+}
+
+@keyframes gov-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes gov-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.97);
+  }
+}
+
+@media (max-width: 480px) {
+  .gov-banner-bar {
+    padding: 12px;
+  }
+
+  .gov-modal {
+    border-radius: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gov-banner-trigger,
+  .gov-banner-icon,
+  .gov-modal-close {
+    transition: none;
+  }
+
+  .gov-modal-backdrop,
+  .gov-modal {
+    animation: none;
+  }
+}
