@@ -36,6 +36,7 @@ import { GoogleAnalyticsServiceMock } from "./shared/ga-service/google-analytics
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TopMenuBarComponent } from "./top-menu-bar/top-menu-bar.component";
 import { HeadbarComponent } from "./frame/headbar/headbar.component";
+import { GovBannerComponent } from "./frame/gov-banner/gov-banner.component";
 import { SearchPanelModule } from "./search-panel/search-panel.module";
 import { NotificationService } from "./shared/notification-service/notification.service";
 import { ToastrModule } from "ngx-toastr";
@@ -80,6 +81,7 @@ enableProdMode();
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [RouterModule.forRoot(routes, { useHash: true }),
         BrowserModule,
+        GovBannerComponent,
         TreeModule,
         // OverlayPanelModule,
         // DataListModule,

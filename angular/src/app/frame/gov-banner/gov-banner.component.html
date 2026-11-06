@@ -1,0 +1,164 @@
+<section class="gov-banner" aria-label="U.S. Government Websites">
+  <div class="gov-banner-bar">
+    <button
+      #trigger
+      type="button"
+      class="gov-banner-trigger"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="expanded"
+      (click)="toggle()"
+    >
+      <svg
+        class="gov-banner-flag"
+        width="18"
+        height="10"
+        viewBox="0 0 30 17"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <rect width="30" height="17" fill="#fff" />
+        <g fill="#FB2823">
+          <path d="M30 0H13.08V1.31H30V0Z" />
+          <path d="M30 2.62H13.08V3.93H30V2.62Z" />
+          <path d="M30 5.23H13.08V6.54H30V5.23Z" />
+          <path d="M30 7.85H13.08V9.16H30V7.85Z" />
+          <path d="M30 10.46H0V11.77H30V10.46Z" />
+          <path d="M30 13.08H0V14.39H30V13.08Z" />
+          <path d="M30 15.69H0V17H30V15.69Z" />
+        </g>
+        <path
+          fill="#004AC3"
+          d="M0 0V9.15H13.08V0H0ZM11.12 2.62L10.47 3.27L9.82 2.62L10.47 1.97L11.12 2.62ZM10.46 4.58L11.11 5.23L10.46 5.88L9.81 5.23L10.46 4.58ZM9.15 4.58L8.5 3.93L9.15 3.28L9.8 3.93L9.15 4.58ZM9.15 0.65L9.8 1.3L9.15 1.95L8.5 1.3L9.15 0.65ZM8.5 2.62L7.85 3.27L7.2 2.62L7.85 1.97L8.5 2.62ZM7.85 4.58L8.5 5.23L7.85 5.88L7.2 5.23L7.85 4.58ZM6.54 4.58L5.89 3.93L6.54 3.28L7.19 3.93L6.54 4.58ZM6.54 0.65L7.19 1.3L6.54 1.95L5.89 1.3L6.54 0.65ZM5.88 2.62L5.23 3.27L4.58 2.62L5.23 1.97L5.88 2.62ZM5.23 4.58L5.88 5.23L5.23 5.88L4.58 5.23L5.23 4.58ZM3.92 4.58L3.27 3.93L3.92 3.28L4.57 3.93L3.92 4.58ZM3.92 0.65L4.57 1.3L3.92 1.95L3.27 1.3L3.92 0.65ZM3.27 2.62L2.62 3.27L1.97 2.62L2.62 1.97L3.27 2.62ZM3.27 5.23L2.62 5.88L1.97 5.23L2.62 4.58L3.27 5.23ZM1.31 0.65L1.96 1.3L1.31 1.95L0.66 1.3L1.31 0.65ZM1.31 3.27L1.96 3.92L1.31 4.57L0.66 3.92L1.31 3.27ZM0.65 6.54L1.3 5.89L1.95 6.54L1.3 7.19L0.65 6.54ZM2.62 8.5L1.97 7.85L2.62 7.2L3.27 7.85L2.62 8.5ZM3.27 6.54L3.92 5.89L4.57 6.54L3.92 7.19L3.27 6.54ZM5.23 8.5L4.58 7.85L5.23 7.2L5.88 7.85L5.23 8.5ZM5.88 6.54L6.53 5.89L7.18 6.54L6.53 7.19L5.88 6.54ZM7.85 8.5L7.2 7.85L7.85 7.2L8.5 7.85L7.85 8.5ZM8.5 6.54L9.15 5.89L9.8 6.54L9.15 7.19L8.5 6.54ZM10.46 8.5L9.81 7.85L10.46 7.2L11.11 7.85L10.46 8.5ZM11.77 7.19L11.12 6.54L11.77 5.89L12.42 6.54L11.77 7.19ZM11.77 4.58L11.12 3.93L11.77 3.28L12.42 3.93L11.77 4.58ZM11.77 1.96L11.12 1.31L11.77 0.66L12.42 1.31L11.77 1.96Z"
+        />
+      </svg>
+      <span class="gov-banner-text"
+        >An official website of the United States government</span
+      >
+      <svg
+        class="gov-banner-icon"
+        width="16"
+        height="16"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M11 15H9V9H11V15Z" fill="currentColor" />
+        <path
+          d="M11.2 6.2C11.2 6.86 10.9 7.4 10 7.4C9.1 7.4 8.8 6.86 8.8 6.2C8.8 5.54 9.1 5 10 5C10.9 5 11.2 5.54 11.2 6.2Z"
+          fill="currentColor"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M10 1C5 1 1 5 1 10C1 15 5 19 10 19C15 19 19 15 19 10C19 5 15 1 10 1ZM10 3C13.9 3 17 6.1 17 10C17 13.9 13.9 17 10 17C6.1 17 3 13.9 3 10C3 6.1 6.1 3 10 3Z"
+          fill="currentColor"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div
+    class="gov-modal-backdrop"
+    *ngIf="expanded"
+    aria-hidden="true"
+    (click)="collapse()"
+  ></div>
+
+  <div
+    class="gov-modal"
+    *ngIf="expanded"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="gov-modal-title"
+  >
+    <div class="gov-modal-header">
+      <h2 id="gov-modal-title" class="gov-modal-title">
+        U.S. Government Websites
+      </h2>
+      <button
+        #closeButton
+        type="button"
+        class="gov-modal-close"
+        aria-label="Close"
+        (click)="collapse()"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="gov-modal-body">
+      <div class="gov-modal-section">
+        <svg
+          class="gov-modal-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M12 5.028L16.896 7.2H7.104L12 5.028ZM12 2.4L1.2 7.2V9.6H22.8V7.2L12 2.4Z"
+            fill="currentColor"
+          />
+          <path d="M7.2 10.8H4.8V18H7.2V10.8Z" fill="currentColor" />
+          <path d="M13.2 10.8H10.8V18H13.2V10.8Z" fill="currentColor" />
+          <path d="M19.2 10.8H16.8V18H19.2V10.8Z" fill="currentColor" />
+          <path d="M22.8 19.2H1.2V21.6H22.8V19.2Z" fill="currentColor" />
+        </svg>
+        <h3 class="gov-modal-heading">Official websites use .gov</h3>
+        <p class="gov-modal-text">
+          A .gov website belongs to an official government organization in the
+          United States.
+        </p>
+      </div>
+
+      <div class="gov-modal-divider" aria-hidden="true"></div>
+
+      <div class="gov-modal-section">
+        <svg
+          class="gov-modal-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M18.0001 8.40007H16.8001V6.00007C16.8001 3.34807 14.6521 1.20007 12.0001 1.20007C9.3481 1.20007 7.2001 3.34807 7.2001 6.00007V8.40007H6.0001C4.6801 8.40007 3.6001 9.48007 3.6001 10.8001V20.4001C3.6001 21.7201 4.6801 22.8001 6.0001 22.8001H18.0001C19.3201 22.8001 20.4001 21.7201 20.4001 20.4001V10.8001C20.4001 9.48007 19.3201 8.40007 18.0001 8.40007ZM9.6001 6.00007C9.6001 4.68007 10.6801 3.60007 12.0001 3.60007C13.3201 3.60007 14.4001 4.68007 14.4001 6.00007V8.40007H9.6001V6.00007ZM18.0001 20.4001H6.0001V10.8001H18.0001V20.4001Z"
+            fill="currentColor"
+          />
+          <path
+            d="M13.2001 13.2001H10.8001V18.0001H13.2001V13.2001Z"
+            fill="currentColor"
+          />
+        </svg>
+        <h3 class="gov-modal-heading">Secure .gov websites use HTTPS</h3>
+        <p class="gov-modal-text">
+          A lock or https:// means you’ve safely connected to the .gov website.
+          Share sensitive information only on official, secure websites.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
