@@ -1,0 +1,64 @@
+/* Full-bleed bar after the header: centered content, centered amber wash. */
+.announce-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  padding: 16px 56px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  /* Two layers: a centered "wash" gradient over a solid base. Colors come from per-announcement
+     CSS vars (set inline from the JSON `colors`), each falling back to the default amber theme. */
+  background:
+    linear-gradient(90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--ann-wash, #FFB020) 16%, transparent) 50%,
+      transparent 100%),
+    var(--ann-bar, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ann-wash, #FFB020) 22%, transparent);
+}
+
+.announce-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: #1A1200;
+  background: var(--ann-badge, #FFB020);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.announce-msg { flex: 0 1 auto; font-size: 15px; font-weight: 600; line-height: 1.4; color: #fff; }
+
+.announce-cta { color: var(--ann-link, #FFC862); text-decoration: none; font-weight: 600; white-space: nowrap; }
+.announce-cta:hover { color: color-mix(in srgb, var(--ann-link, #FFC862) 75%, #fff); }
+.announce-cta-text { text-decoration: underline; text-underline-offset: 3px; }
+.announce-cta-icon { margin-left: 5px; font-size: .8em; vertical-align: baseline; }
+
+/* Small outline dismiss button, pinned right so the centered content stays centered. */
+.announce-dismiss {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  flex-shrink: 0;
+  appearance: none;
+  background: transparent;
+  color: #98A2B3;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.announce-dismiss:hover { color: #fff; border-color: rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .06); }
+.announce-dismiss:focus-visible { outline: 2px solid var(--ann-wash, #FFB020); outline-offset: 2px; }
+
+@media (max-width: 900px) { .announce-bar { gap: 8px 14px; padding: 14px 18px; } }
