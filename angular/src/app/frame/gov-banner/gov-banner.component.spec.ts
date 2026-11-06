@@ -67,4 +67,19 @@ describe("GovBannerComponent", () => {
     fixture.detectChanges();
     expect(dialog()).toBeNull();
   });
+
+  it("makes the background inert while open and restores it on close", async () => {
+    trigger().click();
+    fixture.detectChanges();
+    await new Promise((r) => setTimeout(r));
+    expect(el.querySelector(".gov-banner-bar").hasAttribute("inert")).toBe(
+      true
+    );
+    expect(dialog().hasAttribute("inert")).toBe(false);
+    (el.querySelector(".gov-modal-close") as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(el.querySelector(".gov-banner-bar").hasAttribute("inert")).toBe(
+      false
+    );
+  });
 });
