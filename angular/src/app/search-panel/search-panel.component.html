@@ -116,6 +116,8 @@
         *ngIf="queryStringError"
         [innerHTML]="queryStringErrorMessage"
       ></div>
+
+      <sdp-search-tips (exampleSelected)="useTipExample($event)"></sdp-search-tips>
     
       <!-- 
       <div class="p-d-flex p-jc-between" style="margin-top: 1em">

@@ -466,6 +466,14 @@ export class SearchPanelComponent implements OnInit {
   }
 
   /**
+   * Prefill the search box with an example picked from the search tips
+   */
+  useTipExample(example: string) {
+    this.setSearchValue(example);
+    setTimeout(() => document.getElementById("searchinput")?.focus());
+  }
+
+  /**
    * Apeend text to the search box
    * @param field - text to be appended
    * @param op - operator (usually "=")

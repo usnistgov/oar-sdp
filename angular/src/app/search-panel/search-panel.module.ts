@@ -9,6 +9,7 @@ import {ToastModule} from 'primeng/toast';
 import { TableModule }  from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { SearchTipsComponent } from './search-tips/search-tips.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -19,7 +20,8 @@ import { DialogModule } from 'primeng/dialog';
     ToastModule,
     TableModule,
     ButtonModule,
-    DialogModule
+    DialogModule,
+    SearchTipsComponent
   ],
   declarations: [SearchPanelComponent],
   exports: [SearchPanelComponent]
