@@ -1,0 +1,348 @@
+:host {
+  display: block;
+  width: min(1320px, 96vw);
+  margin: 0.85rem auto 0;
+  padding: 0 0.4rem;
+  box-sizing: border-box;
+  text-align: left;
+  font-family: "Helvetica Now Text", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+
+/* ===================== Rotating tip ===================== */
+.tips {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.tips-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-height: 28px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* The pill's outline doubles as the progress ring for the current tip. */
+.tips-pill {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font: inherit;
+  font-size: 11px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tips-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tips-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.tips-ring rect {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.tips-ring-track {
+  stroke: rgba(255, 255, 255, 0.25);
+}
+
+.tips-ring-fill {
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: tips-elapse 7s linear forwards;
+}
+
+.tips-pill-label {
+  position: relative;
+}
+
+.tips-text {
+  flex: 1 1 220px;
+  min-width: 0;
+  margin: 0;
+}
+
+.tips-tip {
+  display: inline;
+  animation: tips-fade-in 0.35s ease-out;
+}
+
+.tips-example {
+  margin: 0 0 0 4px;
+  padding: 2px 7px;
+  border: 0;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font: 12px/18px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tips-example:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.tips-link {
+  flex: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #d3ecff;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tips-link:hover {
+  color: #fff;
+}
+
+.tips-pill:focus-visible,
+.tips-example:focus-visible,
+.tips-link:focus-visible {
+  outline: 2px solid rgba(178, 227, 255, 0.7);
+  outline-offset: 2px;
+}
+
+@keyframes tips-elapse {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tips-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+
+/* ===================== Details popup ===================== */
+.tips-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(0, 12, 31, 0.1);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  animation: tips-backdrop-in 0.2s ease-out;
+}
+
+.tips-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 5001;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 480px;
+  max-width: calc(100vw - 32px);
+  max-height: min(calc(100vh - 112px), calc(100dvh - 32px));
+  overflow: hidden;
+  border-radius: 40px;
+  background: #fff;
+  color: #000c1f;
+  text-align: left;
+  box-shadow: 0 0 0 1px rgba(0, 12, 31, 0.05), 0 10px 40px rgba(1, 14, 36, 0.08);
+  animation: tips-pop-in 0.2s ease-out;
+}
+
+.tips-modal-header {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  flex: none;
+  gap: 12px;
+  padding: 16px;
+}
+
+.tips-modal-title {
+  grid-column: 2;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: #000c1f;
+}
+
+.tips-modal-close {
+  grid-column: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #eef0f4;
+  color: #000c1f;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tips-modal-close:hover {
+  background: #e3e6ec;
+}
+
+.tips-modal-close:focus-visible,
+.tips-example--light:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000c1f;
+}
+
+.tips-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 24px 32px;
+}
+
+.tips-modal-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tips-modal-icon {
+  flex: none;
+  color: #000c1f;
+}
+
+.tips-modal-heading {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #000c1f;
+}
+
+.tips-modal-text {
+  margin: 0;
+  padding-right: 16px;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  color: rgba(0, 12, 31, 0.65);
+}
+
+.tips-modal-divider {
+  height: 1px;
+  background: rgba(0, 12, 31, 0.08);
+}
+
+.tips-modal-fields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 20px;
+  color: rgba(0, 12, 31, 0.65);
+}
+
+.tips-modal-fields li {
+  display: contents;
+}
+
+.tips-modal-fields code {
+  color: #000c1f;
+  font: 12px/20px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.tips-modal-examples {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.tips-example--light {
+  margin: 0;
+  padding: 5px 10px;
+  background: #eef0f4;
+  color: #000c1f;
+}
+
+.tips-example--light:hover {
+  background: #e3e6ec;
+}
+
+@keyframes tips-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes tips-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.97);
+  }
+}
+
+@media (max-width: 480px) {
+  .tips-modal {
+    border-radius: 28px;
+  }
+
+  .tips-modal-body {
+    padding: 8px 20px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tips-pill,
+  .tips-example,
+  .tips-modal-close {
+    transition: none;
+  }
+
+  .tips-tip,
+  .tips-modal-backdrop,
+  .tips-modal {
+    animation: none;
+  }
+}

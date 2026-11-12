@@ -1,0 +1,271 @@
+<div
+  class="tips"
+  role="region"
+  aria-label="Search tips"
+  (mouseenter)="hovered = true"
+  (mouseleave)="hovered = false"
+  (focusin)="focused = true"
+  (focusout)="focused = false"
+>
+  <div class="tips-row">
+    <button
+      type="button"
+      class="tips-pill"
+      [attr.aria-label]="
+        'Tip ' + (index + 1) + ' of ' + tips.length + '. Show next tip'
+      "
+      (click)="next()"
+    >
+      <svg
+        class="tips-ring"
+        viewBox="0 0 46 26"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <rect class="tips-ring-track" x="1" y="1" width="44" height="24" rx="12" />
+        <ng-container *ngIf="!reducedMotion">
+          <rect
+            *ngFor="let tip of [tips[index]]"
+            class="tips-ring-fill"
+            x="1"
+            y="1"
+            width="44"
+            height="24"
+            rx="12"
+            pathLength="100"
+            [style.animation-play-state]="paused ? 'paused' : 'running'"
+            (animationend)="next()"
+          />
+        </ng-container>
+      </svg>
+      <span class="tips-pill-label">{{ index + 1 }}/{{ tips.length }}</span>
+    </button>
+
+    <p class="tips-text" aria-live="off">
+      <ng-container *ngFor="let tip of [tips[index]]">
+        <span class="tips-tip">
+          {{ tip.lead }}
+          <button
+            type="button"
+            class="tips-example"
+            title="Use this example"
+            (click)="selectExample(tip.example)"
+          >
+            {{ tip.example }}
+          </button>
+        </span>
+      </ng-container>
+    </p>
+
+    <button
+      #trigger
+      type="button"
+      class="tips-link"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="expanded"
+      (click)="open()"
+    >
+      Search tips
+    </button>
+  </div>
+</div>
+
+<div
+  class="tips-modal-backdrop"
+  *ngIf="expanded"
+  aria-hidden="true"
+  (click)="collapse()"
+></div>
+
+<div
+  class="tips-modal"
+  *ngIf="expanded"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="tips-modal-title"
+  cdkTrapFocus
+>
+  <div class="tips-modal-header">
+    <h2 id="tips-modal-title" class="tips-modal-title">Search Tips</h2>
+    <button
+      #closeButton
+      type="button"
+      class="tips-modal-close"
+      aria-label="Close"
+      (click)="collapse()"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M16 5.4L14.6 4L10 8.6L5.4 4L4 5.4L8.6 10L4 14.6L5.4 16L10 11.4L14.6 16L16 14.6L11.4 10L16 5.4Z"
+          fill="currentColor"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div class="tips-modal-body">
+    <div class="tips-modal-section">
+      <svg
+        class="tips-modal-icon"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M10 7H6.5C5.67 7 5 7.67 5 8.5V12.5C5 13.33 5.67 14 6.5 14H9V14.5C9 15.88 7.88 17 6.5 17H6V19H6.5C9 19 11 17 11 14.5V8C11 7.45 10.55 7 10 7Z"
+          fill="currentColor"
+        />
+        <path
+          d="M19 7H15.5C14.67 7 14 7.67 14 8.5V12.5C14 13.33 14.67 14 15.5 14H18V14.5C18 15.88 16.88 17 15.5 17H15V19H15.5C18 19 20 17 20 14.5V8C20 7.45 19.55 7 19 7Z"
+          fill="currentColor"
+        />
+      </svg>
+      <h3 class="tips-modal-heading">Keep words together</h3>
+      <p class="tips-modal-text">
+        Put quotes around a phrase to find records where those words appear
+        together, in that order. Without quotes, a record can match any of your
+        words.
+      </p>
+      <button
+        type="button"
+        class="tips-example tips-example--light"
+        (click)="selectExample('&quot;analytical chemistry&quot;', true)"
+      >
+        "analytical chemistry"
+      </button>
+    </div>
+
+    <div class="tips-modal-divider" aria-hidden="true"></div>
+
+    <div class="tips-modal-section">
+      <svg
+        class="tips-modal-icon"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M10.5 3a7.5 7.5 0 0 1 5.96 12.05l4.74 4.75-1.4 1.4-4.75-4.74A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"
+          fill="currentColor"
+        />
+      </svg>
+      <h3 class="tips-modal-heading">Search inside one field</h3>
+      <p class="tips-modal-text">
+        Type a field name, an equals sign and a value to look only in that part
+        of a record. Quote a value that has several words.
+      </p>
+      <ul class="tips-modal-fields">
+        <li *ngFor="let hint of fieldHints">
+          <code>{{ hint.field }}</code>
+          <span>{{ hint.meaning }}</span>
+        </li>
+      </ul>
+      <button
+        type="button"
+        class="tips-example tips-example--light"
+        (click)="selectExample('contactPoint.fn=Levine', true)"
+      >
+        contactPoint.fn=Levine
+      </button>
+    </div>
+
+    <div class="tips-modal-divider" aria-hidden="true"></div>
+
+    <div class="tips-modal-section">
+      <svg
+        class="tips-modal-icon"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M9 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm0 2a5 5 0 0 1 3.54 8.54A5 5 0 0 1 9 7Z"
+          fill="currentColor"
+        />
+        <path
+          d="M15 5a7 7 0 0 0-2.5.46A8.96 8.96 0 0 1 14.9 7.2 5 5 0 0 1 15 17a5 5 0 0 1-.1.8 8.96 8.96 0 0 1-2.4 1.74A7 7 0 1 0 15 5Z"
+          fill="currentColor"
+        />
+      </svg>
+      <h3 class="tips-modal-heading">Combine field searches</h3>
+      <p class="tips-modal-text">
+        Join field searches with AND to require both, or OR to accept either.
+        Write AND and OR in capital letters.
+      </p>
+      <div class="tips-modal-examples">
+        <button
+          type="button"
+          class="tips-example tips-example--light"
+          (click)="
+            selectExample('keyword=chemistry AND topic.tag=physics', true)
+          "
+        >
+          keyword=chemistry AND topic.tag=physics
+        </button>
+        <button
+          type="button"
+          class="tips-example tips-example--light"
+          (click)="
+            selectExample('keyword=chemistry OR topic.tag=physics', true)
+          "
+        >
+          keyword=chemistry OR topic.tag=physics
+        </button>
+      </div>
+    </div>
+
+    <div class="tips-modal-divider" aria-hidden="true"></div>
+
+    <div class="tips-modal-section">
+      <svg
+        class="tips-modal-icon"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M11 10h2v7h-2v-7Z" fill="currentColor" />
+        <path
+          d="M13.2 7.2c0 .66-.3 1.2-1.2 1.2s-1.2-.54-1.2-1.2.3-1.2 1.2-1.2 1.2.54 1.2 1.2Z"
+          fill="currentColor"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Z"
+          fill="currentColor"
+        />
+      </svg>
+      <h3 class="tips-modal-heading">Good to know</h3>
+      <p class="tips-modal-text">
+        Searches are not case sensitive. To search for the words AND or OR
+        themselves, put them in quotes. Click any example to try it in the
+        search box.
+      </p>
+    </div>
+  </div>
+</div>
